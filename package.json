@@ -10,6 +10,15 @@
     "prepare": "husky",
     "generate-search": "tsx scripts/generate-search-index.ts"
   },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,mdx,css,html,yml,yaml,scss}": [
+      "prettier --write"
+    ]
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@next/swc-wasm-nodejs": "13.5.1",

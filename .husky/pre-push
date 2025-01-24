@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "🏗️ Running build check before push..."
+pnpm build 
