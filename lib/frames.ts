@@ -11,7 +11,13 @@ export interface Frame {
 
 export interface ParsedFrameId {
   season: string;
+  episode: string;
   timestamp: string;
+}
+
+export interface ParsedEpisodeId {
+  season: number;
+  episode: number;
 }
 
 export class InvalidFrameIdError extends Error {
@@ -19,6 +25,20 @@ export class InvalidFrameIdError extends Error {
     super(message);
     this.name = "InvalidFrameIdError";
   }
+}
+
+export function parseEpisodeId(episodeId: string): ParsedEpisodeId {
+  const match = episodeId.match(/^s(\d{2})e(\d{2})$/);
+  if (!match || !match[1] || !match[2]) {
+    throw new InvalidFrameIdError(
+      `Invalid episode ID format: ${episodeId}. Expected format: s01e01`,
+    );
+  }
+
+  return {
+    season: parseInt(match[1], 10),
+    episode: parseInt(match[2], 10),
+  };
 }
 
 export function formatTimestamp(timestamp: string): string {
@@ -59,7 +79,7 @@ export function validateFrameId(id: string): ParsedFrameId {
     );
   }
 
-  return { season, timestamp };
+  return { season, episode: season, timestamp };
 }
 
 export async function getFrameIndex(): Promise<Frame[]> {
