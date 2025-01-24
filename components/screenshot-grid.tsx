@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 type Screenshot = {
   id: string;
   imageUrl: string;
+  blankImageUrl: string;
   timestamp: string;
   subtitle: string;
+  speech: string;
 };
 
 export function ScreenshotGrid() {
@@ -50,7 +52,7 @@ export function ScreenshotGrid() {
               <p className="text-sm text-muted-foreground">
                 {screenshot.timestamp}
               </p>
-              <p className="font-medium">{screenshot.subtitle}</p>
+              <p className="font-medium">{screenshot.speech}</p>
             </div>
           </Card>
         </Link>

@@ -23,8 +23,10 @@ function ErrorMessage({ message }: { message: string }) {
 interface Screenshot {
   id: string;
   imageUrl: string;
+  blankImageUrl: string;
   timestamp: string;
   subtitle: string;
+  speech: string;
   episode: string;
   character: string;
 }
@@ -56,7 +58,7 @@ const validateId = (id: string): { season: string; timestamp: string } => {
 
 async function getScreenshot(id: string): Promise<Screenshot> {
   try {
-    validateId(id);
+    const { season, timestamp } = validateId(id);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/frames`,
     );
@@ -75,9 +77,16 @@ async function getScreenshot(id: string): Promise<Screenshot> {
       );
     }
 
+    // Construct the correct image URLs based on our directory structure
+    const baseFramePath = `/frames/${season}/${timestamp}`;
+    const imageUrl = `${baseFramePath}/frame.jpg`;
+    const blankImageUrl = `${baseFramePath}/frame-blank.jpg`;
+
     return {
       ...screenshot,
-      episode: screenshot.timestamp.split(" - ")[0],
+      imageUrl,
+      blankImageUrl,
+      episode: season,
       character: "",
     };
   } catch (error) {

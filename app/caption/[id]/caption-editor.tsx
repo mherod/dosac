@@ -11,8 +11,10 @@ import { Slider } from "@/components/ui/slider";
 interface Screenshot {
   id: string;
   imageUrl: string;
+  blankImageUrl: string;
   timestamp: string;
   subtitle: string;
+  speech: string;
   episode: string;
   character: string;
 }
@@ -22,7 +24,7 @@ interface CaptionEditorProps {
 }
 
 export function CaptionEditor({ screenshot }: CaptionEditorProps) {
-  const [caption, setCaption] = useState(screenshot.subtitle);
+  const [caption, setCaption] = useState(screenshot.speech);
   const [fontSize, setFontSize] = useState([32]);
 
   return (
@@ -33,8 +35,8 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
             <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
               <div className="relative aspect-video">
                 <Image
-                  src={screenshot.imageUrl}
-                  alt={screenshot.subtitle}
+                  src={screenshot.blankImageUrl}
+                  alt={screenshot.timestamp}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1200px) 100vw, 1200px"

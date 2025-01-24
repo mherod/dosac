@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 import { createCanvas, loadImage, registerFont } from "canvas";
+import glob from "fast-glob";
 
 interface VTTFrame {
   startTime: string;
@@ -138,6 +139,16 @@ function parseVTTFile(filePath: string): VTTFile {
   return { frames };
 }
 
+async function findVideoFiles(): Promise<string[]> {
+  const videos = await glob("public/**/*.mp4");
+  return videos
+    .map((video) => {
+      const match = video.match(/public[/\\]([^/\\]+)\.mp4$/);
+      return match ? match[1] : "";
+    })
+    .filter(Boolean);
+}
+
 async function processVideoFrames(episodeId: string) {
   const vttPath = path.join(process.cwd(), "public", `${episodeId}.vtt`);
   const videoPath = path.join(process.cwd(), "public", `${episodeId}.mp4`);
@@ -148,14 +159,24 @@ async function processVideoFrames(episodeId: string) {
     episodeId,
   );
 
+  // Check if VTT file exists
+  if (!fs.existsSync(vttPath)) {
+    console.error(`VTT file not found for ${episodeId}, skipping...`);
+    return null;
+  }
+
+  // Check if video file exists
+  if (!fs.existsSync(videoPath)) {
+    console.error(`Video file not found for ${episodeId}, skipping...`);
+    return null;
+  }
+
   // Ensure base frames directory exists
   ensureDirectoryExists(framesBasePath);
 
   // Parse VTT file
   const parsedVTT = parseVTTFile(vttPath);
-  console.log(
-    `Processing ${parsedVTT.frames.length} frames for ${episodeId}...`,
-  );
+  console.log(`Processing ${episodeId}: ${parsedVTT.frames.length} frames`);
 
   // Process each frame
   for (const [index, frame] of parsedVTT.frames.entries()) {
@@ -163,30 +184,60 @@ async function processVideoFrames(episodeId: string) {
     const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
     ensureDirectoryExists(frameDir);
 
+    const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
     const framePath = path.join(frameDir, "frame.jpg");
+    const speechPath = path.join(frameDir, "speech.txt");
 
-    // Extract frame if it doesn't exist
-    if (!fs.existsSync(framePath)) {
-      console.log(
-        `Extracting frame: ${timestamp} (${index + 1}/${parsedVTT.frames.length})`,
-      );
-      extractFrame(videoPath, timestamp, framePath);
-    } else {
-      console.log(
-        `Frame exists: ${timestamp} (${index + 1}/${parsedVTT.frames.length})`,
-      );
+    // Extract frame if blank version doesn't exist
+    if (!fs.existsSync(frameBlankPath)) {
+      if (!extractFrame(videoPath, timestamp, frameBlankPath)) {
+        console.error(`Failed to extract frame at ${timestamp}, skipping...`);
+        continue;
+      }
     }
 
-    // Add subtitle text to frame
-    console.log(`Adding subtitle to frame: ${timestamp}`);
-    await addSubtitleToFrame(framePath, frame.text);
+    try {
+      // Copy blank frame to create base for subtitled version
+      fs.copyFileSync(frameBlankPath, framePath);
+      // Write speech text to file
+      fs.writeFileSync(speechPath, frame.text.join("\n"), "utf8");
+      // Add subtitle text to the copy
+      await addSubtitleToFrame(framePath, frame.text);
+
+      // Log progress every 10%
+      if (index % Math.ceil(parsedVTT.frames.length / 10) === 0) {
+        const progress = Math.round((index / parsedVTT.frames.length) * 100);
+        console.log(`${episodeId}: ${progress}% complete`);
+      }
+    } catch (error) {
+      console.error(`Error processing frame at ${timestamp}:`, error);
+      continue;
+    }
   }
 
-  console.log("Frame extraction and subtitle addition complete!");
+  console.log(
+    `Completed ${episodeId}. Total frames: ${parsedVTT.frames.length}`,
+  );
   return parsedVTT;
 }
 
-// Process frames for s02e01
-processVideoFrames("s02e01").then((parsedVTT) => {
-  console.log(`Total frames processed: ${parsedVTT.frames.length}`);
-});
+async function processAllVideos() {
+  const episodeIds = await findVideoFiles();
+  console.log(
+    `Found ${episodeIds.length} videos to process: ${episodeIds.join(", ")}`,
+  );
+
+  for (const episodeId of episodeIds) {
+    try {
+      const parsedVTT = await processVideoFrames(episodeId);
+      if (!parsedVTT) {
+        console.log(`Failed to process ${episodeId}`);
+      }
+    } catch (error) {
+      console.error(`Error processing ${episodeId}:`, error);
+    }
+  }
+}
+
+// Start processing all videos
+processAllVideos().catch(console.error);

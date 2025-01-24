@@ -6,8 +6,10 @@ export async function GET() {
   const frames: {
     id: string;
     imageUrl: string;
+    blankImageUrl: string;
     timestamp: string;
     subtitle: string;
+    speech: string;
   }[] = [];
   const seasonsDir = path.join(process.cwd(), "public", "frames");
 
@@ -22,13 +24,23 @@ export async function GET() {
     const timestamps = fs.readdirSync(seasonDir);
 
     for (const timestamp of timestamps) {
-      if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
+      const frameDir = path.join(seasonDir, timestamp);
+      if (!fs.statSync(frameDir).isDirectory()) continue;
+
+      // Read speech.txt if it exists
+      let speech = "";
+      const speechPath = path.join(frameDir, "speech.txt");
+      if (fs.existsSync(speechPath)) {
+        speech = fs.readFileSync(speechPath, "utf-8").trim();
+      }
 
       frames.push({
         id: `${season}-${timestamp}`,
         imageUrl: `/frames/${season}/${timestamp}/frame.jpg`,
+        blankImageUrl: `/frames/${season}/${timestamp}/frame-blank.jpg`,
         timestamp: `${season} - ${timestamp}`,
-        subtitle: "Add your caption",
+        subtitle: speech, // Keep for backwards compatibility
+        speech,
       });
     }
   }
