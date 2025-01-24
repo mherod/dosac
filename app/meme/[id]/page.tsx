@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MainNav } from "@/components/main-nav";
 import fs from "fs";
 import path from "path";
+import Link from "next/link";
 
 const getMeme = (id: string) => {
   const [season, episode, timestamp] = id.split("-");
@@ -67,45 +69,84 @@ export default function MemePage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="container max-w-4xl py-8">
-      <Card className="overflow-hidden">
-        <div className="relative aspect-video">
-          <Image
-            src={meme.imageUrl}
-            alt={meme.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1200px) 100vw, 1200px"
-          />
-        </div>
-        <div className="p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">{meme.title}</h1>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon">
-                <Heart className="h-5 w-5" />
-                <span className="ml-2">{meme.likes}</span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <MessageCircle className="h-5 w-5" />
-                <span className="ml-2">{meme.comments}</span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Share2 className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-          <p className="mt-4 text-muted-foreground">{meme.description}</p>
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold">Comments</h2>
-            <div className="mt-4 rounded-lg bg-muted p-4">
-              <p className="text-sm text-muted-foreground">
-                No comments yet. Be the first to comment!
-              </p>
-            </div>
+    <div className="min-h-screen bg-background">
+      <MainNav />
+
+      <div className="border-b bg-muted/50">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-x-3">
+            <Link
+              href="/"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              ← Back to search
+            </Link>
+            <span className="text-sm text-muted-foreground">•</span>
+            <span className="text-sm text-muted-foreground">
+              Reference ID: {params.id}
+            </span>
           </div>
         </div>
-      </Card>
+      </div>
+
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="rounded-lg border bg-background shadow-sm">
+          <div className="border-b p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h1 className="text-lg font-semibold">{meme.title}</h1>
+                <p className="text-sm text-muted-foreground">
+                  Added to database on{" "}
+                  {new Date(meme.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm">
+                  <Heart className="mr-1.5 h-4 w-4" />
+                  <span className="text-xs">{meme.likes}</span>
+                </Button>
+                <Button variant="outline" size="sm">
+                  <MessageCircle className="mr-1.5 h-4 w-4" />
+                  <span className="text-xs">{meme.comments}</span>
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Share2 className="mr-1.5 h-4 w-4" />
+                  <span className="text-xs">Share</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative aspect-video">
+            <Image
+              src={meme.imageUrl}
+              alt={meme.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1200px) 100vw, 1200px"
+            />
+          </div>
+
+          <div className="border-t p-4">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-sm font-medium">Description</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {meme.description}
+                </p>
+              </div>
+              <div>
+                <h2 className="text-sm font-medium">Comments</h2>
+                <div className="mt-2 rounded border bg-muted/50 p-3">
+                  <p className="text-xs text-muted-foreground">
+                    No comments yet. Be the first to comment!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

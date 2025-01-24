@@ -1,6 +1,7 @@
 import { CaptionEditor } from "./caption-editor";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { InvalidFrameIdError } from "@/lib/frames";
+import { MainNav } from "@/components/main-nav";
 
 function ErrorMessage({ message }: { message: string }) {
   return (
@@ -34,16 +35,24 @@ export default async function CaptionPage({
 }) {
   try {
     const screenshot = await getFrameById(params.id);
-    return <CaptionEditor screenshot={screenshot} />;
+    return (
+      <>
+        <MainNav />
+        <CaptionEditor screenshot={screenshot} />
+      </>
+    );
   } catch (error) {
     return (
-      <ErrorMessage
-        message={
-          error instanceof InvalidFrameIdError
-            ? error.message
-            : "An unexpected error occurred."
-        }
-      />
+      <>
+        <MainNav />
+        <ErrorMessage
+          message={
+            error instanceof InvalidFrameIdError
+              ? error.message
+              : "An unexpected error occurred."
+          }
+        />
+      </>
     );
   }
 }

@@ -10,6 +10,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
 import { Frame } from "@/lib/frames";
 import React from "react";
+import { MainNav } from "@/components/main-nav";
 
 interface SearchResult {
   episodeId: string;
@@ -96,22 +97,22 @@ function SearchForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="group relative mb-12">
-      <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-foreground" />
+    <form onSubmit={handleSubmit} className="relative">
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <Input
         name="search"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search by quote, character, or episode..."
-        className="h-14 rounded-2xl border-2 pl-12 pr-32 text-lg shadow-sm transition-shadow focus-visible:shadow-md"
+        placeholder="Search the screenshot database..."
+        className="h-10 pl-9 pr-24"
       />
       {searchQuery && (
         <Button
           type="button"
           variant="ghost"
-          size="icon"
+          size="sm"
           onClick={handleClear}
-          className="absolute right-24 top-1/2 h-10 -translate-y-1/2"
+          className="absolute right-20 top-1/2 h-8 -translate-y-1/2 px-2"
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Clear search</span>
@@ -119,8 +120,9 @@ function SearchForm() {
       )}
       <Button
         type="submit"
+        size="sm"
         disabled={isLoading}
-        className="absolute right-2 top-1/2 h-10 -translate-y-1/2 rounded-xl px-6 shadow-sm transition-all hover:shadow-md"
+        className="absolute right-2 top-1/2 h-8 -translate-y-1/2"
       >
         {isLoading ? "Searching..." : "Search"}
       </Button>
@@ -146,30 +148,43 @@ function ThemeToggle() {
 
 export function HomePage({ screenshots }: HomePageProps) {
   return (
-    <div className="relative min-h-screen">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.slate.100),transparent)] dark:bg-[radial-gradient(45rem_50rem_at_top,theme(colors.slate.900),transparent)]" />
+    <div className="relative min-h-screen bg-background">
+      <MainNav />
 
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="mx-auto max-w-[90rem] px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-          <a className="flex items-center space-x-2" href="/">
-            <Building2 className="h-6 w-6" />
-            <span className="font-bold">DoSaCGenerator</span>
-          </a>
-          <ThemeToggle />
-        </div>
-      </header>
-
-      <div className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-12">
-            <h1 className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 bg-clip-text text-6xl font-black tracking-tight text-transparent dark:from-white dark:via-gray-200 dark:to-gray-400 sm:text-7xl">
-              DoSaC Generator
-            </h1>
+      <div className="border-b bg-muted/50 py-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-6 space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight">
+                DoSaC Generator
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Internal meme creation and sharing service
+              </p>
+            </div>
+            <div className="rounded-lg border bg-background p-4 shadow-sm">
+              <SearchForm />
+              <div className="mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                <span className="rounded-md border bg-muted px-2 py-0.5">
+                  BETA
+                </span>
+                <span>
+                  This is a new service – your feedback will help us improve it
+                </span>
+              </div>
+            </div>
           </div>
-          <SearchForm />
         </div>
+      </div>
 
-        <div className="mx-auto mt-16 max-w-7xl">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Available Screenshots</h2>
+          <span className="text-sm text-muted-foreground">
+            Showing {screenshots.length} results
+          </span>
+        </div>
+        <div className="rounded-lg border bg-background shadow-sm">
           <ScreenshotGrid screenshots={screenshots} />
         </div>
       </div>
