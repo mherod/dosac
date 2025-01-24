@@ -186,7 +186,7 @@ async function processVideoFrames(episodeId: string) {
   return parsedVTT;
 }
 
-// Process frames for s01e01
-processVideoFrames("s01e01").then((parsedVTT) => {
+// Process frames for s02e01
+processVideoFrames("s02e01").then((parsedVTT) => {
   console.log(`Total frames processed: ${parsedVTT.frames.length}`);
 });
