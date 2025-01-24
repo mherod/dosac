@@ -25,7 +25,7 @@ interface CaptionEditorProps {
 
 export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const [caption, setCaption] = useState(screenshot.speech);
-  const [fontSize, setFontSize] = useState([32]);
+  const [fontSize, setFontSize] = useState([18]);
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
@@ -44,20 +44,37 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                 />
                 {caption && (
                   <div
-                    className="absolute bottom-0 left-0 right-0 p-4 text-center"
+                    className="absolute bottom-0 left-0 right-0 flex items-center justify-center px-4 pb-8"
                     style={{
-                      fontSize: `${fontSize}px`,
-                      color: "#ffffff",
-                      textShadow: `
-                        -3px -3px 0 #000,  
-                         3px -3px 0 #000,
-                        -3px  3px 0 #000,
-                         3px  3px 0 #000
-                      `,
-                      paddingBottom: "20px",
+                      background:
+                        "linear-gradient(transparent, rgba(0, 0, 0, 0.3))",
+                      minHeight: "100px",
                     }}
                   >
-                    {caption}
+                    <p
+                      style={{
+                        fontSize: `${fontSize}px`,
+                        color: "#ffffff",
+                        textShadow: `
+                          -2px -2px 0 #000,  
+                           2px -2px 0 #000,
+                          -2px  2px 0 #000,
+                           2px  2px 0 #000,
+                          -1px -1px 0 #000,  
+                           1px -1px 0 #000,
+                          -1px  1px 0 #000,
+                           1px  1px 0 #000
+                        `,
+                        textAlign: "center",
+                        maxWidth: "90%",
+                        margin: "0 auto",
+                        wordWrap: "break-word",
+                        lineHeight: 1.3,
+                        fontWeight: 500,
+                      }}
+                    >
+                      {caption}
+                    </p>
                   </div>
                 )}
               </div>
@@ -112,7 +129,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                     value={fontSize}
                     onValueChange={setFontSize}
                     min={16}
-                    max={48}
+                    max={36}
                     step={1}
                     className="py-2"
                   />
