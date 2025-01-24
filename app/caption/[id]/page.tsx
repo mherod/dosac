@@ -1,4 +1,6 @@
 import { CaptionEditor } from "./caption-editor";
+import fs from "fs";
+import path from "path";
 
 function ErrorMessage({ message }: { message: string }) {
   return (
@@ -59,33 +61,31 @@ const validateId = (id: string): { season: string; timestamp: string } => {
 async function getScreenshot(id: string): Promise<Screenshot> {
   try {
     const { season, timestamp } = validateId(id);
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/frames`,
-    );
-    if (!response.ok) {
-      throw new Error(
-        "Unable to load screenshots. Please check your connection and try again.",
-      );
-    }
-
-    const frames: Screenshot[] = await response.json();
-    const screenshot = frames.find((frame) => frame.id === id);
-
-    if (!screenshot) {
-      throw new Error(
-        `Screenshot not found: ${id}. This frame may have been removed or relocated.`,
-      );
-    }
-
-    // Construct the correct image URLs based on our directory structure
     const baseFramePath = `/frames/${season}/${timestamp}`;
     const imageUrl = `${baseFramePath}/frame.jpg`;
     const blankImageUrl = `${baseFramePath}/frame-blank.jpg`;
 
+    // Read speech directly from file system during build
+    const speechPath = path.join(
+      process.cwd(),
+      "public",
+      season,
+      timestamp,
+      "speech.txt",
+    );
+    let speech = "";
+
+    if (fs.existsSync(speechPath)) {
+      speech = fs.readFileSync(speechPath, "utf-8").trim();
+    }
+
     return {
-      ...screenshot,
+      id,
       imageUrl,
       blankImageUrl,
+      timestamp: `${season} - ${timestamp}`,
+      subtitle: speech,
+      speech,
       episode: season,
       character: "",
     };
@@ -100,21 +100,30 @@ async function getScreenshot(id: string): Promise<Screenshot> {
 }
 
 export async function generateStaticParams() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/frames`,
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch frames");
+  const frames: { id: string }[] = [];
+  const seasonsDir = path.join(process.cwd(), "public", "frames");
+
+  // Read all seasons
+  const seasons = fs.readdirSync(seasonsDir);
+
+  for (const season of seasons) {
+    const seasonDir = path.join(seasonsDir, season);
+    if (!fs.statSync(seasonDir).isDirectory()) continue;
+
+    // Read all timestamps in the season
+    const timestamps = fs.readdirSync(seasonDir);
+
+    for (const timestamp of timestamps) {
+      const frameDir = path.join(seasonDir, timestamp);
+      if (!fs.statSync(frameDir).isDirectory()) continue;
+
+      frames.push({
+        id: `${season}-${timestamp}`,
+      });
     }
-    const frames: Screenshot[] = await response.json();
-    return frames.map((frame) => ({
-      id: frame.id,
-    }));
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return [];
   }
+
+  return frames;
 }
 
 export default async function CaptionPage({
