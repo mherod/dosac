@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DoSaC Generator",
-  description: "Create and share memes from The Thick of It",
+  title: "Thick of It Quotes",
+  description: "Search and browse quotes from The Thick of It",
 };
 
 export default function RootLayout({
