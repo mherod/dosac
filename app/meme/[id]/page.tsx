@@ -1,23 +1,63 @@
+import React from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import fs from "fs";
+import path from "path";
 
-// This will be replaced with real data fetching later
 const getMeme = (id: string) => {
-  const meme = {
+  const [season, episode, timestamp] = id.split("-");
+  const framePath = path.join(
+    process.cwd(),
+    "public",
+    "frames",
+    season,
+    timestamp,
+    "frame.jpg",
+  );
+
+  if (!fs.existsSync(framePath)) {
+    return null;
+  }
+
+  return {
     id,
-    imageUrl:
-      "https://images.unsplash.com/photo-1531259683007-016a7b628fc3?w=800&q=80",
-    title: "Classic Scene",
-    likes: 342,
-    comments: 23,
-    description: "One of the most memorable scenes from the show",
-    createdAt: "2024-03-20",
+    imageUrl: `/frames/${season}/${timestamp}/frame.jpg`,
+    title: `Scene from ${season} at ${timestamp}`,
+    likes: 0,
+    comments: 0,
+    description: "A memorable scene from Malcolm in the Middle",
+    createdAt: new Date().toISOString(),
   };
-  return meme;
 };
+
+export function generateStaticParams() {
+  const frames: { id: string }[] = [];
+  const seasonsDir = path.join(process.cwd(), "public", "frames");
+
+  // Read all seasons
+  const seasons = fs.readdirSync(seasonsDir);
+
+  for (const season of seasons) {
+    const seasonDir = path.join(seasonsDir, season);
+    if (!fs.statSync(seasonDir).isDirectory()) continue;
+
+    // Read all timestamps in the season
+    const timestamps = fs.readdirSync(seasonDir);
+
+    for (const timestamp of timestamps) {
+      if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
+
+      frames.push({
+        id: `${season}-${timestamp}`,
+      });
+    }
+  }
+
+  return frames;
+}
 
 export default function MemePage({ params }: { params: { id: string } }) {
   const meme = getMeme(params.id);
