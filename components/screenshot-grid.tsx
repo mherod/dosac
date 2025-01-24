@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 
 type Screenshot = {
   id: string;
@@ -14,27 +13,11 @@ type Screenshot = {
   speech: string;
 };
 
-export function ScreenshotGrid() {
-  const [screenshots, setScreenshots] = useState<Screenshot[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ScreenshotGridProps {
+  screenshots: Screenshot[];
+}
 
-  useEffect(() => {
-    fetch("/api/frames")
-      .then((res) => res.json())
-      .then((data) => {
-        setScreenshots(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching frames:", error);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <div className="text-center">Loading screenshots...</div>;
-  }
-
+export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {screenshots.map((screenshot) => (
@@ -46,6 +29,8 @@ export function ScreenshotGrid() {
                 alt={screenshot.timestamp}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={screenshots.indexOf(screenshot) < 6}
               />
             </div>
             <div className="p-4">
