@@ -8,8 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-
   return (
     <div className="container py-8">
       <div className="mx-auto max-w-2xl text-center">
@@ -19,16 +17,17 @@ export default function Home() {
         <p className="mb-6 text-lg text-muted-foreground">
           Search through every glorious insult and political catastrophe
         </p>
-        <div className="relative mb-8">
+        <form className="relative mb-8">
           <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
           <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            name="search"
             placeholder="Search by quote, character, or episode..."
             className="pl-10 text-lg"
           />
-          <Button className="absolute right-1 top-1">Search</Button>
-        </div>
+          <Button type="submit" className="absolute right-1 top-1">
+            Search
+          </Button>
+        </form>
       </div>
 
       <ScreenshotGrid />

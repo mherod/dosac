@@ -7,8 +7,8 @@ import { MainNav } from "@/components/main-nav";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MemeVault",
-  description: "Share and discover your favorite TV show memes",
+  title: "The Thick of It Generator",
+  description: "Create and share memes from The Thick of It",
 };
 
 export default function RootLayout({
@@ -19,7 +19,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <div className="relative flex min-h-screen flex-col">
             <MainNav />
             <main className="flex-1">{children}</main>

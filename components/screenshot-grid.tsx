@@ -3,33 +3,45 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import fs from "fs";
+import path from "path";
 
-// Placeholder data - will be replaced with real API data
-const SCREENSHOTS = [
-  {
-    id: "1",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=800&q=80",
-    timestamp: "S03E01 - 14:22",
-    subtitle: "He's so dense that light bends around him.",
-  },
-  {
-    id: "2",
-    imageUrl:
-      "https://images.unsplash.com/photo-1533749047139-189de3cf06d3?w=800&q=80",
-    timestamp: "S02E03 - 18:45",
-    subtitle:
-      "I've got a to-do list here that's longer than a Leonard Cohen song.",
-  },
-  {
-    id: "3",
-    imageUrl:
-      "https://images.unsplash.com/photo-1504384764586-bb4cdc1707b0?w=800&q=80",
-    timestamp: "S04E06 - 22:15",
-    subtitle:
-      "Allow me to explain to you exactly how much of a chance you've got.",
-  },
-];
+// Get all frames from the public directory
+function getFrames() {
+  const frames: {
+    id: string;
+    imageUrl: string;
+    timestamp: string;
+    subtitle: string;
+  }[] = [];
+  const seasonsDir = path.join(process.cwd(), "public", "frames");
+
+  // Read all seasons
+  const seasons = fs.readdirSync(seasonsDir);
+
+  for (const season of seasons) {
+    const seasonDir = path.join(seasonsDir, season);
+    if (!fs.statSync(seasonDir).isDirectory()) continue;
+
+    // Read all timestamps in the season
+    const timestamps = fs.readdirSync(seasonDir);
+
+    for (const timestamp of timestamps) {
+      if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
+
+      frames.push({
+        id: `${season}-${timestamp}`,
+        imageUrl: `/frames/${season}/${timestamp}/frame.jpg`,
+        timestamp: `${season} - ${timestamp}`,
+        subtitle: "Add your caption",
+      });
+    }
+  }
+
+  return frames;
+}
+
+const SCREENSHOTS = getFrames();
 
 export function ScreenshotGrid() {
   return (
@@ -40,7 +52,7 @@ export function ScreenshotGrid() {
             <div className="relative aspect-video">
               <Image
                 src={screenshot.imageUrl}
-                alt={screenshot.subtitle}
+                alt={screenshot.timestamp}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -50,7 +62,6 @@ export function ScreenshotGrid() {
               <p className="text-sm font-medium text-muted-foreground">
                 {screenshot.timestamp}
               </p>
-              <p className="line-clamp-2 text-sm">{screenshot.subtitle}</p>
             </div>
           </Card>
         </Link>
