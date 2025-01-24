@@ -1,0 +1,38 @@
+# Project Configuration Rules
+
+## Package Management
+- Use pnpm exclusively for package management
+- Node.js version: >= 18.0.0
+- Keep pnpm-lock.yaml in version control
+
+## Git Workflow
+- Conventional commits required
+- Pre-commit hooks must not be skipped
+- All changes must be reviewed before staging
+- Maximum commit message length: 100 characters
+
+## Code Style
+- TypeScript strict mode enabled
+- ESLint configuration must be followed
+- Tailwind CSS for styling
+- Next.js 14+ conventions
+
+## Development Practices
+- Feature branches required
+- Pull requests required for main branch
+- Tests required for new features
+- Documentation updates required for changes
+
+## Project Structure
+- /app - Next.js app router pages
+- /components - React components
+- /lib - Utility functions and shared code
+- /hooks - Custom React hooks
+- /public - Static assets
+
+## Dependencies
+- Next.js 14+
+- React 18+
+- TypeScript 5+
+- Tailwind CSS
+- shadcn/ui components 
