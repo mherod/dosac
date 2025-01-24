@@ -20,33 +20,10 @@ export async function generateMetadata({
   };
 }
 
-function ErrorMessage({ message }: { message: string }) {
-  return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4 text-center">
-      <h1 className="text-2xl font-bold text-red-500">Error</h1>
-      <p className="max-w-md text-muted-foreground">{message}</p>
-      <div className="text-sm text-muted-foreground">
-        <p>If this error persists:</p>
-        <ul className="list-disc text-left pl-4 mt-2">
-          <li>Check the URL format is correct</li>
-          <li>Try refreshing the page</li>
-          <li>Return home and select a different frame</li>
-        </ul>
-      </div>
-      <Link href="/" className="text-primary hover:underline">
-        Return to Home
-      </Link>
-    </div>
-  );
-}
-
 export default async function CaptionPage({ params }: CaptionPageProps) {
-  let frame;
-  try {
-    frame = await getFrameById(params.id);
-  } catch (error) {
+  const frame = await getFrameById(params.id).catch(() => {
     notFound();
-  }
+  });
 
   return (
     <>
