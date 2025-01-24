@@ -1,64 +1,130 @@
-import fs from "fs";
-import path from "path";
 import { CaptionEditor } from "./caption-editor";
 
-const getScreenshot = (id: string) => {
-  const [season, episode, timestamp] = id.split("-");
-  const framePath = path.join(
-    process.cwd(),
-    "public",
-    "frames",
-    season,
-    timestamp,
-    "frame.jpg",
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center space-y-4 text-center">
+      <h1 className="text-2xl font-bold text-red-500">Error</h1>
+      <p className="max-w-md text-muted-foreground">{message}</p>
+      <div className="text-sm text-muted-foreground">
+        <p>If this error persists:</p>
+        <ul className="list-disc text-left pl-4 mt-2">
+          <li>Check the URL format is correct</li>
+          <li>Try refreshing the page</li>
+          <li>Return home and select a different frame</li>
+        </ul>
+      </div>
+      <a href="/" className="text-primary hover:underline">
+        Return to Home
+      </a>
+    </div>
   );
-
-  if (!fs.existsSync(framePath)) {
-    return null;
-  }
-
-  return {
-    id,
-    imageUrl: `/frames/${season}/${timestamp}/frame.jpg`,
-    timestamp: `${season} - ${timestamp}`,
-    subtitle: "Add your caption here",
-    episode: `${season}`,
-    character: "",
-  };
-};
-
-export function generateStaticParams() {
-  const frames: { id: string }[] = [];
-  const seasonsDir = path.join(process.cwd(), "public", "frames");
-
-  // Read all seasons
-  const seasons = fs.readdirSync(seasonsDir);
-
-  for (const season of seasons) {
-    const seasonDir = path.join(seasonsDir, season);
-    if (!fs.statSync(seasonDir).isDirectory()) continue;
-
-    // Read all timestamps in the season
-    const timestamps = fs.readdirSync(seasonDir);
-
-    for (const timestamp of timestamps) {
-      if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
-
-      frames.push({
-        id: `${season}-${timestamp}`,
-      });
-    }
-  }
-
-  return frames;
 }
 
-export default function CaptionPage({ params }: { params: { id: string } }) {
-  const screenshot = getScreenshot(params.id);
+interface Screenshot {
+  id: string;
+  imageUrl: string;
+  timestamp: string;
+  subtitle: string;
+  episode: string;
+  character: string;
+}
 
-  if (!screenshot) {
-    return null;
+const validateId = (id: string): { season: string; timestamp: string } => {
+  const [season, ...timestampParts] = id.split("-");
+  const timestamp = timestampParts.join("-");
+
+  if (!season || !timestamp) {
+    throw new Error(
+      `Invalid URL format for ID '${id}'. Expected 'season-timestamp' (e.g., s01e01-12-34.567)`,
+    );
   }
 
-  return <CaptionEditor screenshot={screenshot} />;
+  if (!/^s\d{2}e\d{2}$/.test(season)) {
+    throw new Error(
+      `Invalid season format '${season}' in URL. Expected format: s01e01 (e.g., s01e01-12-34.567)`,
+    );
+  }
+
+  if (!/^\d{2}-\d{2}\.\d{3}$/.test(timestamp)) {
+    throw new Error(
+      `Invalid timestamp format '${timestamp}' in URL. Expected format: MM-SS.mmm (e.g., 12-34.567)`,
+    );
+  }
+
+  return { season, timestamp };
+};
+
+async function getScreenshot(id: string): Promise<Screenshot> {
+  try {
+    validateId(id);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/frames`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        "Unable to load screenshots. Please check your connection and try again.",
+      );
+    }
+
+    const frames: Screenshot[] = await response.json();
+    const screenshot = frames.find((frame) => frame.id === id);
+
+    if (!screenshot) {
+      throw new Error(
+        `Screenshot not found: ${id}. This frame may have been removed or relocated.`,
+      );
+    }
+
+    return {
+      ...screenshot,
+      episode: screenshot.timestamp.split(" - ")[0],
+      character: "",
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(
+      "An unexpected error occurred while loading the screenshot.",
+    );
+  }
+}
+
+export async function generateStaticParams() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/frames`,
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch frames");
+    }
+    const frames: Screenshot[] = await response.json();
+    return frames.map((frame) => ({
+      id: frame.id,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
+
+export default async function CaptionPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  try {
+    const screenshot = await getScreenshot(params.id);
+    return <CaptionEditor screenshot={screenshot} />;
+  } catch (error) {
+    return (
+      <ErrorMessage
+        message={
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred."
+        }
+      />
+    );
+  }
 }
