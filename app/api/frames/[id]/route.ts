@@ -1,21 +1,23 @@
-import { NextResponse } from "next/server";
 import { getFrameById } from "@/lib/frames.server";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
-) {
+  { params }: { params: Promise<{ id: string }> },
+): Promise<Response> {
   try {
-    const frame = await getFrameById(params.id);
-    return NextResponse.json(frame);
+    const { id } = await params;
+    const frame = await getFrameById(id);
+    return Response.json(frame);
   } catch (error) {
-    return new NextResponse(
-      JSON.stringify({
+    return Response.json(
+      {
         error:
           error instanceof Error
             ? error.message
             : "An unexpected error occurred",
-      }),
+      },
       { status: 400 },
     );
   }

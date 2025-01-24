@@ -1,7 +1,24 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getFrameById } from "@/lib/frames.server";
 import { CaptionEditor } from "./caption-editor";
-import { getFrameById, getFrameIndex } from "@/lib/frames.server";
-import { InvalidFrameIdError } from "@/lib/frames";
+import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
+
+interface CaptionPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export async function generateMetadata({
+  params,
+}: CaptionPageProps): Promise<Metadata> {
+  const frame = await getFrameById(params.id);
+  return {
+    title: `Caption - ${frame.speech}`,
+  };
+}
 
 function ErrorMessage({ message }: { message: string }) {
   return (
@@ -16,43 +33,33 @@ function ErrorMessage({ message }: { message: string }) {
           <li>Return home and select a different frame</li>
         </ul>
       </div>
-      <a href="/" className="text-primary hover:underline">
+      <Link href="/" className="text-primary hover:underline">
         Return to Home
-      </a>
+      </Link>
     </div>
   );
 }
 
-export async function generateStaticParams() {
-  const frames = await getFrameIndex();
-  return frames.map((frame) => ({ id: frame.id }));
-}
-
-export default async function CaptionPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function CaptionPage({ params }: CaptionPageProps) {
+  let frame;
   try {
-    const screenshot = await getFrameById(params.id);
-    return (
-      <>
-        <MainNav />
-        <CaptionEditor screenshot={screenshot} />
-      </>
-    );
+    frame = await getFrameById(params.id);
   } catch (error) {
-    return (
-      <>
-        <MainNav />
-        <ErrorMessage
-          message={
-            error instanceof InvalidFrameIdError
-              ? error.message
-              : "An unexpected error occurred."
-          }
-        />
-      </>
-    );
+    notFound();
   }
+
+  return (
+    <>
+      <MainNav />
+      <div className="container mx-auto px-4 py-8">
+        <Link
+          href="/"
+          className="mb-4 inline-block text-blue-500 hover:underline"
+        >
+          ← Back to search
+        </Link>
+        <CaptionEditor screenshot={frame} />
+      </div>
+    </>
+  );
 }

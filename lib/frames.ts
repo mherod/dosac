@@ -23,7 +23,16 @@ export class InvalidFrameIdError extends Error {
 
 export function formatTimestamp(timestamp: string): string {
   // Extract the start time from "00:03.120 --> 00:04.960"
-  const startTime = timestamp.split("-->")[0].trim();
+  const parts = timestamp.split("-->");
+  if (parts.length === 0) {
+    throw new Error(`Invalid timestamp format: ${timestamp}`);
+  }
+
+  const startTime = parts[0]?.trim();
+  if (!startTime) {
+    throw new Error(`Invalid timestamp format: ${timestamp}`);
+  }
+
   // Convert "00:03.120" to "00-03.120" to match directory format
   return startTime.replace(/:/g, "-");
 }

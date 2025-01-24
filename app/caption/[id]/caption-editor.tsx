@@ -40,7 +40,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     "Comic Sans MS",
   ];
 
-  const getTextShadow = (width: number) => {
+  const getTextShadow = (width: number = 1) => {
     const shadows = [];
     for (let x = -width; x <= width; x++) {
       for (let y = -width; y <= width; y++) {
