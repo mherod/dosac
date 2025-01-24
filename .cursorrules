@@ -35,4 +35,23 @@
 - React 18+
 - TypeScript 5+
 - Tailwind CSS
-- shadcn/ui components 
+- shadcn/ui components
+
+## Subtitle File Structure
+- Two VTT formats maintained:
+  - Base format (s##e##.vtt)
+  - Named format (s##e##-names.vtt)
+- Base format characteristics:
+  - More verbose with ~1800 lines per episode
+  - Splits overlapping dialogue into separate timestamp blocks
+  - Uses additional line breaks for readability
+- Named format characteristics:
+  - More compact with ~1700 lines per episode
+  - Includes speaker labels (e.g., "MALCOLM:", "HUGH:")
+  - Groups related dialogue under single timestamps
+  - Combines overlapping dialogue under speaker labels
+- Both formats must:
+  - Use WebVTT standard formatting
+  - Maintain identical timestamps
+  - Preserve all dialogue content
+  - Start with "WEBVTT" header 
