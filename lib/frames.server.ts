@@ -13,7 +13,7 @@ export function validateFrameId(id: string): ParsedFrameId {
     );
   }
 
-  return { season, timestamp };
+  return { season, episode: season, timestamp };
 }
 
 export async function getFrameById(id: string): Promise<Frame> {
