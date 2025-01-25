@@ -4,6 +4,8 @@ import { FrameCard } from "@/components/frame-card";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PaginationControls } from "@/components/pagination-controls";
+import React from "react";
 
 type Screenshot = {
   id: string;
@@ -20,6 +22,7 @@ interface ScreenshotGridProps {
 }
 
 const ITEMS_PER_PAGE = 36;
+const MAX_DISPLAYED_FRAMES = 800;
 
 export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const searchParams = useSearchParams();
@@ -27,21 +30,34 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const pathname = usePathname();
 
   const currentPage = Number(searchParams.get("page")) || 1;
-  const totalPages = Math.ceil(screenshots.length / ITEMS_PER_PAGE);
+  const totalScreenshots = Math.min(screenshots.length, MAX_DISPLAYED_FRAMES);
+  const totalPages = Math.ceil(totalScreenshots / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalScreenshots);
   const currentScreenshots = screenshots.slice(startIndex, endIndex);
 
-  const setPage = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    if (page === 1) {
-      params.delete("page");
-    } else {
-      params.set("page", page.toString());
-    }
-    router.replace(`${pathname}?${params.toString()}`);
-  };
+  const createQueryString = React.useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (value === "1") {
+        params.delete(name);
+      } else {
+        params.set(name, value);
+      }
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const handlePageChange = React.useCallback(
+    (newPage: number) => {
+      const validPage = Math.min(Math.max(1, newPage), totalPages);
+      const queryString = createQueryString("page", validPage.toString());
+      router.push(`${pathname}?${queryString}`, { scroll: false });
+    },
+    [router, pathname, totalPages, createQueryString],
+  );
 
   return (
     <div className="space-y-4">
@@ -60,18 +76,23 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setPage(Math.max(1, currentPage - 1))}
+            onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="text-sm">
             Page {currentPage} of {totalPages}
+            {screenshots.length > MAX_DISPLAYED_FRAMES && (
+              <span className="ml-1 text-muted-foreground">
+                (showing first {MAX_DISPLAYED_FRAMES})
+              </span>
+            )}
           </span>
           <Button
             variant="outline"
             size="icon"
-            onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+            onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             <ChevronRight className="h-4 w-4" />
