@@ -20,7 +20,13 @@ export function FrameStack({
   fontFamily,
 }: FrameStackProps) {
   return (
-    <div className="flex flex-col h-full">
+    <div
+      className="flex flex-col h-full m-auto min-h-96"
+      style={{
+        aspectRatio: 16 / (9 * frames.length),
+        maxHeight: 900 + "px",
+      }}
+    >
       {frames.map((frame, index) => (
         <div key={frame.id} className="flex-1">
           <CaptionedImage

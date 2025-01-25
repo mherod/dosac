@@ -129,11 +129,11 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
   };
 
   return (
-    <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)] min-h-[600px] overflow-auto">
+    <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)] min-h-fit overflow-visible pb-8 w-fit mx-auto">
       {/* Combined Preview */}
       <div className="space-y-4">
-        <Card className="shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0 min-w-[320px] min-h-[480px]">
-          <div ref={combinedRef} className="h-full">
+        <Card className="shadow-lg transition-shadow hover:shadow-xl h-full p-2 w-fit">
+          <div ref={combinedRef} className="h-full w-fit m-auto min-w-[500px]">
             {frames.length === 4 ? (
               <FrameGrid
                 frames={frames}
@@ -153,22 +153,6 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
             )}
           </div>
         </Card>
-        <div className="flex gap-2">
-          <Button
-            className="flex-1 shadow-sm transition-all hover:shadow-md"
-            onClick={handleDownload}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Download
-          </Button>
-          <Button
-            className="shadow-sm transition-all hover:shadow-md"
-            onClick={handleShare}
-            variant="outline"
-          >
-            <Share2 className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
 
       {/* Controls */}
@@ -259,6 +243,23 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
                 className="py-2"
               />
             </div>
+          </div>
+
+          <div className="flex gap-2 mt-6 pt-4 border-t">
+            <Button
+              className="flex-1 shadow-sm transition-all hover:shadow-md"
+              onClick={handleDownload}
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </Button>
+            <Button
+              className="shadow-sm transition-all hover:shadow-md"
+              onClick={handleShare}
+              variant="outline"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
           </div>
         </Card>
       </div>
