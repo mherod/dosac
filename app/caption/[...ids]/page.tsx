@@ -12,20 +12,22 @@ function assertString(value: unknown): asserts value is string {
   }
 }
 
-type Props = {
-  params: {
-    ids: string[];
-  };
-  searchParams: {
-    compare?: string;
-    [key: string]: string | string[] | undefined;
-  };
+type PageParams = {
+  ids: string[];
+};
+
+type PageSearchParams = {
+  compare?: string;
+  [key: string]: string | string[] | undefined;
 };
 
 export async function generateMetadata({
   params,
   searchParams,
-}: Props): Promise<Metadata> {
+}: {
+  params: PageParams;
+  searchParams: PageSearchParams;
+}): Promise<Metadata> {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
@@ -67,9 +69,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page(props: Props) {
-  const { params, searchParams } = props;
+interface PageProps {
+  params: PageParams;
+  searchParams: PageSearchParams;
+}
 
+const Page = async ({ params, searchParams }: PageProps) => {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
@@ -106,4 +111,6 @@ export default async function Page(props: Props) {
       </div>
     </>
   );
-}
+};
+
+export default Page;
