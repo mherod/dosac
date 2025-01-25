@@ -5,15 +5,15 @@ import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
 
-interface CaptionPageProps {
+type PageProps = {
   params: { ids: string[] };
   searchParams: { [key: string]: string | string[] | undefined };
-}
+};
 
 export async function generateMetadata({
   params,
   searchParams,
-}: CaptionPageProps): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
@@ -52,10 +52,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaptionPage({
-  params,
-  searchParams,
-}: CaptionPageProps) {
+export default async function Page({ params, searchParams }: PageProps) {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
