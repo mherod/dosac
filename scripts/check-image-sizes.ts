@@ -14,7 +14,7 @@ async function main() {
       const width = parseInt(output.match(/pixelWidth: (\d+)/)?.[1] || "0");
       const height = parseInt(output.match(/pixelHeight: (\d+)/)?.[1] || "0");
 
-      if (width > 400) {
+      if (width > 500) {
         console.log(`❌ ${image}: ${width}x${height}`);
       }
     } catch (error) {

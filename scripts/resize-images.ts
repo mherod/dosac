@@ -1,9 +1,8 @@
 import fastGlob from "fast-glob";
 import sharp from "sharp";
-import path from "path";
 import fs from "fs/promises";
 
-const MAX_WIDTH = 400;
+const MAX_WIDTH = 500;
 
 async function resizeImages() {
   // Find all JPEG images in the public directory

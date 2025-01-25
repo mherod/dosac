@@ -130,7 +130,7 @@ importers:
         specifier: ^8.4.35
         version: 8.5.1
       prettier:
-        specifier: ^3.2.5
+        specifier: ^3.4.2
         version: 3.4.2
       prettier-plugin-tailwindcss:
         specifier: ^0.5.12

@@ -34,8 +34,8 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
   const image = await loadImage(imagePath);
 
   // Calculate scale to get width of 400px while maintaining aspect ratio
-  const TARGET_WIDTH = 400;
-  const MAX_HEIGHT = 300; // Add maximum height constraint
+  const TARGET_WIDTH = 500;
+  const MAX_HEIGHT = 390; // Add maximum height constraint
 
   // Only scale down, never up
   const scale = image.width > TARGET_WIDTH ? TARGET_WIDTH / image.width : 1;
@@ -92,7 +92,7 @@ function extractFrame(
   const seconds = timestampToSeconds(timestamp);
   try {
     // Add -vf scale=400:-1 to resize to 400px width while maintaining aspect ratio
-    const command = `ffmpeg -ss ${seconds} -i ${videoPath} -vf scale=400:-1 -vframes 1 -update 1 -y ${outputPath}`;
+    const command = `ffmpeg -ss ${seconds} -i ${videoPath} -vf scale=500:-1 -vframes 1 -update 1 -y ${outputPath}`;
     execSync(command);
     return true;
   } catch (error) {
