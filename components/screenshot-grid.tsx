@@ -86,7 +86,7 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   );
 
   const toggleSelection = React.useCallback(
-    (id: string, e: React.MouseEvent) => {
+    (id: string) => {
       // If using modifier keys or we already have a selection
       safeSetSelectedIds((prev) => {
         const newSet = new Set(prev);
@@ -282,7 +282,7 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
                 onSelect={(e: React.MouseEvent) => {
                   // Only handle selection if using modifier keys
                   if (e.ctrlKey || e.metaKey || e.shiftKey) {
-                    toggleSelection(screenshot.id, e);
+                    toggleSelection(screenshot.id);
                   }
                 }}
                 onDragStart={() => {

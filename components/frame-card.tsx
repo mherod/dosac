@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Clapperboard, Clock, Check } from "lucide-react";
 import { CaptionedImage } from "@/components/captioned-image";
@@ -39,7 +38,6 @@ interface FrameCardProps {
   onSelect?: (e: React.MouseEvent) => void;
   onDragStart?: () => void;
   onDragMove?: () => void;
-  onClick?: () => void;
 }
 
 export function FrameCard({
@@ -49,7 +47,6 @@ export function FrameCard({
   onSelect,
   onDragStart,
   onDragMove,
-  onClick,
 }: FrameCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     // Only handle selection if using modifier keys
