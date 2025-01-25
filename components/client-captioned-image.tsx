@@ -55,7 +55,7 @@ export function ClientCaptionedImage({
             paddingBottom: "4%",
           }}
         >
-          <p
+          <div
             style={{
               fontSize: `${calculatedFontSize}px`,
               color: "#ffffff",
@@ -69,8 +69,10 @@ export function ClientCaptionedImage({
               fontFamily,
             }}
           >
-            {caption}
-          </p>
+            {caption.split("\n").map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
         </div>
       )}
     </div>

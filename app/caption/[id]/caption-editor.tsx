@@ -32,14 +32,17 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const router = useRouter();
 
   // Default values
-  const defaultCaption = screenshot.speech;
   const defaultFontSize = 24;
   const defaultOutlineWidth = 1;
   const defaultFontFamily = "system-ui";
 
-  const [caption, setCaption] = useState(
-    searchParams?.get("caption") ?? defaultCaption,
-  );
+  // Get the text from URL if it exists, otherwise use screenshot speech
+  const urlText = searchParams?.get("text");
+  const initialCaption = urlText
+    ? decodeURIComponent(urlText)
+    : screenshot.speech;
+  const [caption, setCaption] = useState(initialCaption);
+
   const [fontSize, setFontSize] = useState([
     Number(searchParams?.get("fontSize")) || defaultFontSize,
   ]);
@@ -59,13 +62,21 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     "Comic Sans MS",
   ];
 
+  // Update caption when URL text parameter changes
+  useEffect(() => {
+    const urlText = searchParams?.get("text");
+    if (urlText) {
+      setCaption(decodeURIComponent(urlText));
+    } else {
+      setCaption(screenshot.speech);
+    }
+  }, [searchParams, screenshot.speech]);
+
   // Update URL only when values differ from defaults
   useEffect(() => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(window.location.search);
 
-    if (caption !== defaultCaption) {
-      params.set("caption", caption);
-    }
+    // Only update style parameters, not the caption
     if (fontSize.length > 0 && fontSize[0] !== defaultFontSize) {
       const value = fontSize[0]!;
       params.set("fontSize", value.toString());
@@ -78,19 +89,24 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
       params.set("fontFamily", fontFamily);
     }
 
+    // Preserve text and range parameters if they exist
+    const text = searchParams?.get("text");
+    const range = searchParams?.get("range");
+    if (text) params.set("text", text);
+    if (range) params.set("range", range);
+
     const queryString = params.toString();
     const newUrl = queryString ? `?${queryString}` : window.location.pathname;
     router.replace(newUrl, { scroll: false });
   }, [
-    caption,
     fontSize,
     outlineWidth,
     fontFamily,
     router,
-    defaultCaption,
     defaultFontSize,
     defaultOutlineWidth,
     defaultFontFamily,
+    searchParams,
   ]);
 
   const handleShare = () => {
