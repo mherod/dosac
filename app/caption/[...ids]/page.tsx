@@ -26,12 +26,15 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<PageParams>;
-  searchParams: PageSearchParams;
+  searchParams: Promise<PageSearchParams>;
 }): Promise<Metadata> {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
-  const resolvedParams = await params;
+  const [resolvedParams, resolvedSearch] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const id1 = resolvedParams.ids[0];
-  const id2 = resolvedParams.ids[1] || searchParams.compare;
+  const id2 = resolvedParams.ids[1] || resolvedSearch.compare;
 
   if (!id1 || !id2) {
     return {
@@ -72,14 +75,17 @@ export async function generateMetadata({
 
 interface PageProps {
   params: Promise<PageParams>;
-  searchParams: PageSearchParams;
+  searchParams: Promise<PageSearchParams>;
 }
 
 const Page = async ({ params, searchParams }: PageProps) => {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
-  const resolvedParams = await params;
+  const [resolvedParams, resolvedSearch] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const id1 = resolvedParams.ids[0];
-  const id2 = resolvedParams.ids[1] || searchParams.compare;
+  const id2 = resolvedParams.ids[1] || resolvedSearch.compare;
 
   if (!id1 || !id2) {
     notFound();
