@@ -90,7 +90,7 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
         pixelRatio: 2,
       });
 
-      if (!frames.length) {
+      if (!frames.length || !frames[0]) {
         throw new Error("No frames available to download");
       }
 
