@@ -30,7 +30,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const imageRef = useRef<HTMLDivElement>(null);
   const [caption, setCaption] = useState(screenshot.speech);
   const [fontSize, setFontSize] = useState([24]);
-  const [outlineWidth, setOutlineWidth] = useState([2]);
+  const [outlineWidth, setOutlineWidth] = useState([1]);
   const [fontFamily, setFontFamily] = useState("system-ui");
 
   const fonts = [
