@@ -132,7 +132,7 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
     <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)] min-h-fit overflow-visible pb-8 w-fit mx-auto">
       {/* Combined Preview */}
       <div className="space-y-4">
-        <Card className="shadow-lg transition-shadow hover:shadow-xl h-full p-2 w-fit">
+        <Card className="shadow-lg transition-shadow hover:shadow-xl h-fit p-2 w-fit">
           <div ref={combinedRef} className="h-full w-fit m-auto min-w-[500px]">
             {frames.length === 4 ? (
               <FrameGrid
