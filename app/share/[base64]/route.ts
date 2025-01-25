@@ -3,7 +3,11 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { base64: string } },
+  {
+    params,
+  }: { params: { base64: string } } & {
+    searchParams: { [key: string]: string | string[] | undefined };
+  },
 ) {
   try {
     // Decode the base64 URL
