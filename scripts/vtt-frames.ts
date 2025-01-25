@@ -192,36 +192,10 @@ async function processVideoFrames(episodeId: string) {
 
   // Parse VTT file first to check if all frames exist
   const parsedVTT = parseVTTFile(vttPath);
-  console.log(`Checking ${episodeId}: ${parsedVTT.frames.length} frames`);
-
-  // Check if all frames are already processed
-  let allFramesExist = true;
-  for (const frame of parsedVTT.frames) {
-    const timestamp = frame.startTime;
-    const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
-    const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
-    const framePath = path.join(frameDir, "frame.jpg");
-    const speechPath = path.join(frameDir, "speech.txt");
-
-    if (
-      !fs.existsSync(frameBlankPath) ||
-      !fs.existsSync(framePath) ||
-      !fs.existsSync(speechPath)
-    ) {
-      allFramesExist = false;
-      break;
-    }
-  }
-
-  if (allFramesExist) {
-    console.log(`Skipping ${episodeId}: all frames already processed`);
-    return parsedVTT;
-  }
+  console.log(`Processing ${episodeId}: ${parsedVTT.frames.length} frames`);
 
   // Ensure base frames directory exists
   ensureDirectoryExists(framesBasePath);
-
-  console.log(`Processing ${episodeId}: ${parsedVTT.frames.length} frames`);
 
   // Process each frame
   for (const [index, frame] of parsedVTT.frames.entries()) {
@@ -232,6 +206,15 @@ async function processVideoFrames(episodeId: string) {
     const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
     const framePath = path.join(frameDir, "frame.jpg");
     const speechPath = path.join(frameDir, "speech.txt");
+
+    // Skip if all files exist for this frame
+    if (
+      fs.existsSync(frameBlankPath) &&
+      fs.existsSync(framePath) &&
+      fs.existsSync(speechPath)
+    ) {
+      continue;
+    }
 
     // Extract frame if blank version doesn't exist
     if (!fs.existsSync(frameBlankPath)) {
@@ -256,6 +239,9 @@ async function processVideoFrames(episodeId: string) {
       }
     } catch (error) {
       console.error(`Error processing frame at ${timestamp}:`, error);
+      // Clean up any partially created files
+      if (fs.existsSync(framePath)) fs.unlinkSync(framePath);
+      if (fs.existsSync(speechPath)) fs.unlinkSync(speechPath);
       continue;
     }
   }
