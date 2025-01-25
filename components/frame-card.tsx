@@ -44,7 +44,7 @@ export function FrameCard({ screenshot, priority = false }: FrameCardProps) {
           <CaptionedImage
             imageUrl={screenshot.blankImageUrl}
             caption={screenshot.speech}
-            fontSize={16}
+            fontSize={24}
             priority={priority}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
