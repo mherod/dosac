@@ -21,8 +21,6 @@ interface Filters {
 type FilterUpdates = Partial<Filters>;
 type QueryUpdates = Record<string, string | null>;
 
-const MAX_DISPLAYED_FRAMES = 800;
-
 function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();

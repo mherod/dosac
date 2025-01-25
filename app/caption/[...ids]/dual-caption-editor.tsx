@@ -7,10 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import * as htmlToImage from "html-to-image";
-import { CaptionedImage } from "@/components/captioned-image";
 import { Download, Share2, ArrowUpDown } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { FrameGrid } from "@/components/frame-grid";
 import { FrameStack } from "@/components/frame-stack";
 
@@ -91,6 +89,10 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
         quality: 1.0,
         pixelRatio: 2,
       });
+
+      if (!frames.length) {
+        throw new Error("No frames available to download");
+      }
 
       const link = document.createElement("a");
       link.download = `${frames[0].episode}-meme.png`;

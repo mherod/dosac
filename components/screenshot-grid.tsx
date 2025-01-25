@@ -3,8 +3,7 @@
 import { FrameCard } from "@/components/frame-card";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { PaginationControls } from "@/components/pagination-controls";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 
@@ -31,7 +30,6 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartId, setDragStartId] = React.useState<string | null>(null);
-  const [dragEndId, setDragEndId] = React.useState<string | null>(null);
   const gridRef = React.useRef<HTMLDivElement>(null);
 
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -64,54 +62,22 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
     [router, pathname, totalPages, createQueryString],
   );
 
-  // Wrap setSelectedIds to prevent single-frame selection
   const safeSetSelectedIds = React.useCallback(
-    (newSelection: Set<string> | ((prev: Set<string>) => Set<string>)) => {
-      setSelectedIds((prev) => {
-        // Handle function updates
-        const nextSelection =
-          typeof newSelection === "function"
-            ? newSelection(prev)
-            : newSelection;
-
-        // Never allow a single-frame selection
-        if (nextSelection.size === 1) {
-          return new Set();
-        }
-        return nextSelection;
-      });
+    (newIds: Set<string>) => {
+      setSelectedIds(new Set([...newIds]));
     },
-    [],
-  );
-
-  const toggleSelection = React.useCallback(
-    (id: string) => {
-      // If using modifier keys or we already have a selection
-      safeSetSelectedIds((prev) => {
-        const newSet = new Set(prev);
-        if (newSet.has(id)) {
-          newSet.delete(id);
-        } else {
-          newSet.add(id);
-        }
-        return newSet;
-      });
-    },
-    [safeSetSelectedIds],
+    [setSelectedIds],
   );
 
   const handleDragStart = React.useCallback((id: string) => {
     setIsDragging(true);
     setDragStartId(id);
-    setDragEndId(id);
     // Don't set a single frame selection on drag start
   }, []);
 
   const handleDragMove = React.useCallback(
     (id: string) => {
       if (isDragging && dragStartId) {
-        setDragEndId(id);
-
         const startIndex = currentScreenshots.findIndex(
           (s) => s.id === dragStartId,
         );
@@ -137,16 +103,7 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const handleDragEnd = React.useCallback(() => {
     setIsDragging(false);
     setDragStartId(null);
-    setDragEndId(null);
   }, []);
-
-  const selectAll = React.useCallback(() => {
-    safeSetSelectedIds(new Set(currentScreenshots.map((s) => s.id)));
-  }, [currentScreenshots, safeSetSelectedIds]);
-
-  const clearSelection = React.useCallback(() => {
-    safeSetSelectedIds(new Set());
-  }, [safeSetSelectedIds]);
 
   React.useEffect(() => {
     const handleMouseUp = () => {
@@ -156,31 +113,6 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
     window.addEventListener("mouseup", handleMouseUp);
     return () => window.removeEventListener("mouseup", handleMouseUp);
   }, [handleDragEnd]);
-
-  // Get the URL for the current selection
-  const getSelectionUrl = React.useCallback(() => {
-    if (selectedIds.size === 0) return null;
-
-    // Get all selected frames in their original order
-    const selectedFrames = currentScreenshots
-      .filter((s) => selectedIds.has(s.id))
-      .sort((a, b) => {
-        const aIndex = currentScreenshots.findIndex((s) => s.id === a.id);
-        const bIndex = currentScreenshots.findIndex((s) => s.id === b.id);
-        return aIndex - bIndex;
-      });
-
-    if (selectedFrames.length === 0) return null;
-
-    // Get the first and last frames
-    const firstFrame = selectedFrames[0]!;
-    const lastFrame = selectedFrames[selectedFrames.length - 1]!;
-
-    // Combine all selected frames' text
-    const combinedText = selectedFrames.map((s) => s.speech).join("\n");
-
-    return `/caption/${firstFrame.id}?range=${lastFrame.id}&text=${encodeURIComponent(combinedText)}`;
-  }, [selectedIds, currentScreenshots]);
 
   function getScreenshotUrl(id: string) {
     if (selectedIds.size === 0) {
@@ -231,7 +163,7 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
                 onSelect={(e: React.MouseEvent) => {
                   // Only handle selection if using modifier keys
                   if (e.ctrlKey || e.metaKey || e.shiftKey) {
-                    toggleSelection(screenshot.id);
+                    safeSetSelectedIds(new Set([screenshot.id]));
                   }
                 }}
                 onDragStart={() => {
