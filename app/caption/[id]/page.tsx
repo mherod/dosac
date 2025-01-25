@@ -24,7 +24,9 @@ export async function generateMetadata({
   ogImageUrl.searchParams.set("caption", frame.speech);
   ogImageUrl.searchParams.set("episode", frame.episode);
   ogImageUrl.searchParams.set("timestamp", frame.timestamp);
-  ogImageUrl.searchParams.set("imageUrl", `${baseUrl}${frame.blankImageUrl}`);
+  // Ensure the image URL is absolute and publicly accessible
+  const imageUrl = new URL(frame.blankImageUrl, baseUrl).toString();
+  ogImageUrl.searchParams.set("imageUrl", imageUrl);
   ogImageUrl.searchParams.set("fontSize", "24");
   ogImageUrl.searchParams.set("outlineWidth", "1");
   ogImageUrl.searchParams.set("fontFamily", "Arial");
