@@ -39,8 +39,10 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
 
   // State for all frames
   const [captions, setCaptions] = useState(frames.map((frame) => frame.speech));
-  const [fontSize, setFontSize] = useState([defaultFontSize]);
-  const [outlineWidth, setOutlineWidth] = useState([defaultOutlineWidth]);
+  const [fontSize, setFontSize] = useState<number[]>([defaultFontSize]);
+  const [outlineWidth, setOutlineWidth] = useState<number[]>([
+    defaultOutlineWidth,
+  ]);
   const [fontFamily, setFontFamily] = useState(defaultFontFamily);
 
   const fonts = [
@@ -136,16 +138,16 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
               <FrameGrid
                 frames={frames}
                 captions={captions}
-                fontSize={fontSize[0]}
-                outlineWidth={outlineWidth[0]}
+                fontSize={fontSize[0] ?? defaultFontSize}
+                outlineWidth={outlineWidth[0] ?? defaultOutlineWidth}
                 fontFamily={fontFamily}
               />
             ) : (
               <FrameStack
                 frames={frames}
                 captions={captions}
-                fontSize={fontSize[0]}
-                outlineWidth={outlineWidth[0]}
+                fontSize={fontSize[0] ?? defaultFontSize}
+                outlineWidth={outlineWidth[0] ?? defaultOutlineWidth}
                 fontFamily={fontFamily}
               />
             )}
