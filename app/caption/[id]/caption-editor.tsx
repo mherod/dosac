@@ -144,6 +144,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                   fontSize={fontSize[0]}
                   outlineWidth={outlineWidth[0]}
                   fontFamily={fontFamily}
+                  maintainAspectRatio={true}
                 />
               </div>
             </Card>

@@ -125,6 +125,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
                 fontSize={fontSize[0]}
                 outlineWidth={outlineWidth[0]}
                 fontFamily={fontFamily}
+                maintainAspectRatio={false}
               />
             </div>
             <div className="flex-1">
@@ -134,6 +135,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
                 fontSize={fontSize[0]}
                 outlineWidth={outlineWidth[0]}
                 fontFamily={fontFamily}
+                maintainAspectRatio={false}
               />
             </div>
           </div>

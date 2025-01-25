@@ -11,6 +11,7 @@ export interface CaptionedImageProps {
   outlineWidth?: number;
   fontFamily?: string;
   priority?: boolean;
+  maintainAspectRatio?: boolean;
 }
 
 function getTextShadow(width: number = 1) {
@@ -31,6 +32,7 @@ export function ClientCaptionedImage({
   outlineWidth = 1,
   fontFamily = "Arial",
   priority = false,
+  maintainAspectRatio = false,
 }: CaptionedImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
@@ -39,7 +41,10 @@ export function ClientCaptionedImage({
   const calculatedFontSize = width * (fontSize / 500); // fontSize becomes a proportion of image width
 
   return (
-    <div className="relative h-full w-full" ref={containerRef}>
+    <div
+      className={`relative ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
+      ref={containerRef}
+    >
       <Image
         src={imageUrl}
         alt="Screenshot"
