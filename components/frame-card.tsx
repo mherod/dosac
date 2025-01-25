@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Clapperboard, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CaptionedImage } from "@/components/captioned-image";
 
 function formatEpisodeString(episodeId: string): string {
   // Format from "s01e02" to "Series 1 Episode 2"
@@ -34,21 +33,17 @@ type Screenshot = {
 
 interface FrameCardProps {
   screenshot: Screenshot;
-  priority?: boolean;
 }
 
-export function FrameCard({ screenshot, priority = false }: FrameCardProps) {
+export function FrameCard({ screenshot }: FrameCardProps) {
   return (
     <Link href={`/caption/${screenshot.id}`} className="group block">
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5">
-        <div className="relative aspect-video overflow-hidden">
-          <Image
-            src={screenshot.imageUrl}
-            alt={screenshot.timestamp}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            priority={priority}
+        <div className="relative">
+          <CaptionedImage
+            imageUrl={screenshot.blankImageUrl}
+            caption={screenshot.speech}
+            fontSize={16}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
@@ -68,22 +63,6 @@ export function FrameCard({ screenshot, priority = false }: FrameCardProps) {
                 </span>
               </div>
             </div>
-            <figure className="relative">
-              <div className="absolute -left-1 -top-1 text-3xl text-primary/20 font-serif">
-                "
-              </div>
-              <blockquote
-                className={cn(
-                  "pl-4 font-medium text-base/relaxed",
-                  "group-hover:text-primary transition-colors duration-300",
-                )}
-              >
-                <p className="line-clamp-2">{screenshot.speech}</p>
-              </blockquote>
-              <div className="absolute -bottom-3 right-1 text-3xl text-primary/20 font-serif rotate-180">
-                "
-              </div>
-            </figure>
           </div>
         </div>
       </Card>

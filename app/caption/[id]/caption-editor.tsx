@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
-import Image from "next/image";
-import { Download, Share2 } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import * as htmlToImage from "html-to-image";
+import { CaptionedImage } from "@/components/captioned-image";
+import { Download, Share2 } from "lucide-react";
 
 interface Screenshot {
   id: string;
@@ -25,11 +26,12 @@ interface CaptionEditorProps {
 }
 
 export function CaptionEditor({ screenshot }: CaptionEditorProps) {
-  const [caption, setCaption] = useState(screenshot.speech);
-  const [fontSize, setFontSize] = useState([18]);
-  const [outlineWidth, setOutlineWidth] = useState([1]);
-  const [fontFamily, setFontFamily] = useState("Arial");
+  const router = useRouter();
   const imageRef = useRef<HTMLDivElement>(null);
+  const [caption, setCaption] = useState(screenshot.speech);
+  const [fontSize, setFontSize] = useState([24]);
+  const [outlineWidth, setOutlineWidth] = useState([2]);
+  const [fontFamily, setFontFamily] = useState("system-ui");
 
   const fonts = [
     "Arial",
@@ -75,42 +77,14 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
         <div className="grid gap-8 md:grid-cols-2">
           <div className="space-y-6">
             <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
-              <div className="relative aspect-video" ref={imageRef}>
-                <Image
-                  src={screenshot.blankImageUrl}
-                  alt={screenshot.timestamp}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                  priority
+              <div ref={imageRef}>
+                <CaptionedImage
+                  imageUrl={screenshot.blankImageUrl}
+                  caption={caption}
+                  fontSize={fontSize[0]}
+                  outlineWidth={outlineWidth[0]}
+                  fontFamily={fontFamily}
                 />
-                {caption && (
-                  <div
-                    className="absolute bottom-0 left-0 right-0 flex items-center justify-center px-4 pb-8"
-                    style={{
-                      background:
-                        "linear-gradient(transparent, rgba(0, 0, 0, 0.3))",
-                      minHeight: "100px",
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: `${fontSize}px`,
-                        color: "#ffffff",
-                        textShadow: getTextShadow(outlineWidth[0]),
-                        textAlign: "center",
-                        maxWidth: "90%",
-                        margin: "0 auto",
-                        wordWrap: "break-word",
-                        lineHeight: 1.3,
-                        fontWeight: 500,
-                        fontFamily,
-                      }}
-                    >
-                      {caption}
-                    </p>
-                  </div>
-                )}
               </div>
             </Card>
             <Card className="p-4 shadow-md">

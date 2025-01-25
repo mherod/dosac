@@ -18,6 +18,8 @@ interface Filters {
   query: string;
 }
 
+const MAX_DISPLAYED_FRAMES = 800;
+
 function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -63,33 +65,35 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   ]);
 
   const filteredScreenshots = React.useMemo(() => {
-    return screenshots.filter((screenshot) => {
-      try {
-        const { season, episode } = parseEpisodeId(screenshot.episode);
+    return screenshots
+      .filter((screenshot) => {
+        try {
+          const { season, episode } = parseEpisodeId(screenshot.episode);
 
-        // Apply season filter
-        if (filters.season && season !== filters.season) {
+          // Apply season filter
+          if (filters.season && season !== filters.season) {
+            return false;
+          }
+
+          // Apply episode filter
+          if (filters.episode && episode !== filters.episode) {
+            return false;
+          }
+
+          // Apply text search
+          if (debouncedQuery) {
+            return screenshot.speech
+              .toLowerCase()
+              .includes(debouncedQuery.toLowerCase());
+          }
+
+          return true;
+        } catch (error) {
+          console.error("Error parsing episode ID:", error);
           return false;
         }
-
-        // Apply episode filter
-        if (filters.episode && episode !== filters.episode) {
-          return false;
-        }
-
-        // Apply text search
-        if (debouncedQuery) {
-          return screenshot.speech
-            .toLowerCase()
-            .includes(debouncedQuery.toLowerCase());
-        }
-
-        return true;
-      } catch (error) {
-        console.error("Error parsing episode ID:", error);
-        return false;
-      }
-    });
+      })
+      .slice(0, MAX_DISPLAYED_FRAMES);
   }, [screenshots, debouncedQuery, filters.season, filters.episode]);
 
   // Get unique seasons and episodes for the filter dropdowns
