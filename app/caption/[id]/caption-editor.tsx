@@ -66,10 +66,10 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     if (caption !== defaultCaption) {
       params.set("caption", caption);
     }
-    if (fontSize[0] !== defaultFontSize) {
+    if (fontSize.length > 0 && fontSize[0] !== defaultFontSize) {
       params.set("fontSize", fontSize[0].toString());
     }
-    if (outlineWidth[0] !== defaultOutlineWidth) {
+    if (outlineWidth.length > 0 && outlineWidth[0] !== defaultOutlineWidth) {
       params.set("outlineWidth", outlineWidth[0].toString());
     }
     if (fontFamily !== defaultFontFamily) {
