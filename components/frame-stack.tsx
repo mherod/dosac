@@ -1,10 +1,11 @@
 "use client";
 
+import * as React from "react";
 import { CaptionedImage } from "@/components/captioned-image";
-import { type Screenshot } from "@/lib/types";
+import { type Frame } from "@/lib/frames";
 
 interface FrameStackProps {
-  frames: Screenshot[];
+  frames: Frame[];
   captions: string[];
   fontSize: number;
   outlineWidth: number;
