@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import * as React from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -72,10 +73,10 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
+    <div className="p-4">
       <div className="container max-w-5xl">
-        <div className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-4">
             <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
               <div ref={imageRef}>
                 <CaptionedImage
@@ -87,7 +88,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                 />
               </div>
             </Card>
-            <Card className="p-4 shadow-md">
+            <Card className="p-3 shadow-md">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-muted-foreground">
@@ -113,9 +114,9 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
             </Card>
           </div>
 
-          <div className="space-y-6">
-            <Card className="p-6 shadow-md">
-              <div className="space-y-6">
+          <div className="space-y-4">
+            <Card className="p-4 shadow-md">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Caption</label>
                   <Textarea
