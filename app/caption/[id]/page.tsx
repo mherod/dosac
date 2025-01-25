@@ -6,13 +6,14 @@ import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 
 interface CaptionPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: CaptionPageProps): Promise<Metadata> {
-  const frame = await getFrameById(params.id);
+  const { id } = await params;
+  const frame = await getFrameById(id);
 
   // Use environment variables or default to localhost for development
   const baseUrl = process.env.VERCEL_URL
@@ -53,7 +54,8 @@ export async function generateMetadata({
 }
 
 export default async function CaptionPage({ params }: CaptionPageProps) {
-  const frame = await getFrameById(params.id).catch(() => {
+  const { id } = await params;
+  const frame = await getFrameById(id).catch(() => {
     notFound();
   });
 
