@@ -54,6 +54,8 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
     } else {
       params.delete("episode");
     }
+    // Reset page when filters change
+    params.delete("page");
     router.replace(`${pathname}?${params.toString()}`);
   }, [
     debouncedQuery,
@@ -123,7 +125,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 space-y-4">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <select
             value={filters.season || ""}
             onChange={(e) =>
@@ -161,7 +163,9 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               </option>
             ))}
           </select>
+        </div>
 
+        <div>
           <input
             type="search"
             placeholder="Search quotes..."
@@ -169,7 +173,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, query: e.target.value }))
             }
-            className="rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
 
