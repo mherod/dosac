@@ -23,7 +23,6 @@ interface ScreenshotGridProps {
 }
 
 const ITEMS_PER_PAGE = 36;
-const MAX_DISPLAYED_FRAMES = 800;
 
 export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const searchParams = useSearchParams();
@@ -36,7 +35,7 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   const gridRef = React.useRef<HTMLDivElement>(null);
 
   const currentPage = Number(searchParams.get("page")) || 1;
-  const totalScreenshots = Math.min(screenshots.length, MAX_DISPLAYED_FRAMES);
+  const totalScreenshots = screenshots.length;
   const totalPages = Math.ceil(totalScreenshots / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -247,11 +246,6 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
           </Button>
           <span className="text-sm">
             Page {currentPage} of {totalPages}
-            {screenshots.length > MAX_DISPLAYED_FRAMES && (
-              <span className="ml-1 text-muted-foreground">
-                (showing first {MAX_DISPLAYED_FRAMES})
-              </span>
-            )}
           </span>
           <Button
             variant="outline"
