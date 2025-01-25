@@ -4,15 +4,7 @@ import { getFrameById } from "@/lib/frames.server";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
-
-interface PageParams {
-  ids: string[];
-}
-
-interface SearchParams {
-  compare?: string;
-  [key: string]: string | string[] | undefined;
-}
+import { Suspense } from "react";
 
 function assertString(value: unknown): asserts value is string {
   if (typeof value !== "string") {
@@ -20,13 +12,20 @@ function assertString(value: unknown): asserts value is string {
   }
 }
 
+type Props = {
+  params: {
+    ids: string[];
+  };
+  searchParams: {
+    compare?: string;
+    [key: string]: string | string[] | undefined;
+  };
+};
+
 export async function generateMetadata({
   params,
   searchParams,
-}: {
-  params: PageParams;
-  searchParams: SearchParams;
-}): Promise<Metadata> {
+}: Props): Promise<Metadata> {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
@@ -68,13 +67,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
-  params: PageParams;
-  searchParams: SearchParams;
-}) {
+export default async function Page(props: Props) {
+  const { params, searchParams } = props;
+
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
@@ -105,7 +100,9 @@ export default async function Page({
         >
           ← Back to search
         </Link>
-        <DualCaptionEditor frame1={frame1} frame2={frame2} />
+        <Suspense>
+          <DualCaptionEditor frame1={frame1} frame2={frame2} />
+        </Suspense>
       </div>
     </>
   );
