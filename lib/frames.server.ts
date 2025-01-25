@@ -36,7 +36,7 @@ export async function getFrameById(id: string): Promise<Frame> {
 
   return {
     id,
-    imageUrl: `/frames/${season}/${timestamp}/frame.jpg`,
+    imageUrl: `/frames/${season}/${timestamp}/frame-blank.jpg`,
     blankImageUrl: `/frames/${season}/${timestamp}/frame-blank.jpg`,
     timestamp,
     subtitle: speech,

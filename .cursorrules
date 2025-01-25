@@ -61,16 +61,12 @@
 - Each timestamp has its own directory named by timestamp (e.g., "05-31-360" for "05:31.360")
 - Each timestamp directory contains:
   - `frame-blank.jpg` - Original frame without subtitles
-  - `frame.jpg` - Frame with subtitles overlaid
   - `speech.txt` - Plain text of the subtitles
 - Frame characteristics:
   - Extracted using ffmpeg at exact timestamps from VTT
   - JPEG format for all images
-  - Subtitles use white text with black outline
-  - Text positioned at bottom center of frame
 - Processing:
   - Frames are only extracted once and cached
-  - Subtitle overlay is regenerated if needed
   - Speech text is always synchronized with VTT content 
 
 ## Code Review Practices

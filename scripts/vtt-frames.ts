@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
-import { createCanvas, loadImage, registerFont } from "canvas";
 import glob from "fast-glob";
 
 interface VTTFrame {
@@ -28,60 +27,6 @@ function ensureDirectoryExists(dirPath: string) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
-}
-
-async function addSubtitleToFrame(imagePath: string, text: string[]) {
-  const image = await loadImage(imagePath);
-
-  // Calculate scale to get width of 400px while maintaining aspect ratio
-  const TARGET_WIDTH = 500;
-  const MAX_HEIGHT = 390; // Add maximum height constraint
-
-  // Only scale down, never up
-  const scale = image.width > TARGET_WIDTH ? TARGET_WIDTH / image.width : 1;
-
-  // Calculate dimensions
-  const width = Math.round(image.width * scale);
-  const height = Math.round(image.height * scale);
-
-  // Apply max height if needed
-  const finalScale = height > MAX_HEIGHT ? MAX_HEIGHT / height : 1;
-  const finalWidth = Math.round(width * finalScale);
-  const finalHeight = Math.round(height * finalScale);
-
-  const canvas = createCanvas(finalWidth, finalHeight);
-  const ctx = canvas.getContext("2d");
-
-  // Draw the original frame scaled to new dimensions
-  ctx.drawImage(image, 0, 0, finalWidth, finalHeight);
-
-  // Configure text style - scale font size according to image scale
-  const effectiveScale = scale * finalScale;
-  ctx.textAlign = "center";
-  ctx.font = `${Math.max(14, Math.round(28 * effectiveScale))}px Arial`; // Reduced base font size
-  ctx.lineWidth = Math.max(1.5, 2.5 * effectiveScale); // Reduced stroke width
-  ctx.strokeStyle = "#000000";
-  ctx.fillStyle = "#ffffff";
-
-  // Calculate text position (bottom center)
-  const lineHeight = Math.max(18, Math.round(35 * effectiveScale)); // Reduced line height
-  const padding = Math.max(8, Math.round(16 * effectiveScale)); // Reduced padding
-  const startY = canvas.height - (text.length * lineHeight + padding);
-
-  // Draw each line of text
-  text.forEach((line, index) => {
-    const y = startY + index * lineHeight;
-    const x = canvas.width / 2;
-
-    // Draw text stroke (outline)
-    ctx.strokeText(line, x, y);
-    // Draw text fill
-    ctx.fillText(line, x, y);
-  });
-
-  // Save the modified image with higher compression
-  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.6 }); // Increased compression
-  fs.writeFileSync(imagePath, buffer);
 }
 
 function extractFrame(
@@ -212,15 +157,10 @@ async function processVideoFrames(episodeId: string) {
     ensureDirectoryExists(frameDir);
 
     const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
-    const framePath = path.join(frameDir, "frame.jpg");
     const speechPath = path.join(frameDir, "speech.txt");
 
-    // Skip if all files exist for this frame
-    if (
-      fs.existsSync(frameBlankPath) &&
-      fs.existsSync(framePath) &&
-      fs.existsSync(speechPath)
-    ) {
+    // Skip if files exist for this frame
+    if (fs.existsSync(frameBlankPath) && fs.existsSync(speechPath)) {
       continue;
     }
 
@@ -233,12 +173,8 @@ async function processVideoFrames(episodeId: string) {
     }
 
     try {
-      // Copy blank frame to create base for subtitled version
-      fs.copyFileSync(frameBlankPath, framePath);
       // Write speech text to file
       fs.writeFileSync(speechPath, frame.text.join("\n"), "utf8");
-      // Add subtitle text to the copy
-      await addSubtitleToFrame(framePath, frame.text);
 
       // Log progress every 10%
       if (index % Math.ceil(parsedVTT.frames.length / 10) === 0) {
@@ -248,7 +184,6 @@ async function processVideoFrames(episodeId: string) {
     } catch (error) {
       console.error(`Error processing frame at ${timestamp}:`, error);
       // Clean up any partially created files
-      if (fs.existsSync(framePath)) fs.unlinkSync(framePath);
       if (fs.existsSync(speechPath)) fs.unlinkSync(speechPath);
       continue;
     }
