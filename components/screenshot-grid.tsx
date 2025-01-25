@@ -4,6 +4,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 
+function formatEpisodeString(episodeId: string): string {
+  // Format from "s01e02" to "Series 1 Episode 2"
+  const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
+  if (!match || !match[1] || !match[2]) return episodeId;
+
+  return `Series ${parseInt(match[1])} Episode ${parseInt(match[2])}`;
+}
+
+function formatTimestamp(timestamp: string): string {
+  // Format from "00-03.120" to "0:03"
+  const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
+  if (!match || !match[1] || !match[2]) return timestamp;
+
+  const minutes = parseInt(match[1]);
+  const seconds = parseInt(match[2]);
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
 type Screenshot = {
   id: string;
   imageUrl: string;
@@ -11,6 +29,7 @@ type Screenshot = {
   timestamp: string;
   subtitle: string;
   speech: string;
+  episode: string;
 };
 
 interface ScreenshotGridProps {
@@ -34,9 +53,14 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
               />
             </div>
             <div className="p-4">
-              <p className="text-sm text-muted-foreground">
-                {screenshot.timestamp}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-muted-foreground">
+                  {formatEpisodeString(screenshot.episode)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {formatTimestamp(screenshot.timestamp)}
+                </p>
+              </div>
               <p className="font-medium">{screenshot.speech}</p>
             </div>
           </Card>
