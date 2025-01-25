@@ -51,6 +51,13 @@ export async function generateMetadata({
   // Fetch all frames in parallel
   const frames = await Promise.all(allIds.map((id) => getFrameById(id)));
 
+  if (!frames.length || !frames[0]) {
+    return {
+      title: "Create Meme",
+      description: "Create a meme from multiple frames",
+    };
+  }
+
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
