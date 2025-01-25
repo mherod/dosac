@@ -20,10 +20,25 @@ export async function GET(req: NextRequest) {
     const caption = searchParams.get("caption") || "No caption provided";
     const episode = searchParams.get("episode") || "";
     const timestamp = searchParams.get("timestamp") || "";
-    const imageUrl = searchParams.get("imageUrl") || "";
+    const imageUrlString = searchParams.get("imageUrl") || "";
     const fontSize = parseInt(searchParams.get("fontSize") || "24");
     const outlineWidth = parseInt(searchParams.get("outlineWidth") || "1");
     const fontFamily = searchParams.get("fontFamily") || "Arial";
+
+    // Ensure we're using HTTPS and the correct domain
+    const imageUrl = new URL(imageUrlString);
+    imageUrl.protocol = "https";
+    imageUrl.hostname = "dosac.herod.dev";
+
+    // Fetch image
+    const imageResponse = await fetch(imageUrl.toString());
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+    }
+
+    // Convert image to base64
+    const imageBuffer = await imageResponse.arrayBuffer();
+    const base64Image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${Buffer.from(imageBuffer).toString("base64")}`;
 
     return new ImageResponse(
       (
@@ -41,7 +56,7 @@ export async function GET(req: NextRequest) {
         >
           {/* Background Image */}
           <img
-            src={imageUrl}
+            src={base64Image}
             alt={caption}
             style={{
               position: "absolute",
@@ -53,26 +68,43 @@ export async function GET(req: NextRequest) {
             }}
           />
 
-          {/* Caption */}
+          {/* Caption Container */}
           <div
             style={{
               position: "absolute",
-              bottom: "4%",
-              left: "50%",
-              transform: "translateX(-50%)",
-              fontSize: `${fontSize}px`,
-              fontWeight: 500,
-              textAlign: "center",
-              color: "white",
-              textShadow: getTextShadow(outlineWidth),
-              maxWidth: "90%",
-              margin: "0 auto",
-              wordWrap: "break-word",
-              lineHeight: 1.2,
-              fontFamily,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingBottom: "4%",
             }}
           >
-            {caption}
+            {/* Caption Text */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                fontSize: `${fontSize}px`,
+                fontWeight: 500,
+                color: "#ffffff",
+                textShadow: getTextShadow(outlineWidth),
+                textAlign: "center",
+                maxWidth: "90%",
+                margin: "0 auto",
+                wordWrap: "break-word",
+                lineHeight: 1.2,
+                fontFamily,
+              }}
+            >
+              {caption.split("\n").map((line, i) => (
+                <span key={i} style={{ margin: 0 }}>
+                  {line}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Episode and Timestamp */}
@@ -82,15 +114,18 @@ export async function GET(req: NextRequest) {
               top: "20px",
               right: "20px",
               padding: "10px",
-              fontSize: "24px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "4px",
+              fontSize: "16px",
               color: "white",
               textShadow: getTextShadow(1),
               textAlign: "right",
               fontFamily,
             }}
           >
-            <div>{episode}</div>
-            <div>{timestamp}</div>
+            <span>{episode}</span>
+            <span>{timestamp}</span>
           </div>
         </div>
       ),
@@ -101,6 +136,9 @@ export async function GET(req: NextRequest) {
     );
   } catch (e) {
     console.error(e);
-    return new Response("Failed to generate image", { status: 500 });
+    return new Response(
+      `Failed to generate image: ${e instanceof Error ? e.message : "Unknown error"}`,
+      { status: 500 },
+    );
   }
 }
