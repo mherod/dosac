@@ -32,22 +32,31 @@ function ensureDirectoryExists(dirPath: string) {
 
 async function addSubtitleToFrame(imagePath: string, text: string[]) {
   const image = await loadImage(imagePath);
-  const canvas = createCanvas(image.width, image.height);
+
+  // Check if image matches the specific dimensions we want to resize
+  const shouldResize = image.width === 988 && image.height === 556;
+
+  // Calculate new dimensions (maintaining aspect ratio)
+  const scale = shouldResize ? 0.75 : 1; // Reduce to 75% of original size
+  const width = image.width * scale;
+  const height = image.height * scale;
+
+  const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
 
-  // Draw the original frame
-  ctx.drawImage(image, 0, 0);
+  // Draw the original frame scaled to new dimensions
+  ctx.drawImage(image, 0, 0, width, height);
 
-  // Configure text style
+  // Configure text style - scale font size according to image scale
   ctx.textAlign = "center";
-  ctx.font = "32px Arial";
-  ctx.lineWidth = 3;
+  ctx.font = `${32 * scale}px Arial`;
+  ctx.lineWidth = 3 * scale;
   ctx.strokeStyle = "#000000";
   ctx.fillStyle = "#ffffff";
 
   // Calculate text position (bottom center)
-  const lineHeight = 40;
-  const padding = 20;
+  const lineHeight = 40 * scale;
+  const padding = 20 * scale;
   const startY = canvas.height - (text.length * lineHeight + padding);
 
   // Draw each line of text
@@ -61,8 +70,10 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
     ctx.fillText(line, x, y);
   });
 
-  // Save the modified image
-  const buffer = canvas.toBuffer("image/jpeg");
+  // Save the modified image with compression
+  // Quality ranges from 0 to 1, where 1 is highest quality
+  // 0.85 provides a good balance between quality and file size
+  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.85 });
   fs.writeFileSync(imagePath, buffer);
 }
 
@@ -140,16 +151,24 @@ function parseVTTFile(filePath: string): VTTFile {
 }
 
 async function findVideoFiles(): Promise<string[]> {
-  const videos = await glob("public/**/*.mp4");
+  const videos = await glob("public/s[0-9][0-9]e[0-9][0-9].mp4");
   return videos
-    .map((video) => {
-      const match = video.match(/public[/\\]([^/\\]+)\.mp4$/);
+    .map((video: string) => {
+      const match = video.match(/public[/\\](s\d{2}e\d{2})\.mp4$/);
       return match ? match[1] : "";
     })
     .filter(Boolean);
 }
 
 async function processVideoFrames(episodeId: string) {
+  // Validate episode ID format
+  if (!episodeId.match(/^s\d{2}e\d{2}$/)) {
+    console.error(
+      `Invalid episode ID format: ${episodeId}. Expected format: s##e## (e.g., s01e01)`,
+    );
+    return null;
+  }
+
   const vttPath = path.join(process.cwd(), "public", `${episodeId}.vtt`);
   const videoPath = path.join(process.cwd(), "public", `${episodeId}.mp4`);
   const framesBasePath = path.join(
@@ -171,11 +190,37 @@ async function processVideoFrames(episodeId: string) {
     return null;
   }
 
+  // Parse VTT file first to check if all frames exist
+  const parsedVTT = parseVTTFile(vttPath);
+  console.log(`Checking ${episodeId}: ${parsedVTT.frames.length} frames`);
+
+  // Check if all frames are already processed
+  let allFramesExist = true;
+  for (const frame of parsedVTT.frames) {
+    const timestamp = frame.startTime;
+    const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
+    const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
+    const framePath = path.join(frameDir, "frame.jpg");
+    const speechPath = path.join(frameDir, "speech.txt");
+
+    if (
+      !fs.existsSync(frameBlankPath) ||
+      !fs.existsSync(framePath) ||
+      !fs.existsSync(speechPath)
+    ) {
+      allFramesExist = false;
+      break;
+    }
+  }
+
+  if (allFramesExist) {
+    console.log(`Skipping ${episodeId}: all frames already processed`);
+    return parsedVTT;
+  }
+
   // Ensure base frames directory exists
   ensureDirectoryExists(framesBasePath);
 
-  // Parse VTT file
-  const parsedVTT = parseVTTFile(vttPath);
   console.log(`Processing ${episodeId}: ${parsedVTT.frames.length} frames`);
 
   // Process each frame
