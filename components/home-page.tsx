@@ -57,30 +57,31 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
     [searchParams],
   );
 
-  const debouncedQuery = useDebounce(filters.query, 300);
+  const [localQuery, setLocalQuery] = React.useState(filters.query);
+  const debouncedQuery = useDebounce(localQuery, 300);
 
   // Update URL when debounced query changes
   React.useEffect(() => {
-    if (debouncedQuery !== searchParams.get("q")) {
-      const queryString = createQueryString({
-        q: debouncedQuery || null,
-      });
-      router.push(`${pathname}?${queryString}`, { scroll: false });
-    }
-  }, [debouncedQuery, createQueryString, pathname, router, searchParams]);
+    const queryString = createQueryString({
+      q: debouncedQuery || null,
+    });
+    router.push(`${pathname}?${queryString}`, { scroll: false });
+  }, [debouncedQuery, createQueryString, pathname, router]);
 
   // Handle filter changes
   const handleFilterChange = React.useCallback(
     (updates: FilterUpdates) => {
       const queryString = createQueryString({
-        season: updates.season?.toString() ?? null,
-        episode: updates.episode?.toString() ?? null,
-        q: updates.query ?? filters.query ?? null,
+        // Preserve existing values unless they're being updated
+        season:
+          updates.season?.toString() ?? filters.season?.toString() ?? null,
+        episode:
+          updates.episode?.toString() ?? filters.episode?.toString() ?? null,
         page: null, // Reset page when filters change
       });
       router.push(`${pathname}?${queryString}`, { scroll: false });
     },
-    [createQueryString, pathname, router, filters.query],
+    [createQueryString, pathname, router, filters.season, filters.episode],
   );
 
   const filteredScreenshots = React.useMemo(() => {
@@ -90,10 +91,10 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
 
         if (filters.season && season !== filters.season) return false;
         if (filters.episode && episode !== filters.episode) return false;
-        if (debouncedQuery) {
+        if (localQuery) {
           return screenshot.speech
             .toLowerCase()
-            .includes(debouncedQuery.toLowerCase());
+            .includes(localQuery.toLowerCase());
         }
 
         return true;
@@ -102,7 +103,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
         return false;
       }
     });
-  }, [screenshots, debouncedQuery, filters.season, filters.episode]);
+  }, [screenshots, localQuery, filters.season, filters.episode]);
 
   const { seasons, episodes } = React.useMemo(() => {
     const seasonsSet = new Set<number>();
@@ -174,8 +175,8 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
           <input
             type="search"
             placeholder="Search quotes..."
-            value={filters.query}
-            onChange={(e) => handleFilterChange({ query: e.target.value })}
+            value={localQuery}
+            onChange={(e) => setLocalQuery(e.target.value)}
             className="w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
