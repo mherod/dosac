@@ -5,17 +5,29 @@ import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 
-interface CaptionPageProps {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+type PageParams = {
+  id: string;
+};
+
+type PageSearchParams = {
+  text?: string;
+  range?: string;
+  [key: string]: string | string[] | undefined;
+};
 
 export async function generateMetadata({
   params,
   searchParams,
-}: CaptionPageProps): Promise<Metadata> {
-  const frame = await getFrameById(params.id);
-  const text = searchParams.text;
+}: {
+  params: Promise<PageParams>;
+  searchParams: Promise<PageSearchParams>;
+}): Promise<Metadata> {
+  const [resolvedParams, resolvedSearch] = await Promise.all([
+    params,
+    searchParams,
+  ]);
+  const frame = await getFrameById(resolvedParams.id);
+  const text = resolvedSearch.text;
   const caption =
     typeof text === "string" ? decodeURIComponent(text) : frame.speech;
 
@@ -59,16 +71,23 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaptionPage({
-  params,
-  searchParams,
-}: CaptionPageProps) {
-  const frame = await getFrameById(params.id).catch(() => {
+interface PageProps {
+  params: Promise<PageParams>;
+  searchParams: Promise<PageSearchParams>;
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
+  const [resolvedParams, resolvedSearch] = await Promise.all([
+    params,
+    searchParams,
+  ]);
+
+  const frame = await getFrameById(resolvedParams.id).catch(() => {
     notFound();
   });
 
-  const text = searchParams.text;
-  const range = searchParams.range;
+  const text = resolvedSearch.text;
+  const range = resolvedSearch.range;
 
   // If we have a text parameter, create an extended frame with the combined text
   const combinedFrame =
