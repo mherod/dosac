@@ -25,11 +25,7 @@ async function resizeImages() {
         continue;
       }
 
-      // Create a backup of the original file
-      const backupPath = imagePath + ".backup";
-      await fs.copyFile(imagePath, backupPath);
-
-      // Resize the image
+      // Resize the image and overwrite the original
       await image
         .resize(MAX_WIDTH, null, {
           fit: "inside",
@@ -39,11 +35,8 @@ async function resizeImages() {
           quality: 85,
           mozjpeg: true,
         })
-        .toFile(imagePath + ".tmp");
-
-      // Replace the original with the resized version
-      await fs.unlink(imagePath);
-      await fs.rename(imagePath + ".tmp", imagePath);
+        .toBuffer()
+        .then((buffer) => fs.writeFile(imagePath, buffer));
 
       console.log(
         `Resized ${imagePath} from ${metadata.width}px to ${MAX_WIDTH}px`,
