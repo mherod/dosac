@@ -113,29 +113,29 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
   };
 
   return (
-    <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)]">
+    <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)] min-h-[600px] overflow-auto">
       {/* Combined Preview */}
-      <div className="space-y-4 min-h-0">
-        <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0">
-          <div ref={combinedRef} className="h-full flex flex-col">
-            <div className="flex-1">
+      <div className="space-y-4">
+        <Card className="shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0 min-w-[320px] min-h-[480px]">
+          <div ref={combinedRef} className="h-full flex flex-col min-h-[480px]">
+            <div className="flex-1 aspect-video min-h-[240px]">
               <CaptionedImage
                 imageUrl={frame1.blankImageUrl}
                 caption={caption1}
                 fontSize={fontSize[0]}
                 outlineWidth={outlineWidth[0]}
                 fontFamily={fontFamily}
-                maintainAspectRatio={false}
+                maintainAspectRatio={true}
               />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 aspect-video min-h-[240px]">
               <CaptionedImage
                 imageUrl={frame2.blankImageUrl}
                 caption={caption2}
                 fontSize={fontSize[0]}
                 outlineWidth={outlineWidth[0]}
                 fontFamily={fontFamily}
-                maintainAspectRatio={false}
+                maintainAspectRatio={true}
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
       </div>
 
       {/* Controls */}
-      <div className="flex flex-col gap-4 overflow-y-auto">
+      <div className="flex flex-col gap-4">
         <Card className="p-4 shadow-md">
           <div className="space-y-4">
             {/* Top Frame Caption */}
