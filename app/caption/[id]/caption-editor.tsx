@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import * as htmlToImage from "html-to-image";
 import { CaptionedImage } from "@/components/captioned-image";
 import { Download, Share2 } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface Screenshot {
   id: string;
@@ -27,10 +28,27 @@ interface CaptionEditorProps {
 
 export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const imageRef = useRef<HTMLDivElement>(null);
-  const [caption, setCaption] = useState(screenshot.speech);
-  const [fontSize, setFontSize] = useState([24]);
-  const [outlineWidth, setOutlineWidth] = useState([1]);
-  const [fontFamily, setFontFamily] = useState("system-ui");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Default values
+  const defaultCaption = screenshot.speech;
+  const defaultFontSize = 24;
+  const defaultOutlineWidth = 1;
+  const defaultFontFamily = "system-ui";
+
+  const [caption, setCaption] = useState(
+    searchParams?.get("caption") ?? defaultCaption,
+  );
+  const [fontSize, setFontSize] = useState([
+    Number(searchParams?.get("fontSize")) || defaultFontSize,
+  ]);
+  const [outlineWidth, setOutlineWidth] = useState([
+    Number(searchParams?.get("outlineWidth")) || defaultOutlineWidth,
+  ]);
+  const [fontFamily, setFontFamily] = useState(
+    searchParams?.get("fontFamily") ?? defaultFontFamily,
+  );
 
   const fonts = [
     "Arial",
@@ -40,6 +58,42 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     "Times New Roman",
     "Comic Sans MS",
   ];
+
+  // Update URL only when values differ from defaults
+  useEffect(() => {
+    const params = new URLSearchParams();
+
+    if (caption !== defaultCaption) {
+      params.set("caption", caption);
+    }
+    if (fontSize[0] !== defaultFontSize) {
+      params.set("fontSize", fontSize[0].toString());
+    }
+    if (outlineWidth[0] !== defaultOutlineWidth) {
+      params.set("outlineWidth", outlineWidth[0].toString());
+    }
+    if (fontFamily !== defaultFontFamily) {
+      params.set("fontFamily", fontFamily);
+    }
+
+    const queryString = params.toString();
+    const newUrl = queryString ? `?${queryString}` : window.location.pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [
+    caption,
+    fontSize,
+    outlineWidth,
+    fontFamily,
+    router,
+    defaultCaption,
+    defaultFontSize,
+    defaultOutlineWidth,
+    defaultFontFamily,
+  ]);
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+  };
 
   const handleDownload = async () => {
     if (!imageRef.current) return;
@@ -178,6 +232,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                   <Button
                     variant="outline"
                     className="flex-1 shadow-sm transition-all hover:shadow-md"
+                    onClick={handleShare}
                   >
                     <Share2 className="mr-2 h-4 w-4" />
                     Share
