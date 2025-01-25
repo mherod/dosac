@@ -35,26 +35,37 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
 
   // Calculate scale to get width of 400px while maintaining aspect ratio
   const TARGET_WIDTH = 400;
-  const scale = TARGET_WIDTH / image.width;
-  const width = TARGET_WIDTH;
+  const MAX_HEIGHT = 300; // Add maximum height constraint
+
+  // Only scale down, never up
+  const scale = image.width > TARGET_WIDTH ? TARGET_WIDTH / image.width : 1;
+
+  // Calculate dimensions
+  const width = Math.round(image.width * scale);
   const height = Math.round(image.height * scale);
 
-  const canvas = createCanvas(width, height);
+  // Apply max height if needed
+  const finalScale = height > MAX_HEIGHT ? MAX_HEIGHT / height : 1;
+  const finalWidth = Math.round(width * finalScale);
+  const finalHeight = Math.round(height * finalScale);
+
+  const canvas = createCanvas(finalWidth, finalHeight);
   const ctx = canvas.getContext("2d");
 
   // Draw the original frame scaled to new dimensions
-  ctx.drawImage(image, 0, 0, width, height);
+  ctx.drawImage(image, 0, 0, finalWidth, finalHeight);
 
   // Configure text style - scale font size according to image scale
+  const effectiveScale = scale * finalScale;
   ctx.textAlign = "center";
-  ctx.font = `${Math.max(16, Math.round(32 * scale))}px Arial`; // Min font size of 16px
-  ctx.lineWidth = Math.max(2, 3 * scale);
+  ctx.font = `${Math.max(14, Math.round(28 * effectiveScale))}px Arial`; // Reduced base font size
+  ctx.lineWidth = Math.max(1.5, 2.5 * effectiveScale); // Reduced stroke width
   ctx.strokeStyle = "#000000";
   ctx.fillStyle = "#ffffff";
 
   // Calculate text position (bottom center)
-  const lineHeight = Math.max(20, Math.round(40 * scale));
-  const padding = Math.max(10, Math.round(20 * scale));
+  const lineHeight = Math.max(18, Math.round(35 * effectiveScale)); // Reduced line height
+  const padding = Math.max(8, Math.round(16 * effectiveScale)); // Reduced padding
   const startY = canvas.height - (text.length * lineHeight + padding);
 
   // Draw each line of text
@@ -68,9 +79,8 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
     ctx.fillText(line, x, y);
   });
 
-  // Save the modified image with compression
-  // Increase compression to reduce file size further
-  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.8 });
+  // Save the modified image with higher compression
+  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.6 }); // Increased compression
   fs.writeFileSync(imagePath, buffer);
 }
 
@@ -81,7 +91,8 @@ function extractFrame(
 ) {
   const seconds = timestampToSeconds(timestamp);
   try {
-    const command = `ffmpeg -ss ${seconds} -i ${videoPath} -vframes 1 -update 1 -y ${outputPath}`;
+    // Add -vf scale=400:-1 to resize to 400px width while maintaining aspect ratio
+    const command = `ffmpeg -ss ${seconds} -i ${videoPath} -vf scale=400:-1 -vframes 1 -update 1 -y ${outputPath}`;
     execSync(command);
     return true;
   } catch (error) {
@@ -249,23 +260,46 @@ async function processVideoFrames(episodeId: string) {
   return parsedVTT;
 }
 
-async function processAllVideos() {
-  const episodeIds = await findVideoFiles();
-  console.log(
-    `Found ${episodeIds.length} videos to process: ${episodeIds.join(", ")}`,
-  );
+async function main() {
+  // Get episode IDs from command line arguments
+  const requestedEpisodes = process.argv.slice(2);
+
+  // If no specific episodes requested, find all video files
+  const episodeIds =
+    requestedEpisodes.length > 0 ? requestedEpisodes : await findVideoFiles();
+
+  console.log(`Found ${episodeIds.length} episodes to process`);
 
   for (const episodeId of episodeIds) {
-    try {
-      const parsedVTT = await processVideoFrames(episodeId);
-      if (!parsedVTT) {
-        console.log(`Failed to process ${episodeId}`);
-      }
-    } catch (error) {
-      console.error(`Error processing ${episodeId}:`, error);
+    const vttPath = path.join(process.cwd(), "public", `${episodeId}.vtt`);
+    const framesPath = path.join(process.cwd(), "public", "frames", episodeId);
+
+    // Parse VTT file to get expected frame count
+    if (!fs.existsSync(vttPath)) {
+      console.error(`VTT file not found for ${episodeId}, skipping...`);
+      continue;
     }
+
+    const parsedVTT = parseVTTFile(vttPath);
+    const expectedFrameCount = parsedVTT.frames.length;
+
+    // Check if episode is already fully processed
+    if (fs.existsSync(framesPath)) {
+      const existingFrames = fs.readdirSync(framesPath).length;
+      if (existingFrames === expectedFrameCount) {
+        console.log(
+          `${episodeId}: Already processed ${existingFrames} frames, skipping...`,
+        );
+        continue;
+      }
+      console.log(
+        `${episodeId}: Found ${existingFrames}/${expectedFrameCount} frames, continuing processing...`,
+      );
+    }
+
+    await processVideoFrames(episodeId);
   }
 }
 
-// Start processing all videos
-processAllVideos().catch(console.error);
+// Start processing
+main().catch(console.error);
