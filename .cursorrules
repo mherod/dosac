@@ -72,3 +72,13 @@
   - Frames are only extracted once and cached
   - Subtitle overlay is regenerated if needed
   - Speech text is always synchronized with VTT content 
+
+## Code Review Practices
+- Always check both component definition AND usage
+- Review state management in parent components
+- Verify default values in both props and state initialization
+- When fixing UI issues:
+  - Check the entire component chain
+  - Review state management at each level
+  - Don't assume defaults are being used without verification
+- Document findings and learnings for team reference 
