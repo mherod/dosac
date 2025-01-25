@@ -105,7 +105,10 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
       try {
         const { season, episode } = parseEpisodeId(screenshot.episode);
         seasonsSet.add(season);
-        episodesSet.add(episode);
+        // Only add episodes for the selected season, or all episodes if no season selected
+        if (!filters.season || season === filters.season) {
+          episodesSet.add(episode);
+        }
       } catch (error) {
         console.error("Error parsing episode ID:", error);
       }
@@ -115,7 +118,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
       seasons: Array.from(seasonsSet).sort((a, b) => a - b),
       episodes: Array.from(episodesSet).sort((a, b) => a - b),
     };
-  }, [screenshots]);
+  }, [screenshots, filters.season]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -127,6 +130,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               setFilters((prev) => ({
                 ...prev,
                 season: e.target.value ? Number(e.target.value) : undefined,
+                episode: e.target.value ? prev.episode : undefined,
               }))
             }
             className="rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background"
@@ -147,7 +151,8 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
                 episode: e.target.value ? Number(e.target.value) : undefined,
               }))
             }
-            className="rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background"
+            disabled={!filters.season}
+            className="rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="">All Episodes</option>
             {episodes.map((episode) => (
