@@ -3,15 +3,15 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  {
-    params,
-  }: { params: { base64: string } } & {
-    searchParams: { [key: string]: string | string[] | undefined };
-  },
+  { params }: { params: Promise<{ base64: string }> },
 ) {
   try {
+    const resolvedParams = await params;
     // Decode the base64 URL
-    const decodedString = Buffer.from(params.base64, "base64").toString();
+    const decodedString = Buffer.from(
+      resolvedParams.base64,
+      "base64",
+    ).toString();
     const url = new URL(decodedString);
 
     // Security check: Ensure URL is from the same origin

@@ -78,3 +78,19 @@
   - Review state management at each level
   - Don't assume defaults are being used without verification
 - Document findings and learnings for team reference 
+
+## Next.js Route Handlers
+
+1. **Route Parameters**
+   - Route params are always a Promise
+   - Correct type: `{ params: Promise<{ paramName: string }> }`
+   - Must await params before use:
+   ```typescript
+   export async function GET(
+     request: NextRequest,
+     { params }: { params: Promise<{ paramName: string }> }
+   ) {
+     const resolvedParams = await params;
+     // Use resolvedParams.paramName
+   }
+   ``` 
