@@ -11,6 +11,8 @@ import { CaptionedImage } from "@/components/captioned-image";
 import { Download, Share2, ArrowUpDown } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { FrameGrid } from "@/components/frame-grid";
+import { FrameStack } from "@/components/frame-stack";
 
 interface Screenshot {
   id: string;
@@ -33,7 +35,7 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
   const router = useRouter();
 
   // Default values
-  const defaultFontSize = 24;
+  const defaultFontSize = 18;
   const defaultOutlineWidth = 1;
   const defaultFontFamily = "system-ui";
 
@@ -119,31 +121,24 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
       {/* Combined Preview */}
       <div className="space-y-4">
         <Card className="shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0 min-w-[320px] min-h-[480px]">
-          <div
-            ref={combinedRef}
-            className={cn(
-              "h-full min-h-[480px]",
-              frames.length === 4 ? "grid grid-cols-2" : "flex flex-col",
+          <div ref={combinedRef} className="h-full">
+            {frames.length === 4 ? (
+              <FrameGrid
+                frames={frames}
+                captions={captions}
+                fontSize={fontSize[0]}
+                outlineWidth={outlineWidth[0]}
+                fontFamily={fontFamily}
+              />
+            ) : (
+              <FrameStack
+                frames={frames}
+                captions={captions}
+                fontSize={fontSize[0]}
+                outlineWidth={outlineWidth[0]}
+                fontFamily={fontFamily}
+              />
             )}
-          >
-            {frames.map((frame, index) => (
-              <div
-                key={frame.id}
-                className={cn(
-                  "aspect-video min-h-[240px]",
-                  frames.length === 4 ? "" : "flex-1",
-                )}
-              >
-                <CaptionedImage
-                  imageUrl={frame.blankImageUrl}
-                  caption={captions[index]}
-                  fontSize={fontSize[0]}
-                  outlineWidth={outlineWidth[0]}
-                  fontFamily={fontFamily}
-                  maintainAspectRatio={true}
-                />
-              </div>
-            ))}
           </div>
         </Card>
         <div className="flex gap-2">
