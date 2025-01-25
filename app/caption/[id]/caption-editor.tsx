@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,7 +26,6 @@ interface CaptionEditorProps {
 }
 
 export function CaptionEditor({ screenshot }: CaptionEditorProps) {
-  const router = useRouter();
   const imageRef = useRef<HTMLDivElement>(null);
   const [caption, setCaption] = useState(screenshot.speech);
   const [fontSize, setFontSize] = useState([24]);
@@ -42,17 +40,6 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     "Times New Roman",
     "Comic Sans MS",
   ];
-
-  const getTextShadow = (width: number = 1) => {
-    const shadows = [];
-    for (let x = -width; x <= width; x++) {
-      for (let y = -width; y <= width; y++) {
-        if (x === 0 && y === 0) continue;
-        shadows.push(`${x}px ${y}px 0 #000`);
-      }
-    }
-    return shadows.join(", ");
-  };
 
   const handleDownload = async () => {
     if (!imageRef.current) return;
