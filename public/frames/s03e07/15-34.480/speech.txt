@@ -1,3 +1,0 @@
-If you say count up to 20,
-it means count up to and
-include the number 20.

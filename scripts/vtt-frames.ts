@@ -33,13 +33,11 @@ function ensureDirectoryExists(dirPath: string) {
 async function addSubtitleToFrame(imagePath: string, text: string[]) {
   const image = await loadImage(imagePath);
 
-  // Check if image matches the specific dimensions we want to resize
-  const shouldResize = image.width === 988 && image.height === 556;
-
-  // Calculate new dimensions (maintaining aspect ratio)
-  const scale = shouldResize ? 0.75 : 1; // Reduce to 75% of original size
-  const width = image.width * scale;
-  const height = image.height * scale;
+  // Calculate scale to get width of 400px while maintaining aspect ratio
+  const TARGET_WIDTH = 400;
+  const scale = TARGET_WIDTH / image.width;
+  const width = TARGET_WIDTH;
+  const height = Math.round(image.height * scale);
 
   const canvas = createCanvas(width, height);
   const ctx = canvas.getContext("2d");
@@ -49,14 +47,14 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
 
   // Configure text style - scale font size according to image scale
   ctx.textAlign = "center";
-  ctx.font = `${32 * scale}px Arial`;
-  ctx.lineWidth = 3 * scale;
+  ctx.font = `${Math.max(16, Math.round(32 * scale))}px Arial`; // Min font size of 16px
+  ctx.lineWidth = Math.max(2, 3 * scale);
   ctx.strokeStyle = "#000000";
   ctx.fillStyle = "#ffffff";
 
   // Calculate text position (bottom center)
-  const lineHeight = 40 * scale;
-  const padding = 20 * scale;
+  const lineHeight = Math.max(20, Math.round(40 * scale));
+  const padding = Math.max(10, Math.round(20 * scale));
   const startY = canvas.height - (text.length * lineHeight + padding);
 
   // Draw each line of text
@@ -71,9 +69,8 @@ async function addSubtitleToFrame(imagePath: string, text: string[]) {
   });
 
   // Save the modified image with compression
-  // Quality ranges from 0 to 1, where 1 is highest quality
-  // 0.85 provides a good balance between quality and file size
-  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.85 });
+  // Increase compression to reduce file size further
+  const buffer = canvas.toBuffer("image/jpeg", { quality: 0.8 });
   fs.writeFileSync(imagePath, buffer);
 }
 

@@ -1,3 +1,0 @@
-'First, estimates of fatalities
-from yesterday's train disaster in
-Bangalore have risen overnight...'
