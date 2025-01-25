@@ -115,12 +115,13 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
       index1 >= 0 &&
       index1 < newCaptions.length &&
       index2 >= 0 &&
-      index2 < newCaptions.length
+      index2 < newCaptions.length &&
+      typeof newCaptions[index1] === "string" &&
+      typeof newCaptions[index2] === "string"
     ) {
-      [newCaptions[index1], newCaptions[index2]] = [
-        newCaptions[index2],
-        newCaptions[index1],
-      ];
+      const temp = newCaptions[index1];
+      newCaptions[index1] = newCaptions[index2];
+      newCaptions[index2] = temp;
       setCaptions(newCaptions);
     }
   };
