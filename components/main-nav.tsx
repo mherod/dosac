@@ -70,7 +70,7 @@ export function MainNav() {
               </div>
               <div className="text-xs text-[#6f777b]">
                 <span>Welcome back, </span>
-                <span className="font-medium text-white">Malcolm T.</span>
+                <span className="font-medium text-white">Terri C</span>
               </div>
               <ModeToggle />
             </div>
