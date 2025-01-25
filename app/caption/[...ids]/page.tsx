@@ -28,45 +28,45 @@ export async function generateMetadata({
   params: Promise<PageParams>;
   searchParams: Promise<PageSearchParams>;
 }): Promise<Metadata> {
-  // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
   ]);
-  const id1 = resolvedParams.ids[0];
-  const id2 = resolvedParams.ids[1] || resolvedSearch.compare;
 
-  if (!id1 || !id2) {
+  // Get all IDs from both path and query params
+  const pathIds = resolvedParams.ids;
+  const compareIds = resolvedSearch.compare?.split(",") || [];
+  const allIds = [...pathIds, ...compareIds].slice(0, 4); // Limit to 4 frames
+
+  if (allIds.length < 2) {
     return {
       title: "Invalid Meme Format",
-      description: "Please provide two frame IDs to create a meme",
+      description: "Please provide at least two frame IDs to create a meme",
     };
   }
 
-  assertString(id1);
-  assertString(id2);
+  // Validate all IDs are strings
+  allIds.forEach(assertString);
 
-  const [frame1, frame2] = await Promise.all([
-    getFrameById(id1),
-    getFrameById(id2),
-  ]);
+  // Fetch all frames in parallel
+  const frames = await Promise.all(allIds.map((id) => getFrameById(id)));
 
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   return {
-    title: `Create Meme - ${frame1.episode}`,
-    description: `Creating a meme from ${frame1.episode} using frames at ${frame1.timestamp} and ${frame2.timestamp}`,
+    title: `Create Meme - ${frames[0].episode}`,
+    description: `Creating a meme from ${frames[0].episode} using ${frames.length} frames`,
     openGraph: {
-      title: `Create Meme - ${frame1.episode}`,
-      description: `Two-panel meme from ${frame1.episode}`,
+      title: `Create Meme - ${frames[0].episode}`,
+      description: `${frames.length}-panel meme from ${frames[0].episode}`,
       images: [
         {
-          url: new URL(frame1.blankImageUrl, baseUrl).toString(),
+          url: new URL(frames[0].blankImageUrl, baseUrl).toString(),
           width: 1200,
           height: 630,
-          alt: frame1.speech,
+          alt: frames[0].speech,
         },
       ],
     },
@@ -79,29 +79,31 @@ interface PageProps {
 }
 
 const Page = async ({ params, searchParams }: PageProps) => {
-  // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
   ]);
-  const id1 = resolvedParams.ids[0];
-  const id2 = resolvedParams.ids[1] || resolvedSearch.compare;
 
-  if (!id1 || !id2) {
+  // Get all IDs from both path and query params
+  const pathIds = resolvedParams.ids;
+  const compareIds = resolvedSearch.compare?.split(",") || [];
+  const allIds = [...pathIds, ...compareIds].slice(0, 4); // Limit to 4 frames
+
+  if (allIds.length < 2) {
     notFound();
   }
 
-  assertString(id1);
-  assertString(id2);
+  // Validate all IDs are strings
+  allIds.forEach(assertString);
 
-  const [frame1, frame2] = await Promise.all([
-    getFrameById(id1).catch(() => {
-      notFound();
-    }),
-    getFrameById(id2).catch(() => {
-      notFound();
-    }),
-  ]);
+  // Fetch all frames in parallel
+  const frames = await Promise.all(
+    allIds.map((id) =>
+      getFrameById(id).catch(() => {
+        notFound();
+      }),
+    ),
+  );
 
   return (
     <>
@@ -114,7 +116,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
           ← Back to search
         </Link>
         <Suspense>
-          <DualCaptionEditor frame1={frame1} frame2={frame2} />
+          <DualCaptionEditor frames={frames} />
         </Suspense>
       </div>
     </>

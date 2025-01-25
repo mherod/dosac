@@ -195,12 +195,24 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
         return aIndex - bIndex;
       });
 
-    const combinedText = selectedFrames.map((s) => s.speech).join("\n");
+    // Add the clicked frame if it's not already selected
+    if (!selectedIds.has(id)) {
+      selectedFrames.push(currentScreenshots.find((s) => s.id === id)!);
+    }
 
-    const firstId = selectedFrames[0]!.id;
-    const lastId = selectedFrames[selectedFrames.length - 1]!.id;
+    // Limit to 4 frames total
+    const frames = selectedFrames.slice(0, 4);
+    const combinedText = frames.map((s) => s.speech).join("\n");
 
-    return `/caption/${firstId}/${id}?text=${encodeURIComponent(combinedText)}`;
+    // Use path for first two IDs and compare query param for additional IDs
+    const [first, second, ...rest] = frames.map((f) => f.id);
+    const basePath = second ? `${first}/${second}` : first;
+    const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
+    const textParam = combinedText
+      ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
+      : "";
+
+    return `/caption/${basePath}${compareIds}${textParam}`;
   }
 
   return (

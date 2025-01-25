@@ -10,6 +10,7 @@ import * as htmlToImage from "html-to-image";
 import { CaptionedImage } from "@/components/captioned-image";
 import { Download, Share2, ArrowUpDown } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface Screenshot {
   id: string;
@@ -22,12 +23,11 @@ interface Screenshot {
   character: string;
 }
 
-interface DualCaptionEditorProps {
-  frame1: Screenshot;
-  frame2: Screenshot;
+interface MultiCaptionEditorProps {
+  frames: Screenshot[];
 }
 
-export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
+export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
   const combinedRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -37,9 +37,8 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
   const defaultOutlineWidth = 1;
   const defaultFontFamily = "system-ui";
 
-  // State for both frames
-  const [caption1, setCaption1] = useState(frame1.speech);
-  const [caption2, setCaption2] = useState(frame2.speech);
+  // State for all frames
+  const [captions, setCaptions] = useState(frames.map((frame) => frame.speech));
   const [fontSize, setFontSize] = useState([defaultFontSize]);
   const [outlineWidth, setOutlineWidth] = useState([defaultOutlineWidth]);
   const [fontFamily, setFontFamily] = useState(defaultFontFamily);
@@ -73,12 +72,6 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
       params.delete("fontFamily");
     }
 
-    // Preserve the compare parameter if it exists
-    const compareId = searchParams.get("compare");
-    if (compareId) {
-      params.set("compare", compareId);
-    }
-
     const queryString = params.toString();
     const newUrl = queryString ? `?${queryString}` : window.location.pathname;
     router.replace(newUrl, { scroll: false });
@@ -98,7 +91,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
       });
 
       const link = document.createElement("a");
-      link.download = `${frame1.episode}-meme.png`;
+      link.download = `${frames[0].episode}-meme.png`;
       link.href = dataUrl;
       link.click();
     } catch (error) {
@@ -106,10 +99,19 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
     }
   };
 
-  const handleSwapFrames = () => {
-    const tempCaption = caption1;
-    setCaption1(caption2);
-    setCaption2(tempCaption);
+  const handleCaptionChange = (index: number, value: string) => {
+    const newCaptions = [...captions];
+    newCaptions[index] = value;
+    setCaptions(newCaptions);
+  };
+
+  const handleSwapFrames = (index1: number, index2: number) => {
+    const newCaptions = [...captions];
+    [newCaptions[index1], newCaptions[index2]] = [
+      newCaptions[index2],
+      newCaptions[index1],
+    ];
+    setCaptions(newCaptions);
   };
 
   return (
@@ -117,27 +119,31 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
       {/* Combined Preview */}
       <div className="space-y-4">
         <Card className="shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0 min-w-[320px] min-h-[480px]">
-          <div ref={combinedRef} className="h-full flex flex-col min-h-[480px]">
-            <div className="flex-1 aspect-video min-h-[240px]">
-              <CaptionedImage
-                imageUrl={frame1.blankImageUrl}
-                caption={caption1}
-                fontSize={fontSize[0]}
-                outlineWidth={outlineWidth[0]}
-                fontFamily={fontFamily}
-                maintainAspectRatio={true}
-              />
-            </div>
-            <div className="flex-1 aspect-video min-h-[240px]">
-              <CaptionedImage
-                imageUrl={frame2.blankImageUrl}
-                caption={caption2}
-                fontSize={fontSize[0]}
-                outlineWidth={outlineWidth[0]}
-                fontFamily={fontFamily}
-                maintainAspectRatio={true}
-              />
-            </div>
+          <div
+            ref={combinedRef}
+            className={cn(
+              "h-full min-h-[480px]",
+              frames.length === 4 ? "grid grid-cols-2" : "flex flex-col",
+            )}
+          >
+            {frames.map((frame, index) => (
+              <div
+                key={frame.id}
+                className={cn(
+                  "aspect-video min-h-[240px]",
+                  frames.length === 4 ? "" : "flex-1",
+                )}
+              >
+                <CaptionedImage
+                  imageUrl={frame.blankImageUrl}
+                  caption={captions[index]}
+                  fontSize={fontSize[0]}
+                  outlineWidth={outlineWidth[0]}
+                  fontFamily={fontFamily}
+                  maintainAspectRatio={true}
+                />
+              </div>
+            ))}
           </div>
         </Card>
         <div className="flex gap-2">
@@ -162,38 +168,41 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
       <div className="flex flex-col gap-4">
         <Card className="p-4 shadow-md">
           <div className="space-y-4">
-            {/* Top Frame Caption */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Top Frame Caption</label>
-              <Textarea
-                value={caption1}
-                onChange={(e) => setCaption1(e.target.value)}
-                placeholder="Enter caption for top frame..."
-                className="min-h-[80px] resize-none transition-colors focus:border-primary"
-              />
-            </div>
+            {frames.map((frame, index) => (
+              <div key={frame.id} className="space-y-2">
+                <label className="text-sm font-medium">
+                  Frame {index + 1} Caption
+                </label>
+                <Textarea
+                  value={captions[index]}
+                  onChange={(e) => handleCaptionChange(index, e.target.value)}
+                  placeholder={`Enter caption for frame ${index + 1}...`}
+                  className="min-h-[80px] resize-none transition-colors focus:border-primary"
+                />
+              </div>
+            ))}
 
-            {/* Bottom Frame Caption */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Bottom Frame Caption
-              </label>
-              <Textarea
-                value={caption2}
-                onChange={(e) => setCaption2(e.target.value)}
-                placeholder="Enter caption for bottom frame..."
-                className="min-h-[80px] resize-none transition-colors focus:border-primary"
-              />
-            </div>
-
-            <Button
-              className="w-full shadow-sm transition-all hover:shadow-md"
-              onClick={handleSwapFrames}
-              variant="outline"
-            >
-              <ArrowUpDown className="mr-2 h-4 w-4" />
-              Swap Frames
-            </Button>
+            {frames.length > 1 && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Swap Frames</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {frames.map(
+                    (_, index) =>
+                      index < frames.length - 1 && (
+                        <Button
+                          key={`swap-${index}`}
+                          className="w-full shadow-sm transition-all hover:shadow-md"
+                          onClick={() => handleSwapFrames(index, index + 1)}
+                          variant="outline"
+                        >
+                          <ArrowUpDown className="mr-2 h-4 w-4" />
+                          Swap {index + 1} & {index + 2}
+                        </Button>
+                      ),
+                  )}
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="text-sm font-medium">Font Family</label>
