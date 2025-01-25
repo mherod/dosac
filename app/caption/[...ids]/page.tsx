@@ -5,25 +5,41 @@ import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
 
-type Props = {
-  params: { ids: string[] };
-  searchParams?: { [key: string]: string | string[] | undefined };
-};
+interface PageParams {
+  ids: string[];
+}
+
+interface SearchParams {
+  compare?: string;
+  [key: string]: string | string[] | undefined;
+}
+
+function assertString(value: unknown): asserts value is string {
+  if (typeof value !== "string") {
+    throw new Error("Expected string");
+  }
+}
 
 export async function generateMetadata({
   params,
-  searchParams = {},
-}: Props): Promise<Metadata> {
+  searchParams,
+}: {
+  params: PageParams;
+  searchParams: SearchParams;
+}): Promise<Metadata> {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
 
-  if (!id2 || typeof id2 !== "string") {
+  if (!id1 || !id2) {
     return {
       title: "Invalid Meme Format",
       description: "Please provide two frame IDs to create a meme",
     };
   }
+
+  assertString(id1);
+  assertString(id2);
 
   const [frame1, frame2] = await Promise.all([
     getFrameById(id1),
@@ -52,14 +68,23 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params, searchParams = {} }: Props) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: PageParams;
+  searchParams: SearchParams;
+}) {
   // Handle both /[id1]/[id2] and /[id]/compare?compare=[id2] formats
   const id1 = params.ids[0];
   const id2 = params.ids[1] || searchParams.compare;
 
-  if (!id2 || typeof id2 !== "string") {
+  if (!id1 || !id2) {
     notFound();
   }
+
+  assertString(id1);
+  assertString(id2);
 
   const [frame1, frame2] = await Promise.all([
     getFrameById(id1).catch(() => {
