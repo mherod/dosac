@@ -58,24 +58,42 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = "https://dosac.herod.dev";
+
+  const title = `${frames[0].episode} - ${frames.length}-Panel Meme`;
+  const description = `Create a ${frames.length}-panel meme from ${frames[0].episode} with frames from ${frames
+    .map((f) => f.timestamp)
+    .join(", ")}`;
+
+  // Construct OG image URL
+  const ogImageUrl = new URL("/api/og", baseUrl);
+  ogImageUrl.searchParams.set("caption", frames[0].speech);
+  ogImageUrl.searchParams.set("episode", frames[0].episode);
+  ogImageUrl.searchParams.set("timestamp", frames[0].timestamp);
+  ogImageUrl.searchParams.set("imageUrl", frames[0].blankImageUrl);
 
   return {
-    title: `Create Meme - ${frames[0].episode}`,
-    description: `Creating a meme from ${frames[0].episode} using ${frames.length} frames`,
+    title,
+    description,
     openGraph: {
-      title: `Create Meme - ${frames[0].episode}`,
-      description: `${frames.length}-panel meme from ${frames[0].episode}`,
+      title,
+      description,
       images: [
         {
-          url: new URL(frames[0].blankImageUrl, baseUrl).toString(),
+          url: ogImageUrl.toString(),
           width: 1200,
           height: 630,
-          alt: frames[0].speech,
+          alt: `First frame from ${frames[0].episode} at ${frames[0].timestamp} - ${frames[0].speech}`,
         },
       ],
+      type: "website",
+      siteName: "Thick of It Quotes",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImageUrl.toString()],
     },
   };
 }

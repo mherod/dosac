@@ -110,7 +110,10 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   ]);
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const currentUrl = window.location.href;
+    const base64Url = Buffer.from(currentUrl).toString("base64");
+    const shareUrl = `${window.location.origin}/share/${base64Url}`;
+    navigator.clipboard.writeText(shareUrl);
   };
 
   const handleDownload = async () => {

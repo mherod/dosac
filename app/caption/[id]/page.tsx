@@ -31,11 +31,7 @@ export async function generateMetadata({
   const caption =
     typeof text === "string" ? decodeURIComponent(text) : frame.speech;
 
-  // Use environment variables or default to localhost for development
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
+  const baseUrl = "https://docs.dosac.herod.dev/";
   const ogImageUrl = new URL(`${baseUrl}/api/og`);
   ogImageUrl.searchParams.set("caption", caption);
   ogImageUrl.searchParams.set("episode", frame.episode);
