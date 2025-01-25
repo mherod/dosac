@@ -33,9 +33,10 @@ type Screenshot = {
 
 interface FrameCardProps {
   screenshot: Screenshot;
+  priority?: boolean;
 }
 
-export function FrameCard({ screenshot }: FrameCardProps) {
+export function FrameCard({ screenshot, priority = false }: FrameCardProps) {
   return (
     <Link href={`/caption/${screenshot.id}`} className="group block">
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5">
@@ -44,6 +45,7 @@ export function FrameCard({ screenshot }: FrameCardProps) {
             imageUrl={screenshot.blankImageUrl}
             caption={screenshot.speech}
             fontSize={16}
+            priority={priority}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
