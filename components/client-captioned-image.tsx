@@ -39,7 +39,7 @@ export function ClientCaptionedImage({
   const calculatedFontSize = width * (fontSize / 500); // fontSize becomes a proportion of image width
 
   return (
-    <div className="relative aspect-video" ref={containerRef}>
+    <div className="relative h-full w-full" ref={containerRef}>
       <Image
         src={imageUrl}
         alt="Screenshot"

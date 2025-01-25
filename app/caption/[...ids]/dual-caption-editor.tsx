@@ -116,9 +116,9 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
     <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px] h-[calc(100vh-12rem)]">
       {/* Combined Preview */}
       <div className="space-y-4 min-h-0">
-        <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)]">
-          <div ref={combinedRef} className="h-full">
-            <div className="h-1/2">
+        <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl h-[calc(100%-4rem)] p-0">
+          <div ref={combinedRef} className="h-full flex flex-col">
+            <div className="flex-1">
               <CaptionedImage
                 imageUrl={frame1.blankImageUrl}
                 caption={caption1}
@@ -127,7 +127,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
                 fontFamily={fontFamily}
               />
             </div>
-            <div className="h-1/2">
+            <div className="flex-1">
               <CaptionedImage
                 imageUrl={frame2.blankImageUrl}
                 caption={caption2}
@@ -144,7 +144,7 @@ export function DualCaptionEditor({ frame1, frame2 }: DualCaptionEditorProps) {
             onClick={handleDownload}
           >
             <Download className="mr-2 h-4 w-4" />
-            Download Meme
+            Download
           </Button>
           <Button
             className="shadow-sm transition-all hover:shadow-md"

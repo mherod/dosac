@@ -158,27 +158,6 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
     return () => window.removeEventListener("mouseup", handleMouseUp);
   }, [handleDragEnd]);
 
-  const isFrameInDragSelection = React.useCallback(
-    (id: string) => {
-      if (!isDragging || !dragStartId || !dragEndId) return false;
-
-      const startIndex = currentScreenshots.findIndex(
-        (s) => s.id === dragStartId,
-      );
-      const endIndex = currentScreenshots.findIndex((s) => s.id === dragEndId);
-      const currentIndex = currentScreenshots.findIndex((s) => s.id === id);
-
-      if (startIndex === -1 || endIndex === -1 || currentIndex === -1)
-        return false;
-
-      const start = Math.min(startIndex, endIndex);
-      const end = Math.max(startIndex, endIndex);
-
-      return currentIndex >= start && currentIndex <= end;
-    },
-    [isDragging, dragStartId, dragEndId, currentScreenshots],
-  );
-
   // Get the URL for the current selection
   const getSelectionUrl = React.useCallback(() => {
     if (selectedIds.size === 0) return null;
@@ -204,77 +183,36 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
     return `/caption/${firstFrame.id}?range=${lastFrame.id}&text=${encodeURIComponent(combinedText)}`;
   }, [selectedIds, currentScreenshots]);
 
+  function getScreenshotUrl(id: string) {
+    if (selectedIds.size === 0) {
+      return `/caption/${id}`;
+    }
+
+    const selectedFrames = currentScreenshots
+      .filter((s) => selectedIds.has(s.id))
+      .sort((a, b) => {
+        const aIndex = currentScreenshots.findIndex((s) => s.id === a.id);
+        const bIndex = currentScreenshots.findIndex((s) => s.id === b.id);
+        return aIndex - bIndex;
+      });
+
+    const combinedText = selectedFrames.map((s) => s.speech).join("\n");
+
+    const firstId = selectedFrames[0]!.id;
+    const lastId = selectedFrames[selectedFrames.length - 1]!.id;
+
+    return `/caption/${firstId}/${id}?text=${encodeURIComponent(combinedText)}`;
+  }
+
   return (
     <div className="space-y-4">
-      {selectedIds.size > 0 && (
-        <div className="flex flex-col space-y-2 rounded-lg border bg-card p-4 text-card-foreground shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">
-                {selectedIds.size} selected in sequence
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearSelection}
-                className="h-8 px-2"
-              >
-                <X className="mr-2 h-4 w-4" />
-                Clear
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={selectAll}
-                className="h-8"
-              >
-                Select All on Page
-              </Button>
-            </div>
-          </div>
-          {selectedIds.size > 0 && (
-            <>
-              <div className="text-sm text-muted-foreground">
-                {currentScreenshots
-                  .filter((s) => selectedIds.has(s.id))
-                  .sort((a, b) => {
-                    const aIndex = currentScreenshots.findIndex(
-                      (s) => s.id === a.id,
-                    );
-                    const bIndex = currentScreenshots.findIndex(
-                      (s) => s.id === b.id,
-                    );
-                    return aIndex - bIndex;
-                  })
-                  .map((s) => s.speech)
-                  .join("\n")}
-              </div>
-              <Link
-                href={getSelectionUrl() || ""}
-                className="mt-2 text-sm text-blue-500 hover:underline"
-              >
-                Open combined caption
-              </Link>
-            </>
-          )}
-        </div>
-      )}
-
       <div
         ref={gridRef}
         className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {currentScreenshots.map((screenshot, index) => (
           <div key={screenshot.id}>
-            <Link
-              href={
-                selectedIds.size > 0
-                  ? getSelectionUrl() || `/caption/${screenshot.id}`
-                  : `/caption/${screenshot.id}`
-              }
-            >
+            <Link href={getScreenshotUrl(screenshot.id)}>
               <FrameCard
                 screenshot={screenshot}
                 priority={index < 6}
