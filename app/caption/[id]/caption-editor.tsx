@@ -67,10 +67,12 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
       params.set("caption", caption);
     }
     if (fontSize.length > 0 && fontSize[0] !== defaultFontSize) {
-      params.set("fontSize", fontSize[0].toString());
+      const value = fontSize[0]!;
+      params.set("fontSize", value.toString());
     }
     if (outlineWidth.length > 0 && outlineWidth[0] !== defaultOutlineWidth) {
-      params.set("outlineWidth", outlineWidth[0].toString());
+      const value = outlineWidth[0]!;
+      params.set("outlineWidth", value.toString());
     }
     if (fontFamily !== defaultFontFamily) {
       params.set("fontFamily", fontFamily);
