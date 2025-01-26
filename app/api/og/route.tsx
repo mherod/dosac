@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     const imageBuffer = await imageResponse.arrayBuffer();
     const base64Image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${Buffer.from(imageBuffer).toString("base64")}`;
 
-    return new ImageResponse(
+    const response = new ImageResponse(
       (
         <div
           style={{
@@ -123,13 +123,24 @@ export async function GET(req: NextRequest) {
       {
         width: 1200,
         height: 630,
+        headers: {
+          "content-type": "image/png",
+          "cache-control": "public, immutable, no-transform, max-age=31536000",
+        },
       },
     );
+
+    return response;
   } catch (e) {
     console.error(e);
     return new Response(
       `Failed to generate image: ${e instanceof Error ? e.message : "Unknown error"}`,
-      { status: 500 },
+      {
+        status: 500,
+        headers: {
+          "content-type": "text/plain",
+        },
+      },
     );
   }
 }
