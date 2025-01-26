@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getFrameById } from "@/lib/frames.server";
+import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
@@ -31,40 +32,7 @@ export async function generateMetadata({
   const caption =
     typeof text === "string" ? decodeURIComponent(text) : frame.speech;
 
-  const baseUrl = "https://dosac.herod.dev";
-  const ogImageUrl = new URL("api/og", baseUrl);
-  ogImageUrl.searchParams.set("caption", caption);
-  ogImageUrl.searchParams.set("episode", frame.episode);
-  ogImageUrl.searchParams.set("timestamp", frame.timestamp);
-  // Ensure the image URL is absolute and publicly accessible
-  const imageUrl = new URL(frame.blankImageUrl, baseUrl).toString();
-  ogImageUrl.searchParams.set("imageUrl", imageUrl);
-  ogImageUrl.searchParams.set("fontSize", "24");
-  ogImageUrl.searchParams.set("outlineWidth", "1");
-  ogImageUrl.searchParams.set("fontFamily", "Arial");
-
-  return {
-    title: `Caption - ${caption}`,
-    description: `${frame.episode} - ${frame.timestamp} - ${caption}`,
-    openGraph: {
-      title: `${frame.episode} - ${frame.timestamp}`,
-      description: caption,
-      images: [
-        {
-          url: ogImageUrl.toString(),
-          width: 1200,
-          height: 630,
-          alt: caption,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${frame.episode} - ${frame.timestamp}`,
-      description: caption,
-      images: [ogImageUrl.toString()],
-    },
-  };
+  return generateSingleFrameMetadata(frame, caption);
 }
 
 interface PageProps {

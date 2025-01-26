@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getFrameById } from "@/lib/frames.server";
+import { generateMultiFrameMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
@@ -51,51 +52,7 @@ export async function generateMetadata({
   // Fetch all frames in parallel
   const frames = await Promise.all(allIds.map((id) => getFrameById(id)));
 
-  if (!frames.length || !frames[0]) {
-    return {
-      title: "Create Meme",
-      description: "Create a meme from multiple frames",
-    };
-  }
-
-  const baseUrl = "https://dosac.herod.dev";
-
-  const title = `${frames[0].episode} - ${frames.length}-Panel Meme`;
-  const description = `Create a ${frames.length}-panel meme from ${frames[0].episode} with frames from ${frames
-    .map((f) => f.timestamp)
-    .join(", ")}`;
-
-  // Construct OG image URL
-  const ogImageUrl = new URL("api/og", baseUrl);
-  ogImageUrl.searchParams.set("caption", frames[0].speech);
-  ogImageUrl.searchParams.set("episode", frames[0].episode);
-  ogImageUrl.searchParams.set("timestamp", frames[0].timestamp);
-  ogImageUrl.searchParams.set("imageUrl", frames[0].blankImageUrl);
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: [
-        {
-          url: ogImageUrl.toString(),
-          width: 1200,
-          height: 630,
-          alt: `First frame from ${frames[0].episode} at ${frames[0].timestamp} - ${frames[0].speech}`,
-        },
-      ],
-      type: "website",
-      siteName: "Thick of It Quotes",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [ogImageUrl.toString()],
-    },
-  };
+  return generateMultiFrameMetadata(frames);
 }
 
 interface PageProps {
