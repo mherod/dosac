@@ -31,8 +31,8 @@ export async function generateMetadata({
   const caption =
     typeof text === "string" ? decodeURIComponent(text) : frame.speech;
 
-  const baseUrl = "https://docs.dosac.herod.dev/";
-  const ogImageUrl = new URL(`${baseUrl}/api/og`);
+  const baseUrl = "https://dosac.herod.dev";
+  const ogImageUrl = new URL("api/og", baseUrl);
   ogImageUrl.searchParams.set("caption", caption);
   ogImageUrl.searchParams.set("episode", frame.episode);
   ogImageUrl.searchParams.set("timestamp", frame.timestamp);

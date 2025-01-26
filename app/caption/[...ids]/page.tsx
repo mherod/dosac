@@ -66,7 +66,7 @@ export async function generateMetadata({
     .join(", ")}`;
 
   // Construct OG image URL
-  const ogImageUrl = new URL("/api/og", baseUrl);
+  const ogImageUrl = new URL("api/og", baseUrl);
   ogImageUrl.searchParams.set("caption", frames[0].speech);
   ogImageUrl.searchParams.set("episode", frames[0].episode);
   ogImageUrl.searchParams.set("timestamp", frames[0].timestamp);
