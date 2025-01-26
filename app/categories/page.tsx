@@ -3,6 +3,7 @@ import { MainNav } from "@/components/main-nav";
 import { FileText } from "lucide-react";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Categories | DoSAC Digital Archive",
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
 export default function CategoriesPage() {
   return (
     <>
-      <MainNav />
+      <Suspense>
+        <MainNav />
+      </Suspense>
       <main className="flex-1 bg-[#f3f2f1]">
         <div className="bg-[#1d70b8] text-white py-6">
           <div className="container">
