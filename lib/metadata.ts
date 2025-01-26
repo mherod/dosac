@@ -18,6 +18,7 @@ interface OpenGraphMetadata {
     type?: string;
     siteName?: string;
     url?: string;
+    locale?: string;
   };
   twitter: {
     card: "summary_large_image";
@@ -80,6 +81,7 @@ export function generateSingleFrameMetadata(
       url: pageUrl,
       type: "website",
       siteName: "Thick of It Quotes",
+      locale: "en_GB",
       images: [
         {
           url: imageUrlString,
@@ -110,6 +112,7 @@ export function generateMultiFrameMetadata(frames: Frame[]): OpenGraphMetadata {
         url: new URL("caption", BASE_URL).toString(),
         type: "website",
         siteName: "Thick of It Quotes",
+        locale: "en_GB",
         images: [],
       },
       twitter: {
@@ -148,6 +151,7 @@ export function generateMultiFrameMetadata(frames: Frame[]): OpenGraphMetadata {
       url: pageUrl,
       type: "website",
       siteName: "Thick of It Quotes",
+      locale: "en_GB",
       images: [
         {
           url: imageUrlString,
