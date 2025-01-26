@@ -33,8 +33,9 @@ function extractFrame(
   videoPath: string,
   timestamp: string,
   outputPath: string,
+  offsetSeconds: number = 0,
 ) {
-  const seconds = timestampToSeconds(timestamp);
+  const seconds = timestampToSeconds(timestamp) + offsetSeconds;
   try {
     // Add -vf scale=400:-1 to resize to 400px width while maintaining aspect ratio
     const command = `ffmpeg -ss ${seconds} -i ${videoPath} -vf scale=500:-1 -vframes 1 -update 1 -y ${outputPath}`;
@@ -157,35 +158,54 @@ async function processVideoFrames(episodeId: string) {
     ensureDirectoryExists(frameDir);
 
     const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
+    const frameBlank2Path = path.join(frameDir, "frame-blank2.jpg");
     const speechPath = path.join(frameDir, "speech.txt");
 
-    // Skip if files exist for this frame
-    if (fs.existsSync(frameBlankPath) && fs.existsSync(speechPath)) {
+    // Skip if speech file exists and both frames exist
+    if (
+      fs.existsSync(frameBlankPath) &&
+      fs.existsSync(frameBlank2Path) &&
+      fs.existsSync(speechPath)
+    ) {
       continue;
     }
 
-    // Extract frame if blank version doesn't exist
+    // Extract first frame only if it doesn't exist
     if (!fs.existsSync(frameBlankPath)) {
+      console.log(`Extracting first frame at ${timestamp}`);
       if (!extractFrame(videoPath, timestamp, frameBlankPath)) {
-        console.error(`Failed to extract frame at ${timestamp}, skipping...`);
+        console.error(
+          `Failed to extract first frame at ${timestamp}, skipping...`,
+        );
         continue;
       }
     }
 
-    try {
-      // Write speech text to file
-      fs.writeFileSync(speechPath, frame.text.join("\n"), "utf8");
-
-      // Log progress every 10%
-      if (index % Math.ceil(parsedVTT.frames.length / 10) === 0) {
-        const progress = Math.round((index / parsedVTT.frames.length) * 100);
-        console.log(`${episodeId}: ${progress}% complete`);
+    // Extract second frame only if it doesn't exist
+    if (!fs.existsSync(frameBlank2Path)) {
+      console.log(`Extracting second frame at ${timestamp}+1s`);
+      if (!extractFrame(videoPath, timestamp, frameBlank2Path, 1)) {
+        console.error(
+          `Failed to extract second frame at ${timestamp}+1s, skipping...`,
+        );
+        continue;
       }
-    } catch (error) {
-      console.error(`Error processing frame at ${timestamp}:`, error);
-      // Clean up any partially created files
-      if (fs.existsSync(speechPath)) fs.unlinkSync(speechPath);
-      continue;
+    }
+
+    // Write speech text file if it doesn't exist
+    if (!fs.existsSync(speechPath)) {
+      try {
+        fs.writeFileSync(speechPath, frame.text.join("\n"), "utf8");
+      } catch (error) {
+        console.error(`Error writing speech file at ${timestamp}:`, error);
+        continue;
+      }
+    }
+
+    // Log progress every 10%
+    if (index % Math.ceil(parsedVTT.frames.length / 10) === 0) {
+      const progress = Math.round((index / parsedVTT.frames.length) * 100);
+      console.log(`${episodeId}: ${progress}% complete`);
     }
   }
 

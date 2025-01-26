@@ -14,7 +14,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 interface Screenshot {
   id: string;
   imageUrl: string;
+  image2Url: string;
   blankImageUrl: string;
+  blankImage2Url: string;
   timestamp: string;
   subtitle: string;
   speech: string;
@@ -156,7 +158,8 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
             <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
               <div ref={imageRef}>
                 <CaptionedImage
-                  imageUrl={screenshot.blankImageUrl}
+                  imageUrl={screenshot.imageUrl}
+                  image2Url={screenshot.image2Url}
                   caption={caption}
                   fontSize={fontSize[0]}
                   outlineWidth={outlineWidth[0]}

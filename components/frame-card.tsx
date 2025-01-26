@@ -24,7 +24,9 @@ function formatTimestamp(timestamp: string): string {
 type Screenshot = {
   id: string;
   imageUrl: string;
+  image2Url: string;
   blankImageUrl: string;
+  blankImage2Url: string;
   timestamp: string;
   subtitle: string;
   speech: string;
@@ -92,7 +94,8 @@ export function FrameCard({
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5">
         <div className="relative">
           <CaptionedImage
-            imageUrl={screenshot.blankImageUrl}
+            imageUrl={screenshot.imageUrl}
+            image2Url={screenshot.image2Url}
             caption={screenshot.speech}
             priority={priority}
             maintainAspectRatio={true}

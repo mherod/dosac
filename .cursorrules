@@ -60,14 +60,18 @@
 - Located in `/public/frames/{episodeId}/`
 - Each timestamp has its own directory named by timestamp (e.g., "05-31-360" for "05:31.360")
 - Each timestamp directory contains:
-  - `frame-blank.jpg` - Original frame without subtitles
+  - `frame-blank.jpg` - Original frame at exact timestamp
+  - `frame-blank2.jpg` - Frame captured 1 second after timestamp
   - `speech.txt` - Plain text of the subtitles
 - Frame characteristics:
   - Extracted using ffmpeg at exact timestamps from VTT
+  - Second frame captured exactly 1 second after first frame
+  - Both frames use identical scaling (500px width)
   - JPEG format for all images
 - Processing:
   - Frames are only extracted once and cached
-  - Speech text is always synchronized with VTT content 
+  - Both frames must exist for a timestamp to be considered complete
+  - Speech text is always synchronized with VTT content
 
 ## Code Review Practices
 - Always check both component definition AND usage

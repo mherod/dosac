@@ -1,17 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
 
 export interface CaptionedImageProps {
   imageUrl: string;
+  image2Url?: string; // Changed from blankImage2Url
   caption?: string;
   fontSize?: number;
   outlineWidth?: number;
   fontFamily?: string;
   priority?: boolean;
   maintainAspectRatio?: boolean;
+  autoToggle?: boolean;
 }
 
 function getTextShadow(width: number = 1) {
@@ -27,31 +29,62 @@ function getTextShadow(width: number = 1) {
 
 export function ClientCaptionedImage({
   imageUrl,
+  image2Url,
   caption,
   fontSize = 18,
   outlineWidth = 1,
   fontFamily = "Arial",
   priority = false,
   maintainAspectRatio = false,
+  autoToggle = false,
 }: CaptionedImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
+  const [showSecondFrame, setShowSecondFrame] = useState(false);
+
+  // Auto toggle effect
+  useEffect(() => {
+    if (!autoToggle || !image2Url) return;
+
+    const interval = setInterval(() => {
+      setShowSecondFrame((prev) => !prev);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [autoToggle, image2Url]);
 
   // Calculate font size based on container width
-  const calculatedFontSize = width * (fontSize / 500); // fontSize becomes a proportion of image width
+  const calculatedFontSize = width * (fontSize / 500);
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent text selection
+    console.log("Double click detected", { image2Url, showSecondFrame });
+    if (image2Url) {
+      setShowSecondFrame((prev) => !prev);
+    }
+  };
+
+  // Ensure we have a valid image URL
+  const currentImageUrl = showSecondFrame && image2Url ? image2Url : imageUrl;
+  if (!currentImageUrl) {
+    return null;
+  }
 
   return (
     <div
-      className={`min-h-12 relative ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
+      className={`min-h-12 relative select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
       ref={containerRef}
+      onDoubleClick={handleDoubleClick}
+      style={{ cursor: image2Url ? "pointer" : "default" }}
     >
       <Image
-        src={imageUrl}
+        src={currentImageUrl}
         alt="Screenshot"
         fill
-        className="object-cover"
+        className="object-cover pointer-events-none"
         sizes="(max-width: 1200px) 100vw, 1200px"
         priority={priority}
+        unoptimized
       />
       {caption && (
         <div

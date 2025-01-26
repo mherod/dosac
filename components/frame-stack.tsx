@@ -30,7 +30,8 @@ export function FrameStack({
       {frames.map((frame, index) => (
         <div key={frame.id} className="flex-1">
           <CaptionedImage
-            imageUrl={frame.blankImageUrl}
+            imageUrl={frame.imageUrl}
+            image2Url={frame.image2Url}
             caption={captions[index]}
             fontSize={fontSize}
             outlineWidth={outlineWidth}

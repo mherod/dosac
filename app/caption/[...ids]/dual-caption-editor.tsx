@@ -15,7 +15,9 @@ import { FrameStack } from "@/components/frame-stack";
 interface Screenshot {
   id: string;
   imageUrl: string;
+  image2Url: string;
   blankImageUrl: string;
+  blankImage2Url: string;
   timestamp: string;
   subtitle: string;
   speech: string;
