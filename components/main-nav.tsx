@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Building2, AlertCircle, Bell, HelpCircle, Lock } from "lucide-react";
@@ -12,6 +14,7 @@ import {
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
 import React from "react";
+import { CATEGORIES } from "@/lib/categories";
 
 interface Filters {
   season?: number;
@@ -248,14 +251,17 @@ export function MainNav() {
                 href="/"
                 className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
               >
-                Dashboard
+                Ministerial Database
               </Link>
-              <Link
-                href="/meme"
-                className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
-              >
-                Asset Creation
-              </Link>
+              {CATEGORIES.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/categories/${category.id}`}
+                  className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+                >
+                  {category.title}
+                </Link>
+              ))}
             </div>
             <div className="text-xs text-white/60">
               Last updated: {new Date().toLocaleDateString("en-GB")} | System
