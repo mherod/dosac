@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
 import { type Screenshot } from "@/lib/types";
+import { useSpeculationRules } from "@/lib/speculation-rules";
 
 interface ScreenshotGridProps {
   screenshots: Screenshot[];
@@ -34,6 +35,27 @@ export function ScreenshotGrid({
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalScreenshots);
   const currentScreenshots = screenshots.slice(startIndex, endIndex);
+
+  // Get all possible URLs for current page
+  const allPossibleUrls = React.useMemo(() => {
+    const urls = currentScreenshots.map((screenshot) =>
+      getScreenshotUrl(screenshot.id),
+    );
+    if (rankedMoments) {
+      urls.push(
+        ...rankedMoments.map((screenshot) => getScreenshotUrl(screenshot.id)),
+      );
+    }
+    return urls;
+  }, [currentScreenshots, rankedMoments]);
+
+  // Use our speculation rules hook
+  useSpeculationRules(allPossibleUrls, {
+    behavior: "prerender",
+    score: 0.5,
+    requires: ["hover"],
+    eagerness: "moderate",
+  });
 
   const createQueryString = React.useCallback(
     (name: string, value: string) => {
@@ -149,7 +171,11 @@ export function ScreenshotGrid({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rankedMoments.map((screenshot, index) => (
               <div key={screenshot.id} className="relative">
-                <Link href={getScreenshotUrl(screenshot.id)} prefetch={true}>
+                <Link
+                  href={getScreenshotUrl(screenshot.id)}
+                  prefetch={true}
+                  rel="prerender"
+                >
                   <FrameCard
                     screenshot={screenshot}
                     priority={true}
@@ -180,7 +206,11 @@ export function ScreenshotGrid({
         >
           {currentScreenshots.map((screenshot, index) => (
             <div key={screenshot.id}>
-              <Link href={getScreenshotUrl(screenshot.id)} prefetch={true}>
+              <Link
+                href={getScreenshotUrl(screenshot.id)}
+                prefetch={true}
+                rel="prerender"
+              >
                 <FrameCard
                   screenshot={screenshot}
                   priority={index < 6}
