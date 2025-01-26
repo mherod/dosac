@@ -107,12 +107,9 @@ export function MainNav() {
         </div>
         <div className="flex h-12 items-center justify-between px-8 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
-            <UKFlag className="h-6 w-12" />
+            <UKFlag className="h-4 w-8" />
             <div className="flex flex-col">
-              <span className="text-sm font-bold">Civil Service Digital</span>
-              <span className="text-xs text-[#6f777b]">
-                Whitehall Internal Network
-              </span>
+              <span className="text-md font-bold">Civil Service Digital</span>
             </div>
           </div>
         </div>
@@ -141,9 +138,6 @@ export function MainNav() {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <span className="text-sm font-medium text-[#6f777b]">
-                  Digital Quote Archival & Retrieval System
-                </span>
               </div>
             </div>
 
