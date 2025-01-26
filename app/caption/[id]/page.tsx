@@ -6,6 +6,7 @@ import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+import type { Screenshot } from "@/lib/types";
 
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
@@ -99,7 +100,10 @@ export default async function Page({ params, searchParams }: PageProps) {
 
         <div className="flex flex-row items-center justify-center gap-4 max-h-18">
           <ScreenshotGrid
-            screenshots={[previousFrame, frame, nextFrame].filter((f) => !!f)}
+            screenshots={[previousFrame, frame, nextFrame].filter(
+              (f): f is Screenshot =>
+                !!f && typeof f.id === "string" && typeof f.speech === "string",
+            )}
           />
         </div>
         <CaptionEditor screenshot={combinedFrame} />

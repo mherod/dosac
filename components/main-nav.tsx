@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Building2, AlertCircle, Bell, HelpCircle, Lock } from "lucide-react";
+import { Building2, Bell, HelpCircle, Lock } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UKFlag } from "@/components/icons/uk-flag";
 import {
