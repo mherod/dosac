@@ -5,8 +5,14 @@ import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
-import { CaptionedImage } from "@/components/captioned-image";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+
+export async function generateStaticParams() {
+  const frames = await getFrameIndex();
+  return frames.map((frame) => ({
+    id: frame.id,
+  }));
+}
 
 type PageParams = {
   id: string;
