@@ -8,8 +8,80 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useDebounce } from "@/hooks/use-debounce";
+import React from "react";
+
+interface Filters {
+  season?: number;
+  episode?: number;
+  query: string;
+}
+
+type FilterUpdates = Partial<Filters>;
+type QueryUpdates = Record<string, string | null>;
 
 export function MainNav() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const createQueryString = React.useCallback(
+    (updates: QueryUpdates) => {
+      const params = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null) {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      });
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  // Read filters from URL
+  const filters = React.useMemo(
+    (): Filters => ({
+      season: searchParams.get("season")
+        ? Number(searchParams.get("season"))
+        : undefined,
+      episode: searchParams.get("episode")
+        ? Number(searchParams.get("episode"))
+        : undefined,
+      query: searchParams.get("q") ?? "",
+    }),
+    [searchParams],
+  );
+
+  const [localQuery, setLocalQuery] = React.useState(filters.query);
+  const debouncedQuery = useDebounce(localQuery, 300);
+
+  // Update URL when debounced query changes
+  React.useEffect(() => {
+    const queryString = createQueryString({
+      q: debouncedQuery || null,
+    });
+    router.push(`${pathname}?${queryString}`, { scroll: false });
+  }, [debouncedQuery, createQueryString, pathname, router]);
+
+  // Handle filter changes
+  const handleFilterChange = React.useCallback(
+    (updates: FilterUpdates) => {
+      const queryString = createQueryString({
+        // Preserve existing values unless they're being updated
+        season:
+          updates.season?.toString() ?? filters.season?.toString() ?? null,
+        episode:
+          updates.episode?.toString() ?? filters.episode?.toString() ?? null,
+        page: null, // Reset page when filters change
+      });
+      router.push(`${pathname}?${queryString}`, { scroll: false });
+    },
+    [createQueryString, pathname, router, filters.season, filters.episode],
+  );
+
   return (
     <header className="bg-[#0b0c0c] text-white">
       <div className="mx-auto">
@@ -63,6 +135,70 @@ export function MainNav() {
             </div>
 
             <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <select
+                  value={filters.season ?? ""}
+                  onChange={(e) => {
+                    const newSeason = e.target.value
+                      ? parseInt(e.target.value, 10)
+                      : undefined;
+                    handleFilterChange({
+                      season: newSeason,
+                      episode: newSeason ? filters.episode : undefined,
+                    });
+                  }}
+                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white hover:bg-[#ffffff11] focus:outline-none focus:ring-2 focus:ring-[#1d70b8]"
+                >
+                  <option value="" className="bg-[#0b0c0c]">
+                    All Series
+                  </option>
+                  {[1, 2, 3, 4].map((season) => (
+                    <option
+                      key={season}
+                      value={season}
+                      className="bg-[#0b0c0c]"
+                    >
+                      Series {season}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={filters.episode ?? ""}
+                  onChange={(e) => {
+                    handleFilterChange({
+                      episode: e.target.value
+                        ? Number(e.target.value)
+                        : undefined,
+                    });
+                  }}
+                  disabled={!filters.season}
+                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white hover:bg-[#ffffff11] focus:outline-none focus:ring-2 focus:ring-[#1d70b8] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="" className="bg-[#0b0c0c]">
+                    All Episodes
+                  </option>
+                  {filters.season &&
+                    [1, 2, 3].map((episode) => (
+                      <option
+                        key={episode}
+                        value={episode}
+                        className="bg-[#0b0c0c]"
+                      >
+                        Episode {episode}
+                      </option>
+                    ))}
+                </select>
+
+                <input
+                  type="search"
+                  placeholder="Search quotes..."
+                  value={localQuery}
+                  onChange={(e) => setLocalQuery(e.target.value)}
+                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white placeholder:text-[#ffffff66] w-64 focus:outline-none focus:ring-2 focus:ring-[#1d70b8]"
+                />
+              </div>
+
               <div className="rounded-md border border-white/20 bg-[#1d70b8] px-2 py-1">
                 <span className="text-xs font-bold uppercase tracking-wide text-white">
                   Beta
