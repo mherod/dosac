@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
-
+import Image from "next/image";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -44,7 +44,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">{children}</div>
+          <div className="relative flex min-h-screen flex-col">
+            {children}
+            <Image
+              src="/dosac.png"
+              alt="DoSAC"
+              className="mx-auto p-4"
+              width={130}
+              height={50}
+            />
+          </div>
         </ThemeProvider>
         <Analytics />
       </body>
