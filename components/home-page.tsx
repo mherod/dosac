@@ -23,9 +23,20 @@ interface MatchedMoment {
 
 interface HomePageProps {
   screenshots: Frame[];
+  initialSearchParams?: {
+    season?: string;
+    episode?: string;
+    q?: string;
+  };
 }
 
-function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
+function SearchWrapper({
+  screenshots,
+  initialSearchParams,
+}: {
+  screenshots: Frame[];
+  initialSearchParams?: HomePageProps["initialSearchParams"];
+}) {
   const searchParams = useSearchParams();
   const [rankedMoments, setRankedMoments] = React.useState<Frame[]>([]);
 
@@ -43,15 +54,17 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
       });
   }, []);
 
-  // Get current filters from URL
+  // Get current filters from URL or initial props
   const filters = {
-    season: searchParams.get("season")
-      ? Number(searchParams.get("season"))
-      : undefined,
-    episode: searchParams.get("episode")
-      ? Number(searchParams.get("episode"))
-      : undefined,
-    query: searchParams.get("q") ?? "",
+    season:
+      (searchParams.get("season") ?? initialSearchParams?.season)
+        ? Number(searchParams.get("season") ?? initialSearchParams?.season)
+        : undefined,
+    episode:
+      (searchParams.get("episode") ?? initialSearchParams?.episode)
+        ? Number(searchParams.get("episode") ?? initialSearchParams?.episode)
+        : undefined,
+    query: searchParams.get("q") ?? initialSearchParams?.q ?? "",
   };
 
   // Filter screenshots based on URL parameters
@@ -109,14 +122,17 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   );
 }
 
-export function HomePage({ screenshots }: HomePageProps) {
+export function HomePage({ screenshots, initialSearchParams }: HomePageProps) {
   return (
     <>
       <Suspense>
         <MainNav />
       </Suspense>
       <Suspense>
-        <SearchWrapper screenshots={screenshots} />
+        <SearchWrapper
+          screenshots={screenshots}
+          initialSearchParams={initialSearchParams}
+        />
       </Suspense>
     </>
   );
