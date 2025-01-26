@@ -19,12 +19,16 @@ interface OpenGraphMetadata {
     siteName?: string;
     url?: string;
     locale?: string;
+    logo?: string;
   };
   twitter: {
     card: "summary_large_image";
     title: string;
     description: string;
     images: string[];
+  };
+  other?: {
+    "og:logo"?: string;
   };
 }
 

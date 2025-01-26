@@ -25,6 +25,7 @@ export const metadata: Metadata = {
   other: {
     "og:locale": "en_GB",
     "og:site_name": "Thick of It Quotes",
+    "og:logo": "https://dosac.herod.dev/logo.svg",
     "format-detection": "telephone=no",
   },
 };
