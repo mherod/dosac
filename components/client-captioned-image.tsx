@@ -42,7 +42,7 @@ export function ClientCaptionedImage({
 
   return (
     <div
-      className={`relative ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
+      className={`min-h-12 relative ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
       ref={containerRef}
     >
       <Image

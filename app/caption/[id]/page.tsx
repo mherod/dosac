@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getFrameById } from "@/lib/frames.server";
+import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
+import { CaptionedImage } from "@/components/captioned-image";
+import { ScreenshotGrid } from "@/components/screenshot-grid";
 
 type PageParams = {
   id: string;
@@ -50,6 +52,19 @@ export default async function Page({ params, searchParams }: PageProps) {
     notFound();
   });
 
+  const [previousFrame, nextFrame] = await Promise.all([
+    getFrameIndex().then((index) => {
+      const i = index.findIndex((f) => f.id === frame.id);
+      return i > 0 ? index[i - 1] : null;
+    }),
+    getFrameIndex().then((index) => {
+      const i = index.findIndex((f) => f.id === frame.id);
+      return i < index.length - 1 ? index[i + 1] : null;
+    }),
+  ]).catch(() => {
+    notFound();
+  });
+
   const text = resolvedSearch.text;
   const range = resolvedSearch.range;
 
@@ -75,6 +90,12 @@ export default async function Page({ params, searchParams }: PageProps) {
         >
           ← Back to search
         </Link>
+
+        <div className="flex flex-row items-center justify-center gap-4 max-h-18">
+          <ScreenshotGrid
+            screenshots={[previousFrame, frame, nextFrame].filter((f) => !!f)}
+          />
+        </div>
         <CaptionEditor screenshot={combinedFrame} />
       </div>
     </>
