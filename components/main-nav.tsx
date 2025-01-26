@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Building2, AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { Building2, AlertCircle, Bell, HelpCircle, Lock } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { UKFlag } from "@/components/icons/uk-flag";
 import {
@@ -87,10 +88,18 @@ export function MainNav() {
       <div className="mx-auto">
         <div className="flex h-8 items-center justify-between border-b border-[#ffffff1f] bg-[#fd0] text-[#0b0c0c] text-xs">
           <div className="flex items-center gap-2 px-8">
-            <AlertCircle className="h-4 w-4" />
+            <Lock className="h-4 w-4" />
             <span>
-              INTERNAL USE ONLY - RESTRICTED ACCESS - CIVIL SERVICE NETWORK
+              OFFICIAL-SENSITIVE - FOR INTERNAL USE - RESTRICTED ACCESS
             </span>
+          </div>
+          <div className="flex items-center gap-4 px-8">
+            <span className="flex items-center gap-1">
+              <HelpCircle className="h-4 w-4" />
+              Support
+            </span>
+            <span>|</span>
+            <span>GSI: 020 7276 1234</span>
           </div>
         </div>
         <div className="flex h-12 items-center justify-between px-8 max-w-7xl mx-auto">
@@ -118,18 +127,19 @@ export function MainNav() {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="text-2xl font-bold tracking-tight cursor-help">
-                        DoSaC
+                        DoSAC
                       </span>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="text-sm font-medium">
-                        Department of Social Affairs and Citizenship
+                        Department of Social Affairs and Citizenship (formerly
+                        Department of Social Affairs)
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
                 <span className="text-sm font-medium text-[#6f777b]">
-                  Meme Asset Management System
+                  Digital Quote Archival & Retrieval System
                 </span>
               </div>
             </div>
@@ -190,25 +200,41 @@ export function MainNav() {
                     ))}
                 </select>
 
-                <input
-                  type="search"
-                  placeholder="Search quotes..."
-                  value={localQuery}
-                  onChange={(e) => setLocalQuery(e.target.value)}
-                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white placeholder:text-[#ffffff66] w-64 focus:outline-none focus:ring-2 focus:ring-[#1d70b8]"
-                />
+                <div className="relative">
+                  <input
+                    type="search"
+                    placeholder="Search ministerial quotes..."
+                    value={localQuery}
+                    onChange={(e) => setLocalQuery(e.target.value)}
+                    className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white placeholder:text-[#ffffff66] w-64 focus:outline-none focus:ring-2 focus:ring-[#1d70b8]"
+                  />
+                </div>
               </div>
 
-              <div className="rounded-md border border-white/20 bg-[#1d70b8] px-2 py-1">
-                <span className="text-xs font-bold uppercase tracking-wide text-white">
-                  Beta
-                </span>
+              <div className="flex items-center gap-4 border-l border-[#ffffff33] pl-4">
+                <div className="rounded-md border border-white/20 bg-[#1d70b8] px-2 py-1">
+                  <span className="text-xs font-bold uppercase tracking-wide text-white">
+                    Beta
+                  </span>
+                </div>
+                <button className="text-white hover:text-[#fd0] transition-colors">
+                  <Bell className="h-5 w-5" />
+                </button>
+                <div className="text-xs text-[#6f777b] flex items-center gap-2">
+                  <span>Welcome back, </span>
+                  <div className="flex items-center gap-1.5">
+                    <Image
+                      src="/characters/terri.webp"
+                      alt="Terri Coverley"
+                      width={24}
+                      height={24}
+                      className="rounded-full"
+                    />
+                    <span className="font-medium text-white">Terri C</span>
+                  </div>
+                </div>
+                <ModeToggle />
               </div>
-              <div className="text-xs text-[#6f777b]">
-                <span>Welcome back, </span>
-                <span className="font-medium text-white">Terri C</span>
-              </div>
-              <ModeToggle />
             </div>
           </div>
         </div>
@@ -216,19 +242,25 @@ export function MainNav() {
 
       <div className="border-t border-[#1d70b8] bg-[#1d70b8] py-1">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/meme"
-              className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
-            >
-              Asset Creation
-            </Link>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <Link
+                href="/"
+                className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/meme"
+                className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+              >
+                Asset Creation
+              </Link>
+            </div>
+            <div className="text-xs text-white/60">
+              Last updated: {new Date().toLocaleDateString("en-GB")} | System
+              ID: DQARS-2024
+            </div>
           </div>
         </div>
       </div>
