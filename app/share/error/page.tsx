@@ -1,12 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import Link from "next/link";
 
-export default function ShareErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const errorMessage =
     searchParams.get("message") || "An unknown error occurred";
@@ -28,5 +29,13 @@ export default function ShareErrorPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+export default function ShareErrorPage() {
+  return (
+    <Suspense>
+      <ErrorContent />
+    </Suspense>
   );
 }
