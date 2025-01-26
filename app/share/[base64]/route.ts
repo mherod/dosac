@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
@@ -7,26 +6,113 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    // Decode the base64 URL
-    const decodedString = Buffer.from(
-      resolvedParams.base64,
-      "base64",
-    ).toString();
-    const url = new URL(decodedString);
 
-    // Security check: Ensure URL is from the same origin
-    if (url.origin !== request.nextUrl.origin) {
-      return redirect("/");
+    // Validate base64 input
+    if (!resolvedParams.base64) {
+      return NextResponse.redirect(
+        new URL(
+          `/share/error?message=${encodeURIComponent("No base64 data provided")}`,
+          request.url,
+        ),
+      );
     }
 
-    // Extract the path and search params
-    const path = url.pathname;
-    const searchParams = url.search;
+    // Restore base64 padding and reverse URL-safe characters
+    let base64String = resolvedParams.base64
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
 
-    // Redirect to the decoded URL
-    return redirect(`${path}${searchParams}`);
-  } catch {
-    // If decoding fails, redirect to home
-    return redirect("/");
+    // Add padding if needed
+    while (base64String.length % 4) {
+      base64String += "=";
+    }
+
+    // Decode the base64 URL
+    let decodedString: string;
+    try {
+      decodedString = Buffer.from(base64String, "base64").toString();
+    } catch (decodeError) {
+      return NextResponse.redirect(
+        new URL(
+          `/share/error?message=${encodeURIComponent(
+            `Failed to decode base64 string: ${base64String.slice(0, 50)}...`,
+          )}`,
+          request.url,
+        ),
+      );
+    }
+
+    try {
+      // Try parsing as a full URL first
+      const url = new URL(decodedString, request.nextUrl.origin);
+
+      // Security check: Ensure URL is from the same origin
+      if (url.origin !== request.nextUrl.origin && url.origin !== "") {
+        return NextResponse.redirect(
+          new URL(
+            `/share/error?message=${encodeURIComponent(
+              `Invalid URL origin. Expected: ${request.nextUrl.origin}, Got: ${url.origin}`,
+            )}`,
+            request.url,
+          ),
+        );
+      }
+
+      // Extract the path and search params
+      const path = url.pathname;
+      const searchParams = url.search;
+
+      // Validate path starts with /caption/
+      if (!path.startsWith("/caption/")) {
+        return NextResponse.redirect(
+          new URL(
+            `/share/error?message=${encodeURIComponent(
+              `Invalid path. Must start with /caption/. Got: ${path}`,
+            )}`,
+            request.url,
+          ),
+        );
+      }
+
+      // Redirect to the decoded URL
+      return NextResponse.redirect(
+        new URL(`${path}${searchParams}`, request.url),
+      );
+    } catch (urlError) {
+      // If URL parsing fails, try treating it as a path
+      if (decodedString.startsWith("/")) {
+        if (!decodedString.startsWith("/caption/")) {
+          return NextResponse.redirect(
+            new URL(
+              `/share/error?message=${encodeURIComponent(
+                `Invalid path. Must start with /caption/. Got: ${decodedString}`,
+              )}`,
+              request.url,
+            ),
+          );
+        }
+        return NextResponse.redirect(new URL(decodedString, request.url));
+      }
+
+      return NextResponse.redirect(
+        new URL(
+          `/share/error?message=${encodeURIComponent(
+            `Invalid URL format. Decoded string: ${decodedString.slice(0, 50)}...`,
+          )}`,
+          request.url,
+        ),
+      );
+    }
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.redirect(
+      new URL(
+        `/share/error?message=${encodeURIComponent(
+          `Failed to process share link: ${errorMessage}`,
+        )}`,
+        request.url,
+      ),
+    );
   }
 }

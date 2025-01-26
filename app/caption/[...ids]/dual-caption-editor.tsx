@@ -80,8 +80,14 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
   }, [fontSize, outlineWidth, fontFamily, router, searchParams]);
 
   const handleShare = () => {
-    const currentUrl = window.location.href;
-    const base64Url = Buffer.from(currentUrl).toString("base64");
+    const path = window.location.pathname;
+    const search = window.location.search;
+    const pathToEncode = `${path}${search}`;
+    const base64Url = Buffer.from(pathToEncode)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
     const shareUrl = `${window.location.origin}/share/${base64Url}`;
     navigator.clipboard.writeText(shareUrl);
   };

@@ -110,8 +110,22 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   ]);
 
   const handleShare = () => {
-    const currentUrl = window.location.href;
-    const base64Url = Buffer.from(currentUrl).toString("base64");
+    // Create a new URL with all current parameters
+    const params = new URLSearchParams(window.location.search);
+
+    // Always include the current caption text
+    params.set("text", encodeURIComponent(caption));
+
+    // Create the full path with search parameters
+    const path = window.location.pathname;
+    const search = `?${params.toString()}`;
+    const pathToEncode = `${path}${search}`;
+
+    const base64Url = Buffer.from(pathToEncode)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
     const shareUrl = `${window.location.origin}/share/${base64Url}`;
     navigator.clipboard.writeText(shareUrl);
   };
