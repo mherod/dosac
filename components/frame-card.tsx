@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Clapperboard, Clock, Check } from "lucide-react";
 import { CaptionedImage } from "@/components/captioned-image";
 import { cn } from "@/lib/utils";
+import { type Screenshot } from "@/lib/types";
 
 function formatEpisodeString(episodeId: string): string {
   // Format from "s01e02" to "Series 1 Episode 2"
@@ -20,18 +21,6 @@ function formatTimestamp(timestamp: string): string {
   const seconds = parseInt(match[2]);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
-
-type Screenshot = {
-  id: string;
-  imageUrl: string;
-  image2Url: string;
-  blankImageUrl: string;
-  blankImage2Url: string;
-  timestamp: string;
-  subtitle: string;
-  speech: string;
-  episode: string;
-};
 
 interface FrameCardProps {
   screenshot: Screenshot;

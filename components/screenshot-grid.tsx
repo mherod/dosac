@@ -6,16 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import Link from "next/link";
-
-type Screenshot = {
-  id: string;
-  imageUrl: string;
-  blankImageUrl: string;
-  timestamp: string;
-  subtitle: string;
-  speech: string;
-  episode: string;
-};
+import { type Screenshot } from "@/lib/types";
 
 interface ScreenshotGridProps {
   screenshots: Screenshot[];
