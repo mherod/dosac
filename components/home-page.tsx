@@ -112,7 +112,9 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
 export function HomePage({ screenshots }: HomePageProps) {
   return (
     <>
-      <MainNav />
+      <Suspense>
+        <MainNav />
+      </Suspense>
       <Suspense>
         <SearchWrapper screenshots={screenshots} />
       </Suspense>
