@@ -18,17 +18,29 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const caption = searchParams.get("caption") || "No caption provided";
-    const episode = searchParams.get("episode") || "";
-    const timestamp = searchParams.get("timestamp") || "";
     const imageUrlString = searchParams.get("imageUrl") || "";
-    const fontSize = parseInt(searchParams.get("fontSize") || "24");
-    const outlineWidth = parseInt(searchParams.get("outlineWidth") || "1");
+    const requestedFontSize = parseInt(searchParams.get("fontSize") || "24");
     const fontFamily = searchParams.get("fontFamily") || "Arial";
 
-    // Ensure we're using HTTPS and the correct domain
-    const imageUrl = new URL(imageUrlString);
-    imageUrl.protocol = "https";
-    imageUrl.hostname = "dosac.herod.dev";
+    // Handle both absolute and relative image URLs
+    const imageUrl = imageUrlString.startsWith("http")
+      ? new URL(imageUrlString)
+      : new URL(
+          `https://dosac.herod.dev${imageUrlString.startsWith("/") ? "" : "/"}${imageUrlString}`,
+        );
+
+    // Calculate dynamic font size based on image height and line count
+    const IMAGE_HEIGHT = 630; // Fixed OG image height
+    const lines = caption.split("\n").length;
+    const heightBasedSize = Math.floor((IMAGE_HEIGHT * 0.27) / lines); // 27% of height divided by lines (reduced from 30%)
+    const fontSize = Math.max(20, heightBasedSize, requestedFontSize); // Minimum 20px or 27% of height/lines
+
+    // Calculate outline width based on font size (4% of font size, minimum 2px)
+    const calculatedOutlineWidth = Math.max(2, Math.floor(fontSize * 0.04));
+    const finalOutlineWidth = Math.max(
+      calculatedOutlineWidth,
+      parseInt(searchParams.get("outlineWidth") || "1"),
+    );
 
     // Fetch image
     const imageResponse = await fetch(imageUrl.toString());
@@ -90,7 +102,7 @@ export async function GET(req: NextRequest) {
                 fontSize: `${fontSize}px`,
                 fontWeight: 500,
                 color: "#ffffff",
-                textShadow: getTextShadow(outlineWidth),
+                textShadow: getTextShadow(finalOutlineWidth),
                 textAlign: "center",
                 maxWidth: "90%",
                 margin: "0 auto",
@@ -105,27 +117,6 @@ export async function GET(req: NextRequest) {
                 </span>
               ))}
             </div>
-          </div>
-
-          {/* Episode and Timestamp */}
-          <div
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              padding: "10px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "4px",
-              fontSize: "16px",
-              color: "white",
-              textShadow: getTextShadow(1),
-              textAlign: "right",
-              fontFamily,
-            }}
-          >
-            <span>{episode}</span>
-            <span>{timestamp}</span>
           </div>
         </div>
       ),
