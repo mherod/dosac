@@ -1,0 +1,76 @@
+{
+  "rankedMoments": [
+    {
+      "id": "s01e01-marzipan",
+      "episode": "s01e01",
+      "timestamp": "00:59.080",
+      "quote": "He's useless! He's as useless as a marzipan dildo.",
+      "context": "Malcolm Tucker's first appearance in the show, speaking on the phone before telling Cliff Lawton he must resign",
+      "rank": 1
+    },
+    {
+      "id": "s01e01-wolves",
+      "episode": "s01e01",
+      "timestamp": "03:11.440",
+      "quote": "If you do this, it's the bollocks of the jungle out there, you know? They're like wolves... pissed wolves.",
+      "context": "Cliff Lawton's desperate plea to Malcolm Tucker after being told he must resign",
+      "rank": 2
+    },
+    {
+      "id": "s01e01-soapy",
+      "episode": "s01e01",
+      "timestamp": "03:27.760",
+      "quote": "I've booked you in for the usual soapy-tit-wank farewell at Number 10 in 20 minutes.",
+      "context": "Malcolm Tucker arranging Cliff Lawton's resignation proceedings",
+      "rank": 3
+    },
+    {
+      "id": "s02e01-ferret",
+      "episode": "s02e01",
+      "timestamp": "1605.000",
+      "quote": "like a fucking Biafran ferret!",
+      "context": "Malcolm Tucker using one of his characteristic vivid similes",
+      "rank": 4
+    },
+    {
+      "id": "s03e06-curly",
+      "episode": "s03e06",
+      "timestamp": "1392.000",
+      "quote": "Get me a fucking Curly Wurly. Right?",
+      "context": "Malcolm Tucker demanding his chocolate bar during a crisis",
+      "rank": 5
+    },
+    {
+      "id": "s03e06-entrails",
+      "episode": "s03e06",
+      "timestamp": "1546.000",
+      "quote": "hat out OF your fucking entrails.",
+      "context": "Malcolm Tucker threatening someone with his characteristic violent imagery",
+      "rank": 6
+    },
+    {
+      "id": "s01e01-cat",
+      "episode": "s01e01",
+      "timestamp": "04:28.640",
+      "quote": "Stuffing a cat up my arse and having a wank? What do you mean?",
+      "context": "Cliff Lawton's sarcastic response to Malcolm's suggestion of 'personal reasons' for resignation",
+      "rank": 7
+    },
+    {
+      "id": "s01e01-sarcasm",
+      "episode": "s01e01",
+      "timestamp": "05:15.400",
+      "quote": "You no longer have purchase in the sarcasm world!",
+      "context": "Malcolm Tucker berating Cliff for attempting sarcasm during his resignation",
+      "rank": 8
+    },
+    {
+      "id": "s01e01-richard-judy",
+      "episode": "s01e01",
+      "timestamp": "06:46.800",
+      "quote": "It's a chance for me, Glenn, to get on Richard And Judy and plant that flag right on their fucking sofa.",
+      "context": "Hugh Abbot excited about announcing his first major policy",
+      "rank": 9
+    }
+  ]
+}

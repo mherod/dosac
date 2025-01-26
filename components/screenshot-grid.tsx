@@ -19,11 +19,15 @@ type Screenshot = {
 
 interface ScreenshotGridProps {
   screenshots: Screenshot[];
+  rankedMoments?: Screenshot[];
 }
 
 const ITEMS_PER_PAGE = 36;
 
-export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
+export function ScreenshotGrid({
+  screenshots,
+  rankedMoments,
+}: ScreenshotGridProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -148,34 +152,64 @@ export function ScreenshotGrid({ screenshots }: ScreenshotGridProps) {
   }
 
   return (
-    <div className="space-y-4">
-      <div
-        ref={gridRef}
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {currentScreenshots.map((screenshot, index) => (
-          <div key={screenshot.id}>
-            <Link href={getScreenshotUrl(screenshot.id)}>
-              <FrameCard
-                screenshot={screenshot}
-                priority={index < 6}
-                isSelected={selectedIds.has(screenshot.id)}
-                onSelect={(e: React.MouseEvent) => {
-                  // Only handle selection if using modifier keys
-                  if (e.ctrlKey || e.metaKey || e.shiftKey) {
-                    safeSetSelectedIds(new Set([screenshot.id]));
-                  }
-                }}
-                onDragStart={() => {
-                  handleDragStart(screenshot.id);
-                }}
-                onDragMove={() => {
-                  handleDragMove(screenshot.id);
-                }}
-              />
-            </Link>
+    <div className="space-y-8">
+      {rankedMoments && rankedMoments.length > 0 && (
+        <>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rankedMoments.map((screenshot, index) => (
+              <div key={screenshot.id} className="relative">
+                <Link href={getScreenshotUrl(screenshot.id)}>
+                  <FrameCard
+                    screenshot={screenshot}
+                    priority={true}
+                    isSelected={selectedIds.has(screenshot.id)}
+                    onSelect={(e: React.MouseEvent) => {
+                      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                        safeSetSelectedIds(new Set([screenshot.id]));
+                      }
+                    }}
+                    onDragStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onDragMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                  />
+                </Link>
+              </div>
+            ))}
           </div>
-        ))}
+        </>
+      )}
+
+      <div className="space-y-4">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {currentScreenshots.map((screenshot, index) => (
+            <div key={screenshot.id}>
+              <Link href={getScreenshotUrl(screenshot.id)}>
+                <FrameCard
+                  screenshot={screenshot}
+                  priority={index < 6}
+                  isSelected={selectedIds.has(screenshot.id)}
+                  onSelect={(e: React.MouseEvent) => {
+                    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                      safeSetSelectedIds(new Set([screenshot.id]));
+                    }
+                  }}
+                  onDragStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onDragMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                />
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
 
       {totalPages > 1 && (

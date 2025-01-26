@@ -8,6 +8,20 @@ import type { Frame } from "@/lib/frames";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { MainNav } from "@/components/main-nav";
 
+interface RankedMoment {
+  id: string;
+  episode: string;
+  timestamp: string;
+  quote: string;
+  context: string;
+  rank: number;
+}
+
+interface MatchedMoment {
+  moment: RankedMoment;
+  frame: Frame;
+}
+
 interface HomePageProps {
   screenshots: Frame[];
 }
@@ -25,6 +39,23 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Add ranked moments state
+  const [rankedMoments, setRankedMoments] = React.useState<Frame[]>([]);
+
+  // Load ranked moments on mount
+  React.useEffect(() => {
+    console.log("Loading ranked moments...");
+    fetch("/api/moments")
+      .then((res) => res.json())
+      .then((matchedMoments: MatchedMoment[]) => {
+        console.log("Received matched moments:", matchedMoments.length);
+        setRankedMoments(matchedMoments.map((m) => m.frame));
+      })
+      .catch((error) => {
+        console.error("Error loading ranked moments:", error);
+      });
+  }, []);
 
   const createQueryString = React.useCallback(
     (updates: QueryUpdates) => {
@@ -82,8 +113,14 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
     [createQueryString, pathname, router, filters.season, filters.episode],
   );
 
+  // Modify filteredScreenshots to exclude ranked moments when they're shown separately
   const filteredScreenshots = React.useMemo(() => {
-    return screenshots.filter((screenshot) => {
+    const isShowingRanked = !filters.season && !filters.episode && !localQuery;
+    const screenshotsToFilter = isShowingRanked
+      ? screenshots.filter((s) => !rankedMoments.some((r) => r.id === s.id))
+      : screenshots;
+
+    return screenshotsToFilter.filter((screenshot) => {
       try {
         const { season, episode } = parseEpisodeId(screenshot.episode);
 
@@ -101,7 +138,7 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
         return false;
       }
     });
-  }, [screenshots, localQuery, filters.season, filters.episode]);
+  }, [screenshots, localQuery, filters.season, filters.episode, rankedMoments]);
 
   const { seasons, episodes } = React.useMemo(() => {
     const seasonsSet = new Set<number>();
@@ -147,36 +184,55 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               onClick={() =>
                 handleFilterChange({ season: 1, episode: undefined })
               }
-              className={`relative group inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 ${
+              className={`relative group inline-flex items-center w-full gap-2 px-4 py-3 rounded-lg border transition-colors duration-200 ${
                 filters.season === 1
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-input hover:bg-accent hover:text-accent-foreground"
-              }`}
+              } ${filters.season === 1 ? "opacity-80" : "font-semibold"}`}
             >
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden">
+              <div className="flex items-center gap-3 w-full">
+                {filters.season !== 1 && (
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                )}
+                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden flex-shrink-0">
                   <img
                     src="/characters/malcom.jpg"
                     alt="Malcolm Tucker"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Season 1</span>
-                  <span className="text-xs opacity-90">Malcolm & Hugh</span>
+                <div className="flex flex-col items-start flex-grow min-w-0">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-medium truncate">
+                      URGENT: Personnel Changes at DoSAC (IMMEDIATE ACTION
+                      REQUIRED)
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                      09:15
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="text-xs opacity-90 truncate">
+                      From: M. Tucker (Director of Communications) via
+                      BlackBerry
+                    </span>
+                    {filters.season !== 1 && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-red-100 text-red-800 rounded-full whitespace-nowrap ml-auto">
+                        URGENT - READ NOW
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="absolute left-0 w-72 p-3 bg-popover text-popover-foreground text-xs rounded-md border shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-500 -translate-y-full -top-2 z-20">
                 <div className="absolute -bottom-2 left-4 w-4 h-4 rotate-45 bg-popover border-r border-b border-input"></div>
-                <p className="font-medium mb-1">Key Characters:</p>
+                <p className="font-medium mb-1">Key Personnel:</p>
                 <ul className="list-disc list-inside space-y-1">
                   <li>
-                    Malcolm Tucker - "He's as useless as a marzipan dildo"
+                    M. Tucker (Director of Communications) - Senior Press Office
                   </li>
-                  <li>
-                    Hugh Abbott - New Minister after Cliff Lawton's resignation
-                  </li>
-                  <li>Glenn & Ollie - Hugh's advisors at DoSAC</li>
+                  <li>H. Abbott MP (Secretary of State) - Incoming Minister</li>
+                  <li>G. Cullen, O. Reeder - Ministerial Advisory Team</li>
                 </ul>
               </div>
             </button>
@@ -185,34 +241,58 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               onClick={() =>
                 handleFilterChange({ season: 2, episode: undefined })
               }
-              className={`relative group inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 ${
+              className={`relative group inline-flex items-center w-full gap-2 px-4 py-3 rounded-lg border transition-colors duration-200 ${
                 filters.season === 2
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-input hover:bg-accent hover:text-accent-foreground"
-              }`}
+              } ${filters.season === 2 ? "opacity-80" : "font-semibold"}`}
             >
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden">
+              <div className="flex items-center gap-3 w-full">
+                {filters.season !== 2 && (
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                )}
+                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden flex-shrink-0">
                   <img
                     src="/characters/jamie.jpg"
                     alt="Jamie McDonald"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Season 2</span>
-                  <span className="text-xs opacity-90">
-                    Rise of the Nutters
-                  </span>
+                <div className="flex flex-col items-start flex-grow min-w-0">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-medium truncate">
+                      Re: Leadership Transition (STRICTLY CONFIDENTIAL)
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                      11:42
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="text-xs opacity-90 truncate">
+                      From: J. McDonald (Special Advisor) via Secure Terminal
+                    </span>
+                    {filters.season !== 2 && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-yellow-100 text-yellow-800 rounded-full whitespace-nowrap ml-auto">
+                        EYES ONLY
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="absolute left-0 w-72 p-3 bg-popover text-popover-foreground text-xs rounded-md border shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-500 -translate-y-full -top-2 z-20">
                 <div className="absolute -bottom-2 left-4 w-4 h-4 rotate-45 bg-popover border-r border-b border-input"></div>
-                <p className="font-medium mb-1">Key Characters:</p>
+                <p className="font-medium mb-1">Key Personnel:</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>Jamie McDonald - Malcolm's psychotic enforcer</li>
-                  <li>Julius Nicholson - The "Blue-Sky Thinker"</li>
-                  <li>The Opposition "Nutters" - Tom's leadership bid</li>
+                  <li>
+                    J. McDonald (Special Advisor) - Liaison to Director of
+                    Communications
+                  </li>
+                  <li>
+                    Internal Party Group - Ref: Upcoming Leadership Changes
+                  </li>
+                  <li>
+                    B. Swain MP (Junior Minister) - See attached briefing notes
+                  </li>
                 </ul>
               </div>
             </button>
@@ -221,32 +301,51 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               onClick={() =>
                 handleFilterChange({ season: 3, episode: undefined })
               }
-              className={`relative group inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 ${
+              className={`relative group inline-flex items-center w-full gap-2 px-4 py-3 rounded-lg border transition-colors duration-200 ${
                 filters.season === 3
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-input hover:bg-accent hover:text-accent-foreground"
-              }`}
+              } ${filters.season === 3 ? "opacity-80" : "font-semibold"}`}
             >
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden">
+              <div className="flex items-center gap-3 w-full">
+                {filters.season !== 3 && (
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                )}
+                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden flex-shrink-0">
                   <img
                     src="/characters/nicola.jpg"
                     alt="Nicola Murray"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Season 3</span>
-                  <span className="text-xs opacity-90">Nicola's DoSAC</span>
+                <div className="flex flex-col items-start flex-grow min-w-0">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-medium truncate">
+                      Notice: Ministerial Changes (PRESS EMBARGO 15:00)
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                      14:30
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="text-xs opacity-90 truncate">
+                      From: Cabinet Office (RESTRICTED CIRCULATION)
+                    </span>
+                    {filters.season !== 3 && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-green-100 text-green-800 rounded-full whitespace-nowrap ml-auto">
+                        EMBARGOED
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="absolute left-0 w-72 p-3 bg-popover text-popover-foreground text-xs rounded-md border shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-500 -translate-y-full -top-2 z-20">
                 <div className="absolute -bottom-2 left-4 w-4 h-4 rotate-45 bg-popover border-r border-b border-input"></div>
-                <p className="font-medium mb-1">Key Characters:</p>
+                <p className="font-medium mb-1">Key Personnel:</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>Nicola Murray - "I am a woman, Glenn!"</li>
-                  <li>Terri Coverley - "Just following procedure"</li>
-                  <li>Malcolm - "Let's get this fucking party started"</li>
+                  <li>N. Murray MP (Secretary of State) - New Appointment</li>
+                  <li>T. Coverley (Civil Service) - Permanent Secretary</li>
+                  <li>Communications Office - See ongoing correspondence</li>
                 </ul>
               </div>
             </button>
@@ -255,34 +354,51 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
               onClick={() =>
                 handleFilterChange({ season: 4, episode: undefined })
               }
-              className={`relative group inline-flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 ${
+              className={`relative group inline-flex items-center w-full gap-2 px-4 py-3 rounded-lg border transition-colors duration-200 ${
                 filters.season === 4
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-input hover:bg-accent hover:text-accent-foreground"
-              }`}
+              } ${filters.season === 4 ? "opacity-80" : "font-semibold"}`}
             >
-              <div className="flex items-center gap-2">
-                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden">
+              <div className="flex items-center gap-3 w-full">
+                {filters.season !== 4 && (
+                  <div className="w-2 h-2 rounded-full bg-blue-500" />
+                )}
+                <div className="relative w-8 h-8 rounded-full bg-background border border-input overflow-hidden flex-shrink-0">
                   <img
                     src="/characters/peter.jpg"
                     alt="Peter Mannion"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Season 4</span>
-                  <span className="text-xs opacity-90">
-                    Coalition & Inquiry
-                  </span>
+                <div className="flex flex-col items-start flex-grow min-w-0">
+                  <div className="flex items-center justify-between w-full">
+                    <span className="font-medium truncate">
+                      Coalition Framework Document v0.8b (NOT FOR CIRCULATION)
+                    </span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                      16:55
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="text-xs opacity-90 truncate">
+                      From: Opposition Office (INTERNAL USE ONLY)
+                    </span>
+                    {filters.season !== 4 && (
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-purple-100 text-purple-800 rounded-full whitespace-nowrap ml-auto">
+                        DRAFT v0.8b
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="absolute left-0 w-72 p-3 bg-popover text-popover-foreground text-xs rounded-md border shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 delay-500 -translate-y-full -top-2 z-20">
                 <div className="absolute -bottom-2 left-4 w-4 h-4 rotate-45 bg-popover border-r border-b border-input"></div>
-                <p className="font-medium mb-1">Key Characters:</p>
+                <p className="font-medium mb-1">Key Personnel:</p>
                 <ul className="list-disc list-inside space-y-1">
-                  <li>Peter Mannion - The Opposition's time</li>
-                  <li>Stewart Pearson - "Blue-sky thinking"</li>
-                  <li>Malcolm's Goolding Inquiry</li>
+                  <li>P. Mannion MP (Opposition) - Coalition Negotiations</li>
+                  <li>S. Pearson (Strategic Comms) - Opposition Liaison</li>
+                  <li>Goolding Inquiry - Ref: Internal Documentation</li>
                 </ul>
               </div>
             </button>
@@ -509,7 +625,14 @@ function SearchWrapper({ screenshots }: { screenshots: Frame[] }) {
         </div>
       </div>
 
-      <ScreenshotGrid screenshots={filteredScreenshots} />
+      <ScreenshotGrid
+        screenshots={filteredScreenshots}
+        rankedMoments={
+          !filters.season && !filters.episode && !localQuery
+            ? rankedMoments
+            : undefined
+        }
+      />
     </div>
   );
 }
