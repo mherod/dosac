@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import * as htmlToImage from "html-to-image";
-import { ArrowUpDown } from "lucide-react";
 import { FrameGrid } from "@/components/frame-grid";
 import { FrameStack } from "@/components/frame-stack";
 import { FontControls } from "@/components/caption-controls/font-controls";
@@ -30,11 +28,16 @@ interface MultiCaptionEditorProps {
   frames: Screenshot[];
 }
 
-export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
+export function DualCaptionEditor({
+  frames: initialFrames,
+}: MultiCaptionEditorProps) {
   const combinedRef = useRef<HTMLDivElement>(null);
 
-  // State for all frames
-  const [captions, setCaptions] = useState(frames.map((frame) => frame.speech));
+  // State for frames and captions
+  const [frames, setFrames] = useState(initialFrames);
+  const [captions, setCaptions] = useState(
+    initialFrames.map((frame) => frame.speech),
+  );
 
   const {
     fontSize,
@@ -78,30 +81,16 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
     setCaptions(newCaptions);
   };
 
-  const handleSwapFrames = (index1: number, index2: number) => {
-    const newCaptions = [...captions];
-    if (
-      index1 >= 0 &&
-      index1 < newCaptions.length &&
-      index2 >= 0 &&
-      index2 < newCaptions.length &&
-      typeof newCaptions[index1] === "string" &&
-      typeof newCaptions[index2] === "string"
-    ) {
-      const temp = newCaptions[index1];
-      newCaptions[index1] = newCaptions[index2];
-      newCaptions[index2] = temp;
-      setCaptions(newCaptions);
-    }
-  };
-
   return (
     <div className="container mx-auto max-w-[1400px] pt-8">
       <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px]">
         {/* Combined Preview */}
         <div className="space-y-4">
-          <Card className="shadow-lg transition-shadow hover:shadow-xl h-fit p-2 mx-auto">
-            <div ref={combinedRef} className="h-full w-fit min-w-[500px]">
+          <Card className="shadow-lg transition-shadow hover:shadow-xl h-fit p-2 mx-auto w-fit">
+            <div
+              ref={combinedRef}
+              className="h-full w-fit min-w-[500px] mx-auto"
+            >
               {frames.length === 4 ? (
                 <FrameGrid
                   frames={frames}
@@ -140,28 +129,6 @@ export function DualCaptionEditor({ frames }: MultiCaptionEditorProps) {
                   />
                 </div>
               ))}
-
-              {frames.length > 1 && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Swap Frames</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {frames.map(
-                      (_, index) =>
-                        index < frames.length - 1 && (
-                          <Button
-                            key={`swap-${index}`}
-                            className="w-full shadow-sm transition-all hover:shadow-md"
-                            onClick={() => handleSwapFrames(index, index + 1)}
-                            variant="outline"
-                          >
-                            <ArrowUpDown className="mr-2 h-4 w-4" />
-                            Swap {index + 1} & {index + 2}
-                          </Button>
-                        ),
-                    )}
-                  </div>
-                </div>
-              )}
 
               <FontControls
                 fontSize={fontSize}

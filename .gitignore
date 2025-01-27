@@ -39,3 +39,5 @@ public/*.mp4
 
 # macOS system files
 .DS_Store
+
+.env
