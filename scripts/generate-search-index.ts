@@ -42,15 +42,19 @@ async function parseVTTFile(
       currentTimestamp = line;
       // Extract start time in seconds for sorting
       const startTimeStr = line.split("-->")[0].trim();
-      const [mins, secs] = startTimeStr.split(":");
-      const [seconds, ms] = secs.split(".");
+      const timeParts = startTimeStr.split(":");
+      const secondsPart = timeParts.pop()!;
+      const ms = secondsPart.split(".")[1] || "0";
       currentStartTime =
-        parseInt(mins) * 60 +
-        parseInt(seconds) +
-        (ms ? parseInt(ms) / 1000 : 0);
+        timeParts.reduce((acc, val) => acc * 60 + parseInt(val), 0) +
+        parseInt(secondsPart) +
+        parseInt(ms) / 1000;
     } else if (line !== "") {
       // Add non-empty lines as text
       currentText.push(line);
+    } else if (currentText.length > 0) {
+      // Merge consecutive text lines
+      currentText[currentText.length - 1] += " " + line;
     }
   }
 

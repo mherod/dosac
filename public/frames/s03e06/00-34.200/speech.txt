@@ -1,2 +1,1 @@
-Are you wearing trainers?
-You ARE wearing trainers.
+Are you wearing trainers? You ARE wearing trainers.

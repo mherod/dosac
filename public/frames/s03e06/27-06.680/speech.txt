@@ -1,2 +1,1 @@
-There's a headline.
-Please don't use it.
+There's a headline. Please don't use it.

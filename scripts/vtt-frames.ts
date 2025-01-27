@@ -54,6 +54,8 @@ function parseVTTFile(filePath: string): VTTFile {
   let currentFrame: Partial<VTTFrame> | null = null;
   let currentText: string[] = [];
 
+  console.log(`Parsing VTT file: ${filePath}`);
+
   // Skip WEBVTT header
   let i = 1;
   while (i < lines.length) {
@@ -62,6 +64,10 @@ function parseVTTFile(filePath: string): VTTFile {
     // Empty line indicates end of current frame
     if (line === "") {
       if (currentFrame && currentText.length > 0) {
+        console.log(
+          `Adding frame with timestamp ${currentFrame.startTime}:`,
+          currentText,
+        );
         frames.push({
           startTime: currentFrame.startTime!,
           endTime: currentFrame.endTime!,
@@ -81,12 +87,16 @@ function parseVTTFile(filePath: string): VTTFile {
         startTime: parseTimestamp(start),
         endTime: parseTimestamp(end),
       };
+      console.log(
+        `Found timestamp: ${currentFrame.startTime} --> ${currentFrame.endTime}`,
+      );
       i++;
       continue;
     }
 
     // Text line
-    if (currentFrame) {
+    if (currentFrame && line !== "") {
+      console.log(`Adding text line for ${currentFrame.startTime}:`, line);
       currentText.push(line);
     }
     i++;
@@ -94,21 +104,79 @@ function parseVTTFile(filePath: string): VTTFile {
 
   // Handle last frame if exists
   if (currentFrame && currentText.length > 0) {
+    console.log(
+      `Adding final frame with timestamp ${currentFrame.startTime}:`,
+      currentText,
+    );
     frames.push({
       startTime: currentFrame.startTime!,
       endTime: currentFrame.endTime!,
-      text: currentText,
+      text: [...currentText],
     });
   }
 
-  return { frames };
+  // Merge frames with same timestamps
+  console.log(
+    "\nBefore merging, frames with 01:01.360:",
+    frames.filter((f) => f.startTime === "01:01.360"),
+  );
+
+  const mergedFrames = mergeFrames(frames);
+
+  console.log(
+    "\nAfter merging, frame with 01:01.360:",
+    mergedFrames.find((f) => f.startTime === "01:01.360"),
+  );
+
+  return { frames: mergedFrames };
 }
 
-async function findVideoFiles(): Promise<string[]> {
-  const videos = await glob("public/s[0-9][0-9]e[0-9][0-9].mp4");
-  return videos
-    .map((video: string) => {
-      const match = video.match(/public[/\\](s\d{2}e\d{2})\.mp4$/);
+function mergeFrames(frames: VTTFrame[]): VTTFrame[] {
+  const mergedFrames = new Map<string, VTTFrame>();
+
+  for (const frame of frames) {
+    const existing = mergedFrames.get(frame.startTime);
+
+    if (existing) {
+      console.log(
+        `Merging frame for ${frame.startTime}: \nExisting text:`,
+        existing.text,
+        "\nNew text:",
+        frame.text,
+      );
+
+      // Merge the text arrays while avoiding duplicates
+      const mergedText = [...existing.text];
+      frame.text.forEach((line) => {
+        if (!mergedText.includes(line)) {
+          mergedText.push(line);
+        }
+      });
+
+      mergedFrames.set(frame.startTime, {
+        startTime: frame.startTime,
+        endTime: frame.endTime,
+        text: mergedText,
+      });
+
+      console.log(
+        `After merging, frame with ${frame.startTime}:`,
+        mergedFrames.get(frame.startTime),
+      );
+    } else {
+      mergedFrames.set(frame.startTime, frame);
+    }
+  }
+
+  return Array.from(mergedFrames.values());
+}
+
+async function findVTTFiles(): Promise<string[]> {
+  // Find all VTT files in public directory
+  const vttFiles = await glob("public/s[0-9][0-9]e[0-9][0-9].vtt");
+  return vttFiles
+    .map((vtt: string) => {
+      const match = vtt.match(/public[/\\](s\d{2}e\d{2})\.vtt$/);
       return match ? match[1] : "";
     })
     .filter(Boolean);
@@ -144,7 +212,7 @@ async function processVideoFrames(episodeId: string) {
     return null;
   }
 
-  // Parse VTT file first to check if all frames exist
+  // Parse VTT file
   const parsedVTT = parseVTTFile(vttPath);
   console.log(`Processing ${episodeId}: ${parsedVTT.frames.length} frames`);
 
@@ -161,45 +229,31 @@ async function processVideoFrames(episodeId: string) {
     const frameBlank2Path = path.join(frameDir, "frame-blank2.jpg");
     const speechPath = path.join(frameDir, "speech.txt");
 
-    // Skip if speech file exists and both frames exist
-    if (
-      fs.existsSync(frameBlankPath) &&
-      fs.existsSync(frameBlank2Path) &&
-      fs.existsSync(speechPath)
-    ) {
+    // Extract frames
+    console.log(`Extracting first frame at ${timestamp}`);
+    if (!extractFrame(videoPath, timestamp, frameBlankPath)) {
+      console.error(
+        `Failed to extract first frame at ${timestamp}, skipping...`,
+      );
       continue;
     }
 
-    // Extract first frame only if it doesn't exist
-    if (!fs.existsSync(frameBlankPath)) {
-      console.log(`Extracting first frame at ${timestamp}`);
-      if (!extractFrame(videoPath, timestamp, frameBlankPath)) {
-        console.error(
-          `Failed to extract first frame at ${timestamp}, skipping...`,
-        );
-        continue;
-      }
+    console.log(`Extracting second frame at ${timestamp}+1s`);
+    if (!extractFrame(videoPath, timestamp, frameBlank2Path, 1)) {
+      console.error(
+        `Failed to extract second frame at ${timestamp}+1s, skipping...`,
+      );
+      continue;
     }
 
-    // Extract second frame only if it doesn't exist
-    if (!fs.existsSync(frameBlank2Path)) {
-      console.log(`Extracting second frame at ${timestamp}+1s`);
-      if (!extractFrame(videoPath, timestamp, frameBlank2Path, 1)) {
-        console.error(
-          `Failed to extract second frame at ${timestamp}+1s, skipping...`,
-        );
-        continue;
-      }
-    }
-
-    // Write speech text file if it doesn't exist
-    if (!fs.existsSync(speechPath)) {
-      try {
-        fs.writeFileSync(speechPath, frame.text.join("\n"), "utf8");
-      } catch (error) {
-        console.error(`Error writing speech file at ${timestamp}:`, error);
-        continue;
-      }
+    // Write speech text file
+    console.log(`Writing speech file for ${timestamp}:`, frame.text);
+    try {
+      const speechContent = frame.text.join("\n") + "\n";
+      fs.writeFileSync(speechPath, speechContent, "utf8");
+    } catch (error) {
+      console.error(`Error writing speech file at ${timestamp}:`, error);
+      continue;
     }
 
     // Log progress every 10%
@@ -217,41 +271,17 @@ async function processVideoFrames(episodeId: string) {
 
 async function main() {
   // Get episode IDs from command line arguments
-  const requestedEpisodes = process.argv.slice(2);
+  const requestedEpisodes = process.argv
+    .slice(2)
+    .filter((arg) => !arg.startsWith("--"));
 
-  // If no specific episodes requested, find all video files
+  // If no specific episodes requested, find all VTT files
   const episodeIds =
-    requestedEpisodes.length > 0 ? requestedEpisodes : await findVideoFiles();
+    requestedEpisodes.length > 0 ? requestedEpisodes : await findVTTFiles();
 
   console.log(`Found ${episodeIds.length} episodes to process`);
 
   for (const episodeId of episodeIds) {
-    const vttPath = path.join(process.cwd(), "public", `${episodeId}.vtt`);
-    const framesPath = path.join(process.cwd(), "public", "frames", episodeId);
-
-    // Parse VTT file to get expected frame count
-    if (!fs.existsSync(vttPath)) {
-      console.error(`VTT file not found for ${episodeId}, skipping...`);
-      continue;
-    }
-
-    const parsedVTT = parseVTTFile(vttPath);
-    const expectedFrameCount = parsedVTT.frames.length;
-
-    // Check if episode is already fully processed
-    if (fs.existsSync(framesPath)) {
-      const existingFrames = fs.readdirSync(framesPath).length;
-      if (existingFrames === expectedFrameCount) {
-        console.log(
-          `${episodeId}: Already processed ${existingFrames} frames, skipping...`,
-        );
-        continue;
-      }
-      console.log(
-        `${episodeId}: Found ${existingFrames}/${expectedFrameCount} frames, continuing processing...`,
-      );
-    }
-
     await processVideoFrames(episodeId);
   }
 }
