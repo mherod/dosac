@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Building2, Bell, HelpCircle, Lock } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { Building2, HelpCircle, Lock } from "lucide-react";
 import { UKFlag } from "@/components/icons/uk-flag";
 import {
   Tooltip,
@@ -88,15 +87,17 @@ export function MainNav() {
 
   return (
     <header className="bg-[#0b0c0c] text-white">
+      {/* Top banner */}
       <div className="mx-auto">
         <div className="flex h-8 items-center justify-between border-b border-[#ffffff1f] bg-[#fd0] text-[#0b0c0c] text-xs">
-          <div className="flex items-center gap-2 px-8">
+          <div className="flex items-center gap-2 px-4 lg:px-8">
             <Lock className="h-4 w-4" />
-            <span>
+            <span className="hidden sm:inline">
               OFFICIAL-SENSITIVE - FOR INTERNAL USE - RESTRICTED ACCESS
             </span>
+            <span className="sm:hidden">RESTRICTED ACCESS</span>
           </div>
-          <div className="flex items-center gap-4 px-8">
+          <div className="hidden sm:flex items-center gap-4 px-8">
             <span className="flex items-center gap-1">
               <HelpCircle className="h-4 w-4" />
               Support
@@ -105,19 +106,28 @@ export function MainNav() {
             <span>GSI: 020 7276 1234</span>
           </div>
         </div>
-        <div className="flex h-12 items-center justify-between px-8 max-w-7xl mx-auto">
+
+        {/* Civil Service Digital header */}
+        <div className="flex h-12 items-center justify-between px-4 lg:px-8 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
             <UKFlag className="h-4 w-8" />
             <div className="flex flex-col">
               <span className="text-md font-bold">Civil Service Digital</span>
             </div>
           </div>
+          <div className="rounded-sm border border-white/20 bg-[#1d70b8] px-1.5 py-0.5">
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-white">
+              Beta
+            </span>
+          </div>
         </div>
       </div>
 
+      {/* Main navigation */}
       <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
+            {/* Logo and department name */}
             <div className="flex items-center gap-2">
               <div className="rounded bg-white p-1">
                 <Building2 className="h-6 w-6 text-[#0b0c0c]" />
@@ -141,7 +151,8 @@ export function MainNav() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            {/* Desktop navigation */}
+            <div className="hidden lg:flex items-center gap-4">
               <div className="flex items-center gap-3">
                 <select
                   value={filters.season ?? ""}
@@ -209,16 +220,7 @@ export function MainNav() {
               </div>
 
               <div className="flex items-center gap-4 border-l border-[#ffffff33] pl-4">
-                <div className="rounded-md border border-white/20 bg-[#1d70b8] px-2 py-1">
-                  <span className="text-xs font-bold uppercase tracking-wide text-white">
-                    Beta
-                  </span>
-                </div>
-                <button className="text-white hover:text-[#fd0] transition-colors">
-                  <Bell className="h-5 w-5" />
-                </button>
                 <div className="text-xs text-[#6f777b] flex items-center gap-2">
-                  <span>Welcome back, </span>
                   <div className="flex items-center gap-1.5">
                     <Image
                       src="/characters/terri.webp"
@@ -230,34 +232,120 @@ export function MainNav() {
                     <span className="font-medium text-white">Terri C</span>
                   </div>
                 </div>
-                <ModeToggle />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile menu */}
+          <div className="lg:hidden py-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-2">
+                  <select
+                    value={filters.season ?? ""}
+                    onChange={(e) => {
+                      const newSeason = e.target.value
+                        ? parseInt(e.target.value, 10)
+                        : undefined;
+                      handleFilterChange({
+                        season: newSeason,
+                        episode: newSeason ? filters.episode : undefined,
+                      });
+                    }}
+                    className="w-1/2 px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white"
+                  >
+                    <option value="" className="bg-[#0b0c0c]">
+                      All Series
+                    </option>
+                    {[1, 2, 3, 4].map((season) => (
+                      <option
+                        key={season}
+                        value={season}
+                        className="bg-[#0b0c0c]"
+                      >
+                        Series {season}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={filters.episode ?? ""}
+                    onChange={(e) => {
+                      handleFilterChange({
+                        episode: e.target.value
+                          ? Number(e.target.value)
+                          : undefined,
+                      });
+                    }}
+                    disabled={!filters.season}
+                    className="w-1/2 px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white"
+                  >
+                    <option value="" className="bg-[#0b0c0c]">
+                      All Episodes
+                    </option>
+                    {filters.season &&
+                      [1, 2, 3].map((episode) => (
+                        <option
+                          key={episode}
+                          value={episode}
+                          className="bg-[#0b0c0c]"
+                        >
+                          Episode {episode}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <input
+                  type="search"
+                  placeholder="Search ministerial quotes..."
+                  value={localQuery}
+                  onChange={(e) => setLocalQuery(e.target.value)}
+                  className="w-full px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-[#ffffff33]">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/characters/terri.webp"
+                    alt="Terri Coverley"
+                    width={24}
+                    height={24}
+                    className="rounded-full"
+                  />
+                  <span className="text-sm">Terri C</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Bottom navigation */}
       <div className="border-t border-[#1d70b8] bg-[#1d70b8] py-1">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6">
               <Link
                 href="/"
                 className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
               >
                 Ministerial Database
               </Link>
-              {CATEGORIES.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.id}`}
-                  className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
-                >
-                  {category.title}
-                </Link>
-              ))}
+              <div className="flex flex-wrap gap-4">
+                {CATEGORIES.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/categories/${category.id}`}
+                    className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+                  >
+                    {category.title}
+                  </Link>
+                ))}
+              </div>
             </div>
-            <div className="text-xs text-white/60">
+            <div className="text-xs text-white/60 mt-2 sm:mt-0">
               Last updated: {new Date().toLocaleDateString("en-GB")} | System
               ID: DQARS-2024
             </div>
