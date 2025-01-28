@@ -11,9 +11,14 @@ interface FrameStripProps {
   screenshots: Screenshot[];
   rankedMoments?: Screenshot[];
   centerScreenshot?: Screenshot;
+  frameWidth?: number;
 }
 
-export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
+export function FrameStrip({
+  screenshots,
+  centerScreenshot,
+  frameWidth = 256, // Default to 256px width (original size)
+}: FrameStripProps) {
   const router = useRouter();
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
@@ -29,9 +34,8 @@ export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
   });
 
   // Calculate visible frames based on container width
-  const FRAME_WIDTH = 160; // Width of each thumbnail
   const visibleFrames = Math.floor(
-    (stripRef.current?.clientWidth || 0) / FRAME_WIDTH,
+    (stripRef.current?.clientWidth || 0) / frameWidth,
   );
 
   const handleFrameClick = (id: string, e: React.MouseEvent) => {
@@ -132,17 +136,19 @@ export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
     }
   }, [selectedIds, screenshots]);
 
+  const frameHeight = Math.round(frameWidth * (9 / 16));
+
   return (
     <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)]">
       <div className="max-w-7xl mx-auto">
         {/* Yellow border frame */}
-        <div className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]">
-          {/* Yellow border */}
-          <div className="absolute inset-0 border-[5px] rounded-xl pointer-events-none" />
-
+        <div
+          className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
+          style={{ height: `${frameHeight + 10}px` }}
+        >
           <div
             ref={stripRef}
-            className="relative h-40 overflow-x-auto whitespace-nowrap scrollbar-custom"
+            className="relative h-40 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-custom"
           >
             {/* Solid dark background */}
             <div className="absolute inset-0 bg-black/90" />
@@ -152,7 +158,10 @@ export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
               ref={framesParent}
               className="flex gap-[1px] p-1 min-w-full items-center justify-center"
             >
-              <div className="flex gap-2">
+              <div
+                className="flex gap-2"
+                style={{ height: `${frameHeight}px` }}
+              >
                 {screenshots.map((screenshot, index) => (
                   <button
                     key={screenshot.id}
@@ -163,12 +172,16 @@ export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
                     onMouseMove={() => handleDragMove(screenshot.id)}
                     onMouseUp={handleDragEnd}
                     className={cn(
-                      "group relative flex-shrink-0 w-64 h-36 transition-all duration-150",
+                      "group relative flex-shrink-0 transition-all duration-150",
                       centerScreenshot?.id === screenshot.id &&
                         "ring-2 ring-yellow-400/80",
                       selectedIds.has(screenshot.id) &&
                         "ring-4 ring-yellow-400/90",
                     )}
+                    style={{
+                      width: `${frameWidth}px`,
+                      height: `${frameHeight}px`,
+                    }}
                   >
                     <CaptionedImage
                       imageUrl={screenshot.imageUrl}
@@ -184,9 +197,11 @@ export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
               </div>
             </div>
 
-            {/* Edge fades */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black to-transparent pointer-events-none" />
+            {/* Edge fades - now using sticky positioning */}
+            <div
+              className="sticky left-0 top-0 bottom-0 w-8 h-full bg-gradient-to-r from-black to-transparent pointer-events-none"
+              style={{ position: "sticky" }}
+            />
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { parseEpisodeId } from "@/lib/frames";
 import type { Frame } from "@/lib/frames";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+import { FrameStrip } from "@/components/frame-strip";
 
 interface HomePageProps {
   screenshots: Frame[];
@@ -91,6 +92,14 @@ function SearchWrapper({
             : undefined
         }
       />
+
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold mb-4">Recent Frames</h2>
+        <FrameStrip
+          screenshots={filteredScreenshots.slice(0, 100)}
+          frameWidth={192}
+        />
+      </div>
     </div>
   );
 }
