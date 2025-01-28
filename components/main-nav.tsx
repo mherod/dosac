@@ -14,6 +14,13 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useDebounce } from "@/hooks/use-debounce";
 import React from "react";
 import { CATEGORIES } from "@/lib/categories";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Filters {
   season?: number;
@@ -154,59 +161,52 @@ export function MainNav() {
             {/* Desktop navigation */}
             <div className="hidden lg:flex items-center gap-4">
               <div className="flex items-center gap-3">
-                <select
-                  value={filters.season ?? ""}
-                  onChange={(e) => {
-                    const newSeason = e.target.value
-                      ? parseInt(e.target.value, 10)
-                      : undefined;
+                <Select
+                  value={filters.season?.toString() ?? "all"}
+                  onValueChange={(value) => {
+                    const newSeason =
+                      value !== "all" ? parseInt(value, 10) : undefined;
                     handleFilterChange({
                       season: newSeason,
                       episode: newSeason ? filters.episode : undefined,
                     });
                   }}
-                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white hover:bg-[#ffffff11] focus:outline-none focus:ring-2 focus:ring-[#1d70b8]"
                 >
-                  <option value="" className="bg-[#0b0c0c]">
-                    All Series
-                  </option>
-                  {[1, 2, 3, 4].map((season) => (
-                    <option
-                      key={season}
-                      value={season}
-                      className="bg-[#0b0c0c]"
-                    >
-                      Series {season}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="All Series" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Series</SelectItem>
+                    {[1, 2, 3, 4].map((season) => (
+                      <SelectItem key={season} value={season.toString()}>
+                        Series {season}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-                <select
-                  value={filters.episode ?? ""}
-                  onChange={(e) => {
+                <Select
+                  value={filters.episode?.toString() ?? "all"}
+                  onValueChange={(value) => {
                     handleFilterChange({
-                      episode: e.target.value
-                        ? Number(e.target.value)
-                        : undefined,
+                      episode: value !== "all" ? Number(value) : undefined,
                     });
                   }}
                   disabled={!filters.season}
-                  className="px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white hover:bg-[#ffffff11] focus:outline-none focus:ring-2 focus:ring-[#1d70b8] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <option value="" className="bg-[#0b0c0c]">
-                    All Episodes
-                  </option>
-                  {filters.season &&
-                    [1, 2, 3].map((episode) => (
-                      <option
-                        key={episode}
-                        value={episode}
-                        className="bg-[#0b0c0c]"
-                      >
-                        Episode {episode}
-                      </option>
-                    ))}
-                </select>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="All Episodes" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Episodes</SelectItem>
+                    {filters.season &&
+                      [1, 2, 3].map((episode) => (
+                        <SelectItem key={episode} value={episode.toString()}>
+                          Episode {episode}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
 
                 <div className="relative">
                   <input
@@ -241,59 +241,52 @@ export function MainNav() {
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3">
                 <div className="flex gap-2">
-                  <select
-                    value={filters.season ?? ""}
-                    onChange={(e) => {
-                      const newSeason = e.target.value
-                        ? parseInt(e.target.value, 10)
-                        : undefined;
+                  <Select
+                    value={filters.season?.toString() ?? "all"}
+                    onValueChange={(value) => {
+                      const newSeason =
+                        value !== "all" ? parseInt(value, 10) : undefined;
                       handleFilterChange({
                         season: newSeason,
                         episode: newSeason ? filters.episode : undefined,
                       });
                     }}
-                    className="w-1/2 px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white"
                   >
-                    <option value="" className="bg-[#0b0c0c]">
-                      All Series
-                    </option>
-                    {[1, 2, 3, 4].map((season) => (
-                      <option
-                        key={season}
-                        value={season}
-                        className="bg-[#0b0c0c]"
-                      >
-                        Series {season}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All Series" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Series</SelectItem>
+                      {[1, 2, 3, 4].map((season) => (
+                        <SelectItem key={season} value={season.toString()}>
+                          Series {season}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                  <select
-                    value={filters.episode ?? ""}
-                    onChange={(e) => {
+                  <Select
+                    value={filters.episode?.toString() ?? "all"}
+                    onValueChange={(value) => {
                       handleFilterChange({
-                        episode: e.target.value
-                          ? Number(e.target.value)
-                          : undefined,
+                        episode: value !== "all" ? Number(value) : undefined,
                       });
                     }}
                     disabled={!filters.season}
-                    className="w-1/2 px-3 py-1.5 rounded-md border border-[#ffffff33] bg-transparent text-sm text-white"
                   >
-                    <option value="" className="bg-[#0b0c0c]">
-                      All Episodes
-                    </option>
-                    {filters.season &&
-                      [1, 2, 3].map((episode) => (
-                        <option
-                          key={episode}
-                          value={episode}
-                          className="bg-[#0b0c0c]"
-                        >
-                          Episode {episode}
-                        </option>
-                      ))}
-                  </select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All Episodes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Episodes</SelectItem>
+                      {filters.season &&
+                        [1, 2, 3].map((episode) => (
+                          <SelectItem key={episode} value={episode.toString()}>
+                            Episode {episode}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <input
