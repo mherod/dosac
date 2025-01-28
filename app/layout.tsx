@@ -4,28 +4,38 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
 import Image from "next/image";
-const inter = Inter({ subsets: ["latin"] });
+import { MainNav } from "@/components/main-nav";
+import { Suspense } from "react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+const urlObject = new URL(url);
+
+const title = "Thick of It Quotes";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Thick of It Quotes",
-    default: "Thick of It Quotes",
+    template: "%s | " + title,
+    default: title,
   },
   description: "Create and share memes from The Thick of It",
-  metadataBase: new URL("https://dosac.herod.dev"),
+  metadataBase: urlObject,
   openGraph: {
     type: "website",
-    siteName: "Thick of It Quotes",
+    siteName: title,
     locale: "en_GB",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@dosacquotes",
   },
   other: {
     "og:locale": "en_GB",
-    "og:site_name": "Thick of It Quotes",
-    "og:logo": "https://dosac.herod.dev/logo.svg",
+    "og:site_name": title,
+    "og:logo": `${urlObject.origin}/logo.svg`,
     "format-detection": "telephone=no",
   },
 };
@@ -37,23 +47,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           forcedTheme="light"
           disableTransitionOnChange
         >
-          <div className="relative min-h-screen max-w-screen w-full overflow-x-hidden overflow-y-scroll flex flex-col">
-            {children}
-            <Image
-              src="/dosac.png"
-              alt="DoSAC"
-              className="mx-auto p-4"
-              width={130}
-              height={50}
-            />
-          </div>
+          <Suspense>
+            <MainNav />
+          </Suspense>
+          <main className="flex flex-col min-h-screen">
+            <div className="flex-1 container max-w-6xl mx-auto px-4 md:px-6">
+              {children}
+            </div>
+
+            <footer className="mt-auto border-t">
+              <Image
+                src="/DOSAC.png"
+                alt="Department of Social Affairs and Citizenship logo"
+                className="mx-auto py-4 w-32 md:w-40"
+                width={160}
+                height={64}
+                priority
+              />
+            </footer>
+          </main>
         </ThemeProvider>
         <Analytics />
       </body>

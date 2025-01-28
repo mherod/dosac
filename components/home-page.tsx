@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { parseEpisodeId } from "@/lib/frames";
 import type { Frame } from "@/lib/frames";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { MainNav } from "@/components/main-nav";
 
 interface HomePageProps {
   screenshots: Frame[];
@@ -103,9 +102,6 @@ export function HomePage({
 }: HomePageProps) {
   return (
     <>
-      <Suspense>
-        <MainNav />
-      </Suspense>
       <Suspense>
         <SearchWrapper
           screenshots={screenshots}

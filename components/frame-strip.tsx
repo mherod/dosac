@@ -72,7 +72,7 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
 
   const updateUrl = (ids: Set<string>) => {
     if (ids.size === 0) {
-      router.push(`/caption`);
+      router.push(`/caption`, { scroll: false });
       return;
     }
 
@@ -89,7 +89,9 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
       ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
       : "";
 
-    router.push(`/caption/${basePath}${compareIds}${textParam}`);
+    router.push(`/caption/${basePath}${compareIds}${textParam}`, {
+      scroll: false,
+    });
   };
 
   const handleDragStart = (id: string) => {

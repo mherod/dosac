@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { MainNav } from "@/components/main-nav";
 import { FileText } from "lucide-react";
 import { CATEGORIES } from "@/lib/categories";
 import { getFrameIndex } from "@/lib/frames.server";
@@ -67,7 +66,6 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <>
-      <MainNav />
       <main className="flex-1 bg-[#f3f2f1]">
         <CategoryHeader
           title={category.title}

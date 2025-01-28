@@ -4,8 +4,6 @@ import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
-import { MainNav } from "@/components/main-nav";
-import type { Screenshot } from "@/lib/types";
 import { FrameStrip } from "@/components/frame-strip";
 
 export async function generateStaticParams() {
@@ -89,7 +87,6 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <>
-      <MainNav />
       <div className="container mx-auto py-8">
         <Link
           href="/"

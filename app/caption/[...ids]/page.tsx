@@ -116,7 +116,6 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   return (
     <>
-      <MainNav />
       <div className="container mx-auto px-4 py-8">
         <Link
           href="/"

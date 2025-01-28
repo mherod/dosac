@@ -188,6 +188,7 @@ export function ScreenshotGrid({
                   href={getScreenshotUrl(screenshot.id)}
                   prefetch={true}
                   rel="prerender"
+                  scroll={false}
                 >
                   <FrameCard
                     screenshot={screenshot}
@@ -230,6 +231,7 @@ export function ScreenshotGrid({
                 href={getScreenshotUrl(screenshot.id)}
                 prefetch={true}
                 rel="prerender"
+                scroll={false}
               >
                 <FrameCard
                   screenshot={screenshot}
