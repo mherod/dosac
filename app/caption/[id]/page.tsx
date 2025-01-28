@@ -5,8 +5,8 @@ import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { MainNav } from "@/components/main-nav";
-import { ScreenshotGrid } from "@/components/screenshot-grid";
 import type { Screenshot } from "@/lib/types";
+import { FrameStrip } from "@/components/frame-strip";
 
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
@@ -59,14 +59,14 @@ export default async function Page({ params, searchParams }: PageProps) {
     notFound();
   });
 
-  const [previousFrame, nextFrame] = await Promise.all([
+  const [previousFrames, nextFrames] = await Promise.all([
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i > 0 ? index[i - 1] : null;
+      return i > 0 ? index.slice(Math.max(0, i - 3), i) : [];
     }),
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i < index.length - 1 ? index[i + 1] : null;
+      return i < index.length - 1 ? index.slice(i + 1, i + 4) : [];
     }),
   ]).catch(() => {
     notFound();
@@ -99,8 +99,8 @@ export default async function Page({ params, searchParams }: PageProps) {
         </Link>
 
         <div className="flex flex-row items-center justify-center gap-4 max-h-18">
-          <ScreenshotGrid
-            screenshots={[previousFrame, frame, nextFrame].filter(
+          <FrameStrip
+            screenshots={[...previousFrames, frame, ...nextFrames].filter(
               (f): f is Screenshot =>
                 !!f && typeof f.id === "string" && typeof f.speech === "string",
             )}
