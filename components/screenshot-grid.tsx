@@ -36,6 +36,44 @@ export function ScreenshotGrid({
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalScreenshots);
   const currentScreenshots = screenshots.slice(startIndex, endIndex);
 
+  function getScreenshotUrl(id: string) {
+    if (!currentScreenshots) return `/caption/${id}`;
+
+    if (selectedIds.size === 0) {
+      return `/caption/${id}`;
+    }
+
+    const selectedFrames = currentScreenshots
+      .filter((s) => selectedIds.has(s.id))
+      .sort((a, b) => {
+        const aIndex = currentScreenshots.findIndex((s) => s.id === a.id);
+        const bIndex = currentScreenshots.findIndex((s) => s.id === b.id);
+        return aIndex - bIndex;
+      });
+
+    // Add the clicked frame if it's not already selected
+    if (!selectedIds.has(id)) {
+      const clickedFrame = currentScreenshots.find((s) => s.id === id);
+      if (clickedFrame) {
+        selectedFrames.push(clickedFrame);
+      }
+    }
+
+    // Limit to 4 frames total
+    const frames = selectedFrames.slice(0, 4);
+    const combinedText = frames.map((s) => s.speech).join("\n");
+
+    // Use path for first two IDs and compare query param for additional IDs
+    const [first, second, ...rest] = frames.map((f) => f.id);
+    const basePath = second ? `${first}/${second}` : first;
+    const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
+    const textParam = combinedText
+      ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
+      : "";
+
+    return `/caption/${basePath}${compareIds}${textParam}`;
+  }
+
   // Get all possible URLs for current page
   const allPossibleUrls = React.useMemo(() => {
     const urls = currentScreenshots.map((screenshot) =>
@@ -47,7 +85,7 @@ export function ScreenshotGrid({
       );
     }
     return urls;
-  }, [currentScreenshots, rankedMoments]);
+  }, [currentScreenshots, rankedMoments, selectedIds]);
 
   // Use our speculation rules hook
   useSpeculationRules(allPossibleUrls, {
@@ -130,39 +168,6 @@ export function ScreenshotGrid({
     window.addEventListener("mouseup", handleMouseUp);
     return () => window.removeEventListener("mouseup", handleMouseUp);
   }, [handleDragEnd]);
-
-  function getScreenshotUrl(id: string) {
-    if (selectedIds.size === 0) {
-      return `/caption/${id}`;
-    }
-
-    const selectedFrames = currentScreenshots
-      .filter((s) => selectedIds.has(s.id))
-      .sort((a, b) => {
-        const aIndex = currentScreenshots.findIndex((s) => s.id === a.id);
-        const bIndex = currentScreenshots.findIndex((s) => s.id === b.id);
-        return aIndex - bIndex;
-      });
-
-    // Add the clicked frame if it's not already selected
-    if (!selectedIds.has(id)) {
-      selectedFrames.push(currentScreenshots.find((s) => s.id === id)!);
-    }
-
-    // Limit to 4 frames total
-    const frames = selectedFrames.slice(0, 4);
-    const combinedText = frames.map((s) => s.speech).join("\n");
-
-    // Use path for first two IDs and compare query param for additional IDs
-    const [first, second, ...rest] = frames.map((f) => f.id);
-    const basePath = second ? `${first}/${second}` : first;
-    const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
-    const textParam = combinedText
-      ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
-      : "";
-
-    return `/caption/${basePath}${compareIds}${textParam}`;
-  }
 
   return (
     <div className="space-y-8">

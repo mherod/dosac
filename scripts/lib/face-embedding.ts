@@ -1,14 +1,18 @@
-import tf, { decodeImage } from "./tensorflow-setup";
-import * as blazeface from "@tensorflow-models/blazeface";
+import * as tf from "./tensorflow-setup";
+import { FaceDetector } from "./face-detector";
+import { faceAttributeDetector } from "./face-attributes";
+import { decodeImage } from "./tensorflow-setup";
+import { readFileSync } from "fs";
 import sharp from "sharp";
 import { memoize } from "lodash-es";
-import { createHash } from "crypto";
-import { FaceEmbedding } from "./face-cache";
-import { basename } from "path";
-import { createCanvas, Image, Canvas } from "canvas";
 import { LRUCache } from "lru-cache";
 import { MAX_EMBEDDING_SIZE, SUPPORTED_IMAGE_TYPES } from "./constants";
 import { convertToJpeg } from "./image-processing";
+import { basename } from "path";
+import { createCanvas, Image, Canvas } from "canvas";
+import { createHash } from "crypto";
+import { FaceEmbedding } from "./face-cache";
+import { FaceAttributeDetector } from "./face-attributes";
 
 // Types
 export interface FacePrediction {
@@ -35,9 +39,39 @@ const embeddingsCache = new LRUCache<string, number[]>({
   allowStale: false,
 });
 
-// Load models
-let blazefaceModel: blazeface.BlazeFaceModel | null = null;
-let mobileNet: tf.GraphModel | null = null;
+const faceDetector = new FaceDetector();
+
+let initialized = false;
+
+async function initialize() {
+  if (!initialized) {
+    await Promise.all([
+      faceDetector.initialize(),
+      faceAttributeDetector.initialize(),
+    ]);
+    initialized = true;
+  }
+}
+
+// Cache for decoded images
+const imageCache = new LRUCache<string, tf.Tensor3D>({
+  max: 100, // Maximum number of items to store
+  dispose: (tensor: tf.Tensor3D) => tensor.dispose(), // Clean up tensors when removed from cache
+});
+
+// Memoized function to decode images
+const decodeImageMemo = memoize(
+  async (imagePath: string): Promise<tf.Tensor3D> => {
+    const imageBuffer = readFileSync(imagePath);
+    const { data, info } = await sharp(imageBuffer)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    return decodeImage(data, info.width, info.height);
+  },
+  (imagePath: string) => imagePath,
+);
 
 // Validation utilities
 export const validateFileType = memoize(
@@ -144,79 +178,6 @@ export const bufferToCanvas = memoize(
   (buffer) => buffer.toString("base64"),
 );
 
-// Face detection and processing
-export const loadModels = memoize(async () => {
-  try {
-    if (!blazefaceModel) {
-      blazefaceModel = await blazeface.load();
-    }
-    if (!mobileNet) {
-      mobileNet = await tf.loadGraphModel(
-        "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/feature_vector/3/default/1",
-        { fromTFHub: true },
-      );
-    }
-    return { blazefaceModel, mobileNet };
-  } catch (error) {
-    throw error;
-  }
-});
-
-export const detectFaces = memoize(
-  async (buffer: Buffer) => {
-    if (!blazefaceModel) {
-      blazefaceModel = await blazeface.load();
-    }
-
-    try {
-      // Validate and convert to PNG
-      const metadata = await sharp(buffer).metadata();
-      if (
-        !metadata.width ||
-        !metadata.height ||
-        metadata.width === 0 ||
-        metadata.height === 0
-      ) {
-        throw new Error("Invalid image dimensions");
-      }
-
-      // Convert to PNG for consistent format and alignment
-      const pngBuffer = await sharp(buffer)
-        .ensureAlpha() // Ensure consistent channels (RGBA)
-        .png()
-        .toBuffer();
-
-      // Decode image outside of tf.tidy
-      const decoded = await decodeImage(pngBuffer, 4); // Force 4 channels (RGBA)
-
-      // Process tensor with explicit shape and dtype
-      const tensor = tf.tidy(() => {
-        try {
-          const float32Tensor = tf.cast(decoded, "float32");
-          const rgbTensor = float32Tensor.slice([0, 0, 0], [-1, -1, 3]); // Take first 3 channels
-          return rgbTensor as tf.Tensor3D;
-        } catch (error: unknown) {
-          throw new Error(
-            `Failed to create tensor: ${error instanceof Error ? error.message : "Unknown error"}`,
-          );
-        }
-      });
-
-      // Clean up decoded tensor
-      tf.dispose(decoded);
-
-      const predictions = await blazefaceModel.estimateFaces(tensor, false);
-      tf.dispose(tensor);
-
-      return { predictions, width: metadata.width, height: metadata.height };
-    } catch (error) {
-      console.error("Error in face detection:", error);
-      return { predictions: [], width: 0, height: 0 };
-    }
-  },
-  (buffer: Buffer) => createHash("md5").update(buffer).digest("hex"),
-);
-
 // Face rotation and cropping utilities
 export const calculateRotationAngle = memoize(
   (landmarks: Array<[number, number]> = []): number => {
@@ -281,24 +242,29 @@ export async function cropFace(
 ): Promise<Buffer> {
   const faceWidth = face.bottomRight[0] - face.topLeft[0];
   const faceHeight = face.bottomRight[1] - face.topLeft[1];
-  const padding = {
-    width: faceWidth * 0.2,
-    height: faceHeight * 0.2,
-  };
 
+  // Calculate the center point of the face
   const center = calculateCenterPoint(face.topLeft, face.bottomRight);
-  const cropSize = Math.max(
-    Math.floor(faceWidth + padding.width * 2),
-    Math.floor(faceHeight + padding.height * 2),
-  );
+
+  // Use the larger dimension to create a square box
+  const size = Math.max(faceWidth, faceHeight);
+  const padding = size * 0.3; // 30% padding
+  const cropSize = size + padding * 2;
+
+  // Calculate the crop coordinates ensuring they're within image bounds
+  const cropLeft = Math.max(0, Math.floor(center.x - cropSize / 2));
+  const cropTop = Math.max(0, Math.floor(center.y - cropSize / 2));
+  const finalCropWidth = Math.min(cropSize, width - cropLeft);
+  const finalCropHeight = Math.min(cropSize, height - cropTop);
 
   const cropped = await sharp(buffer)
     .extract({
-      left: Math.max(0, Math.floor(center.x - cropSize / 2)),
-      top: Math.max(0, Math.floor(center.y - cropSize / 2)),
-      width: Math.min(cropSize, width - Math.floor(center.x - cropSize / 2)),
-      height: Math.min(cropSize, height - Math.floor(center.y - cropSize / 2)),
+      left: cropLeft,
+      top: cropTop,
+      width: finalCropWidth,
+      height: finalCropHeight,
     })
+    .resize(224, 224) // Resize to standard size
     .toBuffer();
   return await convertToJpeg(cropped);
 }
@@ -549,87 +515,88 @@ export async function convertPredictions(
 }
 
 // Main face embedding generation function
-export async function generateFaceEmbedding(
-  buffer: Buffer,
-  filePath: string,
-  options: GenerateEmbeddingOptions = {},
-): Promise<FaceEmbedding | null> {
-  const { logProgress = () => {} } = options;
-  let inputTensor: tf.Tensor4D | null = null;
-  const fileName = basename(filePath);
+export async function generateFaceEmbedding(imagePath: string) {
+  await initialize();
 
   try {
-    // Validate input buffer
-    if (!Buffer.isBuffer(buffer) || buffer.length === 0) {
-      throw new Error("Invalid input buffer");
+    // Get or decode image
+    let image = imageCache.get(imagePath);
+    if (!image) {
+      image = await decodeImageMemo(imagePath);
+      imageCache.set(imagePath, image);
     }
 
-    // Validate image format and dimensions
-    const metadata = await sharp(buffer).metadata();
-    if (
-      !metadata.width ||
-      !metadata.height ||
-      metadata.width === 0 ||
-      metadata.height === 0
-    ) {
-      throw new Error("Invalid image dimensions");
+    const predictions = await faceDetector.detect(image);
+
+    if (predictions.length === 0) {
+      return {
+        path: imagePath,
+        embedding: null,
+        faces: 0,
+        cached: new Date().toISOString(),
+        predictions: [],
+      };
     }
 
-    // Load models
-    const { mobileNet } = await loadModels();
+    // Get embeddings and attributes for each face
+    const processedPredictions = await Promise.all(
+      predictions.map(async (pred) => {
+        const { topLeft, bottomRight, probability } = pred;
 
-    // Convert to PNG for compatibility
-    const pngBuffer = await sharp(buffer).png().toBuffer();
+        // Extract face region for attribute detection
+        const width = bottomRight[0] - topLeft[0];
+        const height = bottomRight[1] - topLeft[1];
 
-    // Detect faces
-    logProgress("Detecting faces...");
-    const faceDetection = await detectFaces(pngBuffer);
+        // Add padding for better attribute detection
+        const padding = Math.min(width, height) * 0.2;
+        const paddedLeft = Math.max(0, topLeft[0] - padding);
+        const paddedTop = Math.max(0, topLeft[1] - padding);
+        const paddedWidth = Math.min(
+          image.shape[1] - paddedLeft,
+          width + padding * 2,
+        );
+        const paddedHeight = Math.min(
+          image.shape[0] - paddedTop,
+          height + padding * 2,
+        );
 
-    if (!faceDetection.predictions || faceDetection.predictions.length === 0) {
-      logProgress(`No faces detected in ${fileName}`);
-      return null;
-    }
+        const faceRegion = tf.tidy(() =>
+          tf.slice(
+            image,
+            [Math.round(paddedTop), Math.round(paddedLeft), 0],
+            [Math.round(paddedHeight), Math.round(paddedWidth), 3],
+          ),
+        );
 
-    logProgress(
-      `Found ${faceDetection.predictions.length} faces in ${fileName}`,
+        const { attributes, confidence } =
+          await faceAttributeDetector.detectAttributes(faceRegion, pred);
+        faceRegion.dispose();
+
+        return {
+          topLeft,
+          bottomRight,
+          probability,
+          attributes,
+          attributeConfidence: confidence,
+        };
+      }),
     );
 
-    // Generate embedding
-    logProgress(`Generating face embedding for ${fileName}...`);
-    inputTensor = await preprocessImage(pngBuffer);
-    const embedding = await generateEmbedding(inputTensor, mobileNet!);
-
-    // Convert predictions with the image buffer for potential recalculation
-    const predictions = await convertPredictions(
-      faceDetection.predictions,
-      pngBuffer,
+    // Use the first face's embedding as the representative embedding
+    const embedding = await faceDetector.generateEmbedding(
+      image,
+      predictions[0],
     );
 
-    const embeddingData: FaceEmbedding = {
-      path: "", // Path will be set by the caller
+    return {
+      path: imagePath,
       embedding,
-      faces: faceDetection.predictions.length,
+      faces: predictions.length,
       cached: new Date().toISOString(),
-      predictions,
+      predictions: processedPredictions,
     };
-
-    logProgress(`Face embedding generated successfully for ${fileName}`);
-    return embeddingData;
   } catch (error) {
-    if (error instanceof Error) {
-      logProgress(
-        `Error generating face embedding for ${fileName}: ${error.message}`,
-      );
-    } else {
-      logProgress(
-        `Error generating face embedding for ${fileName}: Unknown error`,
-      );
-    }
+    console.error(`Error processing ${imagePath}:`, error);
     throw error;
-  } finally {
-    if (inputTensor) {
-      tf.dispose(inputTensor);
-    }
-    tf.dispose([]);
   }
 }

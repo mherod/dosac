@@ -6,23 +6,25 @@ import {
   existsSync,
   mkdirSync,
 } from "fs";
-import { cpus, homedir } from "os";
-import { basename, join } from "path";
+import { cpus } from "os";
+import { basename, join, resolve } from "path";
 import {
   loadIndex,
   saveIndex,
   saveEmbedding,
   updateIndex,
   getCacheStats,
-  validateCache,
+  rebuildCacheIndex,
   FaceEmbedding,
+  CacheIndex,
 } from "./lib/face-cache";
 import { generateFaceEmbedding } from "./lib/face-embedding";
 import { BATCH_SIZE, PRIMARY_CACHE_DIR } from "./lib/config";
+import { promises as fs } from "fs";
 
-const localDir = homedir() + "/Development/thickofitquotes/public/frames";
+const localDir = resolve("public/frames");
 
-const { sync } = fastGlob;
+const { sync: fastGlobSync } = fastGlob;
 
 // Initialize cache and index
 if (!existsSync(PRIMARY_CACHE_DIR)) {
@@ -41,12 +43,21 @@ if (!existsSync(indexPath)) {
   );
 }
 
+const NUM_WORKERS = Math.max(1, Math.floor(cpus().length * 0.75)); // Use 75% of available cores
+
 // Process images in parallel batches
-async function processBatch(batch: string[]) {
-  return Promise.all(batch.map(processImage));
+async function processBatch(batch: string[], currentIndex: CacheIndex) {
+  const results = await Promise.all(
+    batch.map((filePath) => processImage(filePath, currentIndex)),
+  );
+  await saveIndex(currentIndex);
+  return results;
 }
 
-async function processImage(filePath: string): Promise<FaceEmbedding | null> {
+async function processImage(
+  filePath: string,
+  currentIndex: CacheIndex,
+): Promise<FaceEmbedding | null> {
   const fileName = basename(filePath);
   let stats;
   try {
@@ -56,41 +67,30 @@ async function processImage(filePath: string): Promise<FaceEmbedding | null> {
     return null;
   }
 
-  const currentIndex = loadIndex();
   const existingEntry = currentIndex.entries[filePath];
 
   if (existingEntry && existingEntry.mtime === stats.mtimeMs) {
     return null; // File hasn't changed, skip processing
   }
 
-  let buffer;
-  try {
-    buffer = readFileSync(filePath);
-  } catch (error) {
-    console.error(`Failed to read file ${fileName}:`, error);
-    return null;
-  }
-
   let embeddingData;
   try {
-    embeddingData = await generateFaceEmbedding(buffer, filePath, {
-      logProgress: (message) => console.log(`[${fileName}] ${message}`),
-    });
+    embeddingData = await generateFaceEmbedding(filePath);
   } catch (error) {
     console.error(`Failed to generate face embedding for ${fileName}:`, error);
     return null;
   }
 
-  if (!embeddingData) {
-    return null;
-  }
-
   try {
-    // Set the file path and save
-    embeddingData.path = filePath;
-    saveEmbedding(filePath, embeddingData);
-    updateIndex(currentIndex, filePath, embeddingData.faces, stats.mtimeMs);
-    saveIndex(currentIndex);
+    if (embeddingData) {
+      // Set the file path and save
+      embeddingData.path = filePath;
+      saveEmbedding(filePath, embeddingData);
+      updateIndex(currentIndex, filePath, embeddingData.faces, stats.mtimeMs);
+    } else {
+      // Mark file as having no faces
+      updateIndex(currentIndex, filePath, 0, stats.mtimeMs, true);
+    }
   } catch (error) {
     console.error(`Failed to save embedding data for ${fileName}:`, error);
     return null;
@@ -99,116 +99,64 @@ async function processImage(filePath: string): Promise<FaceEmbedding | null> {
   return embeddingData;
 }
 
-async function main() {
-  // Validate existing cache
-  console.log("\nValidating cache...");
-  const validation = validateCache();
-  if (!validation.valid) {
-    console.error("Cache validation failed:");
-    validation.errors.forEach((error) => console.error(`- ${error}`));
-    process.exit(1);
-  }
-
-  let files;
-  try {
-    files = sync(localDir + "/**/frame-blank.jpg").slice(0, 100);
-  } catch (error) {
-    console.error("Failed to scan directory for images:", error);
-    process.exit(1);
-  }
+async function getAllImageFiles(): Promise<string[]> {
+  const files = fastGlobSync(localDir + "/**/frame-blank*.jpg");
   console.log(`\nFound ${files.length} image files`);
+  return files;
+}
 
-  const currentIndex = loadIndex();
-  const filesToProcess = files.filter((file) => {
-    try {
-      const stats = statSync(file);
-      const existingEntry = currentIndex.entries[file];
-      return !existingEntry || existingEntry.mtime !== stats.mtimeMs;
-    } catch (error) {
-      console.error(
-        `Failed to check file status for ${basename(file)}:`,
-        error,
-      );
-      process.exit(1);
-    }
-  });
+async function main() {
+  // Check for --rebuild-index flag
+  if (process.argv.includes("--rebuild-index")) {
+    console.log("\nRebuilding cache index...");
+    await rebuildCacheIndex();
+    console.log("Cache index rebuilt successfully!");
+    return;
+  }
 
-  // Sort files by size (smallest first)
-  const sortedFiles = filesToProcess.sort((a, b) => {
-    try {
-      const statsA = statSync(a);
-      const statsB = statSync(b);
-      return statsA.size - statsB.size;
-    } catch (error) {
-      console.error("Failed to sort files by size:", error);
-      process.exit(1);
-    }
-  });
+  // Always rebuild the cache index first
+  console.log("\nRebuilding cache index...");
+  await rebuildCacheIndex();
 
-  console.log(`${sortedFiles.length} files need processing`);
-  const numCpus = cpus().length;
-  console.log(`Using batch size of ${BATCH_SIZE} (${numCpus} CPU cores)`);
+  const files = await getAllImageFiles();
+  const batches = [];
 
-  const results = [];
+  for (let i = 0; i < files.length; i += BATCH_SIZE) {
+    batches.push(files.slice(i, i + BATCH_SIZE));
+  }
 
-  for (let i = 0; i < sortedFiles.length; i += BATCH_SIZE) {
-    const batch = sortedFiles.slice(i, i + BATCH_SIZE);
-    let batchResults;
-    try {
-      batchResults = await processBatch(batch);
-    } catch (error) {
-      console.error("Failed to process batch:", error);
-      process.exit(1);
-    }
+  const currentIndex = await loadIndex();
 
-    const validResults = batchResults.filter((result) => result !== null);
-    results.push(...validResults);
+  console.log(
+    `Processing ${files.length} files with batch size ${BATCH_SIZE} across ${NUM_WORKERS} CPU cores...`,
+  );
 
-    if (i % (BATCH_SIZE * 10) === 0) {
-      try {
-        saveIndex(currentIndex);
-      } catch (error) {
-        console.error("Failed to save index:", error);
-        process.exit(1);
-      }
-    }
-
-    let totalSize = 0;
-    try {
-      totalSize = batch.reduce((sum, file) => sum + statSync(file).size, 0);
-    } catch (error) {
-      console.error("Failed to calculate batch size:", error);
-      process.exit(1);
-    }
+  for (const batch of batches) {
+    const batchSize =
+      Buffer.concat(await Promise.all(batch.map((f: string) => fs.readFile(f))))
+        .length /
+      1024 /
+      1024;
 
     console.log(
-      `Processed ${i + batch.length}/${sortedFiles.length} files. Batch size: ${(totalSize / 1024 / 1024).toFixed(2)}MB. Found ${validResults.length} faces in this batch.`,
+      `Processed ${files.indexOf(
+        batch[0],
+      )}/${files.length} files. Batch size: ${batchSize.toFixed(2)}MB.`,
     );
+
+    await processBatch(batch, currentIndex);
   }
 
-  try {
-    saveIndex(currentIndex);
-  } catch (error) {
-    console.error("Failed to save final index:", error);
-    process.exit(1);
-  }
-
-  // Print final stats
-  try {
-    const stats = getCacheStats();
-    console.log("\nProcessing complete! Cache statistics:");
-    console.log(`Total images with faces: ${stats.totalImages}`);
-    console.log(`Total faces detected: ${stats.totalFaces}`);
-    console.log("Face count distribution:");
-    Object.entries(stats.byFaceCount).forEach(([faces, count]) => {
-      console.log(`  ${faces} face(s): ${count} images`);
-    });
-    console.log(`Cache size: ${(stats.cacheSize / 1024 / 1024).toFixed(2)} MB`);
-    console.log(`Last update: ${stats.lastUpdate}`);
-  } catch (error) {
-    console.error("Failed to get cache statistics:", error);
-    process.exit(1);
-  }
+  const stats = await getCacheStats();
+  console.log("\nCache Statistics:");
+  console.log(`Total images with faces: ${stats.totalImages}`);
+  console.log(`Total faces detected: ${stats.totalFaces}`);
+  console.log("\nFace count distribution:");
+  Object.entries(stats.byFaceCount).forEach(([count, images]) => {
+    console.log(`${count} face(s): ${images} images`);
+  });
+  console.log(`\nCache size: ${(stats.cacheSize / 1024 / 1024).toFixed(2)}MB`);
+  console.log(`Last update: ${stats.lastUpdate}`);
 }
 
 main().catch((error) => {

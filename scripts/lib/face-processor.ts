@@ -1,5 +1,5 @@
 import tf from "./tensorflow-setup";
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
+import * as faceLandmarksDetection from "@mediapipe/face_mesh";
 import { loadModels } from "./face-embedding";
 import { FacePrediction } from "./face-embedding";
 import sharp from "sharp";
@@ -65,165 +65,56 @@ export class FaceProcessor {
   }
 
   private calculateAlignmentTransform(
-    landmarks: faceLandmarksDetection.Keypoint[],
-    imageWidth: number,
-    imageHeight: number,
-  ): { matrix: number[][]; score: number } {
-    // Extract key facial landmarks
-    const LANDMARK_INDICES = {
-      LEFT_EYE: 33,
-      RIGHT_EYE: 263,
-      NOSE_TIP: 1,
-      LEFT_MOUTH: 61,
-      RIGHT_MOUTH: 291,
-    };
-
-    const leftEye = landmarks[LANDMARK_INDICES.LEFT_EYE];
-    const rightEye = landmarks[LANDMARK_INDICES.RIGHT_EYE];
-    const nose = landmarks[LANDMARK_INDICES.NOSE_TIP];
-    const leftMouth = landmarks[LANDMARK_INDICES.LEFT_MOUTH];
-    const rightMouth = landmarks[LANDMARK_INDICES.RIGHT_MOUTH];
-
-    // Calculate the current positions (normalized)
-    const currentPoints = {
-      leftEye: [leftEye.x / imageWidth, leftEye.y / imageHeight] as [
-        number,
-        number,
-      ],
-      rightEye: [rightEye.x / imageWidth, rightEye.y / imageHeight] as [
-        number,
-        number,
-      ],
-      nose: [nose.x / imageWidth, nose.y / imageHeight] as [number, number],
-      leftMouth: [leftMouth.x / imageWidth, leftMouth.y / imageHeight] as [
-        number,
-        number,
-      ],
-      rightMouth: [rightMouth.x / imageWidth, rightMouth.y / imageHeight] as [
-        number,
-        number,
-      ],
-    };
-
-    // Calculate affine transformation matrix
-    const srcPoints = [
-      currentPoints.leftEye,
-      currentPoints.rightEye,
-      currentPoints.nose,
-      currentPoints.leftMouth,
-      currentPoints.rightMouth,
-    ];
-
-    const dstPoints = [
-      CANONICAL_FACE_POINTS.leftEye,
-      CANONICAL_FACE_POINTS.rightEye,
-      CANONICAL_FACE_POINTS.nose,
-      CANONICAL_FACE_POINTS.leftMouth,
-      CANONICAL_FACE_POINTS.rightMouth,
-    ];
-
-    // Calculate transformation matrix using least squares method
-    const matrix = this.computeAffineTransform(srcPoints, dstPoints);
-
-    // Calculate alignment score based on landmark positions
-    const alignmentScore = this.calculateAlignmentScore(
-      currentPoints,
-      CANONICAL_FACE_POINTS,
-    );
-
-    return { matrix, score: alignmentScore };
-  }
-
-  private computeAffineTransform(
-    src: [number, number][],
-    dst: [number, number][],
+    landmarks: Array<[number, number]>,
+    targetLandmarks: Array<[number, number]>,
   ): number[][] {
-    const n = src.length;
-    const A = [];
-    const b = [];
+    // Build the system of equations Ax = b
+    const A: number[][] = [];
+    const b: number[] = [];
 
-    for (let i = 0; i < n; i++) {
-      const [x, y] = src[i];
-      const [u, v] = dst[i];
+    for (let i = 0; i < landmarks.length; i++) {
+      const [x, y] = landmarks[i];
+      const [u, v] = targetLandmarks[i];
+
+      // Each point gives us two equations
       A.push([x, y, 1, 0, 0, 0]);
       A.push([0, 0, 0, x, y, 1]);
       b.push(u);
       b.push(v);
     }
 
-    // Solve using pseudo-inverse (least squares)
+    // Convert to tensors
     const AT = tf.tensor2d(A);
     const bT = tf.tensor1d(b);
-    const ATA = tf.matMul(AT.transpose(), AT);
-    const ATb = tf.matMul(AT.transpose(), bT.expandDims(1));
-    const x = tf.matMul(tf.tensor2d(this.pseudoInverse(ATA.arraySync())), ATb);
-    const result = x.arraySync() as number[][];
 
-    // Cleanup tensors
-    tf.dispose([AT, bT, ATA, ATb, x]);
+    return tf.tidy(() => {
+      // Compute A^T * A and A^T * b
+      const ATA = tf.matMul(AT.transpose(), AT);
+      const ATb = tf.matMul(AT.transpose(), bT.expandDims(1));
 
-    // Reshape result into 2x3 transformation matrix
-    return [
-      [result[0][0], result[1][0], result[2][0]],
-      [result[3][0], result[4][0], result[5][0]],
-    ];
-  }
+      // Use SVD for numerical stability
+      const svd = tf.linalg.svd(ATA);
+      const singularValues = svd.s.arraySync() as number[];
+      const threshold = 1e-10;
 
-  private pseudoInverse(matrix: number[][]): number[][] {
-    const svd = this.computeSVD(matrix);
-    const threshold = 1e-10;
-    const singularValues = svd.s.map((v) =>
-      Math.abs(v) < threshold ? 0 : 1 / v,
-    );
+      // Compute pseudo-inverse using SVD
+      const Sinv = tf.tensor2d(
+        singularValues.map((v) => (v < threshold ? 0 : 1 / v)),
+        [singularValues.length, 1],
+      );
 
-    const result = new Array(matrix[0].length)
-      .fill(0)
-      .map(() => new Array(matrix.length).fill(0));
+      const UTb = tf.matMul(svd.u.transpose(), ATb);
+      const x = tf.matMul(tf.matMul(svd.v, Sinv.mul(UTb)), svd.v.transpose());
 
-    for (let i = 0; i < matrix[0].length; i++) {
-      for (let j = 0; j < matrix.length; j++) {
-        let sum = 0;
-        for (let k = 0; k < singularValues.length; k++) {
-          sum += svd.v[i][k] * singularValues[k] * svd.u[j][k];
-        }
-        result[i][j] = sum;
-      }
-    }
+      // Extract result
+      const result = x.arraySync() as number[][];
 
-    return result;
-  }
-
-  private computeSVD(matrix: number[][]): {
-    u: number[][];
-    s: number[];
-    v: number[][];
-  } {
-    // Simple SVD implementation for small matrices
-    const AT = tf.tensor2d(matrix).transpose();
-    const A = tf.tensor2d(matrix);
-    const ATA = tf.matMul(AT, A);
-    const eigenvalues = tf.eig(ATA);
-
-    const s = eigenvalues.values.arraySync() as number[];
-    const v = eigenvalues.vectors.arraySync() as number[][];
-
-    // Calculate U using A * V * S^(-1/2)
-    const sqrtS = s.map((val) =>
-      Math.abs(val) < 1e-10 ? 0 : 1 / Math.sqrt(val),
-    );
-    const u = tf
-      .matMul(
-        tf.matMul(A, tf.tensor2d(v)),
-        tf.tensor2d([
-          [sqrtS[0], 0],
-          [0, sqrtS[1]],
-        ]),
-      )
-      .arraySync() as number[][];
-
-    tf.dispose([AT, A, ATA, eigenvalues.values, eigenvalues.vectors]);
-
-    return { u, s, v };
+      // Reshape into 2x3 transformation matrix
+      return [
+        [result[0][0], result[1][0], result[2][0]],
+        [result[3][0], result[4][0], result[5][0]],
+      ];
+    });
   }
 
   private calculateAlignmentScore(
@@ -249,7 +140,7 @@ export class FaceProcessor {
   async alignFace(
     buffer: Buffer,
     face: FacePrediction,
-  ): Promise<AlignmentResult> {
+  ): Promise<{ buffer: Buffer; width: number; height: number }> {
     try {
       // Get image dimensions
       const metadata = await sharp(buffer).metadata();
@@ -257,39 +148,37 @@ export class FaceProcessor {
         throw new Error("Invalid image dimensions");
       }
 
-      // Detect facial landmarks
-      const landmarks = await this.detectLandmarks(buffer);
-      if (!landmarks.length) {
-        throw new Error("No facial landmarks detected");
-      }
-
-      // Calculate transformation
-      const { matrix, score } = this.calculateAlignmentTransform(
-        landmarks[0].keypoints,
-        metadata.width,
-        metadata.height,
+      // Calculate transformation matrix
+      const matrix = await this.calculateAlignmentTransform(
+        face.landmarks || [],
+        this.targetLandmarks,
       );
 
       // Apply transformation using sharp
       const alignedBuffer = await sharp(buffer)
-        .affine(matrix[0].concat(matrix[1]), {
-          background: { r: 0, g: 0, b: 0, alpha: 0 },
-        })
+        .affine(
+          [
+            matrix[0][0],
+            matrix[0][1],
+            matrix[1][0],
+            matrix[1][1],
+            matrix[0][2],
+            matrix[1][2],
+          ],
+          {
+            background: { r: 0, g: 0, b: 0, alpha: 0 },
+          },
+        )
         .toBuffer();
 
-      // Convert to JPEG for consistency
-      const processedBuffer = await convertToJpeg(alignedBuffer);
-
       return {
-        buffer: processedBuffer,
-        transformMatrix: matrix,
-        landmarks: landmarks[0].keypoints,
-        alignmentScore: score,
+        buffer: await convertToJpeg(alignedBuffer),
+        width: metadata.width,
+        height: metadata.height,
       };
     } catch (error) {
-      throw new Error(
-        `Failed to align face: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
+      console.error("Error in alignFace:", error);
+      return { buffer, width: 0, height: 0 };
     }
   }
 
@@ -298,29 +187,40 @@ export class FaceProcessor {
       // Align face
       const { buffer: alignedBuffer } = await this.alignFace(buffer, face);
 
-      // Crop to face region with padding
+      // Get image dimensions
       const { width, height } = await sharp(alignedBuffer).metadata();
       if (!width || !height) {
         throw new Error("Invalid image dimensions");
       }
 
+      // Calculate face dimensions
       const faceWidth = face.bottomRight[0] - face.topLeft[0];
       const faceHeight = face.bottomRight[1] - face.topLeft[1];
-      const padding = Math.max(faceWidth, faceHeight) * 0.2;
 
+      // Calculate the center point of the face
+      const centerX = face.topLeft[0] + faceWidth / 2;
+      const centerY = face.topLeft[1] + faceHeight / 2;
+
+      // Use the larger dimension to create a square box
+      const size = Math.max(faceWidth, faceHeight);
+      const padding = size * 0.3; // 30% padding
+      const cropSize = size + padding * 2;
+
+      // Calculate the crop coordinates ensuring they're within image bounds
+      const cropLeft = Math.max(0, Math.floor(centerX - cropSize / 2));
+      const cropTop = Math.max(0, Math.floor(centerY - cropSize / 2));
+      const finalCropWidth = Math.min(cropSize, width - cropLeft);
+      const finalCropHeight = Math.min(cropSize, height - cropTop);
+
+      // Extract and process the face region
       const cropBuffer = await sharp(alignedBuffer)
         .extract({
-          left: Math.max(0, Math.floor(face.topLeft[0] - padding)),
-          top: Math.max(0, Math.floor(face.topLeft[1] - padding)),
-          width: Math.min(
-            width - Math.floor(face.topLeft[0] - padding),
-            Math.floor(faceWidth + padding * 2),
-          ),
-          height: Math.min(
-            height - Math.floor(face.topLeft[1] - padding),
-            Math.floor(faceHeight + padding * 2),
-          ),
+          left: cropLeft,
+          top: cropTop,
+          width: finalCropWidth,
+          height: finalCropHeight,
         })
+        .resize(224, 224) // Resize to standard size
         .toBuffer();
 
       return await convertToJpeg(cropBuffer);

@@ -71,6 +71,46 @@
       "quote": "It's a chance for me, Glenn, to get on Richard And Judy and plant that flag right on their fucking sofa.",
       "context": "Hugh Abbot excited about announcing his first major policy",
       "rank": 9
+    },
+    {
+      "id": "s01e01-fruit",
+      "episode": "s01e01",
+      "timestamp": "00:46.800",
+      "quote": "Fruit! Get lots of fruit. Can you get fruit? A pile of fruit and lots of coffee. Now! OK?",
+      "context": "Cliff Lawton's increasingly frantic orders to Terri as he prepares for Malcolm Tucker's visit",
+      "rank": 10
+    },
+    {
+      "id": "s01e01-fuckoff",
+      "episode": "s01e01",
+      "timestamp": "03:07.240",
+      "quote": "Would you like some coffee? Fuck off! Tea? You fuck off, darling.",
+      "context": "Malcolm Tucker's abrupt response to Terri's offer of refreshments",
+      "rank": 11
+    },
+    {
+      "id": "s01e01-scambusters",
+      "episode": "s01e01",
+      "timestamp": "11:05.120",
+      "quote": "Scambusters. Get rid of it! I don't want to hear about it again. Bye!",
+      "context": "Malcolm Tucker's abrupt dismissal of Hugh's policy idea",
+      "rank": 12
+    },
+    {
+      "id": "s01e01-smile",
+      "episode": "s01e01",
+      "timestamp": "28:41.200",
+      "quote": "Smiling. Inappropriate smiling. And smirking. Smiling and smirking.",
+      "context": "Hugh Abbot's complaint about his driver's facial expressions",
+      "rank": 13
+    },
+    {
+      "id": "s01e01-flipflop",
+      "episode": "s01e01",
+      "timestamp": "28:23.920",
+      "quote": "from what has been dubbed flip-flop Friday,",
+      "context": "Glenn's description of the chaotic day of policy reversals",
+      "rank": 14
     }
   ]
 }

@@ -1,1 +1,3 @@
-James works for Albany. He wasn't working there when the contract was awarded.
+James works for Albany.
+He wasn't working
+there when the contract was awarded.

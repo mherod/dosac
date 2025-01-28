@@ -11,6 +11,7 @@ import { join } from "path";
 import { createHash } from "crypto";
 import { generateFaceEmbedding } from "./face-embedding";
 import { CACHE_DIRS, PRIMARY_CACHE_DIR, CACHE_FILE_PATTERN } from "./config";
+import { FaceAttributes, AttributeConfidence } from "./face-attributes";
 
 export const INDEX_FILE = join(PRIMARY_CACHE_DIR, "index.json");
 
@@ -30,6 +31,8 @@ export interface FaceEmbedding {
     topLeft: [number, number];
     bottomRight: [number, number];
     probability: number;
+    attributes?: FaceAttributes;
+    attributeConfidence?: AttributeConfidence;
   }>;
 }
 
@@ -61,14 +64,22 @@ export function loadIndex(): CacheIndex {
       }
 
       let embeddingExists = false;
-      for (const dir of CACHE_DIRS) {
-        const embeddingPath = join(dir, entry.embeddingFile);
-        if (process.env.DEBUG_CACHE) {
-          console.log("Checking " + embeddingPath);
-        }
-        if (existsSync(embeddingPath)) {
-          embeddingExists = true;
-          break;
+
+      // Check primary cache directory first
+      const primaryEmbeddingPath = join(PRIMARY_CACHE_DIR, entry.embeddingFile);
+      if (existsSync(primaryEmbeddingPath)) {
+        embeddingExists = true;
+      } else {
+        // Check worker cache directories
+        for (const dir of CACHE_DIRS) {
+          const embeddingPath = join(dir, entry.embeddingFile);
+          if (process.env.DEBUG_CACHE) {
+            console.log("Checking " + embeddingPath);
+          }
+          if (existsSync(embeddingPath)) {
+            embeddingExists = true;
+            break;
+          }
         }
       }
 
@@ -101,8 +112,10 @@ export function loadIndex(): CacheIndex {
 }
 
 export function saveIndex(index: CacheIndex): void {
-  // Verify all embedding files exist before saving
-  for (const entry of Object.values(index.entries)) {
+  // Remove entries with missing embedding files
+  const validEntries: { [path: string]: IndexEntry } = {};
+
+  for (const [path, entry] of Object.entries(index.entries)) {
     let embeddingExists = false;
 
     // Check primary cache directory first
@@ -120,14 +133,16 @@ export function saveIndex(index: CacheIndex): void {
       }
     }
 
-    if (!embeddingExists) {
-      console.error(
-        `Cannot save index: Missing embedding file ${entry.embeddingFile} referenced for path ${entry.path}`,
+    if (embeddingExists) {
+      validEntries[path] = entry;
+    } else {
+      console.log(
+        `Removing entry with missing embedding file: ${path} (${entry.embeddingFile})`,
       );
-      process.exit(1);
     }
   }
 
+  index.entries = validEntries;
   index.lastUpdate = new Date().toISOString();
   writeFileSync(INDEX_FILE, JSON.stringify(index, null, 2));
 }
@@ -158,23 +173,16 @@ export function saveEmbedding(filePath: string, data: FaceEmbedding): void {
   writeFileSync(embeddingPath, JSON.stringify(data, null, 2));
 }
 
-export function loadEmbedding(embeddingFile: string): FaceEmbedding {
-  // Handle both direct paths and filenames
-  const fileName = embeddingFile.includes("/")
-    ? embeddingFile.split("/").pop()!
-    : embeddingFile;
-
-  // Ensure the filename is a valid hash
-  if (!isValidCacheFileName(fileName)) {
-    throw new Error(`Invalid cache filename: ${fileName}`);
+export function loadEmbedding(fileName: string): FaceEmbedding {
+  // Check primary cache directory first
+  const primaryEmbeddingPath = join(PRIMARY_CACHE_DIR, fileName);
+  if (existsSync(primaryEmbeddingPath)) {
+    return JSON.parse(readFileSync(primaryEmbeddingPath, "utf-8"));
   }
 
-  // Try all cache directories
+  // Check worker cache directories
   for (const dir of CACHE_DIRS) {
     const embeddingPath = join(dir, fileName);
-    if (process.env.DEBUG_CACHE) {
-      console.log("Checking " + embeddingPath);
-    }
     if (existsSync(embeddingPath)) {
       return JSON.parse(readFileSync(embeddingPath, "utf-8"));
     }
@@ -252,7 +260,9 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
 // Stats and diagnostics
 export function getCacheStats() {
-  const index = loadIndex();
+  const index = existsSync(INDEX_FILE)
+    ? (JSON.parse(readFileSync(INDEX_FILE, "utf-8")) as CacheIndex)
+    : { entries: {}, lastUpdate: new Date().toISOString() };
   const entries = Object.values(index.entries);
 
   return {
@@ -267,7 +277,13 @@ export function getCacheStats() {
     ),
     lastUpdate: index.lastUpdate,
     cacheSize: entries.reduce((sum, entry) => {
-      // Try all cache directories
+      // Check primary cache directory first
+      const primaryEmbeddingPath = join(PRIMARY_CACHE_DIR, entry.embeddingFile);
+      if (existsSync(primaryEmbeddingPath)) {
+        return sum + readFileSync(primaryEmbeddingPath).length;
+      }
+
+      // Then check worker cache directories
       for (const dir of CACHE_DIRS) {
         const embeddingPath = join(dir, entry.embeddingFile);
         if (existsSync(embeddingPath)) {
@@ -476,4 +492,319 @@ export async function cleanupInvalidCacheFiles(): Promise<CleanupResult> {
     indexCleaned,
     rebuilt,
   };
+}
+
+export async function rebuildCacheIndex(): Promise<void> {
+  const index: CacheIndex = {
+    entries: {},
+    lastUpdate: new Date().toISOString(),
+  };
+  const files = readdirSync(PRIMARY_CACHE_DIR);
+
+  for (const file of files) {
+    // Skip index.json and worker.log
+    if (file === "index.json" || file === "worker.log") continue;
+
+    // Only process valid cache files
+    if (!isValidCacheFileName(file)) continue;
+
+    try {
+      const embeddingPath = join(PRIMARY_CACHE_DIR, file);
+      const embeddingData = JSON.parse(
+        readFileSync(embeddingPath, "utf-8"),
+      ) as FaceEmbedding;
+      const filePath = embeddingData.path;
+
+      if (!filePath || !existsSync(filePath)) continue;
+
+      const mtime = statSync(filePath).mtimeMs;
+      index.entries[filePath] = {
+        path: filePath,
+        mtime,
+        faces: embeddingData.faces,
+        embeddingFile: file,
+        noFaces: embeddingData.faces === 0,
+      };
+    } catch (error) {
+      console.error(`Failed to process embedding file ${file}:`, error);
+    }
+  }
+
+  saveIndex(index);
+}
+
+export interface ClusterStats {
+  clusters: Array<{
+    size: number;
+    episodes: { [episode: string]: number };
+    sampleImages: Array<{ path: string; similarity: number }>;
+  }>;
+  totalClusters: number;
+  averageClusterSize: number;
+}
+
+// Default values for missing attributes
+const DEFAULT_ATTRIBUTES: FaceAttributes = {
+  gender: "male",
+  hairColor: "brown",
+  ageGroup: "young",
+  skinTone: "medium",
+};
+
+const DEFAULT_CONFIDENCE: AttributeConfidence = {
+  gender: 0.5,
+  hairColor: 0.5,
+  ageGroup: 0.5,
+  skinTone: 0.5,
+};
+
+export async function analyzeFaceClusters(
+  similarityThreshold = 0.75,
+): Promise<ClusterStats> {
+  const index = loadIndex();
+  const entries = Object.values(index.entries).filter(
+    (entry) => entry.faces > 0,
+  );
+
+  console.log(`Processing ${entries.length} images with faces...`);
+
+  // Initialize clusters with the first face from each image
+  const clusters: Array<{
+    faces: number[][];
+    paths: string[];
+    episodes: { [episode: string]: number };
+    attributes: FaceAttributes;
+    attributeConfidence: AttributeConfidence;
+  }> = [];
+
+  // First pass: Create initial clusters
+  let processedCount = 0;
+  const logInterval = Math.max(1, Math.floor(entries.length / 20)); // Log every 5%
+
+  for (const entry of entries) {
+    try {
+      const embedding = loadEmbedding(entry.embeddingFile);
+      if (!embedding.embedding) continue;
+
+      // Extract episode from path (e.g., s01e02)
+      const episode = entry.path.match(/s\d+e\d+/)?.[0] || "unknown";
+
+      // Find best matching cluster
+      let bestMatch = -1;
+      let bestSimilarity = 0;
+
+      // Compare with representative faces of existing clusters
+      for (let i = 0; i < clusters.length; i++) {
+        const cluster = clusters[i];
+
+        // Calculate embedding similarity
+        const similarity = cosineSimilarity(
+          embedding.embedding,
+          cluster.faces[0],
+        );
+
+        // If we have attributes, factor them into the similarity score
+        const faceAttrs =
+          embedding.predictions[0].attributes || DEFAULT_ATTRIBUTES;
+        const faceConf =
+          embedding.predictions[0].attributeConfidence || DEFAULT_CONFIDENCE;
+
+        const attributeMatch = calculateAttributeMatch(
+          faceAttrs,
+          cluster.attributes,
+          faceConf,
+          cluster.attributeConfidence,
+        );
+
+        // Combine embedding similarity with attribute matching
+        const combinedSimilarity = similarity * 0.7 + attributeMatch * 0.3;
+
+        if (
+          combinedSimilarity > similarityThreshold &&
+          combinedSimilarity > bestSimilarity
+        ) {
+          bestMatch = i;
+          bestSimilarity = combinedSimilarity;
+        }
+      }
+
+      if (bestMatch >= 0) {
+        // Add to existing cluster
+        clusters[bestMatch].faces.push(embedding.embedding);
+        clusters[bestMatch].paths.push(entry.path);
+        clusters[bestMatch].episodes[episode] =
+          (clusters[bestMatch].episodes[episode] || 0) + 1;
+      } else {
+        // Create new cluster
+        clusters.push({
+          faces: [embedding.embedding],
+          paths: [entry.path],
+          episodes: { [episode]: 1 },
+          attributes: embedding.predictions[0].attributes || DEFAULT_ATTRIBUTES,
+          attributeConfidence:
+            embedding.predictions[0].attributeConfidence || DEFAULT_CONFIDENCE,
+        });
+      }
+
+      processedCount++;
+      if (processedCount % logInterval === 0) {
+        const percent = ((processedCount / entries.length) * 100).toFixed(1);
+        console.log(
+          `Processed ${processedCount}/${entries.length} images (${percent}%) - Current clusters: ${clusters.length}`,
+        );
+      }
+    } catch (error) {
+      console.error(`Error processing ${entry.path}:`, error);
+      continue;
+    }
+  }
+
+  console.log(
+    `\nFirst pass complete. Found ${clusters.length} initial clusters.`,
+  );
+  console.log("Starting second pass: merging smaller clusters...");
+
+  // Second pass: Merge smaller clusters with stricter attribute matching
+  const MERGE_THRESHOLD = 0.65; // More aggressive threshold for merging
+  const MIN_CLUSTER_SIZE = 2;
+
+  let mergeCount = 0;
+  let merged: boolean;
+  do {
+    merged = false;
+    for (let i = 0; i < clusters.length; i++) {
+      if (clusters[i].faces.length < MIN_CLUSTER_SIZE) {
+        for (let j = 0; j < clusters.length; j++) {
+          if (i !== j) {
+            // Calculate average similarity between clusters
+            const similarities = clusters[i].faces
+              .map((face1) =>
+                clusters[j].faces.map((face2) =>
+                  cosineSimilarity(face1, face2),
+                ),
+              )
+              .flat();
+            const avgSimilarity =
+              similarities.reduce((a, b) => a + b, 0) / similarities.length;
+
+            // Check attribute compatibility
+            const attributeMatch = calculateAttributeMatch(
+              clusters[i].attributes,
+              clusters[j].attributes,
+              clusters[i].attributeConfidence,
+              clusters[j].attributeConfidence,
+            );
+
+            // Combined similarity score
+            const combinedSimilarity =
+              avgSimilarity * 0.7 + attributeMatch * 0.3;
+
+            if (combinedSimilarity > MERGE_THRESHOLD) {
+              // Merge clusters
+              clusters[j].faces.push(...clusters[i].faces);
+              clusters[j].paths.push(...clusters[i].paths);
+              for (const [episode, count] of Object.entries(
+                clusters[i].episodes,
+              )) {
+                clusters[j].episodes[episode] =
+                  (clusters[j].episodes[episode] || 0) + count;
+              }
+              clusters.splice(i, 1);
+              merged = true;
+              mergeCount++;
+              console.log(
+                `Merged small cluster (${mergeCount} merges so far) - ${clusters.length} clusters remaining`,
+              );
+              break;
+            }
+          }
+        }
+        if (merged) break;
+      }
+    }
+  } while (merged);
+
+  console.log(
+    `\nSecond pass complete. Performed ${mergeCount} cluster merges.`,
+  );
+
+  // Format results
+  const formattedClusters = clusters
+    .filter((cluster) => cluster.faces.length >= MIN_CLUSTER_SIZE)
+    .map((cluster) => ({
+      size: cluster.paths.length,
+      episodes: cluster.episodes,
+      sampleImages: cluster.paths
+        .map((path, idx) => ({
+          path,
+          similarity:
+            idx === 0
+              ? 1.0
+              : cosineSimilarity(cluster.faces[0], cluster.faces[idx]),
+        }))
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, 5),
+    }))
+    .sort((a, b) => b.size - a.size);
+
+  return {
+    clusters: formattedClusters,
+    totalClusters: formattedClusters.length,
+    averageClusterSize:
+      formattedClusters.reduce((sum, c) => sum + c.size, 0) /
+      formattedClusters.length,
+  };
+}
+
+// Helper function to calculate attribute matching score
+function calculateAttributeMatch(
+  attrs1: FaceAttributes,
+  attrs2: FaceAttributes,
+  conf1: AttributeConfidence,
+  conf2: AttributeConfidence,
+): number {
+  let score = 0;
+  let totalWeight = 0;
+
+  // Gender matching (high weight)
+  const genderWeight = 0.4;
+  if (attrs1.gender === attrs2.gender) {
+    score += genderWeight * Math.min(conf1.gender || 0.5, conf2.gender || 0.5);
+  }
+  totalWeight += genderWeight;
+
+  // Hair color matching (medium weight)
+  const hairWeight = 0.3;
+  if (attrs1.hairColor === attrs2.hairColor) {
+    score +=
+      hairWeight * Math.min(conf1.hairColor || 0.5, conf2.hairColor || 0.5);
+  }
+  totalWeight += hairWeight;
+
+  // Age group matching (medium weight)
+  const ageWeight = 0.2;
+  if (attrs1.ageGroup === attrs2.ageGroup) {
+    score += ageWeight * Math.min(conf1.ageGroup || 0.5, conf2.ageGroup || 0.5);
+  }
+  totalWeight += ageWeight;
+
+  // Skin tone matching (low weight)
+  const skinWeight = 0.1;
+  if (attrs1.skinTone === attrs2.skinTone) {
+    score +=
+      skinWeight * Math.min(conf1.skinTone || 0.5, conf2.skinTone || 0.5);
+  }
+  totalWeight += skinWeight;
+
+  return score / totalWeight;
+}
+
+function getEpisodeFromPath(path: string): string {
+  const match = path.match(/s\d+e\d+/);
+  return match ? match[0] : "unknown";
+}
+
+export function getEmbeddingFileFromPath(path: string): string {
+  const entry = loadIndex().entries[path];
+  return entry ? entry.embeddingFile : "";
 }
