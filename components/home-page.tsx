@@ -7,22 +7,9 @@ import type { Frame } from "@/lib/frames";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { MainNav } from "@/components/main-nav";
 
-interface RankedMoment {
-  id: string;
-  episode: string;
-  timestamp: string;
-  quote: string;
-  context: string;
-  rank: number;
-}
-
-interface MatchedMoment {
-  moment: RankedMoment;
-  frame: Frame;
-}
-
 interface HomePageProps {
   screenshots: Frame[];
+  rankedMoments: Frame[];
   initialSearchParams?: {
     season?: string;
     episode?: string;
@@ -32,27 +19,14 @@ interface HomePageProps {
 
 function SearchWrapper({
   screenshots,
+  rankedMoments,
   initialSearchParams,
 }: {
   screenshots: Frame[];
+  rankedMoments: Frame[];
   initialSearchParams?: HomePageProps["initialSearchParams"];
 }) {
   const searchParams = useSearchParams();
-  const [rankedMoments, setRankedMoments] = React.useState<Frame[]>([]);
-
-  // Load ranked moments on mount
-  React.useEffect(() => {
-    console.log("Loading ranked moments...");
-    fetch("/api/moments")
-      .then((res) => res.json())
-      .then((matchedMoments: MatchedMoment[]) => {
-        console.log("Received matched moments:", matchedMoments.length);
-        setRankedMoments(matchedMoments.map((m) => m.frame));
-      })
-      .catch((error) => {
-        console.error("Error loading ranked moments:", error);
-      });
-  }, []);
 
   // Get current filters from URL or initial props
   const filters = {
@@ -122,7 +96,11 @@ function SearchWrapper({
   );
 }
 
-export function HomePage({ screenshots, initialSearchParams }: HomePageProps) {
+export function HomePage({
+  screenshots,
+  rankedMoments,
+  initialSearchParams,
+}: HomePageProps) {
   return (
     <>
       <Suspense>
@@ -131,6 +109,7 @@ export function HomePage({ screenshots, initialSearchParams }: HomePageProps) {
       <Suspense>
         <SearchWrapper
           screenshots={screenshots}
+          rankedMoments={rankedMoments}
           initialSearchParams={initialSearchParams}
         />
       </Suspense>

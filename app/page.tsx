@@ -2,8 +2,8 @@ import { getFrameIndex } from "@/lib/frames.server";
 import { HomePage } from "@/components/home-page";
 import { parseEpisodeId } from "@/lib/frames";
 
-// Force dynamic rendering since we need to handle search params
-export const dynamic = "force-dynamic";
+// Add revalidation period (e.g., 1 hour)
+export const revalidate = 3600;
 
 type SearchParams = {
   season?: string;
@@ -17,23 +17,42 @@ type Props = {
 };
 
 export default async function Home({ searchParams }: Props) {
-  const screenshots = await getFrameIndex();
+  const [screenshots, rankedMoments] = await Promise.all([
+    getFrameIndex(),
+    fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/moments`,
+    ).then((res) => res.json()),
+  ]);
+
   const resolvedParams = await searchParams;
+
+  // Convert search params to the expected format
+  const initialSearchParams = {
+    season:
+      typeof resolvedParams.season === "string"
+        ? resolvedParams.season
+        : undefined,
+    episode:
+      typeof resolvedParams.episode === "string"
+        ? resolvedParams.episode
+        : undefined,
+    q: typeof resolvedParams.q === "string" ? resolvedParams.q : undefined,
+  };
+
+  // If there's a search query, we need to force dynamic rendering
+  if (initialSearchParams.q) {
+    const dynamicConfig = {
+      dynamic: "force-dynamic",
+    };
+    // @ts-expect-error - This is a valid config option
+    Object.assign(exports, dynamicConfig);
+  }
 
   return (
     <HomePage
       screenshots={screenshots}
-      initialSearchParams={{
-        season:
-          typeof resolvedParams.season === "string"
-            ? resolvedParams.season
-            : undefined,
-        episode:
-          typeof resolvedParams.episode === "string"
-            ? resolvedParams.episode
-            : undefined,
-        q: typeof resolvedParams.q === "string" ? resolvedParams.q : undefined,
-      }}
+      rankedMoments={rankedMoments.map((m: any) => m.frame)}
+      initialSearchParams={initialSearchParams}
     />
   );
 }
