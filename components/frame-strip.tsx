@@ -1,12 +1,11 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { type Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { CaptionedImage } from "@/components/captioned-image";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 interface FrameStripProps {
   screenshots: Screenshot[];
@@ -23,6 +22,10 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
     null,
   );
   const stripRef = React.useRef<HTMLDivElement>(null);
+  const [framesParent] = useAutoAnimate<HTMLDivElement>({
+    duration: 150,
+    easing: "ease-in-out",
+  });
 
   // Calculate visible frames based on container width
   const FRAME_WIDTH = 160; // Width of each thumbnail
@@ -132,7 +135,7 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
         {/* Yellow border frame */}
         <div className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]">
           {/* Yellow border */}
-          <div className="absolute inset-0 border-[3px] border-yellow-400/90 rounded-xl pointer-events-none" />
+          <div className="absolute inset-0 border-[5px] border-yellow-400/90 rounded-xl pointer-events-none" />
 
           <div
             ref={stripRef}
@@ -142,7 +145,7 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
             <div className="absolute inset-0 bg-black/90" />
 
             {/* Frames */}
-            <div className="flex gap-[1px] p-1">
+            <div ref={framesParent} className="flex gap-[1px] p-1">
               {screenshots.map((screenshot, index) => (
                 <button
                   key={screenshot.id}
@@ -155,14 +158,14 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
                   className={cn(
                     "group relative flex-shrink-0 w-64 h-36 transition-all duration-150",
                     selectedIds.has(screenshot.id) &&
-                      "ring-2 ring-yellow-400/90",
+                      "ring-4 ring-yellow-400/90",
                   )}
                 >
                   <CaptionedImage
                     imageUrl={screenshot.imageUrl}
                     image2Url={screenshot.image2Url}
                     caption={screenshot.speech}
-                    fontSize={32}
+                    fontSize={28}
                     outlineWidth={1}
                     maintainAspectRatio
                     priority={index < visibleFrames}

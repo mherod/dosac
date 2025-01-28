@@ -44,12 +44,15 @@ export function DualCaptionEditor({
     setFontSize,
     outlineWidth,
     setOutlineWidth,
+    shadowSize,
+    setShadowSize,
     fontFamily,
     setFontFamily,
     handleShare,
   } = useCaptionState({
     defaultFontSize: 18,
     defaultOutlineWidth: 1,
+    defaultShadowSize: 0,
     defaultFontFamily: "system-ui",
   });
 
@@ -135,6 +138,8 @@ export function DualCaptionEditor({
                 setFontSize={setFontSize}
                 outlineWidth={outlineWidth}
                 setOutlineWidth={setOutlineWidth}
+                shadowSize={shadowSize}
+                setShadowSize={setShadowSize}
                 fontFamily={fontFamily}
                 setFontFamily={setFontFamily}
               />

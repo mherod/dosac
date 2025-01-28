@@ -44,12 +44,15 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     setFontSize,
     outlineWidth,
     setOutlineWidth,
+    shadowSize,
+    setShadowSize,
     fontFamily,
     setFontFamily,
     handleShare,
   } = useCaptionState({
     defaultFontSize: 24,
     defaultOutlineWidth: 1,
+    defaultShadowSize: 0,
     defaultFontFamily: "system-ui",
   });
 
@@ -93,6 +96,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                 caption={caption}
                 fontSize={fontSize[0]}
                 outlineWidth={outlineWidth[0]}
+                shadowSize={shadowSize[0]}
                 fontFamily={fontFamily}
                 maintainAspectRatio={true}
               />
@@ -142,6 +146,8 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                 setFontSize={setFontSize}
                 outlineWidth={outlineWidth}
                 setOutlineWidth={setOutlineWidth}
+                shadowSize={shadowSize}
+                setShadowSize={setShadowSize}
                 fontFamily={fontFamily}
                 setFontFamily={setFontFamily}
               />

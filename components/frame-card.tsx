@@ -29,6 +29,9 @@ interface FrameCardProps {
   onSelect?: (e: React.MouseEvent) => void;
   onDragStart?: () => void;
   onDragMove?: () => void;
+  onTouchStart?: () => void;
+  onTouchMove?: () => void;
+  onTouchEnd?: () => void;
 }
 
 export function FrameCard({
@@ -38,6 +41,9 @@ export function FrameCard({
   onSelect,
   onDragStart,
   onDragMove,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
 }: FrameCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     // Only handle selection if using modifier keys
@@ -70,15 +76,50 @@ export function FrameCard({
     onDragMove?.();
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onTouchStart?.();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Get the touch point coordinates
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // Get the element under the touch point
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!element) return;
+
+    // Find the closest FrameCard parent
+    const frameCard = element.closest("[data-frame-card]");
+    if (frameCard) {
+      onTouchMove?.();
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onTouchEnd?.();
+  };
+
   return (
     <div
+      data-frame-card
       className={cn(
-        "group block select-none",
-        isSelected && "ring-2 ring-primary ring-offset-2 rounded-lg",
+        "group block select-none touch-none relative",
+        isSelected && "ring-2 ring-primary ring-offset-2 rounded-lg z-10",
       )}
       onClick={handleClick}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5">
         <div className="relative">
@@ -104,17 +145,17 @@ export function FrameCard({
             </button>
           )}
         </div>
-        <div className="p-5">
-          <div className="flex flex-col space-y-3">
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1">
-                <Clapperboard className="h-3.5 w-3.5" />
+        <div className="p-2 sm:p-5">
+          <div className="flex flex-col space-y-2 sm:space-y-3">
+            <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-muted-foreground">
+              <div className="flex items-center space-x-1 sm:space-x-2 rounded-full bg-primary/10 px-2 sm:px-3 py-1">
+                <Clapperboard className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 <span className="font-medium">
                   {formatEpisodeString(screenshot.episode)}
                 </span>
               </div>
-              <div className="flex items-center space-x-2 rounded-full bg-primary/10 px-3 py-1">
-                <Clock className="h-3.5 w-3.5" />
+              <div className="flex items-center space-x-1 sm:space-x-2 rounded-full bg-primary/10 px-2 sm:px-3 py-1">
+                <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 <span className="font-medium">
                   {formatTimestamp(screenshot.timestamp)}
                 </span>

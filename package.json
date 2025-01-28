@@ -25,15 +25,16 @@
     ]
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@mediapipe/face_mesh": "^0.4.1633559619",
-    "@tensorflow-models/face-landmarks-detection": "^1.0.5",
-    "@tensorflow/tfjs-node": "^4.17.0",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slider": "^1.2.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.1.7",
     "@tanstack/react-virtual": "^3.11.2",
+    "@tensorflow-models/face-landmarks-detection": "^1.0.5",
+    "@tensorflow/tfjs-node": "^4.17.0",
     "@vercel/analytics": "^1.4.1",
     "@vercel/og": "^0.6.5",
     "canvas": "^3.1.0",
@@ -83,8 +84,8 @@
     "prettier-plugin-tailwindcss": "^0.5.12",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.2",
-    "tsx": "^4.7.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.4.2"
   }
 }

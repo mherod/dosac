@@ -5,6 +5,7 @@ interface UseCaptionStateProps {
   defaultFontSize?: number;
   defaultOutlineWidth?: number;
   defaultFontFamily?: string;
+  defaultShadowSize?: number;
   initialCaption?: string;
 }
 
@@ -12,6 +13,7 @@ export function useCaptionState({
   defaultFontSize = 24,
   defaultOutlineWidth = 1,
   defaultFontFamily = "system-ui",
+  defaultShadowSize = 0,
   initialCaption = "",
 }: UseCaptionStateProps = {}) {
   const searchParams = useSearchParams();
@@ -23,6 +25,9 @@ export function useCaptionState({
   ]);
   const [outlineWidth, setOutlineWidth] = useState([
     Number(searchParams?.get("outlineWidth")) || defaultOutlineWidth,
+  ]);
+  const [shadowSize, setShadowSize] = useState([
+    Number(searchParams?.get("shadowSize")) || defaultShadowSize,
   ]);
   const [fontFamily, setFontFamily] = useState(
     searchParams?.get("fontFamily") ?? defaultFontFamily,
@@ -43,6 +48,11 @@ export function useCaptionState({
     } else {
       params.delete("outlineWidth");
     }
+    if (shadowSize[0] !== defaultShadowSize) {
+      params.set("shadowSize", shadowSize[0]!.toString());
+    } else {
+      params.delete("shadowSize");
+    }
     if (fontFamily !== defaultFontFamily) {
       params.set("fontFamily", fontFamily);
     } else {
@@ -61,10 +71,12 @@ export function useCaptionState({
   }, [
     fontSize,
     outlineWidth,
+    shadowSize,
     fontFamily,
     router,
     defaultFontSize,
     defaultOutlineWidth,
+    defaultShadowSize,
     defaultFontFamily,
     searchParams,
   ]);
@@ -91,6 +103,8 @@ export function useCaptionState({
     setFontSize,
     outlineWidth,
     setOutlineWidth,
+    shadowSize,
+    setShadowSize,
     fontFamily,
     setFontFamily,
     handleShare,

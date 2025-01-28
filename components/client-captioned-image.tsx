@@ -6,24 +6,33 @@ import { useImageBounds } from "@/hooks/useImageBounds";
 
 export interface CaptionedImageProps {
   imageUrl: string;
-  image2Url?: string; // Changed from blankImage2Url
+  image2Url?: string;
   caption?: string;
   fontSize?: number;
   outlineWidth?: number;
+  shadowSize?: number;
   fontFamily?: string;
   priority?: boolean;
   maintainAspectRatio?: boolean;
   autoToggle?: boolean;
 }
 
-function getTextShadow(width: number = 1) {
+function getTextShadow(outlineWidth: number = 1, shadowSize: number = 0) {
   const shadows = [];
-  for (let x = -width; x <= width; x++) {
-    for (let y = -width; y <= width; y++) {
+
+  // Add outline effect
+  for (let x = -outlineWidth; x <= outlineWidth; x++) {
+    for (let y = -outlineWidth; y <= outlineWidth; y++) {
       if (x === 0 && y === 0) continue;
       shadows.push(`${x}px ${y}px 0 #000`);
     }
   }
+
+  // Add gaussian-like shadow if enabled
+  if (shadowSize > 0) {
+    shadows.push(`0 ${shadowSize}px ${shadowSize * 2}px rgba(0,0,0,0.7)`);
+  }
+
   return shadows.join(", ");
 }
 
@@ -33,6 +42,7 @@ export function ClientCaptionedImage({
   caption,
   fontSize = 18,
   outlineWidth = 1,
+  shadowSize = 0,
   fontFamily = "Arial",
   priority = false,
   maintainAspectRatio = false,
@@ -97,7 +107,7 @@ export function ClientCaptionedImage({
             style={{
               fontSize: `${calculatedFontSize}px`,
               color: "#ffffff",
-              textShadow: getTextShadow(outlineWidth),
+              textShadow: getTextShadow(outlineWidth, shadowSize),
               textAlign: "center",
               maxWidth: "90%",
               margin: "0 auto",

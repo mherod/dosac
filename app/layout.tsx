@@ -44,7 +44,7 @@ export default function RootLayout({
           forcedTheme="light"
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
+          <div className="relative min-h-screen max-w-screen w-full overflow-x-hidden overflow-y-scroll flex flex-col">
             {children}
             <Image
               src="/dosac.png"

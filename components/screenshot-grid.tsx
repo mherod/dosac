@@ -165,15 +165,23 @@ export function ScreenshotGrid({
       handleDragEnd();
     };
 
+    const handleTouchEnd = () => {
+      handleDragEnd();
+    };
+
     window.addEventListener("mouseup", handleMouseUp);
-    return () => window.removeEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchend", handleTouchEnd);
+    return () => {
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
   }, [handleDragEnd]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-8">
       {rankedMoments && rankedMoments.length > 0 && (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
             {rankedMoments.map((screenshot, index) => (
               <div key={screenshot.id} className="relative">
                 <Link
@@ -196,6 +204,13 @@ export function ScreenshotGrid({
                     onDragMove={() => {
                       handleDragMove(screenshot.id);
                     }}
+                    onTouchStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onTouchMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                    onTouchEnd={handleDragEnd}
                   />
                 </Link>
               </div>
@@ -204,10 +219,10 @@ export function ScreenshotGrid({
         </>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         <div
           ref={gridRef}
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0"
         >
           {currentScreenshots.map((screenshot, index) => (
             <div key={screenshot.id}>
@@ -231,6 +246,13 @@ export function ScreenshotGrid({
                   onDragMove={() => {
                     handleDragMove(screenshot.id);
                   }}
+                  onTouchStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onTouchMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                  onTouchEnd={handleDragEnd}
                 />
               </Link>
             </div>

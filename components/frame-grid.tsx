@@ -40,13 +40,16 @@ export function FrameGrid({
   fontFamily,
 }: FrameGridProps) {
   return (
-    <div className="grid h-fit" style={{ gridTemplateRows: "1fr 1fr" }}>
+    <div
+      className="grid h-fit w-[1000px]"
+      style={{ gridTemplateRows: "1fr 1fr" }}
+    >
       <div
         className="grid w-full h-fit aspect-video"
         style={{ gridTemplateColumns: "1fr 1fr" }}
       >
         {frames.slice(0, 2).map((frame, index) => (
-          <div key={frame.id} className="relative w-full h-full max-h-[400px]">
+          <div key={frame.id} className="relative w-full h-full max-h-[500px]">
             <Image
               src={frame.blankImageUrl}
               alt="Screenshot"
@@ -85,7 +88,7 @@ export function FrameGrid({
         style={{ gridTemplateColumns: "1fr 1fr" }}
       >
         {frames.slice(2, 4).map((frame, index) => (
-          <div key={frame.id} className="relative w-full h-full max-h-[400px]">
+          <div key={frame.id} className="relative w-full h-full max-h-[500px]">
             <Image
               src={frame.blankImageUrl}
               alt="Screenshot"
