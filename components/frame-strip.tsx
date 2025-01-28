@@ -10,9 +10,10 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 interface FrameStripProps {
   screenshots: Screenshot[];
   rankedMoments?: Screenshot[];
+  centerScreenshot?: Screenshot;
 }
 
-export function FrameStrip({ screenshots }: FrameStripProps) {
+export function FrameStrip({ screenshots, centerScreenshot }: FrameStripProps) {
   const router = useRouter();
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
@@ -137,43 +138,50 @@ export function FrameStrip({ screenshots }: FrameStripProps) {
         {/* Yellow border frame */}
         <div className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]">
           {/* Yellow border */}
-          <div className="absolute inset-0 border-[5px] border-yellow-400/90 rounded-xl pointer-events-none" />
+          <div className="absolute inset-0 border-[5px] rounded-xl pointer-events-none" />
 
           <div
             ref={stripRef}
-            className="relative h-40 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
+            className="relative h-40 overflow-x-auto whitespace-nowrap scrollbar-custom"
           >
             {/* Solid dark background */}
             <div className="absolute inset-0 bg-black/90" />
 
             {/* Frames */}
-            <div ref={framesParent} className="flex gap-[1px] p-1">
-              {screenshots.map((screenshot, index) => (
-                <button
-                  key={screenshot.id}
-                  onClick={(e) => handleFrameClick(screenshot.id, e)}
-                  onMouseEnter={() => setHoverIndex(index)}
-                  onMouseLeave={() => setHoverIndex(null)}
-                  onMouseDown={() => handleDragStart(screenshot.id)}
-                  onMouseMove={() => handleDragMove(screenshot.id)}
-                  onMouseUp={handleDragEnd}
-                  className={cn(
-                    "group relative flex-shrink-0 w-64 h-36 transition-all duration-150",
-                    selectedIds.has(screenshot.id) &&
-                      "ring-4 ring-yellow-400/90",
-                  )}
-                >
-                  <CaptionedImage
-                    imageUrl={screenshot.imageUrl}
-                    image2Url={screenshot.image2Url}
-                    caption={screenshot.speech}
-                    fontSize={28}
-                    outlineWidth={1}
-                    maintainAspectRatio
-                    priority={index < visibleFrames}
-                  />
-                </button>
-              ))}
+            <div
+              ref={framesParent}
+              className="flex gap-[1px] p-1 min-w-full items-center justify-center"
+            >
+              <div className="flex gap-2">
+                {screenshots.map((screenshot, index) => (
+                  <button
+                    key={screenshot.id}
+                    onClick={(e) => handleFrameClick(screenshot.id, e)}
+                    onMouseEnter={() => setHoverIndex(index)}
+                    onMouseLeave={() => setHoverIndex(null)}
+                    onMouseDown={() => handleDragStart(screenshot.id)}
+                    onMouseMove={() => handleDragMove(screenshot.id)}
+                    onMouseUp={handleDragEnd}
+                    className={cn(
+                      "group relative flex-shrink-0 w-64 h-36 transition-all duration-150",
+                      centerScreenshot?.id === screenshot.id &&
+                        "ring-2 ring-yellow-400/80",
+                      selectedIds.has(screenshot.id) &&
+                        "ring-4 ring-yellow-400/90",
+                    )}
+                  >
+                    <CaptionedImage
+                      imageUrl={screenshot.imageUrl}
+                      image2Url={screenshot.image2Url}
+                      caption={screenshot.speech}
+                      fontSize={28}
+                      outlineWidth={1}
+                      maintainAspectRatio
+                      priority={index < visibleFrames}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Edge fades */}

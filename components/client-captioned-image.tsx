@@ -52,6 +52,8 @@ export function ClientCaptionedImage({
   const { width } = useImageBounds(containerRef);
   const [showSecondFrame, setShowSecondFrame] = useState(false);
 
+  const captionJoined = caption?.split("\n").join(" ");
+
   // Auto toggle effect
   useEffect(() => {
     if (!autoToggle || !image2Url) return;

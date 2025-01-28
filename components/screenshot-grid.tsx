@@ -12,6 +12,7 @@ import { useSpeculationRules } from "@/lib/speculation-rules";
 interface ScreenshotGridProps {
   screenshots: Screenshot[];
   rankedMoments?: Screenshot[];
+  multiselect?: boolean;
 }
 
 const ITEMS_PER_PAGE = 36;
@@ -19,6 +20,7 @@ const ITEMS_PER_PAGE = 36;
 export function ScreenshotGrid({
   screenshots,
   rankedMoments,
+  multiselect = false,
 }: ScreenshotGridProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -37,7 +39,7 @@ export function ScreenshotGrid({
   const currentScreenshots = screenshots.slice(startIndex, endIndex);
 
   function getScreenshotUrl(id: string) {
-    if (!currentScreenshots) return `/caption/${id}`;
+    if (!currentScreenshots || !multiselect) return `/caption/${id}`;
 
     if (selectedIds.size === 0) {
       return `/caption/${id}`;
@@ -85,7 +87,7 @@ export function ScreenshotGrid({
       );
     }
     return urls;
-  }, [currentScreenshots, rankedMoments, selectedIds]);
+  }, [currentScreenshots, getScreenshotUrl, rankedMoments]);
 
   // Use our speculation rules hook
   useSpeculationRules(allPossibleUrls, {

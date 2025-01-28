@@ -116,3 +116,36 @@ body {
 .animate-gentle-scan {
   animation: gentle-scan 8s linear infinite;
 }
+
+@layer utilities {
+  /* Custom Scrollbar Styles */
+  .scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(234, 179, 8, 0.3) rgba(0, 0, 0, 0.2);
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background: rgba(234, 179, 8, 0.3);
+    border-radius: 3px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    background: rgba(234, 179, 8, 0.5);
+  }
+
+  /* Hide scrollbar buttons */
+  .scrollbar-custom::-webkit-scrollbar-button {
+    display: none;
+  }
+}
