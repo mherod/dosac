@@ -90,3 +90,29 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scanline {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.animate-scanline {
+  animation: scanline 3s linear infinite;
+}
+
+@keyframes gentle-scan {
+  0% {
+    transform: translate(-30%, -30%) rotate(15deg) scale(1.5);
+  }
+  100% {
+    transform: translate(130%, 130%) rotate(15deg) scale(1.5);
+  }
+}
+
+.animate-gentle-scan {
+  animation: gentle-scan 8s linear infinite;
+}

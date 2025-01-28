@@ -62,11 +62,11 @@ export default async function Page({ params, searchParams }: PageProps) {
   const [previousFrames, nextFrames] = await Promise.all([
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i > 0 ? index.slice(Math.max(0, i - 3), i) : [];
+      return i > 0 ? index.slice(Math.max(0, i - 2), i) : [];
     }),
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i < index.length - 1 ? index.slice(i + 1, i + 4) : [];
+      return i < index.length - 1 ? index.slice(i + 1, i + 3) : [];
     }),
   ]).catch(() => {
     notFound();
@@ -98,7 +98,7 @@ export default async function Page({ params, searchParams }: PageProps) {
           ← Back to search
         </Link>
 
-        <div className="flex flex-row items-center justify-center gap-4 max-h-18">
+        <div className="flex flex-row items-center justify-center gap-4 mb-8">
           <FrameStrip
             screenshots={[...previousFrames, frame, ...nextFrames].filter(
               (f): f is Screenshot =>
