@@ -112,7 +112,7 @@ export function FrameCard({
       suppressHydrationWarning
       data-frame-card
       className={cn(
-        "group block select-none touch-none relative",
+        "group block select-none touch-none relative transform transition-transform duration-300 hover:scale-[1.02]",
         isSelected && "ring-2 ring-primary ring-offset-2 rounded-lg z-10",
       )}
       onClick={handleClick}
@@ -122,8 +122,20 @@ export function FrameCard({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/5">
-        <div className="relative">
+      <Card className="overflow-hidden relative bg-black/5 dark:bg-white/5 shadow-[0_10px_50px_rgba(0,0,0,0.25)] dark:shadow-[0_10px_50px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_80px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_80px_rgba(0,0,0,0.6)] transition-all duration-300">
+        <div className="relative rounded-lg overflow-hidden">
+          {/* Main glass reflection */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-transparent pointer-events-none" />
+
+          {/* Diagonal shimmer effect */}
+          <div className="absolute -inset-full bg-gradient-to-tr from-transparent via-white/[0.1] to-transparent translate-x-[100%] translate-y-[100%] transition-transform duration-1000 ease-in-out group-hover:translate-x-[-50%] group-hover:translate-y-[-50%] pointer-events-none transform-gpu" />
+
+          {/* Top edge reflection */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+
+          {/* Corner reflection */}
+          <div className="absolute top-0 left-0 w-[100px] h-[100px] bg-gradient-to-br from-white/[0.15] to-transparent rounded-br-full opacity-50 pointer-events-none" />
+
           <CaptionedImage
             imageUrl={screenshot.imageUrl}
             image2Url={screenshot.image2Url}

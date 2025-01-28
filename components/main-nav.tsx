@@ -330,6 +330,7 @@ export function MainNav() {
               <Link
                 href="/"
                 className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+                suppressHydrationWarning
               >
                 Ministerial Database
               </Link>
@@ -339,13 +340,17 @@ export function MainNav() {
                     key={category.id}
                     href={`/categories/${category.id}`}
                     className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
+                    suppressHydrationWarning
                   >
                     {category.title}
                   </Link>
                 ))}
               </div>
             </div>
-            <div className="text-xs text-white/60 mt-2 sm:mt-0">
+            <div
+              className="text-xs text-white/60 mt-2 sm:mt-0"
+              suppressHydrationWarning
+            >
               Last updated: {new Date().toLocaleDateString("en-GB")} | System
               ID: DQARS-2024
             </div>

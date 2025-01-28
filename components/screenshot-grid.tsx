@@ -191,6 +191,7 @@ export function ScreenshotGrid({
                   prefetch={true}
                   rel="prerender"
                   scroll={false}
+                  suppressHydrationWarning
                 >
                   <FrameCard
                     screenshot={screenshot}
@@ -234,6 +235,7 @@ export function ScreenshotGrid({
                 prefetch={true}
                 rel="prerender"
                 scroll={false}
+                suppressHydrationWarning
               >
                 <FrameCard
                   screenshot={screenshot}
