@@ -94,7 +94,6 @@ function SearchWrapper({
       />
 
       <div className="mt-8">
-        <h2 className="text-lg font-semibold mb-4">Recent Frames</h2>
         <FrameStrip
           screenshots={filteredScreenshots.slice(0, 100)}
           frameWidth={192}
