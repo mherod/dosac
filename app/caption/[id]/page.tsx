@@ -5,6 +5,7 @@ import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import Link from "next/link";
 import { FrameStrip } from "@/components/frame-strip";
+import type { Screenshot } from "@/lib/types";
 
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
