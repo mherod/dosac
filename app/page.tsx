@@ -42,9 +42,8 @@ export default async function Home({ searchParams }: Props) {
   // If there's a search query, we need to force dynamic rendering
   if (initialSearchParams.q) {
     const dynamicConfig = {
-      dynamic: "force-dynamic",
+      dynamic: "force-dynamic" as const,
     };
-    // @ts-expect-error - This is a valid config option
     Object.assign(exports, dynamicConfig);
   }
 
