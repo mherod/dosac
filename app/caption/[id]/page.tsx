@@ -7,12 +7,14 @@ import Link from "next/link";
 import { FrameStrip } from "@/components/frame-strip";
 import type { Screenshot } from "@/lib/types";
 
-// Force dynamic rendering for caption pages
-export const dynamic = "force-dynamic";
+// Enable static generation with dynamic fallback
+export const dynamicParams = true;
 
-// Disable static param generation for now to prevent build errors
 export async function generateStaticParams() {
-  return [];
+  const frames = await getFrameIndex();
+  return frames.map((frame) => ({
+    id: frame.id,
+  }));
 }
 
 type PageParams = {

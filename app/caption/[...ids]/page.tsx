@@ -7,12 +7,26 @@ import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
 import { Suspense } from "react";
 
-// Force dynamic rendering for caption pages
-export const dynamic = "force-dynamic";
+// Enable static generation with dynamic fallback
+export const dynamicParams = true;
 
-// Disable static param generation for now to prevent build errors
 export async function generateStaticParams() {
-  return [];
+  const frames = await getFrameIndex();
+  const params = [];
+
+  // Generate pairs of consecutive frames
+  for (let i = 0; i < frames.length - 1; i++) {
+    const frame1 = frames[i];
+    const frame2 = frames[i + 1];
+
+    if (frame1?.id && frame2?.id) {
+      params.push({
+        ids: [frame1.id, frame2.id],
+      });
+    }
+  }
+
+  return params;
 }
 
 function assertString(value: unknown): asserts value is string {
