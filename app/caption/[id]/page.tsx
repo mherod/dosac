@@ -103,6 +103,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 !!f && typeof f.id === "string" && typeof f.speech === "string",
             )}
             centerScreenshot={frame}
+            frameWidth={200}
           />
         </div>
         <CaptionEditor screenshot={combinedFrame} />

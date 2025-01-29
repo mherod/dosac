@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import { useState, useRef, useEffect, type MouseEvent } from "react";
 import { type Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { CaptionedImage } from "@/components/captioned-image";
@@ -19,26 +19,71 @@ export function FrameStrip({
   centerScreenshot,
   frameWidth = 256, // Default to 256px width (original size)
 }: FrameStripProps) {
+  // All Hooks must be called unconditionally first
   const router = useRouter();
-  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
-  const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
-  const [isDragging, setIsDragging] = React.useState(false);
-  const [dragStartId, setDragStartId] = React.useState<string | null>(null);
-  const [lastSelectedId, setLastSelectedId] = React.useState<string | null>(
-    null,
-  );
-  const stripRef = React.useRef<HTMLDivElement>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartId, setDragStartId] = useState<string | null>(null);
+  const [lastSelectedId, setLastSelectedId] = useState<string | null>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
   const [framesParent] = useAutoAnimate<HTMLDivElement>({
     duration: 150,
     easing: "ease-in-out",
   });
+
+  // Move useEffect before any conditional returns
+  useEffect(() => {
+    const selected = Array.from(selectedIds)
+      .map((id) => screenshots.find((s) => s.id === id))
+      .filter(Boolean);
+
+    if (selected.length > 0) {
+      // Update display logic if needed
+    }
+  }, [selectedIds, screenshots]);
+
+  useEffect(() => {
+    if (centerScreenshot && stripRef.current) {
+      const index = screenshots.findIndex((s) => s.id === centerScreenshot.id);
+      if (index === -1) return;
+
+      // Calculate after layout with proper gap accounting
+      requestAnimationFrame(() => {
+        const container = stripRef.current;
+        if (!container) return;
+
+        const gap = 8; // Matches Tailwind's gap-2 (0.5rem = 8px)
+        const frameCenter = index * (frameWidth + gap);
+        const containerCenter = container.clientWidth / 2;
+        const scrollPosition = frameCenter - containerCenter + frameWidth / 2;
+
+        // Smooth scroll with CSS transition fallback
+        if ("scrollBehavior" in document.documentElement.style) {
+          container.scrollTo({
+            left: scrollPosition,
+            behavior: "smooth",
+          });
+        } else {
+          container.style.transition = "scroll-left 0.5s ease-in-out";
+          container.scrollLeft = scrollPosition;
+          setTimeout(() => (container.style.transition = ""), 500);
+        }
+      });
+    }
+  }, [centerScreenshot, frameWidth, screenshots]);
+
+  // Now place conditional return AFTER all Hooks
+  if (!screenshots?.length) {
+    return null;
+  }
 
   // Calculate visible frames based on container width
   const visibleFrames = Math.floor(
     (stripRef.current?.clientWidth || 0) / frameWidth,
   );
 
-  const handleFrameClick = (id: string, e: React.MouseEvent) => {
+  const handleFrameClick = (id: string, e: MouseEvent) => {
     let newSelectedIds = new Set(selectedIds);
 
     if (e.ctrlKey || e.metaKey) {
@@ -125,54 +170,47 @@ export function FrameStrip({
     setDragStartId(null);
   };
 
-  // Update selected frame display
-  React.useEffect(() => {
-    const selected = Array.from(selectedIds)
-      .map((id) => screenshots.find((s) => s.id === id))
-      .filter(Boolean);
-
-    if (selected.length > 0) {
-      // Update display logic if needed
-    }
-  }, [selectedIds, screenshots]);
-
+  const margin = 10;
   const frameHeight = Math.round(frameWidth * (9 / 16));
 
   return (
-    <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+    <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] max-w-screen overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Yellow border frame */}
         <div
           className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
-          style={{ height: `${frameHeight + 10}px` }}
+          style={{ height: `${frameHeight + margin}px` }}
         >
           <div
             ref={stripRef}
-            className="relative h-40 overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-custom"
+            className="relative overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-custom snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px]"
           >
-            {/* Solid dark background */}
-            <div className="absolute inset-0 bg-black/90" />
-
             {/* Frames */}
             <div
               ref={framesParent}
               className="flex gap-[1px] p-1 min-w-full items-center justify-center"
+              style={{
+                width: `${frameWidth * screenshots.length}px`,
+                height: `${frameHeight + margin}px`,
+              }}
             >
               <div
-                className="flex gap-2"
+                className="flex gap-2 scroll-px-[8px]"
                 style={{ height: `${frameHeight}px` }}
               >
                 {screenshots.map((screenshot, index) => (
                   <button
                     key={screenshot.id}
-                    onClick={(e) => handleFrameClick(screenshot.id, e)}
+                    onClick={(e) =>
+                      handleFrameClick(screenshot.id, e as MouseEvent)
+                    }
                     onMouseEnter={() => setHoverIndex(index)}
                     onMouseLeave={() => setHoverIndex(null)}
                     onMouseDown={() => handleDragStart(screenshot.id)}
                     onMouseMove={() => handleDragMove(screenshot.id)}
                     onMouseUp={handleDragEnd}
                     className={cn(
-                      "group relative flex-shrink-0 transition-all duration-150",
+                      "group relative flex-shrink-0 transition-all duration-150 snap-start",
                       centerScreenshot?.id === screenshot.id &&
                         "ring-2 ring-yellow-400/80",
                       selectedIds.has(screenshot.id) &&
