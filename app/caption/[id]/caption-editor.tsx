@@ -10,6 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { FontControls } from "@/components/caption-controls/font-controls";
 import { ActionButtons } from "@/components/caption-controls/action-buttons";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
+import { FrameStrip2 } from "@/components/frame-image-select";
 
 interface Screenshot {
   id: string;
@@ -84,26 +85,49 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     }
   };
 
+  const [primaryImage, setPrimaryImage] = useState(screenshot.imageUrl);
+  const [secondaryImage, setSecondaryImage] = useState(screenshot.image2Url);
+
+  const handleFrameSelect = (selectedImage: string) => {
+    if (selectedImage === primaryImage) {
+      // If selecting the primary image, swap primary and secondary
+      setPrimaryImage(secondaryImage);
+      setSecondaryImage(primaryImage);
+    } else {
+      // If selecting the secondary image or a new image, make it primary
+      setPrimaryImage(selectedImage);
+    }
+  };
+
   return (
     <div className="container mx-auto max-w-5xl pt-8">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-4">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-6">
           <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
-            <div ref={imageRef}>
-              <CaptionedImage
-                imageUrl={screenshot.imageUrl}
-                image2Url={screenshot.image2Url}
-                caption={caption}
-                fontSize={fontSize[0]}
-                outlineWidth={outlineWidth[0]}
-                shadowSize={shadowSize[0]}
-                fontFamily={fontFamily}
-                maintainAspectRatio={true}
-              />
+            <div className="relative">
+              <div ref={imageRef}>
+                <CaptionedImage
+                  imageUrl={primaryImage}
+                  image2Url={secondaryImage}
+                  caption={caption}
+                  fontSize={fontSize[0]}
+                  outlineWidth={outlineWidth[0]}
+                  shadowSize={shadowSize[0]}
+                  fontFamily={fontFamily}
+                  maintainAspectRatio={true}
+                />
+              </div>
             </div>
           </Card>
-          <Card className="p-3 shadow-md">
-            <div className="space-y-2">
+          <div className="bg-muted/50 rounded-lg p-4">
+            <ActionButtons
+              onDownload={handleDownload}
+              onShare={() => handleShare(caption)}
+              className="grid-cols-2"
+            />
+          </div>
+          <Card className="p-4 shadow-md">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-muted-foreground">
                   Episode
@@ -128,34 +152,55 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
           </Card>
         </div>
 
-        <div className="space-y-4">
-          <Card className="p-4 shadow-md">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Caption</label>
-                <Textarea
-                  value={caption}
-                  onChange={(e) => setCaption(e.target.value)}
-                  placeholder="Enter your caption..."
-                  className="min-h-[100px] resize-none transition-colors focus:border-primary"
-                />
+        <div className="space-y-6">
+          <Card className="p-6 shadow-md">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">Caption</label>
+                    <span className="text-sm text-muted-foreground">
+                      {caption.length} characters
+                    </span>
+                  </div>
+                  <Textarea
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                    placeholder="Enter your caption..."
+                    className="min-h-[120px] resize-none transition-colors focus:border-primary"
+                  />
+                </div>
+
+                <div className="space-y-2.5">
+                  <label className="text-sm font-medium">Frame Selection</label>
+                  <div className="flex items-center justify-center bg-muted/50 rounded-lg p-2">
+                    <FrameStrip2
+                      imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
+                      centerImageUrl={primaryImage}
+                      frameWidth={100}
+                      onFrameSelect={handleFrameSelect}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <FontControls
-                fontSize={fontSize}
-                setFontSize={setFontSize}
-                outlineWidth={outlineWidth}
-                setOutlineWidth={setOutlineWidth}
-                shadowSize={shadowSize}
-                setShadowSize={setShadowSize}
-                fontFamily={fontFamily}
-                setFontFamily={setFontFamily}
-              />
-
-              <ActionButtons
-                onDownload={handleDownload}
-                onShare={() => handleShare(caption)}
-              />
+              <div className="space-y-6 pt-6 border-t">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Font Settings</label>
+                  <div className="bg-muted/50 rounded-lg p-4">
+                    <FontControls
+                      fontSize={fontSize}
+                      setFontSize={setFontSize}
+                      outlineWidth={outlineWidth}
+                      setOutlineWidth={setOutlineWidth}
+                      shadowSize={shadowSize}
+                      setShadowSize={setShadowSize}
+                      fontFamily={fontFamily}
+                      setFontFamily={setFontFamily}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </Card>
         </div>

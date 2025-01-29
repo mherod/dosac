@@ -1,4 +1,11 @@
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const fonts = [
   "Arial",
@@ -34,17 +41,18 @@ export function FontControls({
     <div className="space-y-4">
       <div>
         <label className="text-sm font-medium">Font Family</label>
-        <select
-          value={fontFamily}
-          onChange={(e) => setFontFamily(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
-        >
-          {fonts.map((font) => (
-            <option key={font} value={font}>
-              {font}
-            </option>
-          ))}
-        </select>
+        <Select value={fontFamily} onValueChange={setFontFamily}>
+          <SelectTrigger className="mt-2">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {fonts.map((font) => (
+              <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                {font}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>

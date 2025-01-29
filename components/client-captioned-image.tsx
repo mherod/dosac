@@ -15,6 +15,7 @@ export interface CaptionedImageProps {
   priority?: boolean;
   maintainAspectRatio?: boolean;
   autoToggle?: boolean;
+  relaxedLineBreaks?: boolean;
 }
 
 function getTextShadow(outlineWidth: number = 1, shadowSize: number = 0) {
@@ -47,12 +48,15 @@ export function ClientCaptionedImage({
   priority = false,
   maintainAspectRatio = false,
   autoToggle = false,
+  relaxedLineBreaks = false,
 }: CaptionedImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
   const [showSecondFrame, setShowSecondFrame] = useState(false);
 
-  const captionJoined = caption?.split("\n").join(" ");
+  const captionLines = relaxedLineBreaks
+    ? caption?.split("\n")
+    : caption?.split(/\s+/)?.join(" ")?.split("\n");
 
   // Auto toggle effect
   useEffect(() => {
@@ -84,7 +88,7 @@ export function ClientCaptionedImage({
 
   return (
     <div
-      className={`min-h-12 relative select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-full"}`}
+      className={`min-h-12 relative select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-fit"}`}
       ref={containerRef}
       onDoubleClick={handleDoubleClick}
       style={{ cursor: image2Url ? "pointer" : "default" }}
@@ -114,13 +118,16 @@ export function ClientCaptionedImage({
               maxWidth: "90%",
               margin: "0 auto",
               wordWrap: "break-word",
+              whiteSpace: "pre-wrap",
               lineHeight: 1.2,
               fontWeight: 500,
               fontFamily,
             }}
           >
-            {caption.split("\n").map((line, index) => (
-              <p key={index}>{line}</p>
+            {captionLines?.map((line, index) => (
+              <p key={index} className="whitespace-pre-wrap break-words w-full">
+                {line}
+              </p>
             ))}
           </div>
         </div>
