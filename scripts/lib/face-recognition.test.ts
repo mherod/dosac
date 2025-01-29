@@ -5,11 +5,10 @@ import sharp from "sharp";
 import { faceRecognition } from "./face-recognition";
 import { faceNet } from "./face-net";
 import { faceProcessor } from "./face-processor";
-import { detectFaces } from "./face-embedding";
+import { generateFaceEmbedding } from "./face-embedding";
 import * as tf from "@tensorflow/tfjs-node";
 
 const TEST_IMAGE = join(process.cwd(), "scripts", "search.webp");
-const TEST_IMAGE_2 = join(process.cwd(), "scripts", "search2.webp");
 
 // Initialize TensorFlow.js with Node backend
 tf.setBackend("tensorflow");
@@ -274,22 +273,29 @@ describe("face-processor", () => {
 
   test("should align faces correctly", async () => {
     const buffer = readFileSync(TEST_IMAGE);
-    const { predictions } = await detectFaces(buffer);
-    const { alignmentScore } = await faceProcessor.alignFace(
+    const result = await generateFaceEmbedding(TEST_IMAGE);
+    if (!result || result.predictions.length === 0) {
+      throw new Error("No faces detected in test image");
+    }
+    const aligned = await faceProcessor.alignFace(
       buffer,
-      predictions[0],
+      result.predictions[0],
     );
 
-    expect(alignmentScore).toBeGreaterThan(0);
-    expect(alignmentScore).toBeLessThanOrEqual(1);
+    expect(aligned.buffer).toBeDefined();
+    expect(aligned.width).toBeGreaterThan(0);
+    expect(aligned.height).toBeGreaterThan(0);
   });
 
   test("should preprocess faces correctly", async () => {
     const buffer = readFileSync(TEST_IMAGE);
-    const { predictions } = await detectFaces(buffer);
+    const result = await generateFaceEmbedding(TEST_IMAGE);
+    if (!result || result.predictions.length === 0) {
+      throw new Error("No faces detected in test image");
+    }
     const processedBuffer = await faceProcessor.preprocessFace(
       buffer,
-      predictions[0],
+      result.predictions[0],
     );
 
     expect(Buffer.isBuffer(processedBuffer)).toBe(true);

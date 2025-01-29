@@ -8,11 +8,8 @@ import { memoize } from "lodash-es";
 import { LRUCache } from "lru-cache";
 import { MAX_EMBEDDING_SIZE, SUPPORTED_IMAGE_TYPES } from "./constants";
 import { convertToJpeg } from "./image-processing";
-import { basename } from "path";
 import { createCanvas, Image, Canvas } from "canvas";
 import { createHash } from "crypto";
-import { FaceEmbedding } from "./face-cache";
-import { FaceAttributeDetector } from "./face-attributes";
 
 // Types
 export interface FacePrediction {

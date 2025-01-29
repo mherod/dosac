@@ -1,16 +1,9 @@
 import * as tf from "@tensorflow/tfjs";
 import { loadModels } from "./face-embedding";
-import { FaceEmbedding } from "./face-cache";
-import {
-  calculateRotationAngle,
-  cropFace,
-  FacePrediction,
-} from "./face-embedding";
-import { convertToJpeg } from "./image-processing";
+import { calculateRotationAngle, FacePrediction } from "./face-embedding";
 
 // Constants for FaceNet
 const FACENET_INPUT_SIZE = 224; // MobileNet V2 input size
-const EMBEDDING_SIZE = 1280; // MobileNet V2 feature vector size
 const TRIPLET_MARGIN = 0.2;
 
 // Types

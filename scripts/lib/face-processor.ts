@@ -1,20 +1,9 @@
 import tf from "./tensorflow-setup";
 import * as faceLandmarksDetection from "@mediapipe/face_mesh";
-import { loadModels } from "./face-embedding";
 import { FacePrediction } from "./face-embedding";
 import sharp from "sharp";
 import { convertToJpeg } from "./image-processing";
 import { decodeImage } from "./tensorflow-setup";
-
-// Constants
-const FACE_LANDMARKS_MODEL = "mediapipe-face-mesh";
-const CANONICAL_FACE_POINTS = {
-  leftEye: [0.3, 0.3] as [number, number],
-  rightEye: [0.7, 0.3] as [number, number],
-  nose: [0.5, 0.5] as [number, number],
-  leftMouth: [0.3, 0.7] as [number, number],
-  rightMouth: [0.7, 0.7] as [number, number],
-};
 
 export interface AlignmentResult {
   buffer: Buffer;

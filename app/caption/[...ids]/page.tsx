@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
 import Link from "next/link";
-import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
 import { Suspense } from "react";
 

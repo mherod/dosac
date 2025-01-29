@@ -40,7 +40,6 @@ export class FaceAttributeDetector {
 
   async detectAttributes(
     image: tf.Tensor3D,
-    face: FacePrediction,
   ): Promise<{ attributes: FaceAttributes; confidence: AttributeConfidence }> {
     if (
       !this.genderModel ||

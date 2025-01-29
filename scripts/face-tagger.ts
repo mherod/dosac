@@ -1,11 +1,5 @@
 import fastGlob from "fast-glob";
-import {
-  readFileSync,
-  statSync,
-  writeFileSync,
-  existsSync,
-  mkdirSync,
-} from "fs";
+import { statSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { cpus } from "os";
 import { basename, join, resolve } from "path";
 import {

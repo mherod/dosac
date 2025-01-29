@@ -757,7 +757,7 @@ export async function analyzeFaceClusters(
 }
 
 // Helper function to calculate attribute matching score
-function calculateAttributeMatch(
+export function calculateAttributeMatch(
   attrs1: FaceAttributes,
   attrs2: FaceAttributes,
   conf1: AttributeConfidence,
@@ -797,11 +797,6 @@ function calculateAttributeMatch(
   totalWeight += skinWeight;
 
   return score / totalWeight;
-}
-
-function getEpisodeFromPath(path: string): string {
-  const match = path.match(/s\d+e\d+/);
-  return match ? match[0] : "unknown";
 }
 
 export function getEmbeddingFileFromPath(path: string): string {
