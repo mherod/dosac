@@ -7,31 +7,12 @@ import { MainNav } from "@/components/main-nav";
 import { DualCaptionEditor } from "./dual-caption-editor";
 import { Suspense } from "react";
 
+// Force dynamic rendering for caption pages
+export const dynamic = "force-dynamic";
+
+// Disable static param generation for now to prevent build errors
 export async function generateStaticParams() {
-  const frames = await getFrameIndex();
-  const params = [];
-
-  // Limit to first 100 frames to prevent stack overflow
-  const maxFrames = Math.min(frames.length, 100);
-
-  // Generate pairs of frames
-  for (let i = 0; i < maxFrames; i++) {
-    const frame1 = frames[i];
-    if (!frame1?.id) continue;
-
-    // Only combine with next 10 frames to limit combinations
-    const maxPairs = Math.min(maxFrames, i + 11);
-    for (let j = i + 1; j < maxPairs; j++) {
-      const frame2 = frames[j];
-      if (!frame2?.id) continue;
-
-      params.push({
-        ids: [frame1.id, frame2.id],
-      });
-    }
-  }
-
-  return params;
+  return [];
 }
 
 function assertString(value: unknown): asserts value is string {
