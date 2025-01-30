@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
+import { CaptionText } from "./caption-text";
 
 export interface CaptionedImageProps {
   imageUrl: string;
@@ -16,25 +17,6 @@ export interface CaptionedImageProps {
   maintainAspectRatio?: boolean;
   autoToggle?: boolean;
   relaxedLineBreaks?: boolean;
-}
-
-function getTextShadow(outlineWidth: number = 1, shadowSize: number = 0) {
-  const shadows = [];
-
-  // Add outline effect
-  for (let x = -outlineWidth; x <= outlineWidth; x++) {
-    for (let y = -outlineWidth; y <= outlineWidth; y++) {
-      if (x === 0 && y === 0) continue;
-      shadows.push(`${x}px ${y}px 0 #000`);
-    }
-  }
-
-  // Add gaussian-like shadow if enabled
-  if (shadowSize > 0) {
-    shadows.push(`0 ${shadowSize}px ${shadowSize * 2}px rgba(0,0,0,0.7)`);
-  }
-
-  return shadows.join(", ");
 }
 
 export function ClientCaptionedImage({
@@ -53,10 +35,6 @@ export function ClientCaptionedImage({
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
   const [showSecondFrame, setShowSecondFrame] = useState(false);
-
-  const captionLines = relaxedLineBreaks
-    ? caption?.split("\n")
-    : caption?.split(/\s+/)?.join(" ")?.split("\n");
 
   // Auto toggle effect
   useEffect(() => {
@@ -105,31 +83,16 @@ export function ClientCaptionedImage({
       {caption && (
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
-          style={{
-            paddingBottom: "4%",
-          }}
+          style={{ paddingBottom: "4%" }}
         >
-          <div
-            style={{
-              fontSize: `${calculatedFontSize}px`,
-              color: "#ffffff",
-              textShadow: getTextShadow(outlineWidth, shadowSize),
-              textAlign: "center",
-              maxWidth: "90%",
-              margin: "0 auto",
-              wordWrap: "break-word",
-              whiteSpace: "pre-wrap",
-              lineHeight: 1.2,
-              fontWeight: 500,
-              fontFamily,
-            }}
-          >
-            {captionLines?.map((line, index) => (
-              <p key={index} className="whitespace-pre-wrap break-words w-full">
-                {line}
-              </p>
-            ))}
-          </div>
+          <CaptionText
+            caption={caption}
+            fontSize={calculatedFontSize}
+            outlineWidth={outlineWidth}
+            shadowSize={shadowSize}
+            fontFamily={fontFamily}
+            relaxedLineBreaks={relaxedLineBreaks}
+          />
         </div>
       )}
     </div>

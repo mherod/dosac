@@ -38,15 +38,15 @@ export function FontControls({
   setFontFamily,
 }: FontControlsProps) {
   return (
-    <div className="space-y-4 border-2 border-red-500 p-4">
-      <div className="border-2 border-blue-500 p-4">
+    <div className="space-y-4 p-4">
+      <div className="p-4">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Font Family
           </label>
         </div>
         <Select value={fontFamily} onValueChange={setFontFamily}>
-          <SelectTrigger className="mt-4 border-2 border-green-500">
+          <SelectTrigger className="mt-4">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -59,8 +59,8 @@ export function FontControls({
         </Select>
       </div>
 
-      <div className="border-2 border-blue-500 p-4">
-        <div className="flex items-center justify-between h-6 border border-purple-500">
+      <div className="p-4">
+        <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Font Size
           </label>
@@ -74,12 +74,12 @@ export function FontControls({
           min={16}
           max={36}
           step={1}
-          className="mt-4 border border-yellow-500"
+          className="mt-4"
         />
       </div>
 
-      <div className="border-2 border-blue-500 p-4">
-        <div className="flex items-center justify-between h-6 border border-purple-500">
+      <div className="p-4">
+        <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Outline Width
           </label>
@@ -93,12 +93,12 @@ export function FontControls({
           min={1}
           max={4}
           step={1}
-          className="mt-4 border border-yellow-500"
+          className="mt-4"
         />
       </div>
 
-      <div className="border-2 border-blue-500 p-4">
-        <div className="flex items-center justify-between h-6 border border-purple-500">
+      <div className="p-4">
+        <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Shadow Size
           </label>
@@ -112,7 +112,7 @@ export function FontControls({
           min={0}
           max={10}
           step={1}
-          className="mt-4 border border-yellow-500"
+          className="mt-4"
         />
       </div>
     </div>

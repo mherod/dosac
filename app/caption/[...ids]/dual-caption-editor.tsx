@@ -74,13 +74,37 @@ export function DualCaptionEditor({
 
   return (
     <div className="container mx-auto max-w-[1400px] pt-8">
-      <div className="grid gap-4 lg:gap-8 lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px]">
+      <div
+        className={`grid gap-4 lg:gap-8 ${
+          frames.length === 4
+            ? "grid-cols-1"
+            : "lg:grid-cols-[1fr,400px] xl:grid-cols-[2fr,500px]"
+        }`}
+      >
         {/* Combined Preview */}
-        <div className="space-y-4">
-          <Card className="shadow-lg transition-shadow hover:shadow-xl h-fit p-2 mx-auto w-fit">
+        <div>
+          <Card
+            style={{
+              boxShadow:
+                "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+              transition: "box-shadow 0.2s",
+              height: "fit-content",
+              padding: "0.5rem",
+              marginLeft: "auto",
+              marginRight: "auto",
+              width: frames.length === 4 ? "100%" : "fit-content",
+              maxWidth: frames.length === 4 ? "620px" : undefined,
+              minWidth: frames.length === 4 ? undefined : "500px",
+            }}
+          >
             <div
               ref={combinedRef}
-              className="h-full w-fit min-w-[500px] mx-auto"
+              style={{
+                height: "100%",
+                width: "100%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
             >
               {frames.length === 4 ? (
                 <FrameGrid

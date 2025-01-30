@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import type { Screenshot } from "@/lib/types";
+import { useRef } from "react";
+import { CaptionText } from "./caption-text";
 
 interface FrameGridProps {
   frames: Screenshot[];
@@ -9,17 +11,7 @@ interface FrameGridProps {
   fontSize: number;
   outlineWidth: number;
   fontFamily: string;
-}
-
-function getTextShadow(width: number = 1) {
-  const shadows = [];
-  for (let x = -width; x <= width; x++) {
-    for (let y = -width; y <= width; y++) {
-      if (x === 0 && y === 0) continue;
-      shadows.push(`${x}px ${y}px 0 #000`);
-    }
-  }
-  return shadows.join(", ");
+  relaxedLineBreaks?: boolean;
 }
 
 export function FrameGrid({
@@ -28,90 +20,109 @@ export function FrameGrid({
   fontSize,
   outlineWidth,
   fontFamily,
+  relaxedLineBreaks,
 }: FrameGridProps) {
+  const maxWidth = 600;
+  const frameW = 4;
+  const frameH = 3;
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Simplified dimension calculations
+  const cellWidth = maxWidth / 2;
+  const cellHeight = (cellWidth * frameH) / frameW; // Maintain 16:9 aspect ratio per cell
+  const gridHeight = cellHeight * 2; // Total height for 2 rows
+
+  const FrameRow = ({
+    frames,
+    startIndex,
+    priorityIndex,
+  }: {
+    frames: Screenshot[];
+    startIndex: number;
+    priorityIndex: number;
+  }) => {
+    const rowRef = useRef<HTMLDivElement>(null);
+    const rowRect = rowRef.current?.getBoundingClientRect();
+    const frameCount = frames.length;
+    const rowWidth = rowRect?.width || cellWidth * frameCount;
+    const rowHeight = rowRect?.height || cellHeight;
+
+    return (
+      <div
+        ref={rowRef}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          width: rowWidth,
+          height: rowHeight,
+          aspectRatio: (frameW * frameCount) / frameH,
+          maxWidth: maxWidth,
+          overflow: "hidden",
+          userSelect: "none",
+        }}
+      >
+        {frames.map((frame, index) => (
+          <div
+            key={frame.id}
+            style={{
+              position: "relative",
+              width: "100%",
+              height: rowHeight,
+              aspectRatio: frameW / frameH,
+              userSelect: "none",
+            }}
+          >
+            <Image
+              src={frame.imageUrl}
+              alt="Screenshot"
+              fill
+              draggable={false}
+              style={{
+                objectFit: "cover",
+                width: "100%",
+                height: "100%",
+                aspectRatio: frameW / frameH,
+                userSelect: "none",
+              }}
+              sizes="(max-width: 600px) 50vw, 300px"
+              priority={index === priorityIndex}
+            />
+            {captions[startIndex + index] && (
+              <div
+                className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
+                style={{ paddingBottom: "4%" }}
+              >
+                <CaptionText
+                  caption={captions[startIndex + index]}
+                  fontSize={fontSize}
+                  outlineWidth={outlineWidth}
+                  fontFamily={fontFamily}
+                  relaxedLineBreaks={relaxedLineBreaks}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div
-      className="grid h-fit w-[1000px]"
-      style={{ gridTemplateRows: "1fr 1fr" }}
+      ref={rootRef}
+      style={{
+        display: "grid",
+        width: "100%",
+        maxWidth: maxWidth + "px",
+        height: gridHeight + "px",
+        gap: "4px", // Add spacing between rows
+        backgroundColor: "black",
+        aspectRatio: frameW / frameH,
+        userSelect: "none",
+      }}
     >
-      <div
-        className="grid w-full h-fit aspect-video"
-        style={{ gridTemplateColumns: "1fr 1fr" }}
-      >
-        {frames.slice(0, 2).map((frame, index) => (
-          <div key={frame.id} className="relative w-full h-full max-h-[500px]">
-            <Image
-              src={frame.imageUrl}
-              alt="Screenshot"
-              fill
-              className="object-cover"
-              sizes="50vw"
-              priority={index === 0}
-            />
-            {captions[index] && (
-              <div className="absolute inset-0 flex items-end justify-center pb-[4%]">
-                <div
-                  style={{
-                    fontSize: `${fontSize}px`,
-                    color: "#ffffff",
-                    textShadow: getTextShadow(outlineWidth),
-                    textAlign: "center",
-                    maxWidth: "90%",
-                    margin: "0 auto",
-                    wordWrap: "break-word",
-                    lineHeight: 1.2,
-                    fontWeight: 500,
-                    fontFamily,
-                  }}
-                >
-                  {captions[index]
-                    ?.split("\n")
-                    .map((line, i) => <p key={i}>{line}</p>)}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <div
-        className="grid w-full h-fit aspect-video"
-        style={{ gridTemplateColumns: "1fr 1fr" }}
-      >
-        {frames.slice(2, 4).map((frame, index) => (
-          <div key={frame.id} className="relative w-full h-full max-h-[500px]">
-            <Image
-              src={frame.imageUrl}
-              alt="Screenshot"
-              fill
-              className="object-cover"
-              sizes="50vw"
-              priority={index === 0}
-            />
-            {captions[index + 2] && (
-              <div className="absolute inset-0 flex items-end justify-center pb-[4%]">
-                <div
-                  style={{
-                    fontSize: `${fontSize}px`,
-                    color: "#ffffff",
-                    textShadow: getTextShadow(outlineWidth),
-                    textAlign: "center",
-                    maxWidth: "90%",
-                    margin: "0 auto",
-                    wordWrap: "break-word",
-                    lineHeight: 1.2,
-                    fontWeight: 500,
-                    fontFamily,
-                  }}
-                >
-                  {captions[index + 2]
-                    ?.split("\n")
-                    .map((line, i) => <p key={i}>{line}</p>)}
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <FrameRow frames={frames.slice(0, 2)} startIndex={0} priorityIndex={0} />
+      <FrameRow frames={frames.slice(2, 4)} startIndex={2} priorityIndex={0} />
     </div>
   );
 }
