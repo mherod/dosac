@@ -6,6 +6,7 @@ import { type Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { CaptionedImage } from "@/components/captioned-image";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FrameStripProps {
   screenshots: Screenshot[];
@@ -172,18 +173,23 @@ export function FrameStrip({
 
   const margin = 10;
   const frameHeight = Math.round(frameWidth * (9 / 16));
+  // Increase padding to accommodate scale animation
+  const containerPadding = 16;
 
   return (
     <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] max-w-screen overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Yellow border frame */}
-        <div
-          className="relative rounded-xl overflow-hidden shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
+        <motion.div
+          className="relative rounded-xl shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
           style={{ height: `${frameHeight + margin}px` }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <div
             ref={stripRef}
-            className="relative overflow-x-scroll overflow-y-hidden whitespace-nowrap scrollbar-custom snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px]"
+            className="relative overflow-x-scroll whitespace-nowrap scrollbar-custom snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px]"
           >
             {/* Frames */}
             <div
@@ -198,50 +204,74 @@ export function FrameStrip({
                 className="flex gap-2 scroll-px-[8px]"
                 style={{ height: `${frameHeight}px` }}
               >
-                {screenshots.map((screenshot, index) => (
-                  <button
-                    key={screenshot.id}
-                    onClick={(e) =>
-                      handleFrameClick(screenshot.id, e as MouseEvent)
-                    }
-                    onMouseEnter={() => setHoverIndex(index)}
-                    onMouseLeave={() => setHoverIndex(null)}
-                    onMouseDown={() => handleDragStart(screenshot.id)}
-                    onMouseMove={() => handleDragMove(screenshot.id)}
-                    onMouseUp={handleDragEnd}
-                    className={cn(
-                      "group relative flex-shrink-0 transition-all duration-150 snap-start",
-                      centerScreenshot?.id === screenshot.id &&
-                        "ring-2 ring-yellow-400/80",
-                      selectedIds.has(screenshot.id) &&
-                        "ring-4 ring-yellow-400/90",
-                    )}
-                    style={{
-                      width: `${frameWidth}px`,
-                      height: `${frameHeight}px`,
-                    }}
-                  >
-                    <CaptionedImage
-                      imageUrl={screenshot.imageUrl}
-                      image2Url={screenshot.image2Url}
-                      caption={screenshot.speech}
-                      fontSize={28}
-                      outlineWidth={1}
-                      maintainAspectRatio
-                      priority={index < visibleFrames}
-                    />
-                  </button>
-                ))}
+                <AnimatePresence>
+                  {screenshots.map((screenshot, index) => (
+                    <motion.button
+                      key={`frame-${screenshot.id}-${index}`}
+                      onClick={(e) =>
+                        handleFrameClick(screenshot.id, e as MouseEvent)
+                      }
+                      onMouseEnter={() => setHoverIndex(index)}
+                      onMouseLeave={() => setHoverIndex(null)}
+                      onMouseDown={() => handleDragStart(screenshot.id)}
+                      onMouseMove={() => handleDragMove(screenshot.id)}
+                      onMouseUp={handleDragEnd}
+                      className={cn(
+                        "group relative flex-shrink-0 snap-start z-10",
+                        centerScreenshot?.id === screenshot.id &&
+                          "ring-2 ring-yellow-400/80",
+                        selectedIds.has(screenshot.id) &&
+                          "ring-4 ring-yellow-400/90",
+                      )}
+                      style={{
+                        width: `${frameWidth}px`,
+                        height: `${frameHeight}px`,
+                        transformOrigin: "center center",
+                      }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: hoverIndex === index ? -2 : 0,
+                      }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      whileHover={{
+                        scale: 1.01,
+                        y: -2,
+                        transition: { duration: 0.2 },
+                      }}
+                      whileTap={{ scale: 0.99 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                      }}
+                    >
+                      <CaptionedImage
+                        imageUrl={screenshot.imageUrl}
+                        image2Url={screenshot.image2Url}
+                        caption={screenshot.speech}
+                        fontSize={28}
+                        outlineWidth={1}
+                        maintainAspectRatio
+                        priority={index < visibleFrames}
+                      />
+                    </motion.button>
+                  ))}
+                </AnimatePresence>
               </div>
             </div>
 
-            {/* Edge fades - now using sticky positioning */}
-            <div
+            {/* Edge fades - now using sticky positioning with motion */}
+            <motion.div
               className="sticky left-0 top-0 bottom-0 w-8 h-full bg-gradient-to-r from-black to-transparent pointer-events-none"
               style={{ position: "sticky" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
