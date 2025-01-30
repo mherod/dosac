@@ -91,7 +91,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <>
-      <div className="container mx-auto py-8">
+      <div className="m-auto p-4">
         <Link
           href="/"
           className="mb-4 inline-block text-blue-500 hover:underline"

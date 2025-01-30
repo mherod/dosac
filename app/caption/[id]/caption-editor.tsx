@@ -98,7 +98,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   };
 
   return (
-    <div className="container mx-auto max-w-5xl pt-8">
+    <div className="pt-8">
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-6">
           <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
@@ -117,7 +117,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
               </div>
             </div>
           </Card>
-          <div className="bg-muted/50 rounded-lg p-4">
+          <div className="bg-muted/50 rounded-lg">
             <ActionButtons
               onDownload={handleDownload}
               onShare={() => handleShare(caption)}
@@ -189,24 +189,22 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
               </div>
 
               <div className="space-y-6 pt-6 border-t">
-                <div className="space-y-4">
-                  <div className="h-6">
-                    <label className="text-sm font-medium text-foreground leading-6">
-                      Font Settings
-                    </label>
-                  </div>
-                  <div className="bg-muted/50 rounded-lg p-4">
-                    <FontControls
-                      fontSize={fontSize}
-                      setFontSize={setFontSize}
-                      outlineWidth={outlineWidth}
-                      setOutlineWidth={setOutlineWidth}
-                      shadowSize={shadowSize}
-                      setShadowSize={setShadowSize}
-                      fontFamily={fontFamily}
-                      setFontFamily={setFontFamily}
-                    />
-                  </div>
+                <div className="h-6">
+                  <label className="text-sm font-medium text-foreground leading-6">
+                    Font Settings
+                  </label>
+                </div>
+                <div className="bg-muted/50 rounded-lg p-4">
+                  <FontControls
+                    fontSize={fontSize}
+                    setFontSize={setFontSize}
+                    outlineWidth={outlineWidth}
+                    setOutlineWidth={setOutlineWidth}
+                    shadowSize={shadowSize}
+                    setShadowSize={setShadowSize}
+                    fontFamily={fontFamily}
+                    setFontFamily={setFontFamily}
+                  />
                 </div>
               </div>
             </div>

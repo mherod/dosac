@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import React from "react";
+import { useCallback, useMemo } from "react";
 import { TopBanner } from "./main-nav/top-banner";
 import { CivilServiceHeader } from "./main-nav/civil-service-header";
 import { NavFilters } from "./main-nav/nav-filters";
@@ -20,7 +20,7 @@ export function MainNav() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const createQueryString = React.useCallback(
+  const createQueryString = useCallback(
     (updates: QueryUpdates) => {
       const params = new URLSearchParams(searchParams);
       Object.entries(updates).forEach(([key, value]) => {
@@ -36,7 +36,7 @@ export function MainNav() {
   );
 
   // Read filters from URL
-  const filters = React.useMemo(
+  const filters = useMemo(
     (): Filters => ({
       season: searchParams.get("season")
         ? Number(searchParams.get("season"))
@@ -50,7 +50,7 @@ export function MainNav() {
   );
 
   // Handle filter changes
-  const handleFilterChange = React.useCallback(
+  const handleFilterChange = useCallback(
     (updates: Partial<Filters>) => {
       const queryString = createQueryString({
         season:
@@ -65,7 +65,7 @@ export function MainNav() {
   );
 
   // Handle query changes
-  const handleQueryChange = React.useCallback(
+  const handleQueryChange = useCallback(
     (query: string) => {
       const queryString = createQueryString({
         q: query || null,

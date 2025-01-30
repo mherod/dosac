@@ -1,6 +1,7 @@
 "use client";
 
 import { UKFlag } from "@/components/icons/uk-flag";
+import { UserMenu } from "./user-menu";
 
 export function CivilServiceHeader() {
   return (
@@ -11,10 +12,13 @@ export function CivilServiceHeader() {
           <span className="text-md font-bold">Civil Service Digital</span>
         </div>
       </div>
-      <div className="rounded-sm border border-white/20 bg-[#1d70b8] px-1.5 py-1 flex items-center">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-white my-auto">
-          Beta
-        </span>
+      <div className="flex items-center gap-2">
+        <div className="rounded-sm border border-white/20 bg-[#1d70b8] px-1.5 py-1 flex items-center">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-white my-auto">
+            Beta
+          </span>
+        </div>
+        <UserMenu />
       </div>
     </div>
   );

@@ -187,6 +187,7 @@ export function ScreenshotGrid({
             {rankedMoments.map((screenshot, index) => (
               <div key={screenshot.id} className="relative">
                 <Link
+                  key={`ranked-moment-${screenshot.id}-${index}`}
                   href={getScreenshotUrl(screenshot.id)}
                   prefetch={true}
                   rel="prerender"
@@ -231,6 +232,7 @@ export function ScreenshotGrid({
           {currentScreenshots.map((screenshot, index) => (
             <div key={screenshot.id}>
               <Link
+                key={`screenshot-${screenshot.id}-${index}`}
                 href={getScreenshotUrl(screenshot.id)}
                 prefetch={true}
                 rel="prerender"

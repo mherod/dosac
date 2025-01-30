@@ -38,8 +38,8 @@ export function FontControls({
   setFontFamily,
 }: FontControlsProps) {
   return (
-    <div className="space-y-4 p-4">
-      <div className="p-4">
+    <div className="flex flex-col gap-4">
+      <div className="py-4">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Font Family
@@ -59,7 +59,7 @@ export function FontControls({
         </Select>
       </div>
 
-      <div className="p-4">
+      <div className="py-4">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Font Size
@@ -78,7 +78,7 @@ export function FontControls({
         />
       </div>
 
-      <div className="p-4">
+      <div className="py-4">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Outline Width
@@ -97,7 +97,7 @@ export function FontControls({
         />
       </div>
 
-      <div className="p-4">
+      <div className="py-4">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
             Shadow Size
