@@ -39,14 +39,15 @@ function CategoryHeader({
 }
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function CategoryLayout({
   children,
   params,
 }: PropsWithChildren<Props>) {
-  const category = CATEGORIES.find((c) => c.id === params.id);
+  const resolvedParams = await params;
+  const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
   if (!category) return notFound();
 
   const allFrames = await getFrameIndex();
