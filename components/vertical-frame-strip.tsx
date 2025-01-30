@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useState } from "react";
 
 interface FrameStripProps {
   imageUrls: string[];
@@ -14,6 +15,8 @@ export function VerticalFrameStrip({
   frameWidth = 256,
   onFrameSelect,
 }: FrameStripProps) {
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+
   if (!imageUrls?.length) {
     return null;
   }
@@ -56,12 +59,21 @@ export function VerticalFrameStrip({
                     height: `${frameHeight}px`,
                   }}
                 >
+                  {!loadedImages[imageUrl] && (
+                    <div className="absolute inset-0 bg-gray-800 animate-pulse" />
+                  )}
                   <Image
                     src={imageUrl}
                     alt={`Frame ${index}`}
                     width={frameWidth}
                     height={frameHeight}
-                    className="object-cover"
+                    className={cn(
+                      "object-cover transition-opacity duration-300",
+                      !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
+                    )}
+                    onLoad={() =>
+                      setLoadedImages((prev) => ({ ...prev, [imageUrl]: true }))
+                    }
                   />
                 </button>
               ))}
