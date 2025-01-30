@@ -46,37 +46,42 @@ export function NavFilters({
 
   return (
     <div className={cn("border-t border-[#ffffff1f] bg-[#0b0c0c]", className)}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-row justify-between gap-4">
-        <div className="flex flex-row h-16 items-center justify-between">
-          {/* Logo and department name */}
-          <DosacLogo />
-        </div>
-        <div className="flex flex-row h-fit w-fit gap-3 flex-wrap sm:flex-nowrap py-4 justify-end">
-          <SeriesSelect
-            season={filters.season}
-            episode={filters.episode}
-            onFilterChange={onFilterChange}
-            className="justify-end"
-          />
-          <TextInput
-            type="search"
-            placeholder="Search ministerial quotes..."
-            value={localQuery}
-            onChange={(e) => {
-              const newQuery = e.target.value;
-              setLocalQuery(newQuery);
-              if (newQuery) {
-                const newQueryString = new URLSearchParams(queryString);
-                newQueryString.set("q", newQuery);
-                router.push(`/?${newQueryString.toString()}`, {
-                  scroll: false,
-                });
-              }
-            }}
-            className={cn(
-              "w-64 border-[#ffffff33] bg-transparent text-white placeholder:text-[#ffffff66] focus-visible:ring-[#1d70b8] justify-end",
-            )}
-          />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
+          <div className="flex-shrink-0 min-w-0">
+            <DosacLogo />
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto min-w-0">
+            <div className="min-w-0 flex-shrink-0">
+              <SeriesSelect
+                season={filters.season}
+                episode={filters.episode}
+                onFilterChange={onFilterChange}
+                className="w-full sm:w-auto"
+              />
+            </div>
+            <div className="min-w-0 flex-1 sm:flex-none">
+              <TextInput
+                type="search"
+                placeholder="Search ministerial quotes..."
+                value={localQuery}
+                onChange={(e) => {
+                  const newQuery = e.target.value;
+                  setLocalQuery(newQuery);
+                  if (newQuery) {
+                    const newQueryString = new URLSearchParams(queryString);
+                    newQueryString.set("q", newQuery);
+                    router.push(`/?${newQueryString.toString()}`, {
+                      scroll: false,
+                    });
+                  }
+                }}
+                className={cn(
+                  "w-full sm:w-64 border-[#ffffff33] bg-transparent text-white placeholder:text-[#ffffff66] focus-visible:ring-[#1d70b8] truncate",
+                )}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -31,13 +31,15 @@ export function SeriesSelect({
           });
         }}
       >
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="w-[100px] truncate">
           <SelectValue placeholder="All Series" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Series</SelectItem>
+          <SelectItem value="all" className="truncate">
+            All Series
+          </SelectItem>
           {[1, 2, 3, 4].map((s) => (
-            <SelectItem key={s} value={s.toString()}>
+            <SelectItem key={s} value={s.toString()} className="truncate">
               Series {s}
             </SelectItem>
           ))}
@@ -54,14 +56,16 @@ export function SeriesSelect({
         }}
         disabled={!season}
       >
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="w-[120px] truncate">
           <SelectValue placeholder="All Episodes" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Episodes</SelectItem>
+          <SelectItem value="all" className="truncate">
+            All Episodes
+          </SelectItem>
           {season &&
             [1, 2, 3].map((ep) => (
-              <SelectItem key={ep} value={ep.toString()}>
+              <SelectItem key={ep} value={ep.toString()} className="truncate">
                 Episode {ep}
               </SelectItem>
             ))}
