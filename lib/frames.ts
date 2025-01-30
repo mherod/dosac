@@ -1,15 +1,6 @@
-export interface Frame {
-  id: string;
-  imageUrl: string;
-  image2Url: string;
-  blankImageUrl: string;
-  blankImage2Url: string;
-  timestamp: string;
-  subtitle: string;
-  speech: string;
-  episode: string;
-  character: string;
-}
+import type { Screenshot } from "./types";
+
+export type Frame = Screenshot;
 
 export interface ParsedFrameId {
   season: string;

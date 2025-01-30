@@ -38,11 +38,15 @@ export function FontControls({
   setFontFamily,
 }: FontControlsProps) {
   return (
-    <div className="space-y-4">
-      <div>
-        <label className="text-sm font-medium">Font Family</label>
+    <div className="space-y-4 border-2 border-red-500 p-4">
+      <div className="border-2 border-blue-500 p-4">
+        <div className="flex items-center justify-between h-6">
+          <label className="text-sm font-medium text-foreground leading-6">
+            Font Family
+          </label>
+        </div>
         <Select value={fontFamily} onValueChange={setFontFamily}>
-          <SelectTrigger className="mt-2">
+          <SelectTrigger className="mt-4 border-2 border-green-500">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -55,10 +59,14 @@ export function FontControls({
         </Select>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium">Font Size</label>
-          <span className="text-sm text-muted-foreground">{fontSize}px</span>
+      <div className="border-2 border-blue-500 p-4">
+        <div className="flex items-center justify-between h-6 border border-purple-500">
+          <label className="text-sm font-medium text-foreground leading-6">
+            Font Size
+          </label>
+          <span className="text-sm text-muted-foreground leading-6">
+            {fontSize}px
+          </span>
         </div>
         <Slider
           value={fontSize}
@@ -66,14 +74,16 @@ export function FontControls({
           min={16}
           max={36}
           step={1}
-          className="py-2"
+          className="mt-4 border border-yellow-500"
         />
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium">Outline Width</label>
-          <span className="text-sm text-muted-foreground">
+      <div className="border-2 border-blue-500 p-4">
+        <div className="flex items-center justify-between h-6 border border-purple-500">
+          <label className="text-sm font-medium text-foreground leading-6">
+            Outline Width
+          </label>
+          <span className="text-sm text-muted-foreground leading-6">
             {outlineWidth}px
           </span>
         </div>
@@ -83,14 +93,18 @@ export function FontControls({
           min={1}
           max={4}
           step={1}
-          className="py-2"
+          className="mt-4 border border-yellow-500"
         />
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-medium">Shadow Size</label>
-          <span className="text-sm text-muted-foreground">{shadowSize}px</span>
+      <div className="border-2 border-blue-500 p-4">
+        <div className="flex items-center justify-between h-6 border border-purple-500">
+          <label className="text-sm font-medium text-foreground leading-6">
+            Shadow Size
+          </label>
+          <span className="text-sm text-muted-foreground leading-6">
+            {shadowSize}px
+          </span>
         </div>
         <Slider
           value={shadowSize}
@@ -98,7 +112,7 @@ export function FontControls({
           min={0}
           max={10}
           step={1}
-          className="py-2"
+          className="mt-4 border border-yellow-500"
         />
       </div>
     </div>

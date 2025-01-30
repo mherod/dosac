@@ -64,11 +64,11 @@ export default async function Page({ params, searchParams }: PageProps) {
   const [previousFrames, nextFrames] = await Promise.all([
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i > 0 ? index.slice(Math.max(0, i - 2), i) : [];
+      return i > 0 ? index.slice(Math.max(0, i - 10), i) : [];
     }),
     getFrameIndex().then((index) => {
       const i = index.findIndex((f) => f.id === frame.id);
-      return i < index.length - 1 ? index.slice(i + 1, i + 3) : [];
+      return i < index.length - 1 ? index.slice(i + 1, i + 10) : [];
     }),
   ]).catch(() => {
     notFound();

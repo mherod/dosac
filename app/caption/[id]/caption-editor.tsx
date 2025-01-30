@@ -10,14 +10,12 @@ import { useSearchParams } from "next/navigation";
 import { FontControls } from "@/components/caption-controls/font-controls";
 import { ActionButtons } from "@/components/caption-controls/action-buttons";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
-import { FrameStrip2 } from "@/components/frame-image-select";
+import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 
 interface Screenshot {
   id: string;
   imageUrl: string;
   image2Url: string;
-  blankImageUrl: string;
-  blankImage2Url: string;
   timestamp: string;
   subtitle: string;
   speech: string;
@@ -156,10 +154,12 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
           <Card className="p-6 shadow-md">
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Caption</label>
-                    <span className="text-sm text-muted-foreground">
+                <div className="lg:col-span-2 space-y-4">
+                  <div className="flex items-center justify-between h-6">
+                    <label className="text-sm font-medium text-foreground leading-6">
+                      Caption
+                    </label>
+                    <span className="text-sm text-muted-foreground leading-6">
                       {caption.length} characters
                     </span>
                   </div>
@@ -171,10 +171,14 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                   />
                 </div>
 
-                <div className="space-y-2.5">
-                  <label className="text-sm font-medium">Frame Selection</label>
-                  <div className="flex items-center justify-center bg-muted/50 rounded-lg p-2">
-                    <FrameStrip2
+                <div className="space-y-4">
+                  <div className="h-6">
+                    <label className="text-sm font-medium text-foreground leading-6">
+                      Frame
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-center bg-muted/50 rounded-lg p-4">
+                    <VerticalFrameStrip
                       imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
                       centerImageUrl={primaryImage}
                       frameWidth={100}
@@ -185,8 +189,12 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
               </div>
 
               <div className="space-y-6 pt-6 border-t">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Font Settings</label>
+                <div className="space-y-4">
+                  <div className="h-6">
+                    <label className="text-sm font-medium text-foreground leading-6">
+                      Font Settings
+                    </label>
+                  </div>
                   <div className="bg-muted/50 rounded-lg p-4">
                     <FontControls
                       fontSize={fontSize}

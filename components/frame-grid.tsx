@@ -1,17 +1,7 @@
 "use client";
 
 import Image from "next/image";
-
-interface Screenshot {
-  id: string;
-  imageUrl: string;
-  blankImageUrl: string;
-  timestamp: string;
-  subtitle: string;
-  speech: string;
-  episode: string;
-  character: string;
-}
+import type { Screenshot } from "@/lib/types";
 
 interface FrameGridProps {
   frames: Screenshot[];
@@ -51,7 +41,7 @@ export function FrameGrid({
         {frames.slice(0, 2).map((frame, index) => (
           <div key={frame.id} className="relative w-full h-full max-h-[500px]">
             <Image
-              src={frame.blankImageUrl}
+              src={frame.imageUrl}
               alt="Screenshot"
               fill
               className="object-cover"
@@ -90,7 +80,7 @@ export function FrameGrid({
         {frames.slice(2, 4).map((frame, index) => (
           <div key={frame.id} className="relative w-full h-full max-h-[500px]">
             <Image
-              src={frame.blankImageUrl}
+              src={frame.imageUrl}
               alt="Screenshot"
               fill
               className="object-cover"

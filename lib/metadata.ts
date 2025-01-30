@@ -1,4 +1,4 @@
-import type { Frame } from "./frames";
+import type { Screenshot } from "./types";
 
 const BASE_URL = "https://dosac.herod.dev";
 
@@ -60,14 +60,14 @@ export function constructOgImageUrl(params: {
 }
 
 export function generateSingleFrameMetadata(
-  frame: Frame,
+  frame: Screenshot,
   caption: string,
 ): OpenGraphMetadata {
   const ogImageUrl = constructOgImageUrl({
     caption,
     episode: frame.episode,
     timestamp: frame.timestamp,
-    imageUrl: frame.blankImageUrl,
+    imageUrl: frame.imageUrl,
     fontSize: "24",
     outlineWidth: "1",
     fontFamily: "Arial",
@@ -105,7 +105,9 @@ export function generateSingleFrameMetadata(
   };
 }
 
-export function generateMultiFrameMetadata(frames: Frame[]): OpenGraphMetadata {
+export function generateMultiFrameMetadata(
+  frames: Screenshot[],
+): OpenGraphMetadata {
   if (!frames.length || !frames[0]) {
     return {
       title: "Create Meme",
@@ -137,7 +139,7 @@ export function generateMultiFrameMetadata(frames: Frame[]): OpenGraphMetadata {
     caption: frames[0].speech,
     episode: frames[0].episode,
     timestamp: frames[0].timestamp,
-    imageUrl: frames[0].blankImageUrl,
+    imageUrl: frames[0].imageUrl,
   });
 
   const imageUrlString = ogImageUrl.toString();

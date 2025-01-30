@@ -10,19 +10,7 @@ import { FrameStack } from "@/components/frame-stack";
 import { FontControls } from "@/components/caption-controls/font-controls";
 import { ActionButtons } from "@/components/caption-controls/action-buttons";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
-
-interface Screenshot {
-  id: string;
-  imageUrl: string;
-  image2Url: string;
-  blankImageUrl: string;
-  blankImage2Url: string;
-  timestamp: string;
-  subtitle: string;
-  speech: string;
-  episode: string;
-  character: string;
-}
+import type { Screenshot } from "@/lib/types";
 
 interface MultiCaptionEditorProps {
   frames: Screenshot[];
