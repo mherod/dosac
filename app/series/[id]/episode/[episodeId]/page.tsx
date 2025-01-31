@@ -1,55 +1,35 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { getFrameIndex } from "@/lib/frames.server";
+import { getSeriesInfo } from "@/lib/series-info";
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
     episodeId: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const seriesNumber = parseInt(params.id);
-  const episodeNumber = parseInt(params.episodeId);
-
-  if (
-    isNaN(seriesNumber) ||
-    seriesNumber < 1 ||
-    seriesNumber > 4 ||
-    isNaN(episodeNumber) ||
-    episodeNumber < 1 ||
-    episodeNumber > 6
-  ) {
-    return {
-      title: "Not Found | Thick of It Quotes",
-    };
-  }
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) return {};
 
   return {
-    title: `Series ${seriesNumber}, Episode ${episodeNumber} | Thick of It Quotes`,
-    description: `View quotes from Series ${seriesNumber}, Episode ${episodeNumber} of The Thick of It`,
+    title: `Series ${series.number} Episode ${resolvedParams.episodeId} | Thick of It Quotes`,
+    description: series.shortSummary,
   };
 }
 
 export default async function EpisodePage({ params }: Props) {
-  const seriesNumber = parseInt(params.id);
-  const episodeNumber = parseInt(params.episodeId);
-
-  if (
-    isNaN(seriesNumber) ||
-    seriesNumber < 1 ||
-    seriesNumber > 4 ||
-    isNaN(episodeNumber) ||
-    episodeNumber < 1 ||
-    episodeNumber > 6
-  ) {
-    notFound();
-  }
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) notFound();
 
   // Format series and episode numbers to match the frame ID format (e.g., "s01e01")
-  const episodeId = `s${seriesNumber.toString().padStart(2, "0")}e${episodeNumber.toString().padStart(2, "0")}`;
+  const episodeId = `s${series.number.toString().padStart(2, "0")}e${resolvedParams.episodeId.toString().padStart(2, "0")}`;
 
   // Get all frames and filter for this episode
   const allFrames = await getFrameIndex();
@@ -59,25 +39,27 @@ export default async function EpisodePage({ params }: Props) {
 
   return (
     <div className="container py-8">
-      <div className="mb-6 space-y-2">
-        <a
-          href={`/series/${seriesNumber}`}
-          className="block text-muted-foreground hover:text-primary"
-        >
-          ← Back to Series {seriesNumber}
-        </a>
-        <a
-          href={`/series/${seriesNumber}/episode`}
-          className="block text-muted-foreground hover:text-primary"
-        >
-          ← Back to Episodes
-        </a>
+      <div className="mb-6">
+        <div className="flex items-center gap-2">
+          <Link href="/series" className="text-[#1d70b8] hover:underline">
+            All Series
+          </Link>
+          <span className="text-[#505a5f]">/</span>
+          <Link
+            href={`/series/${series.number}`}
+            className="text-[#1d70b8] hover:underline"
+          >
+            Series {series.number}
+          </Link>
+          <span className="text-[#505a5f]">/</span>
+          <span>Episode {resolvedParams.episodeId}</span>
+        </div>
       </div>
-      <h1 className="text-4xl font-bold mb-6">
-        Series {seriesNumber}, Episode {episodeNumber}
-      </h1>
-      <div className="prose prose-invert max-w-none mb-8">
-        <p>Browse and search through all quotes from this episode.</p>
+      <div className="space-y-8">
+        <h1 className="text-4xl font-bold">
+          Series {series.number} Episode {resolvedParams.episodeId}
+        </h1>
+        <p className="text-lg">{series.longSummary}</p>
       </div>
       <ScreenshotGrid screenshots={episodeFrames} multiselect={true} />
     </div>
