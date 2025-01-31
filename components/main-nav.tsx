@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { TopBanner } from "./main-nav/top-banner";
@@ -15,7 +16,7 @@ interface Filters {
 
 type QueryUpdates = Record<string, string | null>;
 
-export function MainNav() {
+function MainNavContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -120,16 +121,26 @@ export function MainNav() {
   );
 
   return (
-    <header className="bg-[#0b0c0c] text-white">
-      <div className="mx-auto">
-        <TopBanner />
-        <CivilServiceHeader />
-      </div>
+    <div>
       <NavFilters
         filters={filters}
         onFilterChange={handleFilterChange}
         onQueryChange={handleQueryChange}
       />
+    </div>
+  );
+}
+
+export function MainNav() {
+  return (
+    <header className="bg-[#0b0c0c] text-white">
+      <div className="mx-auto">
+        <TopBanner />
+        <CivilServiceHeader />
+      </div>
+      <Suspense>
+        <MainNavContent />
+      </Suspense>
       <BottomNav />
     </header>
   );
