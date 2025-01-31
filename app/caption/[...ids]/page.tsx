@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
-import Link from "next/link";
 import { DualCaptionEditor } from "./dual-caption-editor";
 import { Suspense } from "react";
 
@@ -109,19 +108,9 @@ const Page = async ({ params, searchParams }: PageProps) => {
   );
 
   return (
-    <>
-      <div className="container mx-auto px-4 py-8">
-        <Link
-          href="/"
-          className="mb-4 inline-block text-blue-500 hover:underline"
-        >
-          ← Back to search
-        </Link>
-        <Suspense>
-          <DualCaptionEditor frames={frames} />
-        </Suspense>
-      </div>
-    </>
+    <Suspense>
+      <DualCaptionEditor frames={frames} />
+    </Suspense>
   );
 };
 

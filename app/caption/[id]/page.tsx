@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
-import Link from "next/link";
 import { FrameStrip } from "@/components/frame-strip";
 import type { Screenshot } from "@/lib/types";
 
@@ -91,26 +90,17 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <>
-      <div className="m-auto p-4">
-        <Link
-          href="/"
-          className="mb-4 inline-block text-blue-500 hover:underline"
-        >
-          ← Back to search
-        </Link>
-
-        <div className="flex flex-row items-center justify-center gap-4 mb-8">
-          <FrameStrip
-            screenshots={[...previousFrames, frame, ...nextFrames].filter(
-              (f): f is Screenshot =>
-                !!f && typeof f.id === "string" && typeof f.speech === "string",
-            )}
-            centerScreenshot={frame}
-            frameWidth={200}
-          />
-        </div>
-        <CaptionEditor screenshot={combinedFrame} />
+      <div className="flex flex-row items-center justify-center gap-4 mb-8">
+        <FrameStrip
+          screenshots={[...previousFrames, frame, ...nextFrames].filter(
+            (f): f is Screenshot =>
+              !!f && typeof f.id === "string" && typeof f.speech === "string",
+          )}
+          centerScreenshot={frame}
+          frameWidth={200}
+        />
       </div>
+      <CaptionEditor screenshot={combinedFrame} />
     </>
   );
 }

@@ -1,102 +1,22 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
-interface UseCaptionStateProps {
+interface CaptionStateOptions {
   defaultFontSize?: number;
   defaultOutlineWidth?: number;
-  defaultFontFamily?: string;
   defaultShadowSize?: number;
-  initialCaption?: string;
+  defaultFontFamily?: string;
 }
 
 export function useCaptionState({
   defaultFontSize = 24,
   defaultOutlineWidth = 1,
-  defaultFontFamily = "system-ui",
   defaultShadowSize = 0,
-  initialCaption = "",
-}: UseCaptionStateProps = {}) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  // Initialize state from URL parameters or defaults
-  const [fontSize, setFontSize] = useState([
-    Number(searchParams?.get("fontSize")) || defaultFontSize,
-  ]);
-  const [outlineWidth, setOutlineWidth] = useState([
-    Number(searchParams?.get("outlineWidth")) || defaultOutlineWidth,
-  ]);
-  const [shadowSize, setShadowSize] = useState([
-    Number(searchParams?.get("shadowSize")) || defaultShadowSize,
-  ]);
-  const [fontFamily, setFontFamily] = useState(
-    searchParams?.get("fontFamily") ?? defaultFontFamily,
-  );
-
-  // Update URL when style parameters change
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-
-    // Only update style parameters if they differ from defaults
-    if (fontSize[0] !== defaultFontSize) {
-      params.set("fontSize", fontSize[0]!.toString());
-    } else {
-      params.delete("fontSize");
-    }
-    if (outlineWidth[0] !== defaultOutlineWidth) {
-      params.set("outlineWidth", outlineWidth[0]!.toString());
-    } else {
-      params.delete("outlineWidth");
-    }
-    if (shadowSize[0] !== defaultShadowSize) {
-      params.set("shadowSize", shadowSize[0]!.toString());
-    } else {
-      params.delete("shadowSize");
-    }
-    if (fontFamily !== defaultFontFamily) {
-      params.set("fontFamily", fontFamily);
-    } else {
-      params.delete("fontFamily");
-    }
-
-    // Preserve existing parameters
-    const text = searchParams?.get("text");
-    const range = searchParams?.get("range");
-    if (text) params.set("text", text);
-    if (range) params.set("range", range);
-
-    const queryString = params.toString();
-    const newUrl = queryString ? `?${queryString}` : window.location.pathname;
-    router.replace(newUrl, { scroll: false });
-  }, [
-    fontSize,
-    outlineWidth,
-    shadowSize,
-    fontFamily,
-    router,
-    defaultFontSize,
-    defaultOutlineWidth,
-    defaultShadowSize,
-    defaultFontFamily,
-    searchParams,
-  ]);
-
-  const handleShare = (captionText: string) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("text", encodeURIComponent(captionText));
-
-    const path = window.location.pathname;
-    const search = `?${params.toString()}`;
-    const pathToEncode = `${path}${search}`;
-
-    const base64Url = Buffer.from(pathToEncode)
-      .toString("base64")
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=/g, "");
-    const shareUrl = `${window.location.origin}/share/${base64Url}`;
-    navigator.clipboard.writeText(shareUrl);
-  };
+  defaultFontFamily = "system-ui",
+}: CaptionStateOptions = {}) {
+  const [fontSize, setFontSize] = useState([defaultFontSize]);
+  const [outlineWidth, setOutlineWidth] = useState([defaultOutlineWidth]);
+  const [shadowSize, setShadowSize] = useState([defaultShadowSize]);
+  const [fontFamily, setFontFamily] = useState(defaultFontFamily);
 
   return {
     fontSize,
@@ -107,6 +27,5 @@ export function useCaptionState({
     setShadowSize,
     fontFamily,
     setFontFamily,
-    handleShare,
   };
 }

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { MainNav } from "@/components/main-nav";
 import { Footer } from "@/components/footer";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default function RootLayout({
             </div>
             <Footer />
           </main>
+          <Toaster />
         </ThemeProvider>
         <Analytics />
       </body>

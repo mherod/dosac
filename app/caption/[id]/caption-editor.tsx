@@ -3,14 +3,13 @@
 import * as React from "react";
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import * as htmlToImage from "html-to-image";
 import { CaptionedImage } from "@/components/captioned-image";
 import { useSearchParams } from "next/navigation";
-import { FontControls } from "@/components/caption-controls/font-controls";
-import { ActionButtons } from "@/components/caption-controls/action-buttons";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
 import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
+import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
+import { handleShare } from "@/lib/share";
 
 interface Screenshot {
   id: string;
@@ -47,7 +46,6 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     setShadowSize,
     fontFamily,
     setFontFamily,
-    handleShare,
   } = useCaptionState({
     defaultFontSize: 24,
     defaultOutlineWidth: 1,
@@ -97,6 +95,11 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     }
   };
 
+  const onShare = async () => {
+    const path = `/caption/${screenshot.id}`;
+    await handleShare(path, caption);
+  };
+
   return (
     <div className="pt-8">
       <div className="grid gap-6 md:grid-cols-2">
@@ -117,13 +120,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
               </div>
             </div>
           </Card>
-          <div className="bg-muted/50 rounded-lg">
-            <ActionButtons
-              onDownload={handleDownload}
-              onShare={() => handleShare(caption)}
-              className="grid-cols-2"
-            />
-          </div>
+
           <Card className="p-4 shadow-md">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -151,64 +148,36 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
         </div>
 
         <div className="space-y-6">
-          <Card className="p-6 shadow-md">
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 space-y-4">
-                  <div className="flex items-center justify-between h-6">
-                    <label className="text-sm font-medium text-foreground leading-6">
-                      Caption
-                    </label>
-                    <span className="text-sm text-muted-foreground leading-6">
-                      {caption.length} characters
-                    </span>
-                  </div>
-                  <Textarea
-                    value={caption}
-                    onChange={(e) => setCaption(e.target.value)}
-                    placeholder="Enter your caption..."
-                    className="min-h-[120px] resize-none transition-colors focus:border-primary"
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <div className="h-6">
-                    <label className="text-sm font-medium text-foreground leading-6">
-                      Frame
-                    </label>
-                  </div>
-                  <div className="flex items-center justify-center bg-muted/50 rounded-lg p-4">
-                    <VerticalFrameStrip
-                      imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
-                      centerImageUrl={primaryImage}
-                      frameWidth={100}
-                      onFrameSelect={handleFrameSelect}
-                    />
-                  </div>
-                </div>
+          <EditorControlsCard
+            captions={[caption]}
+            onCaptionChange={(_, value) => setCaption(value)}
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+            outlineWidth={outlineWidth}
+            setOutlineWidth={setOutlineWidth}
+            shadowSize={shadowSize}
+            setShadowSize={setShadowSize}
+            fontFamily={fontFamily}
+            setFontFamily={setFontFamily}
+            onDownload={handleDownload}
+            onShare={onShare}
+          >
+            <div className="space-y-4">
+              <div className="h-6">
+                <label className="text-sm font-medium text-foreground leading-6">
+                  Frame
+                </label>
               </div>
-
-              <div className="space-y-6 pt-6 border-t">
-                <div className="h-6">
-                  <label className="text-sm font-medium text-foreground leading-6">
-                    Font Settings
-                  </label>
-                </div>
-                <div className="bg-muted/50 rounded-lg p-4">
-                  <FontControls
-                    fontSize={fontSize}
-                    setFontSize={setFontSize}
-                    outlineWidth={outlineWidth}
-                    setOutlineWidth={setOutlineWidth}
-                    shadowSize={shadowSize}
-                    setShadowSize={setShadowSize}
-                    fontFamily={fontFamily}
-                    setFontFamily={setFontFamily}
-                  />
-                </div>
+              <div className="flex items-center justify-center bg-muted/50 rounded-lg p-4">
+                <VerticalFrameStrip
+                  imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
+                  centerImageUrl={primaryImage}
+                  frameWidth={100}
+                  onFrameSelect={handleFrameSelect}
+                />
               </div>
             </div>
-          </Card>
+          </EditorControlsCard>
         </div>
       </div>
     </div>
