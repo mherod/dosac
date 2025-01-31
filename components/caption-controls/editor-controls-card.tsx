@@ -7,12 +7,12 @@ import { ActionButtons } from "@/components/caption-controls/action-buttons";
 interface EditorControlsCardProps {
   captions: string[];
   onCaptionChange: (index: number, value: string) => void;
-  fontSize: number[];
-  setFontSize: (value: number[]) => void;
-  outlineWidth: number[];
-  setOutlineWidth: (value: number[]) => void;
-  shadowSize: number[];
-  setShadowSize: (value: number[]) => void;
+  fontSize: number;
+  setFontSize: (value: number) => void;
+  outlineWidth: number;
+  setOutlineWidth: (value: number) => void;
+  shadowSize: number;
+  setShadowSize: (value: number) => void;
   fontFamily: string;
   setFontFamily: (value: string) => void;
   onDownload: () => void;

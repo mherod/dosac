@@ -40,7 +40,7 @@ export function DualCaptionEditor({
     defaultFontSize: 18,
     defaultOutlineWidth: 1,
     defaultShadowSize: 0,
-    defaultFontFamily: "system-ui",
+    defaultFontFamily: "Arial",
   });
 
   const handleDownload = async () => {
@@ -108,16 +108,16 @@ export function DualCaptionEditor({
               <FrameGrid
                 frames={frames}
                 captions={captions}
-                fontSize={fontSize[0] ?? 18}
-                outlineWidth={outlineWidth[0] ?? 1}
+                fontSize={fontSize}
+                outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
               />
             ) : (
               <FrameStack
                 frames={frames}
                 captions={captions}
-                fontSize={fontSize[0] ?? 18}
-                outlineWidth={outlineWidth[0] ?? 1}
+                fontSize={fontSize}
+                outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
               />
             )}

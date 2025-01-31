@@ -17,12 +17,12 @@ const fonts = [
 ];
 
 interface FontControlsProps {
-  fontSize: number[];
-  setFontSize: (value: number[]) => void;
-  outlineWidth: number[];
-  setOutlineWidth: (value: number[]) => void;
-  shadowSize: number[];
-  setShadowSize: (value: number[]) => void;
+  fontSize: number;
+  setFontSize: (value: number) => void;
+  outlineWidth: number;
+  setOutlineWidth: (value: number) => void;
+  shadowSize: number;
+  setShadowSize: (value: number) => void;
   fontFamily: string;
   setFontFamily: (value: string) => void;
 }
@@ -69,8 +69,8 @@ export function FontControls({
           </span>
         </div>
         <Slider
-          value={fontSize}
-          onValueChange={setFontSize}
+          value={[fontSize]}
+          onValueChange={([value]) => setFontSize(value ?? 18)}
           min={16}
           max={36}
           step={1}
@@ -88,8 +88,8 @@ export function FontControls({
           </span>
         </div>
         <Slider
-          value={outlineWidth}
-          onValueChange={setOutlineWidth}
+          value={[outlineWidth]}
+          onValueChange={([value]) => setOutlineWidth(value ?? 1)}
           min={1}
           max={4}
           step={1}
@@ -107,8 +107,8 @@ export function FontControls({
           </span>
         </div>
         <Slider
-          value={shadowSize}
-          onValueChange={setShadowSize}
+          value={[shadowSize]}
+          onValueChange={([value]) => setShadowSize(value ?? 1)}
           min={0}
           max={10}
           step={1}

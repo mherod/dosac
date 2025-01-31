@@ -11,11 +11,11 @@ export function useCaptionState({
   defaultFontSize = 24,
   defaultOutlineWidth = 1,
   defaultShadowSize = 0,
-  defaultFontFamily = "system-ui",
+  defaultFontFamily = "Arial",
 }: CaptionStateOptions = {}) {
-  const [fontSize, setFontSize] = useState([defaultFontSize]);
-  const [outlineWidth, setOutlineWidth] = useState([defaultOutlineWidth]);
-  const [shadowSize, setShadowSize] = useState([defaultShadowSize]);
+  const [fontSize, setFontSize] = useState(defaultFontSize);
+  const [outlineWidth, setOutlineWidth] = useState(defaultOutlineWidth);
+  const [shadowSize, setShadowSize] = useState(defaultShadowSize);
   const [fontFamily, setFontFamily] = useState(defaultFontFamily);
 
   return {

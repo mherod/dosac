@@ -50,7 +50,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     defaultFontSize: 24,
     defaultOutlineWidth: 1,
     defaultShadowSize: 0,
-    defaultFontFamily: "system-ui",
+    defaultFontFamily: "Arial",
   });
 
   // Update caption when URL text parameter changes
@@ -111,9 +111,9 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
                   imageUrl={primaryImage}
                   image2Url={secondaryImage}
                   caption={caption}
-                  fontSize={fontSize[0]}
-                  outlineWidth={outlineWidth[0]}
-                  shadowSize={shadowSize[0]}
+                  fontSize={fontSize}
+                  outlineWidth={outlineWidth}
+                  shadowSize={shadowSize}
                   fontFamily={fontFamily}
                   maintainAspectRatio={true}
                 />
