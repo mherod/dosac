@@ -4,16 +4,18 @@ import { useState } from "react";
 
 interface FrameStripProps {
   imageUrls: string[];
-  centerImageUrl?: string;
+  selectedImage?: string;
   frameWidth?: number;
   onFrameSelect?: (imageUrl: string) => void;
+  singleSelection?: boolean;
 }
 
 export function VerticalFrameStrip({
   imageUrls,
-  centerImageUrl,
+  selectedImage,
   frameWidth = 256,
   onFrameSelect,
+  singleSelection = true,
 }: FrameStripProps) {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
@@ -44,13 +46,21 @@ export function VerticalFrameStrip({
               className="flex flex-col gap-2 scroll-py-[8px]"
               style={{ width: `${frameWidth}px` }}
             >
-              {imageUrls.map((imageUrl, index) => (
+              {imageUrls.filter(Boolean).map((imageUrl, index) => (
                 <button
-                  key={imageUrl}
-                  onClick={() => onFrameSelect?.(imageUrl)}
+                  key={`${imageUrl}-${index}`}
+                  onClick={() => {
+                    if (singleSelection) {
+                      onFrameSelect?.(imageUrl);
+                    } else {
+                      onFrameSelect?.(
+                        selectedImage === imageUrl ? "" : imageUrl,
+                      );
+                    }
+                  }}
                   className={cn(
                     "group relative flex-shrink-0 snap-start cursor-pointer transition-all duration-200 hover:scale-105",
-                    centerImageUrl === imageUrl
+                    selectedImage === imageUrl
                       ? "ring-2 ring-yellow-400/80 scale-105 z-10"
                       : "ring-1 ring-white/10 hover:ring-white/30",
                   )}

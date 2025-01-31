@@ -7,9 +7,9 @@ import * as htmlToImage from "html-to-image";
 import { CaptionedImage } from "@/components/captioned-image";
 import { useSearchParams } from "next/navigation";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
-import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
 import { handleShare } from "@/lib/share";
+import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
 
 interface Screenshot {
   id: string;
@@ -35,7 +35,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const initialCaption = urlText
     ? decodeURIComponent(urlText)
     : screenshot.speech;
-  const [caption, setCaption] = useState(initialCaption);
+  const [caption, setCaption] = useState<string>(initialCaption);
 
   const {
     fontSize,
@@ -46,12 +46,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     setShadowSize,
     fontFamily,
     setFontFamily,
-  } = useCaptionState({
-    defaultFontSize: 24,
-    defaultOutlineWidth: 1,
-    defaultShadowSize: 0,
-    defaultFontFamily: "Arial",
-  });
+  } = useCaptionState();
 
   // Update caption when URL text parameter changes
   useEffect(() => {
@@ -81,7 +76,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     }
   };
 
-  const [primaryImage, setPrimaryImage] = useState(screenshot.imageUrl);
+  const [primaryImage, setPrimaryImage] = useState<string>(screenshot.imageUrl);
   const [secondaryImage, setSecondaryImage] = useState(screenshot.image2Url);
 
   const handleFrameSelect = (selectedImage: string) => {
@@ -149,8 +144,6 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
 
         <div className="space-y-6">
           <EditorControlsCard
-            captions={[caption]}
-            onCaptionChange={(_, value) => setCaption(value)}
             fontSize={fontSize}
             setFontSize={setFontSize}
             outlineWidth={outlineWidth}
@@ -162,21 +155,14 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
             onDownload={handleDownload}
             onShare={onShare}
           >
-            <div className="space-y-4">
-              <div className="h-6">
-                <label className="text-sm font-medium text-foreground leading-6">
-                  Frame
-                </label>
-              </div>
-              <div className="flex items-center justify-center bg-muted/50 rounded-lg p-4">
-                <VerticalFrameStrip
-                  imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
-                  centerImageUrl={primaryImage}
-                  frameWidth={100}
-                  onFrameSelect={handleFrameSelect}
-                />
-              </div>
-            </div>
+            <CaptionFrameControls
+              imageUrls={[screenshot.imageUrl, screenshot.image2Url]}
+              selectedImage={primaryImage}
+              onSelect={handleFrameSelect}
+              caption={caption}
+              onCaptionChange={setCaption}
+              label="Primary Frame"
+            />
           </EditorControlsCard>
         </div>
       </div>

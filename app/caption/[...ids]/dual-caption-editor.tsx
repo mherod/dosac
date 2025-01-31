@@ -11,6 +11,8 @@ import { EditorControlsCard } from "@/components/caption-controls/editor-control
 import type { Screenshot } from "@/lib/types";
 import { handleShare } from "@/lib/share";
 import { cn } from "@/lib/utils";
+import { CAPTION_DEFAULTS } from "@/lib/config/caption";
+import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
 
 interface MultiCaptionEditorProps {
   frames: Screenshot[];
@@ -23,8 +25,8 @@ export function DualCaptionEditor({
 
   // State for frames and captions
   const [frames, setFrames] = useState(initialFrames);
-  const [captions, setCaptions] = useState(
-    initialFrames.map((frame) => frame.speech),
+  const [selectedImages, setSelectedImages] = useState(
+    initialFrames.map((frame) => frame.imageUrl),
   );
 
   const {
@@ -38,9 +40,9 @@ export function DualCaptionEditor({
     setFontFamily,
   } = useCaptionState({
     defaultFontSize: 18,
-    defaultOutlineWidth: 1,
-    defaultShadowSize: 0,
-    defaultFontFamily: "Arial",
+    defaultOutlineWidth: CAPTION_DEFAULTS.outlineWidth,
+    defaultShadowSize: CAPTION_DEFAULTS.shadowSize,
+    defaultFontFamily: CAPTION_DEFAULTS.fontFamily,
   });
 
   const handleDownload = async () => {
@@ -66,21 +68,58 @@ export function DualCaptionEditor({
   };
 
   const handleCaptionChange = (index: number, value: string) => {
-    const newCaptions = [...captions];
-    newCaptions[index] = value;
-    setCaptions(newCaptions);
+    const newFrames = [...frames];
+    const currentFrame = newFrames[index];
+    if (!currentFrame) return;
+
+    newFrames[index] = {
+      id: currentFrame.id,
+      imageUrl: currentFrame.imageUrl,
+      image2Url: currentFrame.image2Url,
+      timestamp: currentFrame.timestamp,
+      subtitle: currentFrame.subtitle,
+      speech: value,
+      episode: currentFrame.episode,
+      character: currentFrame.character,
+    };
+    setFrames(newFrames);
   };
 
   const onShare = async () => {
     if (!frames.length || !frames[0]) return;
     const path = `/caption/${frames.map((f) => f.id).join("/")}`;
-    await handleShare(path, captions.join("\n"));
+    await handleShare(path, frames.map((f) => f.speech).join("\n"));
+  };
+
+  const handleFrameSelect = (index: number, imageUrl: string) => {
+    const newSelected = [...selectedImages];
+    newSelected[index] = imageUrl;
+
+    // If deselected, fall back to the original image
+    const frame = initialFrames[index];
+    if (!frame) return;
+
+    const finalUrl = newSelected[index] || frame.imageUrl;
+
+    setSelectedImages(
+      newSelected.map((url, i) => (i === index ? finalUrl : url)),
+    );
+
+    // Update the frames array with the new image URL
+    const updatedFrames = frames.map((frame, i) =>
+      i === index ? { ...frame, imageUrl: finalUrl } : frame,
+    );
+    setFrames(updatedFrames);
   };
 
   return (
-    <div className={cn("flex flex-wrap justify-center gap-4 lg:gap-8")}>
+    <div
+      className={cn(
+        "flex flex-wrap justify-center gap-4 lg:gap-8 max-w-full mx-auto",
+      )}
+    >
       {/* Combined Preview */}
-      <div className="flex mx-auto min-w-[40vw] w-full max-w-[620px]">
+      <div className="flex mx-auto min-w-[30vw] w-full max-w-[500px]">
         <Card
           style={{
             boxShadow:
@@ -91,7 +130,7 @@ export function DualCaptionEditor({
             marginLeft: "auto",
             marginRight: "auto",
             width: "fit-content",
-            maxWidth: frames.length === 4 ? "620px" : undefined,
+            maxWidth: frames.length === 4 ? "500px" : undefined,
             minWidth: frames.length === 4 ? undefined : "100%",
           }}
         >
@@ -107,7 +146,7 @@ export function DualCaptionEditor({
             {frames.length === 4 ? (
               <FrameGrid
                 frames={frames}
-                captions={captions}
+                captions={frames.map((f) => f.speech)}
                 fontSize={fontSize}
                 outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
@@ -115,7 +154,7 @@ export function DualCaptionEditor({
             ) : (
               <FrameStack
                 frames={frames}
-                captions={captions}
+                captions={frames.map((f) => f.speech)}
                 fontSize={fontSize}
                 outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
@@ -125,11 +164,9 @@ export function DualCaptionEditor({
         </Card>
       </div>
 
-      {/* Controls */}
+      {/* Updated Controls */}
       <div className="mx-auto flex flex-col gap-4 w-full min-w-[30vw] max-w-[400px]">
         <EditorControlsCard
-          captions={captions}
-          onCaptionChange={handleCaptionChange}
           fontSize={fontSize}
           setFontSize={setFontSize}
           outlineWidth={outlineWidth}
@@ -140,7 +177,20 @@ export function DualCaptionEditor({
           setFontFamily={setFontFamily}
           onDownload={handleDownload}
           onShare={onShare}
-        />
+        >
+          {frames.map((frame, index) => (
+            <CaptionFrameControls
+              key={`${frame.id}-${index}`}
+              imageUrls={[frame.imageUrl, frame.image2Url]}
+              selectedImage={selectedImages[index]}
+              onSelect={(url) => handleFrameSelect(index, url)}
+              singleSelection={true}
+              caption={frame.speech}
+              onCaptionChange={(value) => handleCaptionChange(index, value)}
+              label={`Frame ${index + 1}`}
+            />
+          ))}
+        </EditorControlsCard>
       </div>
     </div>
   );

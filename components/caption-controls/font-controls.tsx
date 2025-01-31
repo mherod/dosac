@@ -39,15 +39,15 @@ export function FontControls({
 }: FontControlsProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="py-4">
+      <div className="p-0">
         <div className="flex items-center justify-between h-6">
           <label className="text-sm font-medium text-foreground leading-6">
-            Font Family
+            Font
           </label>
         </div>
         <Select value={fontFamily} onValueChange={setFontFamily}>
           <SelectTrigger className="mt-4">
-            <SelectValue />
+            <SelectValue style={{ fontFamily: fontFamily }} />
           </SelectTrigger>
           <SelectContent>
             {fonts.map((font) => (

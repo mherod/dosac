@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CAPTION_DEFAULTS } from "@/lib/config/caption";
 
 interface CaptionStateOptions {
   defaultFontSize?: number;
@@ -8,10 +9,10 @@ interface CaptionStateOptions {
 }
 
 export function useCaptionState({
-  defaultFontSize = 24,
-  defaultOutlineWidth = 1,
-  defaultShadowSize = 0,
-  defaultFontFamily = "Arial",
+  defaultFontSize = CAPTION_DEFAULTS.fontSize,
+  defaultOutlineWidth = CAPTION_DEFAULTS.outlineWidth,
+  defaultShadowSize = CAPTION_DEFAULTS.shadowSize,
+  defaultFontFamily = CAPTION_DEFAULTS.fontFamily,
 }: CaptionStateOptions = {}) {
   const [fontSize, setFontSize] = useState(defaultFontSize);
   const [outlineWidth, setOutlineWidth] = useState(defaultOutlineWidth);

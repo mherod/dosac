@@ -35,44 +35,88 @@ export function MainNav() {
     [searchParams],
   );
 
-  // Read filters from URL
-  const filters = useMemo(
-    (): Filters => ({
-      season: searchParams.get("season")
-        ? Number(searchParams.get("season"))
-        : undefined,
-      episode: searchParams.get("episode")
-        ? Number(searchParams.get("episode"))
-        : undefined,
-      query: searchParams.get("q") ?? "",
-    }),
-    [searchParams],
-  );
+  // Read filters from URL and path
+  const filters = useMemo((): Filters => {
+    // First try to get from URL params
+    let season = searchParams.get("season")
+      ? Number(searchParams.get("season"))
+      : undefined;
+    let episode = searchParams.get("episode")
+      ? Number(searchParams.get("episode"))
+      : undefined;
+
+    // If not in URL params, try to get from path
+    if (!season && pathname.startsWith("/series/")) {
+      const matches = pathname.match(/^\/series\/(\d+)/);
+      if (matches) {
+        season = parseInt(matches[1], 10);
+      }
+
+      if (season && pathname.includes("/episode/")) {
+        const matches = pathname.match(/\/episode\/(\d+)/);
+        if (matches) {
+          episode = parseInt(matches[1], 10);
+        }
+      }
+    }
+
+    const query = searchParams.get("q") ?? "";
+    return {
+      season,
+      episode,
+      query: query.trim(), // Trim the query to handle whitespace-only searches
+    };
+  }, [searchParams, pathname]);
 
   // Handle filter changes
   const handleFilterChange = useCallback(
-    (updates: Partial<Filters>) => {
-      const queryString = createQueryString({
-        season:
-          updates.season?.toString() ?? filters.season?.toString() ?? null,
-        episode:
-          updates.episode?.toString() ?? filters.episode?.toString() ?? null,
-        page: null, // Reset page when filters change
-      });
-      router.push(`${pathname}?${queryString}`, { scroll: false });
+    (updates: { season?: number; episode?: number }) => {
+      // If we're in search mode (query exists and isn't empty), update filters in URL
+      if (filters.query.trim()) {
+        const queryString = createQueryString({
+          season:
+            updates.season?.toString() ?? filters.season?.toString() ?? null,
+          episode:
+            updates.episode?.toString() ?? filters.episode?.toString() ?? null,
+          q: filters.query,
+          page: null, // Reset page when filters change
+        });
+        router.push(`/?${queryString}`, { scroll: false });
+      }
+      // Otherwise, we're in navigation mode - handled by SeriesSelect component
     },
-    [createQueryString, pathname, router, filters.season, filters.episode],
+    [createQueryString, router, filters.query, filters.season, filters.episode],
   );
 
   // Handle query changes
   const handleQueryChange = useCallback(
     (query: string) => {
-      const queryString = createQueryString({
-        q: query || null,
-      });
-      router.push(`${pathname}?${queryString}`, { scroll: false });
+      const trimmedQuery = query.trim();
+
+      if (trimmedQuery) {
+        // If there's actual search text, redirect to home with search query
+        const queryString = createQueryString({
+          q: trimmedQuery,
+          // Preserve season/episode filters when starting a search
+          season: filters.season?.toString() ?? null,
+          episode: filters.episode?.toString() ?? null,
+          page: null,
+        });
+        router.push(`/?${queryString}`, { scroll: false });
+      } else {
+        // If search is empty, clear search params but maintain current path
+        const queryString = createQueryString({
+          q: null,
+          season: null,
+          episode: null,
+          page: null,
+        });
+        router.push(pathname + (queryString ? `?${queryString}` : ""), {
+          scroll: false,
+        });
+      }
     },
-    [createQueryString, pathname, router],
+    [createQueryString, router, filters.season, filters.episode, pathname],
   );
 
   return (

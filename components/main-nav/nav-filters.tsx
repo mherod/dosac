@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { DosacLogo } from "./dosac-logo";
 import { SeriesSelect } from "./series-select";
-import { TextInput } from "@/components/ui/text-input";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SearchBar } from "./search-bar";
+import { useSearchParams } from "next/navigation";
 
 interface Filters {
   season?: number;
@@ -29,9 +29,10 @@ export function NavFilters({
 }: NavFiltersProps) {
   const [localQuery, setLocalQuery] = useState(filters.query);
   const debouncedQuery = useDebounce(localQuery, 300);
-
-  const router = useRouter();
   const queryString = useSearchParams();
+
+  // Only consider it search mode if there's actual search text
+  const isSearchMode = filters.query.trim() !== "";
 
   // Update parent when debounced query changes
   useEffect(() => {
@@ -43,6 +44,10 @@ export function NavFilters({
     setLocalQuery(query);
     onQueryChange(query);
   }, [onQueryChange, queryString]);
+
+  const handleSearchChange = (value: string) => {
+    setLocalQuery(value);
+  };
 
   return (
     <div className={cn("border-t border-[#ffffff1f] bg-[#0b0c0c]", className)}>
@@ -57,28 +62,14 @@ export function NavFilters({
                 season={filters.season}
                 episode={filters.episode}
                 onFilterChange={onFilterChange}
-                className="w-full sm:w-auto"
+                isSearchMode={isSearchMode}
               />
             </div>
             <div className="min-w-0 flex-1 sm:flex-none">
-              <TextInput
-                type="search"
-                placeholder="Search ministerial quotes..."
+              <SearchBar
                 value={localQuery}
-                onChange={(e) => {
-                  const newQuery = e.target.value;
-                  setLocalQuery(newQuery);
-                  if (newQuery) {
-                    const newQueryString = new URLSearchParams(queryString);
-                    newQueryString.set("q", newQuery);
-                    router.push(`/?${newQueryString.toString()}`, {
-                      scroll: false,
-                    });
-                  }
-                }}
-                className={cn(
-                  "w-full sm:w-64 border-[#ffffff33] bg-transparent text-white placeholder:text-[#ffffff66] focus-visible:ring-[#1d70b8] truncate",
-                )}
+                onChange={handleSearchChange}
+                className="sm:w-64"
               />
             </div>
           </div>
