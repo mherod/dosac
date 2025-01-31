@@ -1,62 +1,66 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getSeriesInfo } from "@/lib/series-info";
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const seriesNumber = parseInt(params.id);
-
-  if (isNaN(seriesNumber) || seriesNumber < 1 || seriesNumber > 4) {
-    return {
-      title: "Not Found | Thick of It Quotes",
-    };
-  }
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) return {};
 
   return {
-    title: `Episodes - Series ${seriesNumber} | Thick of It Quotes`,
-    description: `Browse all episodes from Series ${seriesNumber} of The Thick of It`,
+    title: `Series ${series.number} Episodes | Thick of It Quotes`,
+    description: series.shortSummary,
   };
 }
 
-export default function EpisodesPage({ params }: Props) {
-  const seriesNumber = parseInt(params.id);
-
-  if (isNaN(seriesNumber) || seriesNumber < 1 || seriesNumber > 4) {
-    notFound();
-  }
+export default async function EpisodesPage({ params }: Props) {
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) notFound();
 
   return (
     <div className="container py-8">
       <div className="mb-6">
-        <a
-          href={`/series/${seriesNumber}`}
-          className="text-muted-foreground hover:text-primary"
-        >
-          ← Back to Series {seriesNumber}
-        </a>
-      </div>
-      <h1 className="text-4xl font-bold mb-6">
-        Episodes - Series {seriesNumber}
-      </h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5, 6].map((episodeNumber) => (
-          <a
-            key={episodeNumber}
-            href={`/series/${seriesNumber}/episode/${episodeNumber}`}
-            className="block p-6 rounded-lg border bg-card text-card-foreground hover:bg-accent transition-colors"
+        <div className="flex items-center gap-2">
+          <Link href="/series" className="text-[#1d70b8] hover:underline">
+            All Series
+          </Link>
+          <span className="text-[#505a5f]">/</span>
+          <Link
+            href={`/series/${series.number}`}
+            className="text-[#1d70b8] hover:underline"
           >
-            <h2 className="text-2xl font-semibold mb-2">
-              Episode {episodeNumber}
-            </h2>
-            <p className="text-muted-foreground">
-              View quotes from Episode {episodeNumber}
-            </p>
-          </a>
-        ))}
+            Series {series.number}
+          </Link>
+          <span className="text-[#505a5f]">/</span>
+          <span>Episodes</span>
+        </div>
+      </div>
+      <div className="space-y-8">
+        <h1 className="text-4xl font-bold">Series {series.number} Episodes</h1>
+        <p className="text-lg">{series.longSummary}</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: series.episodeCount }, (_, i) => i + 1).map(
+            (episodeNumber) => (
+              <Link
+                key={episodeNumber}
+                href={`/series/${series.number}/episode/${episodeNumber}`}
+                className="block rounded-lg border border-[#ffffff33] bg-[#0b0c0c] p-4 hover:bg-[#1d1d1d]"
+              >
+                <h2 className="text-xl font-semibold">
+                  Episode {episodeNumber}
+                </h2>
+              </Link>
+            ),
+          )}
+        </div>
       </div>
     </div>
   );
