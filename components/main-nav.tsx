@@ -54,7 +54,7 @@ export function MainNav() {
 
       if (season && pathname.includes("/episode/")) {
         const matches = pathname.match(/\/episode\/(\d+)/);
-        if (matches) {
+        if (matches?.[1]) {
           episode = parseInt(matches[1], 10);
         }
       }
