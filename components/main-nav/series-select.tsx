@@ -24,19 +24,19 @@ interface SelectOptionProps {
 }
 
 const SelectOption = forwardRef<
-  HTMLButtonElement | HTMLAnchorElement,
+  React.ElementRef<typeof SelectItem>,
   SelectOptionProps
->(({ value, href, children, className }) => {
+>(({ value, href, children, className }, ref) => {
   if (href) {
     return (
-      <SelectItem value={value} className={className}>
+      <SelectItem ref={ref} value={value} className={className}>
         {children}
       </SelectItem>
     );
   }
 
   return (
-    <SelectItem value={value} className={className}>
+    <SelectItem ref={ref} value={value} className={className}>
       {children}
     </SelectItem>
   );
