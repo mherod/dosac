@@ -48,7 +48,7 @@ export function MainNav() {
     // If not in URL params, try to get from path
     if (!season && pathname.startsWith("/series/")) {
       const matches = pathname.match(/^\/series\/(\d+)/);
-      if (matches) {
+      if (matches?.[1]) {
         season = parseInt(matches[1], 10);
       }
 

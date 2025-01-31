@@ -94,7 +94,9 @@ const SelectItem = React.forwardRef<
     >
       {props.asChild
         ? React.cloneElement(
-            React.Children.only(children) as React.ReactElement,
+            React.Children.only(children) as React.ReactElement<{
+              children?: React.ReactNode;
+            }>,
             {
               children: content,
             },

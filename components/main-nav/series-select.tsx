@@ -26,7 +26,7 @@ interface SelectOptionProps {
 const SelectOption = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SelectOptionProps
->(({ value, href, children, className }, _ref) => {
+>(({ value, href, children, className }) => {
   if (href) {
     return (
       <SelectItem value={value} className={className}>
