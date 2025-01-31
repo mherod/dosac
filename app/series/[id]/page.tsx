@@ -7,41 +7,26 @@ import { parseEpisodeId } from "@/lib/frames";
 import { getSeriesInfo } from "@/lib/series-info";
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const seriesNumber = parseInt(params.id);
-
-  if (isNaN(seriesNumber) || seriesNumber < 1 || seriesNumber > 4) {
-    return {
-      title: "Not Found | Thick of It Quotes",
-    };
-  }
-
-  const series = getSeriesInfo(seriesNumber);
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) return {};
 
   return {
-    title: `Series ${seriesNumber} | Thick of It Quotes`,
-    description:
-      series?.shortSummary ||
-      `Browse episodes from Series ${seriesNumber} of The Thick of It`,
+    title: `Series ${series.number} | Thick of It Quotes`,
+    description: series.shortSummary,
   };
 }
 
 export default async function SeriesPage({ params }: Props) {
-  const seriesNumber = parseInt(params.id);
-
-  if (isNaN(seriesNumber) || seriesNumber < 1 || seriesNumber > 4) {
-    notFound();
-  }
-
-  const series = getSeriesInfo(seriesNumber);
-  if (!series) {
-    notFound();
-  }
+  const resolvedParams = await params;
+  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  if (!series) notFound();
 
   // Get all frames
   const allFrames = await getFrameIndex();
@@ -50,7 +35,7 @@ export default async function SeriesPage({ params }: Props) {
   const episodeFrames = new Map<string, typeof allFrames>();
   allFrames.forEach((frame) => {
     const { season } = parseEpisodeId(frame.episode);
-    if (season === seriesNumber) {
+    if (season === series.number) {
       if (!episodeFrames.has(frame.episode)) {
         episodeFrames.set(frame.episode, []);
       }
@@ -79,7 +64,7 @@ export default async function SeriesPage({ params }: Props) {
       </div>
       <div className="space-y-8">
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold">Series {seriesNumber}</h1>
+          <h1 className="text-4xl font-bold">Series {series.number}</h1>
           <div className="prose prose-invert max-w-none">
             <p>{series.longSummary}</p>
             <p className="text-sm text-muted-foreground">
@@ -94,12 +79,12 @@ export default async function SeriesPage({ params }: Props) {
                 <h2 className="text-2xl font-semibold">
                   Episode {episodeNumber}
                 </h2>
-                <a
-                  href={`/series/${seriesNumber}/episode/${episodeNumber}`}
+                <Link
+                  href={`/series/${series.number}/episode/${episodeNumber}`}
                   className="text-primary hover:text-primary/80"
                 >
                   View all quotes →
-                </a>
+                </Link>
               </div>
               <ScreenshotGrid
                 screenshots={frames.slice(0, 6)}
