@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFrameIndex } from "@/lib/frames.server";
 
+/**
+ *
+ * @param request
+ * @param root0
+ * @param root0.params
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ caption: string }> },
@@ -38,7 +44,9 @@ export async function GET(
     url.searchParams.set("caption", bestMatch.speech);
 
     return NextResponse.redirect(url.toString());
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message });
+  } catch (error) {
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 }

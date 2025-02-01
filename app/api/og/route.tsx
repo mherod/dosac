@@ -3,6 +3,16 @@ import { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
+/**
+ * Generates CSS text-shadow value for text outline effect
+ * @param width - Width of the outline in pixels
+ * @returns CSS text-shadow property value string
+ *
+ * @example
+ * ```ts
+ * getTextShadow(2) // returns "2px 2px 0 #000, 2px -2px 0 #000, ..."
+ * ```
+ */
 function getTextShadow(width: number = 1) {
   const shadows = [];
   for (let x = -width; x <= width; x++) {
@@ -14,6 +24,38 @@ function getTextShadow(width: number = 1) {
   return shadows.join(", ");
 }
 
+/**
+ * API route handler for generating OpenGraph images with captions
+ *
+ * Generates a dynamic image with a caption overlaid on it, optimised for
+ * social media sharing. The image and caption styling can be customised
+ * through query parameters.
+ *
+ * @param req - The incoming HTTP request
+ * @returns ImageResponse for the generated OpenGraph image
+ *
+ * Query Parameters:
+ * - caption: Text to display on the image
+ * - imageUrl: URL of the background image
+ * - fontSize: Base font size in pixels (optional)
+ * - fontFamily: Font family to use (optional)
+ * - outlineWidth: Width of text outline in pixels (optional)
+ *
+ * @example
+ * ```ts
+ * // Request URL
+ * /api/og?caption=Hello%20World&imageUrl=/images/example.jpg&fontSize=24
+ *
+ * // Success response: PNG image (1200x630)
+ * new ImageResponse(...)
+ *
+ * // Error response
+ * new Response("Failed to generate image: ...", {
+ *   status: 500,
+ *   headers: { "content-type": "text/plain" }
+ * })
+ * ```
+ */
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

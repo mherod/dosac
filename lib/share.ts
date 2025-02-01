@@ -3,6 +3,8 @@ import { toast } from "sonner";
 /**
  * Encodes a URL or path for sharing by converting it to a base64 string
  * and making it URL-safe by replacing + with - and / with _
+ * @param url - The URL or path to encode
+ * @returns URL-safe base64 encoded string with padding removed
  */
 export function encodeShareUrl(url: string): string {
   // Convert the URL to base64
@@ -15,6 +17,10 @@ export function encodeShareUrl(url: string): string {
 
 /**
  * Creates a shareable URL for the current page with optional text parameter
+ * @param currentPath - The current page path to create a share URL for
+ * @param text - Optional text to include as a query parameter
+ * @param baseUrl - Optional base URL to prepend (defaults to relative URL)
+ * @returns Complete shareable URL with encoded parameters
  */
 export function createShareUrl(
   currentPath: string,
@@ -38,6 +44,9 @@ export function createShareUrl(
 /**
  * Shares the URL using the Web Share API if available,
  * otherwise copies to clipboard
+ * @param url - The URL to share or copy
+ * @returns Promise that resolves when sharing/copying is complete
+ * @throws Error if both sharing and clipboard copy fail
  */
 export async function shareUrl(url: string): Promise<void> {
   try {
@@ -66,6 +75,11 @@ export async function shareUrl(url: string): Promise<void> {
 
 /**
  * Main share function that combines URL creation and sharing
+ * @param currentPath - The current page path to share
+ * @param text - Optional text to include in the share URL
+ * @param baseUrl - Optional base URL to prepend (defaults to relative URL)
+ * @returns Promise that resolves when sharing is complete
+ * @throws Error if sharing fails
  */
 export async function handleShare(
   currentPath: string,

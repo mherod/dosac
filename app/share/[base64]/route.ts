@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ *
+ * @param request
+ * @param root0
+ * @param root0.params
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ base64: string }> },
@@ -31,11 +37,11 @@ export async function GET(
     let decodedString: string;
     try {
       decodedString = Buffer.from(base64String, "base64").toString();
-    } catch (decodeError) {
+    } catch (error) {
       return NextResponse.redirect(
         new URL(
           `/share/error?message=${encodeURIComponent(
-            `Failed to decode base64 string: ${base64String.slice(0, 50)}...`,
+            `Failed to decode base64 string: ${error instanceof Error ? error.message : "Unknown error"}`,
           )}`,
           request.url,
         ),
@@ -78,7 +84,7 @@ export async function GET(
       return NextResponse.redirect(
         new URL(`${path}${searchParams}`, request.url),
       );
-    } catch (urlError) {
+    } catch (error) {
       // If URL parsing fails, try treating it as a path
       if (decodedString.startsWith("/")) {
         if (!decodedString.startsWith("/caption/")) {
@@ -97,7 +103,7 @@ export async function GET(
       return NextResponse.redirect(
         new URL(
           `/share/error?message=${encodeURIComponent(
-            `Invalid URL format. Decoded string: ${decodedString.slice(0, 50)}...`,
+            `Invalid URL format: ${error instanceof Error ? error.message : "Unknown error"}`,
           )}`,
           request.url,
         ),

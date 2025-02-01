@@ -16,6 +16,11 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.searchParams
+ */
 export default async function Home({ searchParams }: Props) {
   const [screenshots, rankedMoments] = await Promise.all([
     getFrameIndex(),
@@ -50,12 +55,15 @@ export default async function Home({ searchParams }: Props) {
   return (
     <HomePage
       screenshots={screenshots}
-      rankedMoments={rankedMoments.map((m: any) => m.frame)}
+      rankedMoments={rankedMoments.map((m: { frame: Screenshot }) => m.frame)}
       initialSearchParams={initialSearchParams}
     />
   );
 }
 
+/**
+ *
+ */
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
   const params: Array<{ searchParams: Partial<SearchParams> }> = [

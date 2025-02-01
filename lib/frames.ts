@@ -1,25 +1,50 @@
 import type { Screenshot } from "./types";
 
+/** A frame from an episode with associated metadata */
 export type Frame = Screenshot;
 
+/**
+ * Represents a parsed frame identifier with its components
+ */
 export interface ParsedFrameId {
+  /** The season identifier (e.g., "s01") */
   season: string;
+  /** The episode identifier (e.g., "e01") */
   episode: string;
+  /** The timestamp within the episode (e.g., "12-34.567") */
   timestamp: string;
 }
 
+/**
+ * Represents a parsed episode identifier with numeric components
+ */
 export interface ParsedEpisodeId {
+  /** The season number (1-based) */
   season: number;
+  /** The episode number within the season (1-based) */
   episode: number;
 }
 
+/**
+ * Error thrown when a frame ID format is invalid
+ */
 export class InvalidFrameIdError extends Error {
+  /**
+   * Creates a new InvalidFrameIdError
+   * @param message - The error message describing the validation failure
+   */
   constructor(message: string) {
     super(message);
     this.name = "InvalidFrameIdError";
   }
 }
 
+/**
+ * Parses an episode identifier string into its numeric components
+ * @param episodeId - The episode identifier in the format "s01e01"
+ * @returns Object containing the parsed season and episode numbers
+ * @throws {InvalidFrameIdError} If the episode ID format is invalid
+ */
 export function parseEpisodeId(episodeId: string): ParsedEpisodeId {
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/);
   if (!match || !match[1] || !match[2]) {
@@ -34,6 +59,12 @@ export function parseEpisodeId(episodeId: string): ParsedEpisodeId {
   };
 }
 
+/**
+ * Formats a timestamp string into the directory format used for frame storage
+ * @param timestamp - The timestamp string in the format "00:03.120 --> 00:04.960"
+ * @returns The formatted timestamp (e.g., "00-03.120")
+ * @throws {Error} If the timestamp format is invalid
+ */
 export function formatTimestamp(timestamp: string): string {
   // Extract the start time from "00:03.120 --> 00:04.960"
   const parts = timestamp.split("-->");
@@ -50,6 +81,12 @@ export function formatTimestamp(timestamp: string): string {
   return startTime.replace(/:/g, "-");
 }
 
+/**
+ * Validates and parses a frame identifier string
+ * @param id - The frame identifier in the format "s01e01-12-34.567"
+ * @returns Object containing the parsed season, episode, and timestamp
+ * @throws {InvalidFrameIdError} If any part of the frame ID format is invalid
+ */
 export function validateFrameId(id: string): ParsedFrameId {
   const [season, ...timestampParts] = id.split("-");
   const timestamp = timestampParts.join("-");
@@ -75,6 +112,11 @@ export function validateFrameId(id: string): ParsedFrameId {
   return { season, episode: season, timestamp };
 }
 
+/**
+ * Fetches the index of all available frames
+ * @returns Promise resolving to an array of Frame objects
+ * @throws {Error} If the fetch request fails
+ */
 export async function getFrameIndex(): Promise<Frame[]> {
   const response = await fetch("/api/frames/index", {
     next: { revalidate: 3600 },
@@ -85,6 +127,12 @@ export async function getFrameIndex(): Promise<Frame[]> {
   return response.json();
 }
 
+/**
+ * Fetches a specific frame by its identifier
+ * @param id - The frame identifier in the format "s01e01-12-34.567"
+ * @returns Promise resolving to the Frame object
+ * @throws {Error} If the fetch request fails
+ */
 export async function getFrameById(id: string): Promise<Frame> {
   const response = await fetch(`/api/frames/${id}`, {
     next: { revalidate: 3600 },

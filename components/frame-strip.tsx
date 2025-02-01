@@ -15,6 +15,13 @@ interface FrameStripProps {
   frameWidth?: number;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.screenshots
+ * @param root0.centerScreenshot
+ * @param root0.frameWidth
+ */
 export function FrameStrip({
   screenshots,
   centerScreenshot,
@@ -173,8 +180,6 @@ export function FrameStrip({
 
   const margin = 10;
   const frameHeight = Math.round(frameWidth * (9 / 16));
-  // Increase padding to accommodate scale animation
-  const containerPadding = 16;
 
   return (
     <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] max-w-screen overflow-x-hidden">

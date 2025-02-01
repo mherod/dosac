@@ -17,6 +17,93 @@
 - Tailwind CSS for styling
 - Next.js 14+ conventions
 
+## JSDoc Documentation
+1. **Required Documentation**
+   - Function declarations
+   - Method definitions
+   - Class declarations
+   - Public API functions and methods
+   - Exported utilities and helpers
+
+2. **Documentation Format**
+   ```typescript
+   /**
+    * Brief description of what the function/class does
+    * @param paramName - Description of the parameter
+    * @returns Description of what is returned
+    */
+   ```
+
+3. **Documentation Rules**
+   - All public functions must have JSDoc comments
+   - Parameter descriptions are required
+   - Return value descriptions are required
+   - Types are inferred from TypeScript (no need to specify)
+   - Use present tense in descriptions
+   - Keep descriptions concise but clear
+   - Document side effects when present
+   - Document thrown errors when applicable
+
+4. **Component Documentation**
+   - Document props using TypeScript interfaces
+   - Document state management approach
+   - Document side effects and cleanup
+   - Document event handlers
+   - Example:
+   ```typescript
+   interface ButtonProps {
+     /** The text content to display in the button */
+     label: string;
+     /** Called when the button is clicked */
+     onClick: () => void;
+   }
+
+   /**
+    * A reusable button component with consistent styling
+    */
+   export function Button({ label, onClick }: ButtonProps) {
+     // ...
+   }
+   ```
+
+5. **Hook Documentation**
+   - Document hook purpose and usage
+   - Document dependencies array items
+   - Document cleanup functions
+   - Document state updates
+   - Example:
+   ```typescript
+   /**
+    * Manages caption state and provides update functions
+    * @param initialText - The initial caption text
+    * @returns Object containing caption state and update functions
+    */
+   export function useCaptionState(initialText: string) {
+     // ...
+   }
+   ```
+
+6. **API Route Documentation**
+   - Document request parameters
+   - Document response format
+   - Document error responses
+   - Document authentication requirements
+   - Example:
+   ```typescript
+   /**
+    * Retrieves frame data for a specific episode
+    * @param request - The incoming request object
+    * @param params - Route parameters containing episodeId
+    * @returns Frame data object or 404 if not found
+    */
+   export async function GET(
+     request: Request,
+     { params }: { params: { episodeId: string } }
+   ) {
+     // ...
+   }
+   ```
+
 ## Development Practices
 - Feature branches required
 - Pull requests required for main branch
@@ -98,3 +185,113 @@
      // Use resolvedParams.paramName
    }
    ``` 
+
+## Character Profile Maintenance
+
+1. **Profile Structure**
+   - All profiles must include:
+     ```typescript
+     {
+       name: string;          // Display name with titles
+       shortName: string;     // Informal first name/nickname
+       fullName: string;      // Complete formal name with all titles
+       description: string;   // Brief role summary
+       department: Department;
+       role: Role;
+       personal?: {
+         age?: number;
+         birthYear?: number;
+         family?: {
+           spouse?: boolean | { name: string; occupation?: string };
+           children?: boolean;
+           siblings?: boolean;
+           nieces?: boolean;
+         };
+         background?: {
+           education?: string;
+           party?: string;
+           affiliation?: string;
+           career?: string[];
+           interests?: string[];
+         };
+         relationships?: {
+           past?: string[];
+           present?: string[];
+         };
+       };
+       details: string[];     // Chronological list of character details
+     }
+     ```
+
+2. **Name Formatting**
+   - MPs: "The Right Honourable [Name] MP"
+   - Lords: "The Right Honourable the Lord [Name] of [Place]"
+   - Doctors: "Dr. [Full Name]"
+   - Use consistent title abbreviations (Rt Hon, Dr, MP)
+
+3. **Department and Role Assignment**
+   - Characters must be assigned to primary department even if they appear in multiple
+   - Role must reflect most senior position held
+   - Update department/role when character's position changes
+   - Use appropriate constants from DEPARTMENTS and ROLES
+
+4. **Career Timeline**
+   - Include series numbers for role changes (e.g., "Series 1-3")
+   - Use "present" suffix for ongoing roles
+   - List positions chronologically in career array
+   - Note transitions between Opposition and Government
+
+5. **Personal Details**
+   - Include age if known
+   - Add birth year if confirmed
+   - Document relationships with other characters
+   - Include educational background when available
+   - List special interests and skills
+
+6. **Details Array Guidelines**
+   - Maintain chronological order
+   - Start with origin/background
+   - Follow with career progression
+   - Include key relationships and events
+   - End with character traits/personality
+   - Maximum 30 detail entries per character
+
+7. **Political Affiliations**
+   - Always specify party membership
+   - Include government/opposition status
+   - Note any party faction alignments
+   - Document changes in allegiance
+
+8. **Relationship Documentation**
+   - Cross-reference relationships between characters
+   - Include dates/series for relationship changes
+   - Note professional and personal relationships
+   - Document rivalries and alliances
+
+9. **Image Requirements**
+   - Store character images in /public/characters/
+   - Use consistent naming: [shortname].jpg
+   - Maintain 1:1 aspect ratio
+   - Minimum resolution: 500x500px
+   - Maximum file size: 200KB
+
+10. **Profile Updates**
+    - Review profiles after each episode addition
+    - Update career progression as needed
+    - Add new relationships and events
+    - Maintain chronological accuracy
+    - Cross-reference with other characters
+
+11. **Quality Control**
+    - Verify all dates and series numbers
+    - Check consistency with episode content
+    - Validate relationship cross-references
+    - Ensure proper title formatting
+    - Review department/role assignments
+
+12. **Profile Page Layout**
+    - Group characters by department
+    - Sub-group by role within departments
+    - Show full details on individual pages
+    - Include relationship network diagram
+    - Display career timeline visualization 
