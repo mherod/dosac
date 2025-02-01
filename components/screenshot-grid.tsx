@@ -8,6 +8,7 @@ import React from "react";
 import Link from "next/link";
 import { type Screenshot } from "@/lib/types";
 import { useSpeculationRules } from "@/lib/speculation-rules";
+import { Suspense } from "react";
 
 /**
  * Props for the ScreenshotGrid component
@@ -31,7 +32,7 @@ const ITEMS_PER_PAGE = 36;
  * @param props.multiselect - Whether multiple screenshots can be selected
  * @returns A paginated grid of screenshot cards with navigation controls
  */
-export function ScreenshotGrid({
+function ScreenshotGridInner({
   screenshots,
   rankedMoments,
   multiselect = false,
@@ -309,5 +310,17 @@ export function ScreenshotGrid({
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ *
+ * @param props
+ */
+export function ScreenshotGrid(props: ScreenshotGridProps) {
+  return (
+    <Suspense>
+      <ScreenshotGridInner {...props} />
+    </Suspense>
   );
 }
