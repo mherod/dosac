@@ -40,6 +40,22 @@ export const seriesInfo: SeriesInfo[] = [
   },
 ];
 
+/**
+ * Get information about a specific series
+ * @param seriesNumber - The series number to look up
+ * @returns The series information or undefined if not found
+ */
 export function getSeriesInfo(seriesNumber: number): SeriesInfo | undefined {
   return seriesInfo.find((series) => series.number === seriesNumber);
+}
+
+/**
+ * Get episode information for a specific series
+ * @param seriesNumber - The series number to get episodes for
+ * @returns Array of episode numbers for the series
+ */
+export function getSeriesEpisodes(seriesNumber: number): number[] {
+  const series = getSeriesInfo(seriesNumber);
+  if (!series) return [];
+  return Array.from({ length: series.episodeCount }, (_, i) => i + 1);
 }

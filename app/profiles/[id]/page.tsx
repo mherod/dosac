@@ -149,17 +149,23 @@ function PersonalDetails({
 }
 
 /**
+ * Character profile page component
  *
- * @param root0
- * @param root0.params
- * @param root0.params.id
+ * Displays detailed information about a character including their role,
+ * personal details, background, and relationships.
+ *
+ * @param props - Page component props
+ * @param props.params - Route parameters
+ * @param props.params.id - Character ID from the URL
+ * @returns React component for the character profile page
  */
-export default function CharacterProfile({
+export default async function CharacterProfile({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const character = characters[params.id as keyof typeof characters];
+  const { id } = await params;
+  const character = characters[id as keyof typeof characters];
 
   if (!character) {
     notFound();
