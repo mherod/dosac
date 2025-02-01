@@ -12,6 +12,7 @@ import {
 import { getEpisodeInfo } from "@/lib/episode-info";
 import { SeriesHeader } from "@/components/series/series-header";
 import { formatPageTitle } from "@/lib/constants";
+import { Suspense } from "react";
 
 /**
  * Generates static params for all episode pages at build time
@@ -61,13 +62,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Page component for displaying a specific episode and its frames
+ * Episode page content component
  * Shows episode details, cast, crew, and a grid of all frames from the episode
  * @param props - The component props
- * @param props.params - Promise resolving to route parameters containing series and episode IDs
- * @returns The episode page with details and frame grid
+ * @param props.params - Route parameters containing series and episode IDs
+ * @returns The episode page content with details and frame grid
  */
-export default async function EpisodePage({ params }: Props) {
+async function EpisodePageContent({ params }: Props) {
   const resolvedParams = await params;
   const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
   const episode = getEpisodeInfo(
@@ -259,5 +260,20 @@ export default async function EpisodePage({ params }: Props) {
         </div>
       </div>
     </main>
+  );
+}
+
+/**
+ * Page component for displaying a specific episode and its frames
+ * Shows episode details, cast, crew, and a grid of all frames from the episode
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing series and episode IDs
+ * @returns The episode page with details and frame grid
+ */
+export default function EpisodePage(props: Props) {
+  return (
+    <Suspense>
+      <EpisodePageContent {...props} />
+    </Suspense>
   );
 }
