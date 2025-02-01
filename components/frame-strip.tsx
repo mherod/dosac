@@ -8,19 +8,27 @@ import { CaptionedImage } from "@/components/captioned-image";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { motion, AnimatePresence } from "framer-motion";
 
+/**
+ * Props for the FrameStrip component
+ */
 interface FrameStripProps {
+  /** Array of screenshots to display in the strip */
   screenshots: Screenshot[];
+  /** Optional array of ranked moments to highlight */
   rankedMoments?: Screenshot[];
+  /** Screenshot to center in the strip */
   centerScreenshot?: Screenshot;
+  /** Width of each frame in pixels (defaults to 256) */
   frameWidth?: number;
 }
 
 /**
- *
- * @param root0
- * @param root0.screenshots
- * @param root0.centerScreenshot
- * @param root0.frameWidth
+ * Component that displays a horizontal strip of frame screenshots with animation
+ * @param props - The component props
+ * @param props.screenshots - Array of screenshots to display in the strip
+ * @param props.centerScreenshot - Screenshot to center in the strip
+ * @param props.frameWidth - Width of each frame in pixels
+ * @returns An animated horizontal strip of frame screenshots
  */
 export function FrameStrip({
   screenshots,

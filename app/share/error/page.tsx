@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import Link from "next/link";
 
+/**
+ * Component that displays the error content with message from URL parameters
+ * @returns The error content with message and home button
+ */
 function ErrorContent() {
   const searchParams = useSearchParams();
   const errorMessage =
@@ -32,6 +36,11 @@ function ErrorContent() {
   );
 }
 
+/**
+ * Page component for displaying share link errors
+ * Wraps error content in a Suspense boundary
+ * @returns The share error page with error message and home button
+ */
 export default function ShareErrorPage() {
   return (
     <Suspense>

@@ -1,5 +1,9 @@
 import Image from "next/image";
 
+/**
+ * Footer component that displays the site disclaimer and DOSAC logo
+ * @returns A footer element containing the site disclaimer and DOSAC logo
+ */
 export function Footer() {
   return (
     <footer className="mt-auto border-t flex flex-col items-center justify-center p-4">

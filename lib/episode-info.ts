@@ -28,7 +28,6 @@ export interface EpisodeInfo {
   writers: WriterCredit[];
   airDate: string;
   parsedDate: Date;
-  productionCode?: string;
   filmingDates?: [Date, Date];
   locations?: string[];
   shortSummary: string;
@@ -53,11 +52,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "19 May 2005",
     parsedDate: new Date(2005, 4, 19),
-    productionCode: "TT1-01",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Cliff Lawton MP is given the boot and swiftly replaced by Hugh Abbott and his staff. Hoping to start his tenure in a blaze of publicity he calls a press conference, but after his 'Snooper Squad' idea is killed, Abbott and his staff have forty minutes to come up with a new policy.",
+      "Following intense media pressure, Minister Cliff Lawton was removed from office and Hugh Abbott appointed as Minister for Social Affairs. Abbott's first major policy initiative, a benefit fraud detection unit, faced immediate scrutiny when Treasury consultation procedures were bypassed.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -80,11 +78,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "26 May 2005",
     parsedDate: new Date(2005, 4, 26),
-    productionCode: "TT1-02",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Malcolm is concerned that Abbott is not keeping in touch with the man or woman on the street and orders him to catch up on modern pop culture. In an attempt to formulate a popular new strategy, Hugh gets a very focused focus group in to tell him which one of two contradictory policies to go for.",
+      "Government Communications Director Malcolm Tucker intervened in departmental affairs after concerns arose about Minister Abbott's disconnect from public sentiment. A focus group consultation on contradictory policies was compromised when it emerged that one participant had undisclosed media industry connections.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -106,11 +103,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "2 June 2005",
     parsedDate: new Date(2005, 4, 26),
-    productionCode: "TT1-03",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      'Malcolm thinks Hugh\'s empty flat in London could pose a problem for the successful Second Home Housing Bill. Meanwhile, Hugh develops a dislike for his media-savvy junior minister Dan Miller and Malcolm explains the art of a "good resignation".',
+      "Minister Abbott faced serious allegations regarding property holdings when journalists uncovered evidence that he was deliberately maintaining an empty second residence while the Second Home Housing Bill was under consideration.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
@@ -133,11 +129,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "20 October 2005",
     parsedDate: new Date(2005, 9, 20),
-    productionCode: "TT2-01",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      'At a ministerial visit to a factory, Hugh is accosted by a member of the public. With Terri away on compassionate leave, only Malcolm can help bury the story, but will he? Meanwhile, Ollie is dating an opposition advisor and hastily seconded to Downing Street to "ring his girlfriend".',
+      "During Minister Abbott's factory visit, a confrontational encounter with a member of the public sparked a media crisis. Senior Press Officer Robyn Murdoch assumed temporary responsibilities during Terri Coverley's compassionate leave, while adviser Ollie Reeder was seconded to Number 10 for cross-party communications.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -160,11 +155,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "27 October 2005",
     parsedDate: new Date(2005, 9, 27),
-    productionCode: "TT2-02",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "There's a cabinet reshuffle in the offing and the PM's new 'blue skies' advisor Julius is making trouble. Robyn Murdoch struggles to cover Terri's duties, and is removed from Malcolm's morning meetings.",
+      "Amid cabinet reshuffle speculation, the Prime Minister's strategic adviser Julius Nicholson's interventions created departmental tensions. Senior Press Officer Robyn Murdoch was excluded from key communications briefings following procedural concerns.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Technology],
     cast: [
@@ -187,11 +181,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "3 November 2005",
     parsedDate: new Date(2005, 9, 3),
-    productionCode: "TT2-03",
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Hugh attempts to toe the party line on special schools whilst staying true to his conscience. He also accidentally sends an eight-year-old girl an expletive-laden email, intended for Glenn, and Terri faces the blame.",
+      "A ministerial communications incident involving an eight-year-old constituent complicated Abbott's position on special education policy reform. Senior Civil Servant Terri Coverley faced scrutiny over departmental email protocols.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -227,11 +220,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "24 October 2009",
     parsedDate: new Date(2009, 9, 24),
-    productionCode: "TT3-01",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      'Nicola Murray MP replaces Hugh Abbott as Secretary of State at DoSAC and comes without her own staff, so Glenn and Ollie find themselves unexpectedly keeping their jobs. Meanwhile, Malcolm is arranging publicity for a by-election. The term "omnishambles" is used for the first time in this episode.',
+      "The appointment of Nicola Murray MP as Secretary of State marked a significant transition at DoSAC. The retention of existing advisory staff Reeder and Cullen provided continuity during this period. Meanwhile, Communications Director Tucker coordinated media strategy for an upcoming by-election.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -272,11 +264,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "31 October 2009",
     parsedDate: new Date(2009, 9, 31),
-    productionCode: "TT3-02",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "A week since Nicola took over at DoSAC, and there's a catastrophic error with immigration figures on the department computers. Meanwhile, the press are speculating over the new Minister's longevity.",
+      "One week into Secretary Murray's tenure, the department confronted a serious data integrity crisis involving immigration statistics. Media speculation intensified regarding the new minister's position.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -317,11 +308,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "7 November 2009",
     parsedDate: new Date(2009, 9, 7),
-    productionCode: "TT3-03",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Nicola and Ollie are writing her speech for the party conference in Eastbourne, while Glenn and Malcolm clash over a great publicity opportunity.",
+      "Secretary Murray's preparation for her Eastbourne conference address coincided with internal disputes between Communications Director Tucker and Senior Adviser Glenn Cullen over strategic messaging.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -330,7 +320,7 @@ export const episodeInfo: EpisodeInfo[] = [
         actor: "Katherine Parkinson",
         isGuest: false,
       },
-      { character: "Hugh Abbott", actor: "Chris Langham", isGuest: true },
+      { character: "Peter Mannion", actor: "Tom Hollander", isGuest: false },
       { character: "Malcolm Tucker", actor: "Peter Capaldi", isGuest: false },
     ],
     _version: 2,
@@ -362,11 +352,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "14 November 2009",
     parsedDate: new Date(2009, 9, 14),
-    productionCode: "TT3-04",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "The civil servants at DoSAC prepare for a visit from shadow Social Affairs minister Peter Mannion, while Nicola has enough on her plate when her daughter's headmaster calls.",
+      "A scheduled departmental review by Shadow Minister Peter Mannion coincided with Secretary Murray addressing urgent matters regarding her daughter's education.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -405,11 +394,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "21 November 2009",
     parsedDate: new Date(2009, 9, 21),
-    productionCode: "TT3-05",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Nicola Murray and Peter Mannion go head to head on the Richard Bacon show on BBC Radio 5 Live, but when breaking news ruins the agenda, Malcolm descends upon the studios.",
+      "During a BBC Radio 5 Live debate between Secretary Murray and Shadow Minister Mannion, breaking news developments prompted emergency intervention from Communications Director Tucker.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -448,11 +436,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "28 November 2009",
     parsedDate: new Date(2009, 9, 28),
-    productionCode: "TT3-06",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Whilst the PM is away on a world tour, the media begin to consider Nicola as a potential challenger to party leadership, forcing Malcolm to put aside his duties and intervene.",
+      "Media speculation about Secretary Murray's leadership potential during the Prime Minister's international diplomatic tour necessitated strategic intervention from Communications Director Tucker.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -493,11 +480,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "5 December 2009",
     parsedDate: new Date(2009, 9, 5),
-    productionCode: "TT3-07",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "DoSAC are attempting to launch a new Healthy Living campaign, while Malcolm is absent, supposedly on holiday – but everyone knows that Malcolm does not take holidays.",
+      "The department's Healthy Living initiative launch proceeded during Communications Director Tucker's unprecedented absence from Westminster.",
     runtime: 30,
     policyAreas: [PolicyArea.Health],
     cast: [
@@ -538,11 +524,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "12 December 2009",
     parsedDate: new Date(2009, 9, 12),
-    productionCode: "TT3-08",
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Malcolm finds himself running out of both options and friends as the election looms, until he finds help being offered from an unlikely quarter.",
+      "As election preparations intensified, Communications Director Tucker faced diminishing political support until receiving assistance from an unexpected political quarter.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -572,7 +557,6 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "8 September 2012",
     parsedDate: new Date(2012, 8, 8),
-    productionCode: "TT4-01",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
@@ -601,11 +585,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "15 September 2012",
     parsedDate: new Date(2012, 8, 15),
-    productionCode: "TT4-02",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Leader of the Opposition Nicola Murray finds herself facing a new set of pressures following her party's election defeat, including being harassed by a man in an unusual costume. However, her problems mount when journalists get a glimpse of some embarrassing meeting notes – and she starts to worry about how close fellow shadow cabinet member Dan Miller is getting to media strategist Malcolm Tucker.",
+      "Opposition Leader Murray confronted escalating pressures following electoral defeat, including public harassment incidents and leaked strategic documentation. Internal tensions emerged regarding Shadow Cabinet member Dan Miller's increasing collaboration with Communications Director Tucker.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -631,7 +614,6 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "22 September 2012",
     parsedDate: new Date(2012, 8, 22),
-    productionCode: "TT4-03",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
@@ -658,11 +640,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "29 September 2012",
     parsedDate: new Date(2012, 8, 29),
-    productionCode: "TT4-04",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "Malcolm's patience with Nicola Murray's leadership is at an end. As Nicola is stuck on a train on the way to Bradford with a crew from Sky News, and with Ollie in hospital recovering from an appendix removal, Malcolm hatches a plan with Ollie, Ben Swain and Dan Miller to double cross Nicola, and force her to resign.",
+      "Communications Director Tucker orchestrated a coordinated strategy with Shadow Ministers Miller and Swain to secure Opposition Leader Murray's resignation during her Bradford constituency visit.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -688,11 +669,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "13 October 2012",
     parsedDate: new Date(2012, 9, 13),
-    productionCode: "TT4-05",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "The unravelling of the key-worker housing sell-off policy forces both Nicola Murray and Peter Mannion onto the defensive, and thus begins a race for the moral high ground. But the more they try to spin the story, the bigger the scandal becomes.",
+      "The controversial key-worker housing policy faced increasing scrutiny as both Secretary Mannion and former Opposition Leader Murray attempted to distance themselves from mounting public criticism.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
@@ -735,11 +715,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "20 October 2012",
     parsedDate: new Date(2012, 9, 20),
-    productionCode: "TT4-06",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "In an hour-long special, the coalition government, the civil service staff of DoSAC, and the opposition find themselves under the scrutiny of the Lord Justice Goolding Inquiry into Mr Tickel's death and the practice of leaking in politics.",
+      "The Lord Justice Goolding Inquiry examined the circumstances surrounding Mr Tickel's death and systemic issues regarding unauthorized information disclosure within government communications.",
     runtime: 60,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -770,11 +749,10 @@ export const episodeInfo: EpisodeInfo[] = [
     ],
     airDate: "27 October 2012",
     parsedDate: new Date(2012, 9, 27),
-    productionCode: "TT4-07",
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
     shortSummary:
-      "The Home Office has cut police numbers, created a huge backlog of arrest paperwork, and managed to blame DoSAC for the enormous queues at police stations. At Malcolm's suggestion, Dan Miller gets sent on a fact-finding mission to the local cop-shop to press the flesh, in the belief that it will make the Government look unresponsive. Or does he have another motive?",
+      "Home Office police funding reductions created significant administrative backlogs. Shadow Minister Miller's fact-finding visit to local law enforcement facilities highlighted growing tensions between departmental jurisdictions.",
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -792,29 +770,10 @@ export const episodeInfo: EpisodeInfo[] = [
 ];
 
 /**
- *
- */
-export function getDirectors(): string[] {
-  return [...new Set(episodeInfo.flatMap((ep) => ep.directors))];
-}
-
-/**
- *
- */
-export function getAllWriters(): WriterCredit[] {
-  const writersMap = new Map<string, WriterCredit>();
-  episodeInfo.forEach((ep) => {
-    ep.writers.forEach((writer) => {
-      writersMap.set(writer.name, writer);
-    });
-  });
-  return Array.from(writersMap.values());
-}
-
-/**
- *
- * @param seriesNumber
- * @param episodeNumber
+ * Retrieves information about a specific episode
+ * @param seriesNumber - The series number to look up
+ * @param episodeNumber - The episode number within the series to look up
+ * @returns The episode information if found, undefined otherwise
  */
 export function getEpisodeInfo(
   seriesNumber: number,
@@ -827,11 +786,34 @@ export function getEpisodeInfo(
 }
 
 /**
- *
- * @param seriesNumber
+ * Gets all episodes for a specific series
+ * @param seriesNumber - The series number to get episodes for
+ * @returns An array of episode information sorted by episode number
  */
 export function getSeriesEpisodes(seriesNumber: number): EpisodeInfo[] {
   return episodeInfo
     .filter((ep) => ep.seriesNumber === seriesNumber)
     .sort((a, b) => a.episodeNumber - b.episodeNumber);
+}
+
+/**
+ * Gets a unique list of all directors who have worked on the show
+ * @returns An array of unique director names
+ */
+export function getDirectors(): string[] {
+  return [...new Set(episodeInfo.flatMap((ep) => ep.directors))];
+}
+
+/**
+ * Gets a unique list of all writers who have contributed to the show
+ * @returns An array of unique writer credits with their roles
+ */
+export function getAllWriters(): WriterCredit[] {
+  const writersMap = new Map<string, WriterCredit>();
+  episodeInfo.forEach((ep) => {
+    ep.writers.forEach((writer) => {
+      writersMap.set(writer.name, writer);
+    });
+  });
+  return Array.from(writersMap.values());
 }

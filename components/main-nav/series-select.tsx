@@ -8,21 +8,45 @@ import {
 import Link from "next/link";
 import { forwardRef } from "react";
 
+/**
+ * Props for the SeriesSelect component
+ */
 interface SeriesSelectProps {
+  /** Currently selected season number */
   season?: number;
+  /** Currently selected episode number */
   episode?: number;
+  /** Callback when season or episode selection changes */
   onFilterChange: (updates: { season?: number; episode?: number }) => void;
+  /** Additional CSS classes */
   className?: string;
+  /** Whether the component is in search mode */
   isSearchMode?: boolean;
 }
 
+/**
+ * Props for the SelectOption component
+ */
 interface SelectOptionProps {
+  /** Value for the select option */
   value: string;
+  /** Optional href for linking options */
   href?: string;
+  /** Content to display in the option */
   children: React.ReactNode;
+  /** Additional CSS classes */
   className?: string;
 }
 
+/**
+ * Component for rendering a select option with optional link functionality
+ * @param props - The component props
+ * @param props.value - Value for the select option
+ * @param props.href - Optional href for linking options
+ * @param props.children - Content to display in the option
+ * @param props.className - Additional CSS classes
+ * @returns A select option component with optional link wrapper
+ */
 const SelectOption = forwardRef<
   React.ElementRef<typeof SelectItem>,
   SelectOptionProps
@@ -43,6 +67,15 @@ const SelectOption = forwardRef<
 });
 SelectOption.displayName = "SelectOption";
 
+/**
+ *
+ * @param root0
+ * @param root0.season
+ * @param root0.episode
+ * @param root0.onFilterChange
+ * @param root0.className
+ * @param root0.isSearchMode
+ */
 export function SeriesSelect({
   season,
   episode,

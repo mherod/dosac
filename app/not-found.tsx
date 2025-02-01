@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+/**
+ * Page component for displaying 404 Not Found errors
+ * Shows a friendly error message with a link to return home
+ * @returns The 404 error page with message and home link
+ */
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">

@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getFrameIndex } from "@/lib/frames.server";
 
 /**
- *
- * @param request
- * @param root0
- * @param root0.params
+ * Route handler for finding frames by caption text
+ * @param request - The incoming request object containing URL and headers
+ * @param root0 - The object containing route parameters
+ * @param root0.params - Promise resolving to route parameters containing the caption text to search for
+ * @returns A response redirecting to either the best matching frame or the home page
  */
 export async function GET(
   request: NextRequest,

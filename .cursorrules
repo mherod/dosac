@@ -16,6 +16,12 @@
 - ESLint configuration must be followed
 - Tailwind CSS for styling
 - Next.js 14+ conventions
+  - App Router required
+  - Partial Prerendering (PPR) enabled where beneficial:
+    - Configure with `ppr: 'incremental'` in `next.config.js`
+    - Add `export const experimental_ppr = true` to pages that benefit from PPR
+    - Ideal for routes with mixed static/dynamic content
+    - Consider for high-traffic pages with cacheable content
 
 ## JSDoc Documentation
 1. **Required Documentation**

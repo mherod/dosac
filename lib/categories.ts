@@ -1,3 +1,7 @@
+/**
+ * Array of category definitions for filtering and organizing content
+ * Each category has an ID, title, description, and filter function
+ */
 export const CATEGORIES = [
   {
     id: "policy-unit",
@@ -35,4 +39,8 @@ export const CATEGORIES = [
   },
 ] as const;
 
+/**
+ * Type representing valid category IDs
+ * Derived from the CATEGORIES array to ensure type safety
+ */
 export type CategoryId = (typeof CATEGORIES)[number]["id"];

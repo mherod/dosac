@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:strict": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:strict": "eslint . --ext .js,.jsx,.ts,.tsx --format=codeframe",
     "prepare": "husky install",
     "face-tagger": "tsx scripts/face-tagger.ts",
     "analyze-clusters": "tsx scripts/analyze-clusters.ts",

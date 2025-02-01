@@ -1,11 +1,26 @@
 import { Film } from "lucide-react";
 
+/**
+ * Props for the SeriesHeader component
+ */
 interface SeriesHeaderProps {
+  /** Title to display in the header */
   title: string;
+  /** Optional description text */
   description?: string;
+  /** Optional count of items to display */
   itemCount?: number;
 }
 
+/**
+ * Component for displaying a header for series and episode pages
+ * Shows a title, optional description, and item count with consistent styling
+ * @param props - The component props
+ * @param props.title - Title to display in the header
+ * @param props.description - Optional description text
+ * @param props.itemCount - Optional count of items to display
+ * @returns A styled header component with title and optional content
+ */
 export const SeriesHeader = ({
   title,
   description,

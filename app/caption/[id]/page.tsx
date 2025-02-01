@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
 import { FrameStrip } from "@/components/frame-strip";
 import type { Screenshot } from "@/lib/types";
+import { parseEpisodeId } from "@/lib/frames";
+import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { PageHeader } from "@/components/layout/page-header";
+import { PageContainer } from "@/components/layout/page-container";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;
 
+/**
+ *
+ */
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
   return frames.map((frame) => ({
@@ -16,16 +24,40 @@ export async function generateStaticParams() {
   }));
 }
 
-type PageParams = {
+/**
+ * Interface for page route parameters
+ */
+interface PageParams {
+  /** ID of the frame to display */
   id: string;
-};
+}
 
-type PageSearchParams = {
+/**
+ * Interface for page search parameters
+ */
+interface PageSearchParams {
+  /** Optional text to display instead of the frame's speech */
   text?: string;
+  /** Optional range end ID for multi-frame captions */
   range?: string;
-  [key: string]: string | string[] | undefined;
-};
+}
 
+/**
+ * Interface for page component props
+ */
+interface PageProps {
+  /** Promise resolving to route parameters */
+  params: Promise<PageParams>;
+  /** Promise resolving to search parameters */
+  searchParams: Promise<PageSearchParams>;
+}
+
+/**
+ *
+ * @param root0
+ * @param root0.params
+ * @param root0.searchParams
+ */
 export async function generateMetadata({
   params,
   searchParams,
@@ -45,11 +77,13 @@ export async function generateMetadata({
   return generateSingleFrameMetadata(frame, caption);
 }
 
-interface PageProps {
-  params: Promise<PageParams>;
-  searchParams: Promise<PageSearchParams>;
-}
-
+/**
+ * Page component for displaying a single frame with caption editing capabilities
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing frame ID
+ * @param props.searchParams - Promise resolving to search parameters for text and range
+ * @returns The frame display page with caption editor and frame strip
+ */
 export default async function Page({ params, searchParams }: PageProps) {
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
@@ -59,6 +93,11 @@ export default async function Page({ params, searchParams }: PageProps) {
   const frame = await getFrameById(resolvedParams.id).catch(() => {
     notFound();
   });
+
+  // Parse the episode ID to get series and episode numbers
+  const { season: seriesNumber, episode: episodeNumber } = parseEpisodeId(
+    frame.episode,
+  );
 
   const [previousFrames, nextFrames] = await Promise.all([
     getFrameIndex().then((index) => {
@@ -88,19 +127,35 @@ export default async function Page({ params, searchParams }: PageProps) {
         }
       : frame;
 
+  const breadcrumbItems = [
+    { label: "Series", href: "/series" },
+    { label: `Series ${seriesNumber}`, href: `/series/${seriesNumber}` },
+    {
+      label: `Episode ${episodeNumber}`,
+      href: `/series/${seriesNumber}/episode/${episodeNumber}`,
+    },
+    { label: "Caption", current: true },
+  ];
+
   return (
     <>
-      <div className="flex flex-row items-center justify-center gap-4 mb-8">
-        <FrameStrip
-          screenshots={[...previousFrames, frame, ...nextFrames].filter(
-            (f): f is Screenshot =>
-              !!f && typeof f.id === "string" && typeof f.speech === "string",
-          )}
-          centerScreenshot={frame}
-          frameWidth={200}
-        />
+      <PageHeader>
+        <BreadcrumbNav items={breadcrumbItems} />
+      </PageHeader>
+
+      <div className="space-y-6">
+        <div className="flex items-center justify-center">
+          <FrameStrip
+            screenshots={[...previousFrames, frame, ...nextFrames].filter(
+              (f): f is Screenshot =>
+                !!f && typeof f.id === "string" && typeof f.speech === "string",
+            )}
+            centerScreenshot={frame}
+            frameWidth={200}
+          />
+        </div>
+        <CaptionEditor screenshot={combinedFrame} />
       </div>
-      <CaptionEditor screenshot={combinedFrame} />
     </>
   );
 }

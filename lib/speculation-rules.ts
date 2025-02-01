@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 
 type SpeculationBehavior = "prerender" | "prefetch";
 type SpeculationEagerness = "conservative" | "moderate" | "eager";
@@ -34,7 +34,10 @@ class SpeculationRulesManager {
   }
 
   public isSupported(): boolean {
-    return document.createElement("script").type === "speculationrules";
+    return (
+      HTMLScriptElement.supports?.("speculationrules") ||
+      document.createElement("script").type === "speculationrules"
+    );
   }
 
   public addRule(
@@ -78,11 +81,31 @@ class SpeculationRulesManager {
 
     this.script.text = JSON.stringify(this.rules);
   }
+
+  public removeUrls(behavior: SpeculationBehavior, urls: string[]): void {
+    if (!this.rules[behavior]) return;
+
+    // Filter out rules containing any of the specified URLs
+    this.rules[behavior] = this.rules[behavior]!.filter(
+      (rule) => !urls.some((url) => rule.urls.includes(url)),
+    );
+
+    this.updateScript();
+  }
 }
 
 export const speculationRules = SpeculationRulesManager.getInstance();
 
 // Hook for React components
+/**
+ * Manages speculation rules for prefetching/prerendering URLs
+ * @param urls - Array of URLs to apply speculation rules to
+ * @param options - Configuration options for the speculation rules
+ * @param options.behavior - Type of speculation to perform (prerender/prefetch)
+ * @param options.score - Priority score for the URLs (0-1)
+ * @param options.requires - Conditions required for speculation
+ * @param options.eagerness - How eager to be about speculating
+ */
 export function useSpeculationRules(
   urls: string[],
   options: {
@@ -92,23 +115,20 @@ export function useSpeculationRules(
     eagerness?: SpeculationEagerness;
   } = {},
 ) {
-  React.useEffect(() => {
+  const {
+    behavior = "prerender",
+    score = 0.5,
+    requires = ["hover"],
+    eagerness = "moderate",
+  } = options;
+
+  useEffect(() => {
     if (urls.length === 0) return;
 
-    const {
-      behavior = "prerender",
-      score = 0.5,
-      requires = ["hover"],
-      eagerness = "moderate",
-    } = options;
-
     speculationRules.addUrls(behavior, urls, { score, requires, eagerness });
-  }, [
-    urls,
-    options.behavior,
-    options.score,
-    options.requires,
-    options.eagerness,
-    options,
-  ]);
+
+    return () => {
+      speculationRules.removeUrls(behavior, urls);
+    };
+  }, [urls, behavior, score, requires, eagerness]);
 }

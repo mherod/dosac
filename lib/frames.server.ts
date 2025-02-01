@@ -3,6 +3,12 @@ import path from "path";
 import { InvalidFrameIdError } from "./frames";
 import type { Frame, ParsedFrameId } from "./frames";
 
+/**
+ * Validates and parses a frame ID into its components
+ * @param id - The frame ID to validate (format: s01e01-00-00-000)
+ * @returns Object containing parsed season, episode, and timestamp
+ * @throws InvalidFrameIdError if the ID format is invalid
+ */
 export function validateFrameId(id: string): ParsedFrameId {
   const [season, ...timestampParts] = id.split("-");
   const timestamp = timestampParts.join("-");
@@ -16,6 +22,12 @@ export function validateFrameId(id: string): ParsedFrameId {
   return { season, episode: season, timestamp };
 }
 
+/**
+ * Retrieves frame data by its ID from the filesystem
+ * @param id - The frame ID to retrieve (format: s01e01-00-00-000)
+ * @returns Promise resolving to frame data including paths and speech
+ * @throws InvalidFrameIdError if the frame doesn't exist or ID is invalid
+ */
 export async function getFrameById(id: string): Promise<Frame> {
   const { season, timestamp } = validateFrameId(id);
 
@@ -46,6 +58,11 @@ export async function getFrameById(id: string): Promise<Frame> {
   };
 }
 
+/**
+ * Retrieves all frames from the filesystem
+ * Recursively scans the frames directory for all available frames
+ * @returns Promise resolving to array of all frame data
+ */
 export async function getFrameIndex(): Promise<Frame[]> {
   const frames: Frame[] = [];
   const seasonsDir = path.join(process.cwd(), "public", "frames");

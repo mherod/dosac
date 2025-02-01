@@ -5,20 +5,51 @@ import { useRef, useState, useEffect } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
 import { CaptionText } from "./caption-text";
 
+/**
+ * Props for the CaptionedImage component
+ */
 export interface CaptionedImageProps {
+  /** URL of the primary image to display */
   imageUrl: string;
+  /** Optional URL of a secondary image for toggling */
   image2Url?: string;
+  /** Text caption to overlay on the image */
   caption?: string;
+  /** Font size of the caption in pixels */
   fontSize?: number;
+  /** Width of the text outline in pixels */
   outlineWidth?: number;
+  /** Size of the text shadow in pixels */
   shadowSize?: number;
+  /** Font family to use for the caption */
   fontFamily?: string;
+  /** Whether to prioritize loading this image */
   priority?: boolean;
+  /** Whether to maintain the image's aspect ratio */
   maintainAspectRatio?: boolean;
+  /** Whether to automatically toggle between images */
   autoToggle?: boolean;
+  /** Whether to use relaxed line break rules */
   relaxedLineBreaks?: boolean;
 }
 
+/**
+ * Client-side component for displaying an image with an overlaid caption
+ * Supports image toggling, caption styling, and responsive layout
+ * @param props - The component props
+ * @param props.imageUrl - URL of the primary image
+ * @param props.image2Url - Optional URL of a secondary image
+ * @param props.caption - Text caption to overlay
+ * @param props.fontSize - Font size in pixels (default: 18)
+ * @param props.outlineWidth - Text outline width in pixels (default: 1)
+ * @param props.shadowSize - Text shadow size in pixels (default: 0)
+ * @param props.fontFamily - Font family for caption (default: "Arial")
+ * @param props.priority - Whether to prioritize loading
+ * @param props.maintainAspectRatio - Whether to maintain aspect ratio
+ * @param props.autoToggle - Whether to auto-toggle images
+ * @param props.relaxedLineBreaks - Whether to use relaxed line breaks
+ * @returns A container with the image and overlaid caption
+ */
 export function ClientCaptionedImage({
   imageUrl,
   image2Url,

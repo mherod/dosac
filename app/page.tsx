@@ -6,23 +6,34 @@ import type { Screenshot } from "@/lib/types";
 // Add revalidation period (e.g., 1 hour)
 export const revalidate = 3600;
 
+/**
+ * Interface for search parameters
+ */
 type SearchParams = {
+  /** Optional series number to filter by */
   season?: string;
+  /** Optional episode number to filter by */
   episode?: string;
+  /** Optional search query */
   q?: string;
 };
 
+/**
+ * Interface for page component props
+ */
 type Props = {
+  /** Promise resolving to empty route parameters */
   params: Promise<Record<string, never>>;
+  /** Promise resolving to search parameters */
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 /**
  * Home page component that displays a grid of screenshots and ranked moments
- *
- * @param props - Component props
- * @param props.searchParams - URL search parameters for filtering content
- * @returns React component for the home page
+ * Supports filtering by series, episode, and search query
+ * @param props - The component props
+ * @param props.searchParams - Promise resolving to search parameters for filtering content
+ * @returns The home page with filtered screenshot grid and ranked moments
  */
 export default async function Home({ searchParams }: Props) {
   const [screenshots, rankedMoments] = await Promise.all([

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 /**
- *
- * @param request
- * @param root0
- * @param root0.params
+ * Route handler for sharing functionality
+ * @param request - The incoming request object containing URL and headers
+ * @param root0 - The object containing route parameters
+ * @param root0.params - Promise resolving to route parameters containing base64 data
+ * @returns A response redirecting to either the shared content or an error page
  */
 export async function GET(
   request: NextRequest,

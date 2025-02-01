@@ -4,6 +4,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Button variants configuration using class-variance-authority
+ * Defines different visual styles and sizes for the button
+ */
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
@@ -33,12 +37,27 @@ const buttonVariants = cva(
   },
 );
 
+/**
+ * Props for the Button component
+ * Extends HTML button element props and variant props from class-variance-authority
+ */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  /** Whether to render the button as a child component */
   asChild?: boolean;
 }
 
+/**
+ * Button component with multiple variants and sizes
+ * Can be rendered as a child component using asChild prop
+ * @param props - The component props
+ * @param props.className - Additional CSS classes
+ * @param props.variant - Visual style variant
+ * @param props.size - Size variant
+ * @param props.asChild - Whether to render as a child component
+ * @returns A styled button element or child component
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";

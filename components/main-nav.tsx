@@ -8,14 +8,29 @@ import { CivilServiceHeader } from "./main-nav/civil-service-header";
 import { NavFilters } from "./main-nav/nav-filters";
 import { BottomNav } from "./main-nav/bottom-nav";
 
+/**
+ * Filter options for the navigation
+ */
 interface Filters {
+  /** Selected season number */
   season?: number;
+  /** Selected episode number */
   episode?: number;
+  /** Search query string */
   query: string;
 }
 
+/**
+ * Type for URL query parameter updates
+ * Key is the parameter name, value is the new value or null to remove
+ */
 type QueryUpdates = Record<string, string | null>;
 
+/**
+ * Content component of the main navigation
+ * Handles search parameters, routing, and filter state
+ * @returns The main navigation content with filters and controls
+ */
 function MainNavContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -131,6 +146,11 @@ function MainNavContent() {
   );
 }
 
+/**
+ * Main navigation component for the application
+ * Wraps the navigation content in a Suspense boundary and includes header components
+ * @returns The complete navigation bar with all controls and filters
+ */
 export function MainNav() {
   return (
     <header className="bg-[#0b0c0c] text-white">

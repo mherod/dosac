@@ -9,20 +9,27 @@ import Link from "next/link";
 import { type Screenshot } from "@/lib/types";
 import { useSpeculationRules } from "@/lib/speculation-rules";
 
+/**
+ * Props for the ScreenshotGrid component
+ */
 interface ScreenshotGridProps {
+  /** Array of screenshots to display in the grid */
   screenshots: Screenshot[];
+  /** Optional array of ranked moments to display */
   rankedMoments?: Screenshot[];
+  /** Whether multiple screenshots can be selected (defaults to false) */
   multiselect?: boolean;
 }
 
 const ITEMS_PER_PAGE = 36;
 
 /**
- *
- * @param root0
- * @param root0.screenshots
- * @param root0.rankedMoments
- * @param root0.multiselect
+ * Grid component for displaying and managing screenshots with pagination
+ * @param props - The component props
+ * @param props.screenshots - Array of screenshots to display
+ * @param props.rankedMoments - Optional array of ranked moments to display
+ * @param props.multiselect - Whether multiple screenshots can be selected
+ * @returns A paginated grid of screenshot cards with navigation controls
  */
 export function ScreenshotGrid({
   screenshots,

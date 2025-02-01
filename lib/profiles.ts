@@ -5,6 +5,7 @@ export const DEPARTMENTS = {
   PRESS: "Press",
   OTHER_GOVERNMENT: "Other Government",
   EXTERNAL: "External",
+  CIVIL_SERVICE: "Civil Service",
 } as const;
 
 export const ROLES = {
@@ -18,8 +19,15 @@ export const ROLES = {
   OTHER: "Other",
 } as const;
 
+export const PARTIES = {
+  LABOUR: "Labour",
+  CONSERVATIVE: "Conservative",
+  LIBERAL_DEMOCRAT: "Liberal Democrat",
+} as const;
+
 export type Department = (typeof DEPARTMENTS)[keyof typeof DEPARTMENTS];
 export type Role = (typeof ROLES)[keyof typeof ROLES];
+export type Party = (typeof PARTIES)[keyof typeof PARTIES];
 
 export interface CharacterOrigin {
   city?: string;
@@ -63,11 +71,12 @@ export interface Character {
   image?: string;
   occupation?: string;
   nationality?: string;
-  department: Department;
-  role: Role;
+  department: Department[];
+  role: Role[];
   origin?: CharacterOrigin;
   personal?: CharacterPersonal;
   details: string[];
+  party?: Party;
 }
 
 export const characters: Record<string, Character> = {
@@ -81,8 +90,8 @@ export const characters: Record<string, Character> = {
     occupation:
       "Media Adviser to the Leader of the Opposition (Series 4), Director of Communications for Number 10 (Series 1-3)",
     nationality: "Scottish",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SENIOR_LEADERSHIP],
     origin: {
       city: "Glasgow",
       area: "Gorbals",
@@ -137,6 +146,7 @@ export const characters: Record<string, Character> = {
       "Successfully maneuvers to become Tom's media liaison despite opposition",
       "Eventually falls from power during the Goolding Inquiry",
     ],
+    party: PARTIES.LABOUR,
   },
   jamie: {
     name: "James 'Jamie' McDonald",
@@ -147,8 +157,8 @@ export const characters: Record<string, Character> = {
     image: "/characters/jamie.jpg",
     occupation: "Senior Press Officer at Number 10",
     nationality: "Scottish",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SENIOR_LEADERSHIP],
     origin: {
       city: "Motherwell",
       area: "Lanarkshire",
@@ -186,6 +196,7 @@ export const characters: Record<string, Character> = {
       "Often handles the more 'hands-on' aspects of political enforcement",
       "Threatens Ollie Reeder for insulting Al Jolson's music",
     ],
+    party: PARTIES.LABOUR,
   },
   nicola: {
     name: "Rt Hon Nicola Allison Murray MP",
@@ -195,8 +206,8 @@ export const characters: Record<string, Character> = {
       "Former Leader of the Opposition (2010-2012) and Secretary of State for DoSAC",
     occupation:
       "Leader of the Opposition (2010-2012), Secretary of State for DoSAC (Series 3)",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       family: {
         spouse: {
@@ -246,6 +257,7 @@ export const characters: Record<string, Character> = {
       "Faces constant challenges balancing family life with political career",
       "Known for her somewhat neurotic personality and claustrophobia",
     ],
+    party: PARTIES.LABOUR,
   },
   peter: {
     name: "Peter Mannion",
@@ -256,8 +268,8 @@ export const characters: Record<string, Character> = {
     image: "/characters/peter.jpg",
     occupation:
       "Secretary of State for Social Affairs and Citizenship (Series 4-present)",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.MINISTER,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       age: 54,
       birthYear: 1958,
@@ -317,6 +329,7 @@ export const characters: Record<string, Character> = {
       "Survived multiple personal scandals throughout his political career",
       "Represents the old guard of Conservative politics",
     ],
+    party: PARTIES.CONSERVATIVE,
   },
   terri: {
     name: "Terri",
@@ -324,13 +337,13 @@ export const characters: Record<string, Character> = {
     fullName: "Terri Coverley",
     description: "Director of Communications at DoSAC, formerly from Waitrose",
     image: "/characters/terri.webp",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.PRESS_OFFICER,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.CIVIL_SERVANT],
     details: [
       "Director of Communications for the department, responsible for press relations",
       "Recruited from Waitrose as part of a scheme to make government run like a business",
       "Professional and prudish in nature, often managing departmental PR crises",
-      "Takes pride in her civil servant status and job security",
+      "Takes pride in her role and job security",
       "Takes a leave of absence during series 2 due to her father's death",
       "Known for 'mopping up' the department's bad press",
     ],
@@ -339,18 +352,15 @@ export const characters: Record<string, Character> = {
     name: "Rt Hon Hugh Abbot MP",
     shortName: "Hugh",
     fullName: "The Right Honourable Hugh Abbot MP",
-    description: "Former Secretary of State for Social Affairs and Citizenship",
-    occupation:
-      "Secretary of State for Social Affairs and Citizenship (Series 1-2)",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.MINISTER,
+    description: "Former Secretary of State for Social Affairs",
+    occupation: "Secretary of State for Social Affairs (Series 1-2)",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Government (Series 1-2)",
-        career: [
-          "Secretary of State for Social Affairs and Citizenship (Series 1-2)",
-        ],
+        affiliation: "HM Government (Series 1-3)",
+        career: ["Secretary of State for Social Affairs (Series 1-2)"],
       },
     },
     details: [
@@ -381,8 +391,8 @@ export const characters: Record<string, Character> = {
     description: "Former Senior Special Adviser at DoSAC, Labour Party veteran",
     occupation:
       "Former Senior Special Adviser to the Secretary of State, DoSAC",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       family: {
         children: true,
@@ -410,8 +420,8 @@ export const characters: Record<string, Character> = {
     description:
       "Director of Communications and Policy Adviser to the Leader of the Opposition, former DoSAC Special Advisor",
     occupation: "Director of Communications and Policy Adviser to Dan Miller",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP],
     origin: {
       area: "Lincolnshire",
       country: "England",
@@ -467,6 +477,7 @@ export const characters: Record<string, Character> = {
       "Career progression shows steady rise through advisory roles",
       "Becomes key figure in Opposition communications strategy",
     ],
+    party: PARTIES.LABOUR,
   },
   julius: {
     name: "Rt Hon the Lord Julius Nicholson of Arnage",
@@ -475,8 +486,8 @@ export const characters: Record<string, Character> = {
     description: "Life Peer and former Special Adviser to the Prime Minister",
     occupation:
       "Special Adviser and Head of Advanced Implementation Unit, Number 10",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       background: {
         party: "Labour",
@@ -504,33 +515,41 @@ export const characters: Record<string, Character> = {
     name: "Rt Hon Ben Swain MP",
     shortName: "Ben",
     fullName: "The Right Honourable Ben Swain MP",
-    description: "Former Shadow Cabinet Minister and Minister of State",
-    occupation: "Former Shadow Cabinet Minister",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.MINISTER,
+    description:
+      "Former Minister of State for Immigration at DoSAC and Shadow Cabinet Minister",
+    occupation:
+      "Former Shadow Cabinet Minister, Former Minister of State for Immigration - DoSAC",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.MINISTER],
     personal: {
       background: {
         party: "Labour",
         affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
         career: [
-          "Shadow Cabinet Minister",
-          "Minister of State - Department of Education",
-          "Minister of State for Immigration - DoSAC",
+          "Shadow Cabinet Minister (Series 4)",
+          "Minister of State for Immigration - DoSAC (Series 3)",
+          "Minister of State for Social Affairs and Citizenship (Series 3)",
         ],
       },
     },
     details: [
       "Junior minister aligned with the 'nutters' faction loyal to future PM Tom",
-      "Suffers catastrophic interview with Jeremy Paxman on immigration",
+      "Suffered catastrophic interview with Jeremy Paxman on immigration",
       "Failed to properly prepare despite Malcolm and Jamie's efforts",
-      "Embarrasses himself and the government on national television",
+      "Embarrassed himself and the government on national television",
       "Briefly suggested as potential leadership candidate",
       "Quickly dismissed as a serious contender",
       "Used by Malcolm to further discredit Nick's judgment",
       "Represents the rising influence of those loyal to the future PM",
       "Part of the new generation challenging Malcolm's control",
       "Notable for his disastrous media appearances",
+      "Served as Minister of State for Social Affairs and Citizenship",
+      "Sacked from ministerial position by Nicola Murray",
+      "Transition to Opposition following government change",
+      "Known for nervous blinking during television interviews",
+      "Failed to effectively handle immigration portfolio",
     ],
+    party: PARTIES.LABOUR,
   },
   nick: {
     name: "Nice Nutter Nick",
@@ -538,8 +557,8 @@ export const characters: Record<string, Character> = {
     fullName: "The Right Honourable Nick",
     description: "Junior Minister and leadership transition player",
     occupation: "Junior Minister",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.CANDIDATE,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.CANDIDATE],
     details: [
       "Junior minister seen as a threat to Malcolm's position",
       "Key player in the chaotic leadership transition",
@@ -558,8 +577,8 @@ export const characters: Record<string, Character> = {
     description:
       "Labour Backbench MP and Chair of the Education Select Committee",
     occupation: "Chair of the Select Committee on Education",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.OTHER,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.OTHER],
     personal: {
       background: {
         party: "Labour",
@@ -580,53 +599,85 @@ export const characters: Record<string, Character> = {
     name: "Rt Hon Dan Miller MP",
     shortName: "Dan",
     fullName: "The Right Honourable Dan Miller MP",
-    description: "Leader of the Opposition, former Minister of State at DSA",
+    description:
+      "Leader of the Opposition and Leader of the Labour Party, former Minister of State for Social Affairs",
     occupation:
-      "Leader of the Opposition (Series 4), Former Deputy Leader of the Opposition, Former Minister of State for Social Affairs",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.SENIOR_LEADERSHIP,
+      "Leader of the Opposition and Leader of the Labour Party (Series 4), Former Deputy Leader of the Opposition, Former Minister of State for Social Affairs",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
         affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
         career: [
-          "Leader of the Opposition (Series 4)",
-          "Deputy Leader of the Opposition",
-          "Minister of State for Social Affairs",
+          "Leader of the Opposition and Labour Party (Series 4-present)",
+          "Deputy Leader of the Opposition under Nicola Murray",
+          "Leadership candidate (lost to Murray on technicality)",
+          "Minister of State for Social Affairs (Series 1)",
         ],
       },
     },
     details: [
-      "Initially serves as Junior Minister under Hugh Abbot at DSA",
+      "Initially serves as Minister of State for Social Affairs under Hugh Abbot",
+      "Known for charming personality in television interviews and parliament",
+      "Successfully helped push through controversial housing bill",
+      "Developed friendly relationships with Terri Coverley and Ollie Reeder",
+      "Regular squash partner with Ollie, causing tension with Hugh Abbot",
       "Co-authored the controversial housing bill with Hugh Abbot",
       "Bill prohibited owning empty second properties",
-      "Strategically resigned to save Hugh Abbot during the flat scandal",
-      "Used resignation to boost his long-term political career",
-      "Emerges as a crucial kingmaker during leadership transition",
-      "Makes decisive intervention supporting Tom's leadership bid",
-      "Influences Tom's choice of Malcolm as media liaison",
-      "Known for his smooth political maneuvering and ambition",
-      "Popular with both the press and public",
+      "Strategically resigned during the flat scandal before Hugh could act",
+      "Met with Malcolm Tucker before Hugh to deliver resignation",
+      "Resignation earned significant praise from Prime Minister",
+      "PM praised him as 'dazzlingly bright, talented, committed and honourable'",
+      "Viewed as 'new force in British politics' after strategic resignation",
+      "Considered potential challenger to Tom Davis for party leadership",
+      "Disappeared during crucial leadership transition night",
+      "Malcolm Tucker suspected independent leadership bid preparations",
+      "Instead made strategic deal to back Tom Davis's leadership bid",
+      "Supported Davis in television interview following morning",
+      "Ran for party leadership but lost to Nicola Murray on technicality",
+      "Appointed Deputy Leader of the Opposition under Murray",
+      "Finally assumes Labour leadership after Murray's resignation",
+      "Murray's resignation orchestrated by Malcolm Tucker",
       "Masters the art of political timing and public perception",
-      "Sacrificed short-term position for long-term career benefits",
+      "Known for smooth political maneuvering and strategic ambition",
+      "Popular with both press and public throughout career",
+      "Built career through carefully timed political moves",
+      "Successfully navigated multiple leadership transitions",
     ],
+    party: PARTIES.LABOUR,
   },
   cliff: {
-    name: "Cliff Lawton",
+    name: "Rt Hon Cliff Lawton MP",
     shortName: "Cliff",
     fullName: "The Right Honourable Cliff Lawton MP",
-    description: "Former Minister for the Department of Social Affairs",
-    occupation: "Former DSA Minister",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.MINISTER,
+    description:
+      "Labour Backbench MP, former Secretary of State for Social Affairs",
+    occupation: "Backbench MP, Former Secretary of State for Social Affairs",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SENIOR_LEADERSHIP, ROLES.OTHER],
+    personal: {
+      background: {
+        party: "Labour",
+        affiliation: "HM Opposition",
+        career: [
+          "Backbench MP (Present)",
+          "Secretary of State for Social Affairs (Series 1)",
+        ],
+      },
+    },
     details: [
-      "Original Minister for the Department of Social Affairs",
+      "Original Secretary of State for Social Affairs before department became DoSAC",
       "Forced to resign due to press pressure orchestrated by Malcolm Tucker",
       "Given the illusion of resigning voluntarily ('jumping before being pushed')",
-      "Replaced by Hugh Abbot as DSA Minister",
+      "Replaced by Hugh Abbot as Secretary of State",
       "Victim of Malcolm Tucker's strategic political maneuvering",
       "His resignation marks one of Malcolm's typical power plays",
+      "Currently serves as backbench MP after ministerial career",
+      "Led department during its original incarnation as Social Affairs",
+      "One of Malcolm Tucker's early ministerial casualties",
     ],
+    party: PARTIES.LABOUR,
   },
   angela: {
     name: "Angela Heaney",
@@ -634,8 +685,8 @@ export const characters: Record<string, Character> = {
     fullName: "Angela Heaney",
     description: "Political journalist and former girlfriend of Ollie Reeder",
     occupation: "Journalist",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.JOURNALIST,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.JOURNALIST],
     details: [
       "Political journalist with significant coverage of DSA affairs",
       "Former girlfriend of Ollie Reeder, creating complex dynamics",
@@ -656,8 +707,8 @@ export const characters: Record<string, Character> = {
     description:
       "Sharp journalistic critic of Hugh Abbot with personal connection to Malcolm Tucker",
     occupation: "Journalist",
-    department: DEPARTMENTS.PRESS,
-    role: ROLES.JOURNALIST,
+    department: [DEPARTMENTS.PRESS],
+    role: [ROLES.JOURNALIST],
     personal: {
       relationships: {
         present: ["Kelly Grogan (BBC Health Correspondent)"],
@@ -681,8 +732,8 @@ export const characters: Record<string, Character> = {
     fullName: "The Right Honourable Liam Bentley MP",
     description: "Labour MP for Leamington Spa",
     occupation: "Member of Parliament for Leamington Spa",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.OTHER,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.OTHER],
     personal: {
       background: {
         party: "Labour",
@@ -706,8 +757,8 @@ export const characters: Record<string, Character> = {
     description:
       "Conservative Party's feared Chief Election Strategist, nicknamed 'The Fucker'",
     occupation: "Chief Election Strategist",
-    department: DEPARTMENTS.OTHER_GOVERNMENT,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.OTHER_GOVERNMENT],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Conservative",
@@ -736,8 +787,8 @@ export const characters: Record<string, Character> = {
       "Former Chief Whip and Acting Director of Communications for Number 10",
     occupation:
       "Acting Director of Communications - Number 10, Former Chief Whip",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
@@ -766,8 +817,8 @@ export const characters: Record<string, Character> = {
       "Former Director of Communications at Cabinet Office, eco-friendly moderniser known for incomprehensible jargon",
     occupation:
       "Director of Communications - Cabinet Office (Series 4), Opposition Director of Communications (Series 3 & Specials)",
-    department: DEPARTMENTS.OTHER_GOVERNMENT,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.OTHER_GOVERNMENT],
+    role: [ROLES.SENIOR_LEADERSHIP],
     origin: {
       city: "Leeds",
       area: "Yorkshire",
@@ -833,8 +884,8 @@ export const characters: Record<string, Character> = {
     fullName: "Samantha Cassidy",
     description: "Malcolm Tucker's loyal and capable personal secretary",
     occupation: "Personal Secretary",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.CIVIL_SERVANT,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.CIVIL_SERVANT],
     details: [
       "Malcolm Tucker's trusted personal secretary",
       "One of the few people Malcolm shows genuine affection towards",
@@ -847,6 +898,7 @@ export const characters: Record<string, Character> = {
       "Trusted with sensitive information and private matters",
       "Maintains professional composure despite Malcolm's explosive temperament",
     ],
+    party: PARTIES.LABOUR,
   },
   emma: {
     name: "Emma Florence Messinger",
@@ -856,8 +908,8 @@ export const characters: Record<string, Character> = {
       "Highly competent Special Adviser to Peter Mannion, trusted by party leadership for key assignments",
     occupation:
       "Special Adviser to the Secretary of State for Social Affairs and Citizenship",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       age: 29,
       relationships: {
@@ -899,6 +951,7 @@ export const characters: Record<string, Character> = {
       "Often handles the most crucial aspects of policy implementation",
       "Preferred by leadership for complex assignments over other advisors",
     ],
+    party: PARTIES.CONSERVATIVE,
   },
   kelly: {
     name: "Kelly Grogan",
@@ -907,8 +960,8 @@ export const characters: Record<string, Character> = {
     description:
       "BBC Health Correspondent with connections to both Malcolm Tucker and Simon Hewitt",
     occupation: "BBC Health Correspondent",
-    department: DEPARTMENTS.PRESS,
-    role: ROLES.JOURNALIST,
+    department: [DEPARTMENTS.PRESS],
+    role: [ROLES.JOURNALIST],
     personal: {
       relationships: {
         past: ["Malcolm Tucker"],
@@ -931,8 +984,8 @@ export const characters: Record<string, Character> = {
     fullName: "The Right Honourable Tom Davis MP",
     description: "Future Prime Minister and leader of the 'nutters' faction",
     occupation: "Prime Minister (Series 4)",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
@@ -951,6 +1004,7 @@ export const characters: Record<string, Character> = {
       "Subject of various political machinations during transition",
       "His rise marks significant change in party dynamics",
     ],
+    party: PARTIES.LABOUR,
   },
   phil: {
     name: "Philip Bartholomew Cornelius Smith",
@@ -960,8 +1014,8 @@ export const characters: Record<string, Character> = {
       "Special Adviser to Peter Mannion, known for his childish demeanour and pop culture obsession despite his serious political role",
     occupation:
       "Special Adviser to the Secretary of State for Social Affairs and Citizenship",
-    department: DEPARTMENTS.DOSAC,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       background: {
         party: "Conservative",
@@ -1007,6 +1061,7 @@ export const characters: Record<string, Character> = {
       "Maintains childlike enthusiasm despite political pressures",
       "Collection of mint condition action figures reflects personal priorities",
     ],
+    party: PARTIES.CONSERVATIVE,
   },
   mary: {
     name: "Rt Hon Mary Drake MP",
@@ -1015,8 +1070,8 @@ export const characters: Record<string, Character> = {
     description:
       "Director of Communications for Number 10, replacing Stewart Pearson",
     occupation: "Director of Communications - Number 10",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.SENIOR_LEADERSHIP,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Conservative",
@@ -1039,6 +1094,7 @@ export const characters: Record<string, Character> = {
       "Works closely with special advisers on media strategy",
       "Part of the Conservative government's senior leadership team",
     ],
+    party: PARTIES.CONSERVATIVE,
   },
   helen: {
     name: "Helen Hatley",
@@ -1046,8 +1102,8 @@ export const characters: Record<string, Character> = {
     fullName: "Helen Hatley",
     description: "Special Adviser to Nicola Murray, former Opposition adviser",
     occupation: "Special Adviser to Nicola Murray MP",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       background: {
         party: "Labour",
@@ -1066,6 +1122,7 @@ export const characters: Record<string, Character> = {
       "Helps manage Nicola's public image and policy positions",
       "Part of Opposition's communications strategy team",
     ],
+    party: PARTIES.LABOUR,
   },
   geoff: {
     name: "Rt Hon Geoff Holhurst MP",
@@ -1073,8 +1130,8 @@ export const characters: Record<string, Character> = {
     fullName: "The Right Honourable Geoff Holhurst MP",
     description: "Shadow Cabinet Minister and former Defence Secretary",
     occupation: "Shadow Cabinet Minister",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.MINISTER,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.MINISTER],
     personal: {
       background: {
         party: "Labour",
@@ -1093,28 +1150,64 @@ export const characters: Record<string, Character> = {
       "Experienced ministerial veteran",
       "Key player in party's defence policy",
     ],
+    party: PARTIES.LABOUR,
   },
   john: {
     name: "John Duggan",
     shortName: "John",
     fullName: "John Duggan",
-    description: "Labour Party Press Officer",
+    description:
+      "Inept Labour Party Press Officer struggling with basic communications duties",
     occupation: "Party Press Officer",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.PRESS_OFFICER,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.PRESS_OFFICER],
     personal: {
+      age: 35,
       background: {
         party: "Labour",
-        affiliation: "HM Opposition",
+        affiliation:
+          "HM Opposition (Series 4-present), HM Government (Series 3-4)",
+        career: [
+          "Labour Party Press Officer (Series 4-present)",
+          "Junior Communications Officer (Series 3-4)",
+        ],
       },
     },
     details: [
-      "Press Officer for the Labour Party",
-      "Works on party communications strategy",
-      "Handles media relations for Opposition",
-      "Part of the party's press team",
-      "Manages day-to-day media interactions",
+      "Known by colleagues as 'JD' despite professional setting",
+      "Hired to handle party-political communications beyond Civil Service remit",
+      "Demonstrated chronic incompetence in basic press officer duties",
+      "Failed to prevent damaging leaks about leadership challenges",
+      "Struggled to manage basic media monitoring responsibilities",
+      "Showed poor judgment in handling sensitive party communications",
+      "First showcased incompetence at Eastbourne party conference",
+      "Commented on Nicola Murray's domestic holiday photos instead of Florida trip",
+      "Consistently misnamed key constituent Julie Price as 'Julie Prince'",
+      "Misinterpreted 'swanning around on yacht' as reference to homosexuality",
+      "Made inappropriate 'big willy' analogy about workload to Shadow Leader",
+      "Infamous 'Duggan Promise' to handle issues meaning he'd do nothing",
+      "Joined Ollie Reeder in making tasteless cafe collapse jokes",
+      "Leaked false story about PM Tom Davis on Malcolm Tucker's orders",
+      "Compared himself to Nazi guard following orders during sensitive operation",
+      "Made inappropriate Hitler salute in front of constituent Julie Price",
+      "Asked Julie if she was Jewish after Nazi reference, causing discomfort",
+      "Triggered traumatic memories by referencing coffee near cafe collapse widow",
+      "Regularly bypassed by colleagues for important press matters",
+      "Unable to effectively coordinate with Number 10 communications team",
+      "Known for missing obvious political implications in press statements",
+      "Failed to anticipate basic follow-up questions from journalists",
+      "Responsible for multiple embarrassing typos in official releases",
+      "Once accidentally sent internal critique to press gallery distribution list",
+      "Required constant supervision for simple communications tasks",
+      "Became liability during sensitive leadership transition period",
+      "Maintained position due to party loyalty rather than competence",
+      "Frequently mocked by special advisers for professional shortcomings",
+      "Subject of Malcolm Tucker's famous 'How hard is it to press send?' rant",
+      "Career survived through bureaucratic inertia rather than merit",
+      "Epitomized the decline in party political appointments' quality",
+      "Became cautionary tale about patronage over competence in politics",
     ],
+    party: PARTIES.LABOUR,
   },
   ed: {
     name: "Ed Atkins",
@@ -1122,8 +1215,8 @@ export const characters: Record<string, Character> = {
     fullName: "Edward Atkins",
     description: "Number 10 Press Officer under Labour government",
     occupation: "Press Officer - Number 10",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.PRESS_OFFICER,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.PRESS_OFFICER],
     personal: {
       background: {
         party: "Labour",
@@ -1137,6 +1230,7 @@ export const characters: Record<string, Character> = {
       "Part of Number 10's communications team",
       "Manages press office responsibilities",
     ],
+    party: PARTIES.LABOUR,
   },
   doug: {
     name: "Rt Hon Doug Hayes MP",
@@ -1144,8 +1238,8 @@ export const characters: Record<string, Character> = {
     fullName: "The Right Honourable Doug Hayes MP",
     description: "Labour Party Backbench MP",
     occupation: "Backbench MP",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.OTHER,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.OTHER],
     personal: {
       background: {
         party: "Labour",
@@ -1158,6 +1252,7 @@ export const characters: Record<string, Character> = {
       "Represents constituency interests",
       "Member of Parliamentary Labour Party",
     ],
+    party: PARTIES.LABOUR,
   },
   frankie: {
     name: "Frankie",
@@ -1165,8 +1260,8 @@ export const characters: Record<string, Character> = {
     fullName: "Frankie",
     description: "Number 10 Press Officer under Labour government",
     occupation: "Press Officer - Number 10",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.PRESS_OFFICER,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.PRESS_OFFICER],
     personal: {
       background: {
         party: "Labour",
@@ -1179,6 +1274,7 @@ export const characters: Record<string, Character> = {
       "Part of Malcolm Tucker's press team",
       "Handles media relations for government",
     ],
+    party: PARTIES.LABOUR,
   },
   suzie: {
     name: "Suzie",
@@ -1186,8 +1282,8 @@ export const characters: Record<string, Character> = {
     fullName: "Suzie",
     description: "Special Adviser to Ben Swain",
     occupation: "Special Adviser to Ben Swain MP",
-    department: DEPARTMENTS.OPPOSITION,
-    role: ROLES.SPECIAL_ADVISOR,
+    department: [DEPARTMENTS.OPPOSITION],
+    role: [ROLES.SPECIAL_ADVISOR],
     personal: {
       background: {
         party: "Labour",
@@ -1200,6 +1296,7 @@ export const characters: Record<string, Character> = {
       "Assists with ministerial responsibilities",
       "Part of Ben Swain's advisory team",
     ],
+    party: PARTIES.LABOUR,
   },
   nick_h: {
     name: "Nick Hanway",
@@ -1207,8 +1304,8 @@ export const characters: Record<string, Character> = {
     fullName: "Nick Hanway",
     description: "Press Officer and Spin Doctor for Tom Davis",
     occupation: "Press Officer - Number 10",
-    department: DEPARTMENTS.NUMBER_10,
-    role: ROLES.PRESS_OFFICER,
+    department: [DEPARTMENTS.NUMBER_10],
+    role: [ROLES.PRESS_OFFICER],
     personal: {
       background: {
         party: "Labour",
@@ -1222,6 +1319,131 @@ export const characters: Record<string, Character> = {
       "Works on Number 10's media strategy",
       "Key member of PM's press operation",
     ],
+    party: PARTIES.LABOUR,
+  },
+  robyn: {
+    name: "Robyn Murdoch",
+    shortName: "Robyn",
+    fullName: "Robyn Murdoch",
+    description:
+      "Senior Press Officer at DoSAC (Civil Service), routinely relegated to secretarial duties",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.CIVIL_SERVANT],
+    personal: {
+      age: 45,
+      background: {
+        affiliation: "HM Government",
+      },
+    },
+    details: [
+      "Officially holds Senior Press Officer grade (SCS1) in Civil Service",
+      "In practice functions as Terri Coverley's personal assistant",
+      "Manages press office logistics despite theoretical strategic role",
+      "Forced to handle photocopying and tea rounds for senior staff",
+      "Maintains official records of ministerial engagements",
+      "Secretly authors Terri's communications strategy papers",
+      "Only civil servant who knows all departmental press passwords",
+      "Gatekeeps access to the Minister's daily briefing folder",
+      "Compiles FOI disclosures that never get properly reviewed",
+      "Pretends not to notice when special advisers 'lose' sensitive documents",
+      "Maintains secret archive of unminuted meetings",
+      "Knows more about department operations than any special adviser",
+      "Compensated at Grade 7 level for HEO responsibilities",
+      "Last line of defense against ministerial code violations",
+      "Only remembers to claim overtime during spending reviews",
+    ],
+  },
+  fergus: {
+    name: "Rt Hon Fergus Williams MP",
+    shortName: "Fergus",
+    fullName: "The Right Honourable Fergus Williams MP",
+    description:
+      "Liberal Democrat Minister of State for Social Affairs and Citizenship in coalition government",
+    occupation: "Minister of State for Social Affairs and Citizenship",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.MINISTER],
+    personal: {
+      background: {
+        party: "Liberal Democrat",
+        affiliation: "Coalition Government (Series 4)",
+        career: [
+          "Minister of State for Social Affairs and Citizenship (Series 4-present)",
+        ],
+        interests: [
+          "Digital technology",
+          "Community banking",
+          "Social innovation",
+        ],
+      },
+    },
+    details: [
+      "Appointed as Minister of State in coalition government",
+      "Works under Conservative Secretary of State Peter Mannion",
+      "Frequent conflicts with Conservative coalition partners",
+      "Champion of the Silicon Playgrounds digital initiative",
+      "Led failed implementation of Silicon Playgrounds project",
+      "Committed £2 billion to community banking project out of social awkwardness",
+      "Represents Liberal Democrat interests in coalition",
+      "Often clashes with Peter Mannion over policy direction",
+      "Pushes for progressive social policies within department",
+      "Strong advocate for digital education initiatives",
+      "Struggles with coalition power dynamics",
+      "Works closely with advisor Adam Kenyon",
+      "Faces challenges implementing Liberal Democrat policies",
+      "Known for idealistic approach to social policy",
+      "Sometimes makes impulsive decisions under pressure",
+    ],
+    party: PARTIES.LIBERAL_DEMOCRAT,
+  },
+  phil_smith: {
+    name: "Phil Smith",
+    shortName: "Phil",
+    fullName: "Phil Smith",
+    description: "Special Adviser to the Secretary of State",
+    occupation: "Special Adviser to the Secretary of State",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SPECIAL_ADVISOR],
+    details: ["No additional details provided."],
+  },
+  adam: {
+    name: "Adam Kenyon",
+    shortName: "Adam",
+    fullName: "Adam Kenyon",
+    description: "Special Adviser to the Minister of State",
+    occupation: "Special Adviser to the Minister of State",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.SPECIAL_ADVISOR],
+    details: ["No additional details provided."],
+  },
+  kelly_p: {
+    name: "Kelly Peters",
+    shortName: "Kelly Peters",
+    fullName: "Kelly Peters",
+    description: "Civil Servant at DoSAC",
+    occupation: "Civil Servant",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.CIVIL_SERVANT],
+    details: ["No additional details provided."],
+  },
+  phil_davis: {
+    name: "Phil Davis",
+    shortName: "Phil Davis",
+    fullName: "Phil Davis",
+    description: "Civil Servant at DoSAC",
+    occupation: "Civil Servant",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.CIVIL_SERVANT],
+    details: ["No additional details provided."],
+  },
+  andrew: {
+    name: "Andrew",
+    shortName: "Andrew",
+    fullName: "Andrew",
+    description: "Former Civil Servant at DoSAC (Series 3)",
+    occupation: "Civil Servant",
+    department: [DEPARTMENTS.DOSAC],
+    role: [ROLES.CIVIL_SERVANT],
+    details: ["No additional details provided."],
   },
 } as const;
 
@@ -1241,6 +1463,7 @@ export const departmentLabels: Record<Department, string> = {
   [DEPARTMENTS.PRESS]: "Press and Media",
   [DEPARTMENTS.OTHER_GOVERNMENT]: "Other Government Departments",
   [DEPARTMENTS.EXTERNAL]: "External Figures",
+  [DEPARTMENTS.CIVIL_SERVICE]: "Civil Service",
 };
 
 export const roleLabels: Record<Role, string> = {
@@ -1258,8 +1481,10 @@ export const charactersByDepartment = Object.entries(characters).reduce<
   Record<Department, (Character & { id: string })[]>
 >(
   (acc, [id, character]) => {
-    if (!acc[character.department]) acc[character.department] = [];
-    acc[character.department].push({ id, ...character });
+    character.department.forEach((dept) => {
+      if (!acc[dept]) acc[dept] = [];
+      acc[dept].push({ id, ...character });
+    });
     return acc;
   },
   {
@@ -1269,6 +1494,7 @@ export const charactersByDepartment = Object.entries(characters).reduce<
     [DEPARTMENTS.PRESS]: [],
     [DEPARTMENTS.OTHER_GOVERNMENT]: [],
     [DEPARTMENTS.EXTERNAL]: [],
+    [DEPARTMENTS.CIVIL_SERVICE]: [],
   },
 );
 
@@ -1276,8 +1502,10 @@ export const charactersByRole = Object.entries(characters).reduce<
   Record<Role, (Character & { id: string })[]>
 >(
   (acc, [id, character]) => {
-    if (!acc[character.role]) acc[character.role] = [];
-    acc[character.role].push({ id, ...character });
+    character.role.forEach((role) => {
+      if (!acc[role]) acc[role] = [];
+      acc[role].push({ id, ...character });
+    });
     return acc;
   },
   {

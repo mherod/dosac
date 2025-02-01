@@ -4,6 +4,11 @@ import { CaptionedImage } from "@/components/captioned-image";
 import { cn } from "@/lib/utils";
 import { type Screenshot } from "@/lib/types";
 
+/**
+ * Formats an episode ID string from "s01e02" format to "S1 E2" format
+ * @param episodeId - The episode ID string to format
+ * @returns The formatted episode string
+ */
 function formatEpisodeString(episodeId: string): string {
   // Format from "s01e02" to "S1 E2"
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
@@ -12,6 +17,11 @@ function formatEpisodeString(episodeId: string): string {
   return `S${parseInt(match[1])} E${parseInt(match[2])}`;
 }
 
+/**
+ * Formats a timestamp string from "00-03.120" format to "0:03" format
+ * @param timestamp - The timestamp string to format
+ * @returns The formatted timestamp string
+ */
 function formatTimestamp(timestamp: string): string {
   // Format from "00-03.120" to "0:03"
   const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
@@ -22,18 +32,44 @@ function formatTimestamp(timestamp: string): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
+/**
+ * Props for the FrameCard component
+ */
 interface FrameCardProps {
+  /** Screenshot data to display in the card */
   screenshot: Screenshot;
+  /** Whether to prioritize loading this frame's image */
   priority?: boolean;
+  /** Whether this frame is currently selected */
   isSelected?: boolean;
+  /** Callback when the frame is selected with modifier keys */
   onSelect?: (e: React.MouseEvent) => void;
+  /** Callback when drag interaction starts */
   onDragStart?: () => void;
+  /** Callback when drag interaction moves */
   onDragMove?: () => void;
+  /** Callback when touch interaction starts */
   onTouchStart?: () => void;
+  /** Callback when touch interaction moves */
   onTouchMove?: () => void;
+  /** Callback when touch interaction ends */
   onTouchEnd?: () => void;
 }
 
+/**
+ * Component that displays a single frame with its metadata and handles selection interactions
+ * @param props - The component props
+ * @param props.screenshot - Screenshot data to display
+ * @param props.priority - Whether to prioritize loading this frame's image
+ * @param props.isSelected - Whether this frame is currently selected
+ * @param props.onSelect - Callback when frame is selected with modifier keys
+ * @param props.onDragStart - Callback when drag interaction starts
+ * @param props.onDragMove - Callback when drag interaction moves
+ * @param props.onTouchStart - Callback when touch interaction starts
+ * @param props.onTouchMove - Callback when touch interaction moves
+ * @param props.onTouchEnd - Callback when touch interaction ends
+ * @returns A card component displaying the frame and its metadata
+ */
 export function FrameCard({
   screenshot,
   priority = false,

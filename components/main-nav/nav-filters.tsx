@@ -8,19 +8,42 @@ import { SeriesSelect } from "./series-select";
 import { SearchBar } from "./search-bar";
 import { useSearchParams } from "next/navigation";
 
+/**
+ * Filter state interface for navigation
+ */
 interface Filters {
+  /** Selected season number */
   season?: number;
+  /** Selected episode number */
   episode?: number;
+  /** Search query string */
   query: string;
 }
 
+/**
+ * Props for the NavFilters component
+ */
 interface NavFiltersProps {
+  /** Current filter state */
   filters: Filters;
+  /** Callback when filter values change */
   onFilterChange: (updates: Partial<Filters>) => void;
+  /** Callback when search query changes */
   onQueryChange: (query: string) => void;
+  /** Additional CSS classes */
   className?: string;
 }
 
+/**
+ * Component for displaying navigation filters and search
+ * Includes series selection and search bar with debounced input
+ * @param props - The component props
+ * @param props.filters - Current filter state
+ * @param props.onFilterChange - Callback when filter values change
+ * @param props.onQueryChange - Callback when search query changes
+ * @param props.className - Additional CSS classes
+ * @returns The navigation filters section with series select and search bar
+ */
 export function NavFilters({
   filters,
   onFilterChange,

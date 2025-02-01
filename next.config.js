@@ -24,6 +24,8 @@ const nextConfig = {
     },
     // Enable optimistic updates
     optimisticClientCache: true,
+    // Enable Partial Prerendering (PPR)
+    ppr: "incremental",
   },
 };
 
