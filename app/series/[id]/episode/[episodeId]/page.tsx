@@ -3,21 +3,45 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { getFrameIndex } from "@/lib/frames.server";
-import { getSeriesInfo } from "@/lib/series-info";
+import {
+  getSeriesInfo,
+  getAllSeries,
+  getSeriesEpisodes,
+  type SeriesInfo,
+} from "@/lib/series-info";
 import { getEpisodeInfo } from "@/lib/episode-info";
 import { SeriesHeader } from "@/components/series/series-header";
+import { formatPageTitle } from "@/lib/constants";
 
-interface Props {
-  params: Promise<{
-    id: string;
-    episodeId: string;
-  }>;
+/**
+ * Generates static params for all episode pages at build time
+ * Creates paths for each episode in each series
+ * @returns Array of objects containing series and episode IDs for static generation
+ */
+export async function generateStaticParams() {
+  const allSeries = getAllSeries();
+  return allSeries.flatMap((series: SeriesInfo) => {
+    const episodes = getSeriesEpisodes(series.number);
+    return episodes.map((episodeNumber) => ({
+      id: series.number.toString(),
+      episodeId: episodeNumber.toString(),
+    }));
+  });
 }
 
 /**
- *
- * @param root0
- * @param root0.params
+ * Interface for page component props
+ */
+type Props = {
+  /** Promise resolving to route parameters */
+  params: Promise<{ id: string; episodeId: string }>;
+};
+
+/**
+ * Generates metadata for the episode page
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing series and episode IDs
+ * @returns Metadata object with title and description
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
@@ -31,15 +55,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = episode?.title || `Episode ${resolvedParams.episodeId}`;
 
   return {
-    title: `${title} | Series ${series.number} | Thick of It Quotes`,
+    title: formatPageTitle(`${title} | Series ${series.number}`),
     description: episode?.shortSummary || series.shortSummary,
   };
 }
 
 /**
- *
- * @param root0
- * @param root0.params
+ * Page component for displaying a specific episode and its frames
+ * Shows episode details, cast, crew, and a grid of all frames from the episode
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing series and episode IDs
+ * @returns The episode page with details and frame grid
  */
 export default async function EpisodePage({ params }: Props) {
   const resolvedParams = await params;

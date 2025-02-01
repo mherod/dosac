@@ -7,6 +7,7 @@ import { MainNav } from "@/components/main-nav";
 import { Footer } from "@/components/footer";
 import { Suspense } from "react";
 import { Toaster } from "@/components/ui/toast";
+import { SITE_NAME } from "@/lib/constants";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,18 +17,16 @@ const inter = Inter({
 const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 const urlObject = new URL(url);
 
-const title = "Thick of It Quotes";
-
 export const metadata: Metadata = {
   title: {
-    template: "%s | " + title,
-    default: title,
+    template: `%s | ${SITE_NAME}`,
+    default: SITE_NAME,
   },
   description: "Create and share memes from The Thick of It",
   metadataBase: urlObject,
   openGraph: {
     type: "website",
-    siteName: title,
+    siteName: SITE_NAME,
     locale: "en_GB",
   },
   twitter: {
@@ -35,12 +34,17 @@ export const metadata: Metadata = {
   },
   other: {
     "og:locale": "en_GB",
-    "og:site_name": title,
+    "og:site_name": SITE_NAME,
     "og:logo": `${urlObject.origin}/logo.svg`,
     "format-detection": "telephone=no",
   },
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.children
+ */
 export default function RootLayout({
   children,
 }: {

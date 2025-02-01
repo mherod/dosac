@@ -1,4 +1,5 @@
 import type { Screenshot } from "./types";
+import { SITE_NAME } from "./constants";
 
 const BASE_URL = "https://dosac.herod.dev";
 
@@ -32,6 +33,17 @@ interface OpenGraphMetadata {
   };
 }
 
+/**
+ *
+ * @param params
+ * @param params.caption
+ * @param params.episode
+ * @param params.timestamp
+ * @param params.imageUrl
+ * @param params.fontSize
+ * @param params.outlineWidth
+ * @param params.fontFamily
+ */
 export function constructOgImageUrl(params: {
   caption: string;
   episode: string;
@@ -59,6 +71,11 @@ export function constructOgImageUrl(params: {
   return ogImageUrl;
 }
 
+/**
+ *
+ * @param frame
+ * @param caption
+ */
 export function generateSingleFrameMetadata(
   frame: Screenshot,
   caption: string,
@@ -84,7 +101,7 @@ export function generateSingleFrameMetadata(
       description: caption,
       url: pageUrl,
       type: "website",
-      siteName: "Thick of It Quotes",
+      siteName: SITE_NAME,
       locale: "en_GB",
       images: [
         {
@@ -105,6 +122,10 @@ export function generateSingleFrameMetadata(
   };
 }
 
+/**
+ *
+ * @param frames
+ */
 export function generateMultiFrameMetadata(
   frames: Screenshot[],
 ): OpenGraphMetadata {
@@ -117,7 +138,7 @@ export function generateMultiFrameMetadata(
         description: "Create a meme from multiple frames",
         url: new URL("caption", BASE_URL).toString(),
         type: "website",
-        siteName: "Thick of It Quotes",
+        siteName: SITE_NAME,
         locale: "en_GB",
         images: [],
       },
@@ -156,7 +177,7 @@ export function generateMultiFrameMetadata(
       description,
       url: pageUrl,
       type: "website",
-      siteName: "Thick of It Quotes",
+      siteName: SITE_NAME,
       locale: "en_GB",
       images: [
         {

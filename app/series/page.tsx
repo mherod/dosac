@@ -4,12 +4,18 @@ import { getFrameIndex } from "@/lib/frames.server";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { parseEpisodeId } from "@/lib/frames";
 import { seriesInfo } from "@/lib/series-info";
+import { formatPageTitle } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Series | Thick of It Quotes",
+  title: formatPageTitle("Series"),
   description: "Browse all series of The Thick of It",
 };
 
+/**
+ * Content component for the series page
+ * Fetches and organizes frames by series
+ * @returns A grid layout of series sections with their frames
+ */
 async function SeriesContent() {
   // Get all frames
   const allFrames = await getFrameIndex();
@@ -60,6 +66,11 @@ async function SeriesContent() {
   );
 }
 
+/**
+ * Main series page component
+ * Displays all series with their associated frames
+ * @returns The series page with content wrapped in a Suspense boundary
+ */
 export default function SeriesPage() {
   return (
     <div className="container py-8">

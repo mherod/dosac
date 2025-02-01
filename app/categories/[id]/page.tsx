@@ -3,22 +3,39 @@ import type { Metadata } from "next";
 import { CATEGORIES } from "@/lib/categories";
 import { getFrameIndex } from "@/lib/frames.server";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+import { formatPageTitle } from "@/lib/constants";
 
+/**
+ * Interface for page component props
+ */
 type Props = {
+  /** Promise resolving to route parameters */
   params: Promise<{ id: string }>;
 };
 
+/**
+ * Generates metadata for the category page
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing category ID
+ * @returns Metadata object with title and description
+ */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
   if (!category) return {};
 
   return {
-    title: `${category.title} | DoSAC Digital Archive`,
+    title: formatPageTitle(category.title),
     description: category.description,
   };
 }
 
+/**
+ * Page component for displaying frames filtered by a specific category
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing category ID
+ * @returns The category page with filtered screenshot grid
+ */
 export default async function CategoryPage({ params }: Props) {
   const resolvedParams = await params;
   const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
