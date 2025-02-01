@@ -56,10 +56,10 @@ function CharacterCard({
   priority = false,
 }: CharacterCardProps) {
   // Use first department and role for display
-  const primaryDepartment = Array.isArray(department)
-    ? department[0]
-    : department;
-  const primaryRole = Array.isArray(role) ? role[0] : role;
+  const primaryDepartment = (
+    Array.isArray(department) ? department[0] : department
+  ) as Department;
+  const primaryRole = (Array.isArray(role) ? role[0] : role) as Role;
 
   return (
     <Link href={`/profiles/${id}`} className="block h-full">
