@@ -55,6 +55,12 @@ function CharacterCard({
   role,
   priority = false,
 }: CharacterCardProps) {
+  // Use first department and role for display
+  const primaryDepartment = Array.isArray(department)
+    ? department[0]
+    : department;
+  const primaryRole = Array.isArray(role) ? role[0] : role;
+
   return (
     <Link href={`/profiles/${id}`} className="block h-full">
       <Card className="hover:bg-accent transition-colors cursor-pointer group h-full">
@@ -75,11 +81,14 @@ function CharacterCard({
           <CardDescription className="space-y-2">
             <p className="line-clamp-3">{description}</p>
             <div className="flex flex-wrap gap-2 pt-2">
-              <Badge variant="secondary" title={departmentLabels[department]}>
-                {departmentLabels[department]}
+              <Badge
+                variant="secondary"
+                title={departmentLabels[primaryDepartment]}
+              >
+                {departmentLabels[primaryDepartment]}
               </Badge>
-              <Badge variant="outline" title={roleLabels[role]}>
-                {roleLabels[role]}
+              <Badge variant="outline" title={roleLabels[primaryRole]}>
+                {roleLabels[primaryRole]}
               </Badge>
             </div>
           </CardDescription>
