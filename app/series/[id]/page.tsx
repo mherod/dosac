@@ -10,6 +10,7 @@ import {
   type SeriesInfo,
 } from "@/lib/series-info";
 import { formatPageTitle } from "@/lib/constants";
+import { Suspense } from "react";
 
 // Enable PPR for this route
 export const experimental_ppr = true;
@@ -55,13 +56,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Page component for displaying a specific series and its episodes
- * Shows series information and a grid of episodes with their associated frames
+ * Series page content component
  * @param props - The component props
- * @param props.params - Promise resolving to route parameters containing series ID
- * @returns The series page with episode grids and navigation
+ * @param props.params - Route parameters containing series ID
+ * @returns The series page content with episode grids and navigation
  */
-export default async function SeriesPage({ params }: Props) {
+async function SeriesPageContent({ params }: Props) {
   const resolvedParams = await params;
   const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
   if (!series) notFound();
@@ -133,5 +133,20 @@ export default async function SeriesPage({ params }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Page component for displaying a specific series and its episodes
+ * Shows series information and a grid of episodes with their associated frames
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing series ID
+ * @returns The series page with episode grids and navigation
+ */
+export default function SeriesPage(props: Props) {
+  return (
+    <Suspense>
+      <SeriesPageContent {...props} />
+    </Suspense>
   );
 }
