@@ -1,6 +1,7 @@
 import { getFrameIndex } from "@/lib/frames.server";
 import { HomePage } from "@/components/home-page";
 import { parseEpisodeId } from "@/lib/frames";
+import type { Screenshot } from "@/lib/types";
 
 // Add revalidation period (e.g., 1 hour)
 export const revalidate = 3600;
@@ -17,9 +18,11 @@ type Props = {
 };
 
 /**
+ * Home page component that displays a grid of screenshots and ranked moments
  *
- * @param root0
- * @param root0.searchParams
+ * @param props - Component props
+ * @param props.searchParams - URL search parameters for filtering content
+ * @returns React component for the home page
  */
 export default async function Home({ searchParams }: Props) {
   const [screenshots, rankedMoments] = await Promise.all([
@@ -62,7 +65,9 @@ export default async function Home({ searchParams }: Props) {
 }
 
 /**
+ * Generate static parameters for all possible season and episode combinations
  *
+ * @returns Array of search parameter combinations for static generation
  */
 export async function generateStaticParams() {
   const frames = await getFrameIndex();
