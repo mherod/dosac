@@ -1,7 +1,7 @@
 import type { Screenshot } from "./types";
 import { SITE_NAME } from "./constants";
 
-const BASE_URL = "https://dosac.herod.dev";
+const BASE_URL = "https://dosac.uk";
 
 interface OpenGraphMetadata {
   title: string;
