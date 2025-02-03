@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
+import ProfileBadges from "./profile-badges";
 
 export function BottomNav() {
   return (
@@ -29,12 +30,12 @@ export function BottomNav() {
               ))}
             </div>
           </div>
-          <div
-            className="text-xs text-white/60 mt-2 sm:mt-0"
-            suppressHydrationWarning
-          >
-            Last updated: {new Date().toLocaleDateString("en-GB")} | System ID:
-            DQARS-2024
+          <div className="flex items-center gap-4">
+            <ProfileBadges />
+            <div className="text-xs text-white/60" suppressHydrationWarning>
+              Last updated: {new Date().toLocaleDateString("en-GB")} | System
+              ID: DQARS-2024
+            </div>
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+/** Department constants for character affiliations */
 export const DEPARTMENTS = {
   NUMBER_10: "Number 10",
   DOSAC: "DoSAC/DSA",
@@ -8,6 +9,7 @@ export const DEPARTMENTS = {
   CIVIL_SERVICE: "Civil Service",
 } as const;
 
+/** Role constants for character positions */
 export const ROLES = {
   SENIOR_LEADERSHIP: "Senior Leadership",
   MINISTER: "Minister",
@@ -17,37 +19,52 @@ export const ROLES = {
   JOURNALIST: "Journalist",
   CANDIDATE: "Candidate",
   OTHER: "Other",
+  DIRECTOR_OF_COMMUNICATIONS: "Director of Communications",
 } as const;
 
+/** Political party constants */
 export const PARTIES = {
   LABOUR: "Labour",
   CONSERVATIVE: "Conservative",
   LIBERAL_DEMOCRAT: "Liberal Democrat",
 } as const;
 
+/** Department type derived from DEPARTMENTS constant */
 export type Department = (typeof DEPARTMENTS)[keyof typeof DEPARTMENTS];
+
+/** Role type derived from ROLES constant */
 export type Role = (typeof ROLES)[keyof typeof ROLES];
+
+/** Party type derived from PARTIES constant */
 export type Party = (typeof PARTIES)[keyof typeof PARTIES];
 
+/** Character origin information */
 export interface CharacterOrigin {
   city?: string;
   area?: string;
   country: string;
 }
 
+/** Character personal information including family and background */
 export interface CharacterPersonal {
   age?: number;
   birthYear?: number;
+  /**
+   *
+   */
   family?: {
-    spouse?:
+    spouse?: boolean | { name: string; occupation?: string };
+    children?: boolean | { daughters?: number; sons?: number };
+    siblings?:
       | boolean
       | {
-          name: string;
-          occupation?: string;
+          sister?: { location?: string; occupation?: string };
         };
-    children?: boolean;
-    siblings?: boolean;
     nieces?: boolean;
+    parents?: {
+      father?: string;
+      mother?: string;
+    };
   };
   relationships?: {
     past?: string[];
@@ -63,6 +80,7 @@ export interface CharacterPersonal {
   };
 }
 
+/** Main character interface containing all character information */
 export interface Character {
   name: string;
   shortName: string;
@@ -77,6 +95,11 @@ export interface Character {
   personal?: CharacterPersonal;
   details: string[];
   party?: Party;
+  frameHighlights?: string[];
+  relatedProfiles?: {
+    id: CharacterId;
+    relationship: string;
+  }[];
 }
 
 export const characters: Record<string, Character> = {
@@ -147,9 +170,41 @@ export const characters: Record<string, Character> = {
       "Eventually falls from power during the Goolding Inquiry",
     ],
     party: PARTIES.LABOUR,
+    frameHighlights: [
+      "s03e01-06-39.680", // "Malcolm Tucker, Malcolm Tucker, Malcolm Tucker. Malcolm."
+      "s03e01-07-17.120", // "Malcolm Tucker. The real deal. Hello."
+      "s03e06-17-45.240", // "There's a huge difference between me saying to you..."
+      "s03e07-13-48.360", // "I'll tell you a home truth, Malcolm Tucker..."
+      "s02e03-03-08.840", // "Mr Malcolm Tucker turning it all the way up to 11 in the lobby."
+      "s03e07-26-03.080", // "You cannot fuck me, I am unfuckable..."
+      "s03e07-26-58.440", // Malcolm's resignation
+      "s02e02-27-44.200", // "Morning, morning, morning! What's the story in Bala-fucking-mory?"
+      "s02e02-27-48.000", // "Reshuffle! Excellent! You win a year's supply of condoms, which in your case is four."
+      "s02e03-28-44.480", // "I'm gonna have a swear box installed on Monday."
+      "s02e03-28-47.880", // "What? Fucking joking, you twat!"
+      "s01e01-05-15.400", // "You no longer have purchase in the sarcasm world. Get on the phone..."
+    ],
+    relatedProfiles: [
+      { id: "jamie", relationship: "Right-hand man and enforcer" },
+      { id: "sam", relationship: "Trusted personal secretary" },
+      { id: "julius", relationship: "Professional rival turned ally" },
+      { id: "steve", relationship: "Former colleague and bitter enemy" },
+      { id: "kelly", relationship: "Former romantic relationship" },
+      { id: "hugh", relationship: "Minister whose PR disasters he managed" },
+      {
+        id: "nicola",
+        relationship: "Minister he initially supported then ousted",
+      },
+      { id: "tom", relationship: "Future PM he maneuvered to serve" },
+      { id: "ollie", relationship: "Useful pawn in political schemes" },
+      {
+        id: "cal",
+        relationship: "Professional rival and occasional tennis partner",
+      },
+    ],
   },
   jamie: {
-    name: "James 'Jamie' McDonald",
+    name: "Jamie McDonald",
     shortName: "Jamie",
     fullName: "James McDonald",
     description:
@@ -196,12 +251,26 @@ export const characters: Record<string, Character> = {
       "Often handles the more 'hands-on' aspects of political enforcement",
       "Threatens Ollie Reeder for insulting Al Jolson's music",
     ],
-    party: PARTIES.LABOUR,
+    frameHighlights: [
+      "s02e01-05-53.200",
+      "s03e02-20-36.840",
+      "s03e05-24-21.400",
+    ],
+    relatedProfiles: [
+      { id: "malcolm", relationship: "Boss and mentor" },
+      { id: "cal", relationship: "Professional rival" },
+      {
+        id: "tom",
+        relationship: "Leaked damaging story about his antidepressant use",
+      },
+      { id: "ben", relationship: "Failed to prepare for Paxman interview" },
+      { id: "ollie", relationship: "Threatened over Al Jolson insult" },
+    ],
   },
   nicola: {
-    name: "Rt Hon Nicola Allison Murray MP",
+    name: "Nicola Murray",
     shortName: "Nicola",
-    fullName: "The Right Honourable Nicola Allison Murray MP",
+    fullName: "Rt. Hon. Nicola Allison Murray MP",
     description:
       "Former Leader of the Opposition (2010-2012) and Secretary of State for DoSAC",
     occupation:
@@ -258,11 +327,18 @@ export const characters: Record<string, Character> = {
       "Known for her somewhat neurotic personality and claustrophobia",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      { id: "malcolm", relationship: "Director of Communications and nemesis" },
+      { id: "helen", relationship: "Special Adviser" },
+      { id: "dan", relationship: "Leadership rival and successor" },
+      { id: "ollie", relationship: "Special Adviser at DoSAC" },
+      { id: "glenn", relationship: "Special Adviser at DoSAC" },
+    ],
   },
   peter: {
     name: "Peter Mannion",
     shortName: "Peter",
-    fullName: "The Right Honourable Peter Mannion MP",
+    fullName: "Rt. Hon. Peter Mannion MP",
     description:
       "Secretary of State for Social Affairs and Citizenship, veteran 'One Nation' Conservative politician with over three decades of parliamentary experience",
     image: "/characters/peter.jpg",
@@ -291,7 +367,7 @@ export const characters: Record<string, Character> = {
           "HM Government (Series 4), HM Opposition (Series 3 & Specials), House of Commons (1980's-present)",
         career: [
           "Secretary of State for Social Affairs and Citizenship (Series 4)",
-          "Shadow Secretary of State for Social Affairs and Citizenship (Series 3 & Specials)",
+          "Shadow Secretary of State for Social Affairs (Series 3 & Specials)",
           "Conservative Party Leadership Candidate (pre-Series 3)",
           "Junior Minister for Fisheries, DEFRA (mid-1980s, resigned)",
           "Member of Parliament (1980's-present)",
@@ -329,29 +405,104 @@ export const characters: Record<string, Character> = {
       "Survived multiple personal scandals throughout his political career",
       "Represents the old guard of Conservative politics",
     ],
+    frameHighlights: [
+      "s03e04-21-05.880", // "Ah Stewart, what flavour of nut-brown piss are you gonna pour into my ear?"
+      "s03e08-23-09.360", // "The Fucker?! And here you thought he was just a myth created to frighten naughty MPs into eating their truffles and swan."
+      "s03e07-20-14.960", // "Do you not drink coffee any more or is it all port and swans' blood these days?"
+      "s03e02-19-25.680", // "I expect you're probably more a single malt man."
+      "s03e05-13-17.760", // "Yeah, well, actually Stewart called me IN"
+    ],
     party: PARTIES.CONSERVATIVE,
+    relatedProfiles: [
+      { id: "emma", relationship: "Trusted but feared Special Adviser" },
+      { id: "phil", relationship: "Long-term Special Adviser" },
+      { id: "stewart", relationship: "Communications Director and moderniser" },
+      { id: "fergus", relationship: "Coalition partner and Junior Minister" },
+    ],
   },
   terri: {
-    name: "Terri",
+    name: "Terri Coverley",
     shortName: "Terri",
-    fullName: "Terri Coverley",
-    description: "Director of Communications at DoSAC, formerly from Waitrose",
+    fullName: "Theresa Jessica Coverley",
+    description:
+      "Director of Communications at DoSAC, former Waitrose PR executive turned senior civil servant",
     image: "/characters/terri.webp",
+    occupation: "Director of Communications - DoSAC",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.CIVIL_SERVANT],
+    personal: {
+      family: {
+        spouse: true,
+        children: {
+          daughters: 1,
+        },
+        siblings: {
+          sister: {
+            location: "Hastings",
+            occupation: "Mental health worker",
+          },
+        },
+        parents: {
+          father: "Deceased (Series 2, stroke)",
+          mother: "In care home (as of Specials)",
+        },
+      },
+      background: {
+        previousCareer: "Head of Press at Waitrose",
+        affiliation: "Civil Service",
+        career: [
+          "Director of Communications - DoSAC (Present)",
+          "Head of Press - Waitrose (Previous)",
+        ],
+        interests: [
+          "Shopping at Waitrose",
+          "Amateur dramatics and musical theatre",
+          "Wine tasting",
+          "Gardening",
+          "Office protocol",
+          "Civil Service procedures",
+        ],
+      },
+    },
     details: [
-      "Director of Communications for the department, responsible for press relations",
-      "Recruited from Waitrose as part of a scheme to make government run like a business",
+      "Senior civil servant serving as Director of Communications at DoSAC",
+      "Joined Civil Service from private sector as part of initiative to bring business expertise to government",
+      "Previously served as Head of Press at Waitrose",
+      "Known for strict adherence to Civil Service protocols and procedures",
       "Professional and prudish in nature, often managing departmental PR crises",
-      "Takes pride in her role and job security",
-      "Takes a leave of absence during series 2 due to her father's death",
+      "Maintains professional distance from political appointees",
+      "Often clashes with special advisers over press strategy",
+      "Prioritises job security and pension benefits over political goals",
+      "Frequently reminds colleagues of her private sector experience",
+      "Takes pride in her Civil Service grade and position",
+      "Manages departmental press office and communications strategy",
+      "Supervises Robyn Murdoch despite delegating most work to her",
+      "Maintains careful records of all communications activities",
+      "Expert at navigating Civil Service bureaucracy",
+      "Shows particular interest in proper filing procedures",
+      "Regularly shops at Waitrose, maintaining loyalty to former employer",
+      "Focuses on process and procedure over actual outcomes",
+      "Often uses her 'private sector' experience to justify decisions",
+      "Survives multiple ministerial changes through careful neutrality",
+      "Takes extended leave during personal crises, including father's death from stroke in Series 2",
       "Known for 'mopping up' the department's bad press",
+      "Masters the art of avoiding responsibility while maintaining position",
+      "Active member of an amateur dramatic and musical society, often organizing rehearsals during work hours",
+      "Has a diabetic dog named Max who she attempts to get on Britain's Got Talent in Series 4",
+      "Sister works in mental health sector in Hastings",
+      "Mother resides in a care home as of the Specials",
+      "Enjoys wine tasting and gardening in her spare time",
+    ],
+    relatedProfiles: [
+      { id: "robyn", relationship: "Press Office assistant" },
+      { id: "glenn", relationship: "Departmental colleague" },
+      { id: "ollie", relationship: "Departmental colleague" },
     ],
   },
   hugh: {
-    name: "Rt Hon Hugh Abbot MP",
+    name: "Hugh Abbot",
     shortName: "Hugh",
-    fullName: "The Right Honourable Hugh Abbot MP",
+    fullName: "Rt. Hon. Hugh Abbot MP",
     description: "Former Secretary of State for Social Affairs",
     occupation: "Secretary of State for Social Affairs (Series 1-2)",
     department: [DEPARTMENTS.DOSAC],
@@ -364,6 +515,7 @@ export const characters: Record<string, Character> = {
       },
     },
     details: [
+      "Original Secretary of State for Social Affairs before department became DoSAC",
       "Appointed as Minister for the Department of Social Affairs after Cliff Lawton's resignation",
       "First major action was a botched anti-benefit fraud initiative launch",
       "Forced to make an empty press conference due to Malcolm's last-minute intervention",
@@ -382,6 +534,30 @@ export const characters: Record<string, Character> = {
       "Often at odds with focus groups and public perception",
       "Subject to Malcolm Tucker's constant management and intervention",
       "Survived multiple potential career-ending scandals",
+    ],
+    frameHighlights: [
+      "s01e01-21-45.280", // "I'm not quite sure what level of reality I'm supposed to be operating on"
+      "s01e02-00-39.120", // "I work, I eat, I shower..."
+      "s01e03-00-43.880", // "I'm the fucking daddy!"
+      "s01e03-14-52.800", // "They should just clone ministers..."
+      "s02e01-08-21.800", // "Robyn, all events are regional..."
+      "s02e03-11-21.840", // "I'm gonna tell the PM straight up, this bill is a load of old bollocks!"
+      "s01e01-17-21.720", // "We trick them. We trick them. Tinselly thing and they come along and then we say..."
+    ],
+    party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship: "Communications Director who managed his crises",
+      },
+      { id: "glenn", relationship: "Senior Special Adviser and confidant" },
+      { id: "ollie", relationship: "Junior Special Adviser" },
+      { id: "terri", relationship: "Civil Service Press Secretary" },
+      {
+        id: "dan",
+        relationship: "Co-author of housing bill and strategic rival",
+      },
+      { id: "cliff", relationship: "Predecessor as Secretary of State" },
     ],
   },
   glenn: {
@@ -412,9 +588,20 @@ export const characters: Record<string, Character> = {
       "Part of the team that helped Malcolm maintain his position against Julius",
       "Provides emotional support and guidance to Hugh during crises",
     ],
+    frameHighlights: [
+      "s01e01-17-46.960", // "And we've probably got ten million we can throw at it."
+      "s01e01-17-50.760", // "That's good, that, because it sounds like a lot, doesn't it?"
+    ],
+    relatedProfiles: [
+      { id: "hugh", relationship: "Minister he served as Senior Adviser" },
+      { id: "ollie", relationship: "Fellow Special Adviser" },
+      { id: "malcolm", relationship: "Respected for loyalty and common sense" },
+      { id: "terri", relationship: "Civil Service colleague" },
+      { id: "nicola", relationship: "Later minister he advised" },
+    ],
   },
   ollie: {
-    name: "Dr. Oliver 'Ollie' Francis Reeder",
+    name: "Oliver Reeder",
     shortName: "Ollie",
     fullName: "Dr. Oliver Francis Reeder",
     description:
@@ -477,12 +664,28 @@ export const characters: Record<string, Character> = {
       "Career progression shows steady rise through advisory roles",
       "Becomes key figure in Opposition communications strategy",
     ],
+    frameHighlights: [
+      "s03e02-04-25.320", // "You can't just overwrite minutes! You specifically can't do it, 'cause you can't unlock a PDF file."
+      "s01e01-17-15.400", // "What if the announcement is...there's no big announcement."
+    ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      { id: "hugh", relationship: "First minister as Junior Adviser" },
+      { id: "malcolm", relationship: "Used in various political schemes" },
+      { id: "glenn", relationship: "Fellow Special Adviser" },
+      {
+        id: "emma",
+        relationship: "Former romantic relationship and political rival",
+      },
+      { id: "angela", relationship: "Former girlfriend turned journalist" },
+      { id: "dan", relationship: "Squash partner and eventual boss" },
+      { id: "nicola", relationship: "Minister at DoSAC" },
+    ],
   },
   julius: {
-    name: "Rt Hon the Lord Julius Nicholson of Arnage",
+    name: "Julius Nicholson",
     shortName: "Julius",
-    fullName: "The Right Honourable the Lord Julius Nicholson of Arnage",
+    fullName: "Rt. Hon. the Lord Julius Nicholson of Arnage",
     description: "Life Peer and former Special Adviser to the Prime Minister",
     occupation:
       "Special Adviser and Head of Advanced Implementation Unit, Number 10",
@@ -510,11 +713,22 @@ export const characters: Record<string, Character> = {
       "Demoted by PM after Malcolm's manipulation",
       "Represents the 'blue-sky thinking' approach to government",
     ],
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship: "Long-standing rival turned eventual ally",
+      },
+      { id: "steve", relationship: "Used inquiry to remove from power" },
+      {
+        id: "hugh",
+        relationship: "Minister affected by his departmental changes",
+      },
+    ],
   },
   ben: {
-    name: "Rt Hon Ben Swain MP",
+    name: "Ben Swain",
     shortName: "Ben",
-    fullName: "The Right Honourable Ben Swain MP",
+    fullName: "Rt. Hon. Ben Swain MP",
     description:
       "Former Minister of State for Immigration at DoSAC and Shadow Cabinet Minister",
     occupation:
@@ -550,6 +764,17 @@ export const characters: Record<string, Character> = {
       "Failed to effectively handle immigration portfolio",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship: "Attempted to manage Paxman interview disaster",
+      },
+      {
+        id: "jamie",
+        relationship: "Failed media trainer for Paxman interview",
+      },
+      { id: "nicola", relationship: "Minister who sacked him" },
+    ],
   },
   nick: {
     name: "Nice Nutter Nick",
@@ -571,9 +796,9 @@ export const characters: Record<string, Character> = {
     ],
   },
   clare: {
-    name: "Rt Hon Clare Ballentine MP",
+    name: "Clare Ballentine",
     shortName: "Clare",
-    fullName: "The Right Honourable Clare Ballentine MP",
+    fullName: "Rt. Hon. Clare Ballentine MP",
     description:
       "Labour Backbench MP and Chair of the Education Select Committee",
     occupation: "Chair of the Select Committee on Education",
@@ -596,9 +821,9 @@ export const characters: Record<string, Character> = {
     ],
   },
   dan: {
-    name: "Rt Hon Dan Miller MP",
+    name: "Dan Miller",
     shortName: "Dan",
-    fullName: "The Right Honourable Dan Miller MP",
+    fullName: "Rt. Hon. Dan Miller MP",
     description:
       "Leader of the Opposition and Leader of the Labour Party, former Minister of State for Social Affairs",
     occupation:
@@ -646,11 +871,28 @@ export const characters: Record<string, Character> = {
       "Successfully navigated multiple leadership transitions",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "hugh",
+        relationship: "Co-authored housing bill before strategic resignation",
+      },
+      { id: "nicola", relationship: "Succeeded as Leader of the Opposition" },
+      { id: "malcolm", relationship: "Key player in leadership transition" },
+      {
+        id: "ollie",
+        relationship:
+          "Regular squash partner and eventual Communications Director",
+      },
+      {
+        id: "tom",
+        relationship: "Made strategic alliance during leadership transition",
+      },
+    ],
   },
   cliff: {
-    name: "Rt Hon Cliff Lawton MP",
+    name: "Cliff Lawton",
     shortName: "Cliff",
-    fullName: "The Right Honourable Cliff Lawton MP",
+    fullName: "Rt. Hon. Cliff Lawton MP",
     description:
       "Labour Backbench MP, former Secretary of State for Social Affairs",
     occupation: "Backbench MP, Former Secretary of State for Social Affairs",
@@ -677,6 +919,10 @@ export const characters: Record<string, Character> = {
       "Led department during its original incarnation as Social Affairs",
       "One of Malcolm Tucker's early ministerial casualties",
     ],
+    frameHighlights: [
+      "s01e01-04-24.400", // "Scope. What, like, um...shooting up in the Cabinet Office or something?"
+      "s01e01-05-29.560", // "You want me to write my own obituary?"
+    ],
     party: PARTIES.LABOUR,
   },
   angela: {
@@ -698,6 +944,14 @@ export const characters: Record<string, Character> = {
       "Often manipulated or pressured by Malcolm Tucker",
       "Maintains complicated relationships with both Ollie and the department",
       "Regular target for managed leaks and spin",
+    ],
+    relatedProfiles: [
+      {
+        id: "ollie",
+        relationship: "Former boyfriend turned political contact",
+      },
+      { id: "malcolm", relationship: "Frequent target of intimidation" },
+      { id: "hugh", relationship: "Minister whose scandals she covered" },
     ],
   },
   simon: {
@@ -727,9 +981,9 @@ export const characters: Record<string, Character> = {
     ],
   },
   liam: {
-    name: "Rt Hon Liam Bentley MP",
+    name: "Liam Bentley",
     shortName: "Liam",
-    fullName: "The Right Honourable Liam Bentley MP",
+    fullName: "Rt. Hon. Liam Bentley MP",
     description: "Labour MP for Leamington Spa",
     occupation: "Member of Parliament for Leamington Spa",
     department: [DEPARTMENTS.OPPOSITION],
@@ -778,11 +1032,19 @@ export const characters: Record<string, Character> = {
       "His appointment notably approved of by Malcolm Tucker himself",
       "Key figure in Conservative Party's election strategy",
     ],
+    relatedProfiles: [
+      { id: "malcolm", relationship: "Professional rival and tennis partner" },
+      { id: "jamie", relationship: "Opposition enforcer rival" },
+      {
+        id: "stewart",
+        relationship: "Bullied Conservative communications director",
+      },
+    ],
   },
   steve: {
-    name: "Rt Hon Steve Fleming MP",
+    name: "Steve Fleming",
     shortName: "Steve",
-    fullName: "The Right Honourable Steve Fleming MP",
+    fullName: "Rt. Hon. Steve Fleming MP",
     description:
       "Former Chief Whip and Acting Director of Communications for Number 10",
     occupation:
@@ -807,6 +1069,16 @@ export const characters: Record<string, Character> = {
       "Falls victim to Malcolm's revenge via Julius Nicholson's inquiry report",
       "Forced to resign after less than a week back in power",
       "One of the three universally feared spin doctors alongside Cal and Stewart",
+    ],
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship: "Bitter rival who forced his resignation",
+      },
+      {
+        id: "julius",
+        relationship: "Used inquiry report to force second resignation",
+      },
     ],
   },
   stewart: {
@@ -877,6 +1149,12 @@ export const characters: Record<string, Character> = {
       "Prefers Emma Messinger's competence over Phil Smith's traditional style",
       "Key figure in Conservative Party's communication strategy",
     ],
+    relatedProfiles: [
+      { id: "peter", relationship: "Minister he attempts to modernise" },
+      { id: "emma", relationship: "Favoured Special Adviser" },
+      { id: "phil", relationship: "Less favoured Special Adviser" },
+      { id: "cal", relationship: "Intimidating rival who bullied him" },
+    ],
   },
   sam: {
     name: "Sam Cassidy",
@@ -899,6 +1177,9 @@ export const characters: Record<string, Character> = {
       "Maintains professional composure despite Malcolm's explosive temperament",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      { id: "malcolm", relationship: "Boss she loyally supports" },
+    ],
   },
   emma: {
     name: "Emma Florence Messinger",
@@ -952,6 +1233,18 @@ export const characters: Record<string, Character> = {
       "Preferred by leadership for complex assignments over other advisors",
     ],
     party: PARTIES.CONSERVATIVE,
+    relatedProfiles: [
+      { id: "peter", relationship: "Secretary of State she advises" },
+      { id: "phil", relationship: "Fellow Special Adviser and flatmate" },
+      {
+        id: "stewart",
+        relationship: "Communications Director who values her competence",
+      },
+      {
+        id: "ollie",
+        relationship: "Former romantic partner and political rival",
+      },
+    ],
   },
   kelly: {
     name: "Kelly Grogan",
@@ -977,11 +1270,15 @@ export const characters: Record<string, Character> = {
       "Professional role intersects with political coverage",
       "Connection to both government and press figures",
     ],
+    relatedProfiles: [
+      { id: "malcolm", relationship: "Former romantic partner" },
+      { id: "simon", relationship: "Current romantic partner" },
+    ],
   },
   tom: {
     name: "Tom Davis",
     shortName: "Tom",
-    fullName: "The Right Honourable Tom Davis MP",
+    fullName: "Rt. Hon. Tom Davis MP",
     description: "Future Prime Minister and leader of the 'nutters' faction",
     occupation: "Prime Minister (Series 4)",
     department: [DEPARTMENTS.NUMBER_10],
@@ -1009,7 +1306,7 @@ export const characters: Record<string, Character> = {
   phil: {
     name: "Philip Bartholomew Cornelius Smith",
     shortName: "Phil",
-    fullName: "Philip Bartholomew Cornelius Smith",
+    fullName: "Phil Smith",
     description:
       "Special Adviser to Peter Mannion, known for his childish demeanour and pop culture obsession despite his serious political role",
     occupation:
@@ -1064,9 +1361,9 @@ export const characters: Record<string, Character> = {
     party: PARTIES.CONSERVATIVE,
   },
   mary: {
-    name: "Rt Hon Mary Drake MP",
+    name: "Mary Drake",
     shortName: "Mary",
-    fullName: "The Right Honourable Mary Drake MP",
+    fullName: "Rt. Hon. Mary Drake MP",
     description:
       "Director of Communications for Number 10, replacing Stewart Pearson",
     occupation: "Director of Communications - Number 10",
@@ -1123,11 +1420,14 @@ export const characters: Record<string, Character> = {
       "Part of Opposition's communications strategy team",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      { id: "nicola", relationship: "Minister she advises through career" },
+    ],
   },
   geoff: {
-    name: "Rt Hon Geoff Holhurst MP",
+    name: "Geoff Holhurst",
     shortName: "Geoff",
-    fullName: "The Right Honourable Geoff Holhurst MP",
+    fullName: "Rt. Hon. Geoff Holhurst MP",
     description: "Shadow Cabinet Minister and former Defence Secretary",
     occupation: "Shadow Cabinet Minister",
     department: [DEPARTMENTS.OPPOSITION],
@@ -1233,9 +1533,9 @@ export const characters: Record<string, Character> = {
     party: PARTIES.LABOUR,
   },
   doug: {
-    name: "Rt Hon Doug Hayes MP",
+    name: "Doug Hayes",
     shortName: "Doug",
-    fullName: "The Right Honourable Doug Hayes MP",
+    fullName: "Rt. Hon. Doug Hayes MP",
     description: "Labour Party Backbench MP",
     occupation: "Backbench MP",
     department: [DEPARTMENTS.OPPOSITION],
@@ -1352,11 +1652,14 @@ export const characters: Record<string, Character> = {
       "Last line of defense against ministerial code violations",
       "Only remembers to claim overtime during spending reviews",
     ],
+    relatedProfiles: [
+      { id: "terri", relationship: "Nominal boss who delegates all work" },
+    ],
   },
   fergus: {
-    name: "Rt Hon Fergus Williams MP",
+    name: "Fergus Williams",
     shortName: "Fergus",
-    fullName: "The Right Honourable Fergus Williams MP",
+    fullName: "Rt. Hon. Fergus Williams MP",
     description:
       "Liberal Democrat Minister of State for Social Affairs and Citizenship in coalition government",
     occupation: "Minister of State for Social Affairs and Citizenship",
@@ -1394,6 +1697,13 @@ export const characters: Record<string, Character> = {
       "Sometimes makes impulsive decisions under pressure",
     ],
     party: PARTIES.LIBERAL_DEMOCRAT,
+    relatedProfiles: [
+      {
+        id: "peter",
+        relationship: "Conservative Secretary of State above him",
+      },
+      { id: "adam", relationship: "Special Adviser" },
+    ],
   },
   phil_smith: {
     name: "Phil Smith",
@@ -1475,6 +1785,7 @@ export const roleLabels: Record<Role, string> = {
   [ROLES.JOURNALIST]: "Journalists",
   [ROLES.CANDIDATE]: "Candidates",
   [ROLES.OTHER]: "Other Roles",
+  [ROLES.DIRECTOR_OF_COMMUNICATIONS]: "Director of Communications",
 };
 
 export const charactersByDepartment = Object.entries(characters).reduce<
@@ -1517,5 +1828,13 @@ export const charactersByRole = Object.entries(characters).reduce<
     [ROLES.JOURNALIST]: [],
     [ROLES.CANDIDATE]: [],
     [ROLES.OTHER]: [],
+    [ROLES.DIRECTOR_OF_COMMUNICATIONS]: [],
   },
 );
+
+export const FEATURED_CHARACTERS = [
+  { id: "malcolm", name: "Malcolm Tucker" },
+  { id: "nicola", name: "Nicola Murray" },
+  { id: "peter", name: "Peter Mannion" },
+  { id: "terri", name: "Terri Coverley" },
+] as const;
