@@ -83,10 +83,16 @@ async function ProfileImageContent({
   size,
   className,
 }: ProfileImageBadgeProps) {
-  const imageUrl = await getProfileImage(characterId);
   const character = characters[characterId];
-
   if (!character) return null;
+
+  let imageUrl: string | undefined;
+  try {
+    imageUrl = await getProfileImage(characterId);
+  } catch (error) {
+    console.error(`Failed to load image for character ${characterId}:`, error);
+  }
+
   if (!imageUrl) {
     return (
       <InitialsPlaceholder

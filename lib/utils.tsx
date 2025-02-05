@@ -170,9 +170,14 @@ export async function getProfileImage(
     if (firstHighlight) {
       try {
         const frame = await getFrameData(firstHighlight);
-        return frame?.imageUrl;
+        if (!frame?.imageUrl) {
+          console.warn(`No image URL found in frame data for ${id}`);
+          return undefined;
+        }
+        return frame.imageUrl;
       } catch (error) {
         console.error(`Failed to get frame for ${id}:`, error);
+        return undefined;
       }
     }
   }

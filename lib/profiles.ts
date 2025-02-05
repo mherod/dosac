@@ -109,7 +109,7 @@ export const characters: Record<string, Character> = {
     fullName: "Malcolm Tucker",
     description:
       "Former Director of Communications for Number 10 and Opposition, feared Scottish enforcer of government policy",
-    image: "/characters/malcom.jpg",
+    image: "/characters/malcolm.jpg",
     occupation:
       "Media Adviser to the Leader of the Opposition (Series 4), Director of Communications for Number 10 (Series 1-3)",
     nationality: "Scottish",
