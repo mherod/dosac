@@ -10,45 +10,49 @@ import { forwardRef } from "react";
 
 /**
  * Props for the SeriesSelect component
+ * @interface SeriesSelectProps
  */
 interface SeriesSelectProps {
-  /** Currently selected season number */
+  /** Currently selected season number (1-4) or undefined for all seasons */
   season?: number;
-  /** Currently selected episode number */
+  /** Currently selected episode number (1-3) or undefined for all episodes */
   episode?: number;
-  /** Callback when season or episode selection changes */
+  /** Callback fired when season or episode selection changes */
   onFilterChange: (updates: { season?: number; episode?: number }) => void;
-  /** Additional CSS classes */
+  /** Additional CSS classes to apply to the container */
   className?: string;
-  /** Whether the component is in search mode */
+  /** When true, uses filter callbacks instead of navigation */
   isSearchMode?: boolean;
 }
 
 /**
  * Props for the SelectOption component
+ * @interface SelectOptionProps
  */
 interface SelectOptionProps {
-  /** Value for the select option */
+  /** Value to be passed to the select component on selection */
   value: string;
-  /** Optional href for linking options */
+  /** Optional URL for linking the option to a route */
   href?: string;
-  /** Content to display in the option */
+  /** Content to display within the option */
   children: React.ReactNode;
-  /** Additional CSS classes */
+  /** Additional CSS classes to apply to the option */
   className?: string;
 }
 
 /**
- * Component for rendering a select option with optional link functionality
- * @param props - The component props
+ * Renders a select option that can optionally be wrapped in a link
+ * @component
+ * @param props - Component props
  * @param props.value - Value for the select option
- * @param props.href - Optional href for linking options
+ * @param props.href - Optional href for linking the option
  * @param props.children - Content to display in the option
  * @param props.className - Additional CSS classes
- * @returns A select option component with optional link wrapper
+ * @param ref - Forwarded ref for the select item
+ * @returns A select option component, optionally wrapped in a link
  */
 const SelectOption = forwardRef<
-  React.ElementRef<typeof SelectItem>,
+  React.ComponentRef<typeof SelectItem>,
   SelectOptionProps
 >(({ value, href, children, className }, ref) => {
   if (href) {
@@ -68,13 +72,32 @@ const SelectOption = forwardRef<
 SelectOption.displayName = "SelectOption";
 
 /**
+ * A dual select component for choosing series and episode numbers
+ * @component
+ * @param props - Component props
+ * @param props.season - Currently selected season number
+ * @param props.episode - Currently selected episode number
+ * @param props.onFilterChange - Callback when selection changes
+ * @param props.className - Additional CSS classes
+ * @param props.isSearchMode - Whether to use filter mode instead of navigation
+ * @returns A component with two select dropdowns for series and episode selection
  *
- * @param root0
- * @param root0.season
- * @param root0.episode
- * @param root0.onFilterChange
- * @param root0.className
- * @param root0.isSearchMode
+ * @example
+ * // Navigation mode (default)
+ * <SeriesSelect
+ *   season={1}
+ *   episode={2}
+ *   onFilterChange={(updates) => console.log(updates)}
+ * />
+ *
+ * @example
+ * // Search/filter mode
+ * <SeriesSelect
+ *   season={1}
+ *   episode={2}
+ *   onFilterChange={handleFilterChange}
+ *   isSearchMode={true}
+ * />
  */
 export function SeriesSelect({
   season,
@@ -83,6 +106,10 @@ export function SeriesSelect({
   className = "",
   isSearchMode = false,
 }: SeriesSelectProps) {
+  /**
+   * Handles changes to the series selection
+   * @param value - The new series value
+   */
   const handleSeriesChange = (value: string) => {
     const newSeason = value !== "all" ? parseInt(value, 10) : undefined;
 
@@ -99,6 +126,10 @@ export function SeriesSelect({
     }
   };
 
+  /**
+   * Handles changes to the episode selection
+   * @param value - The new episode value
+   */
   const handleEpisodeChange = (value: string) => {
     const newEpisode = value !== "all" ? parseInt(value, 10) : undefined;
 

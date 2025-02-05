@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
   getSeriesInfo,
   getAllSeries,
@@ -8,6 +9,7 @@ import { formatPageTitle } from "@/lib/constants";
 import { SeriesPage } from "@/components/series-page";
 
 // Enable PPR for this route
+// noinspection JSUnusedGlobalSymbols
 export const experimental_ppr = true;
 
 /**
@@ -42,11 +44,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
-  if (!series) return {};
+  if (!series) notFound();
 
   return {
     title: formatPageTitle(`Series ${series.number}`),
-    description: series.shortSummary,
+    description: series.shortSummary
+      .map((part) => (typeof part === "string" ? part : part.text))
+      .join(""),
   };
 }
 

@@ -29,7 +29,10 @@ export function SearchBar({ value, onChange, className }: SearchBarProps) {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={cn(
-        "w-full border-[#ffffff33] bg-transparent text-white placeholder:text-[#ffffff66] focus-visible:ring-[#1d70b8]",
+        "px-3 py-1.5 text-sm",
+        "bg-transparent border border-white/20 rounded",
+        "text-white placeholder:text-white/60",
+        "focus:ring-[#1d70b8] focus:border-white/40",
         className,
       )}
     />

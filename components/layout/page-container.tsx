@@ -13,6 +13,7 @@ interface PageContainerProps {
  * @param props - Component props
  * @param props.children - The content to render inside the container
  * @param props.className - Optional additional className
+ * @returns A main element containing the page content with consistent padding and width
  */
 export function PageContainer({ children, className }: PageContainerProps) {
   return (

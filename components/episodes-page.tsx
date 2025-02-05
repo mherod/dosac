@@ -9,8 +9,10 @@ import { EpisodeFramesCard } from "@/components/episode-frames-card";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CalendarIcon, ClockIcon, ArrowRightIcon } from "lucide-react";
-import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { PageHeader } from "@/components/layout/page-header";
+import { PageLayout } from "@/components/layout/page-layout";
+import { characters } from "@/lib/profiles";
+import { getEpisodeListBreadcrumbs } from "@/lib/navigation";
+import { cn, processTextWithLinks } from "@/lib/utils";
 
 /**
  * Interface for EpisodesPage component props
@@ -42,7 +44,7 @@ export async function EpisodesPage({ params }: EpisodesPageProps) {
 
   // Group frames by episode
   const episodeFrames = new Map<string, typeof allFrames>();
-  allFrames.forEach((frame) => {
+  for (const frame of allFrames) {
     const { season } = parseEpisodeId(frame.episode);
     if (season === series.number) {
       if (!episodeFrames.has(frame.episode)) {
@@ -50,7 +52,7 @@ export async function EpisodesPage({ params }: EpisodesPageProps) {
       }
       episodeFrames.get(frame.episode)?.push(frame);
     }
-  });
+  }
 
   // Convert to array and sort by episode number
   const episodesWithFrames = Array.from(episodeFrames.entries())
@@ -61,94 +63,99 @@ export async function EpisodesPage({ params }: EpisodesPageProps) {
     })
     .sort((a, b) => a.episodeNumber - b.episodeNumber);
 
-  const breadcrumbItems = [
-    { label: "Series", href: "/series" },
-    { label: `Series ${series.number}`, href: `/series/${series.number}` },
-    { label: "Episodes", current: true },
-  ];
+  const breadcrumbs = getEpisodeListBreadcrumbs(series.number, true);
+
+  const headerContent = (
+    <div className="space-y-4">
+      <h1 className="text-5xl font-bold tracking-tight text-slate-900">
+        Series {series.number} Episodes
+      </h1>
+      <p className="text-lg text-slate-600 max-w-[750px]">
+        {series.longSummary.map((part, index) => {
+          if (typeof part === "string") {
+            return <span key={index}>{part}</span>;
+          }
+          const character = characters[part.profileId];
+          return (
+            <Link
+              key={index}
+              href={`/profiles/${part.profileId}`}
+              className="text-blue-600 hover:underline"
+            >
+              {character?.name || part.text}
+            </Link>
+          );
+        })}
+      </p>
+      <div className="flex items-center gap-2">
+        <Badge variant="secondary">{episodes.length} Episodes</Badge>
+      </div>
+    </div>
+  );
 
   return (
-    <main className="container py-12 max-w-7xl">
-      <PageHeader>
-        <BreadcrumbNav items={breadcrumbItems} />
-
-        <div className="space-y-4">
-          <h1 className="text-5xl font-bold tracking-tight text-slate-900">
-            Series {series.number} Episodes
-          </h1>
-          <p className="text-lg text-slate-600 max-w-[750px]">
-            {series.longSummary}
-          </p>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary">{episodes.length} Episodes</Badge>
-          </div>
-        </div>
-      </PageHeader>
-
-      <div className="container py-12">
-        <div className="grid gap-6">
-          {episodesWithFrames.map(({ episodeNumber, frames, info }) => (
-            <Card
-              key={episodeNumber}
-              className="group border border-slate-200 shadow-sm"
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <Link
-                      href={`/series/${series.number}/episode/${episodeNumber}`}
-                      className="inline-block group-hover:text-blue-600 transition-colors"
-                    >
-                      <h2 className="text-2xl font-semibold text-slate-900">
-                        {info?.title || `Episode ${episodeNumber}`}
-                      </h2>
-                    </Link>
-                    {info?.shortSummary && (
-                      <p className="text-slate-600">{info.shortSummary}</p>
-                    )}
-                    <div className="flex items-center gap-4 text-sm text-slate-600">
-                      {info?.airDate && (
-                        <div className="flex items-center gap-1">
-                          <CalendarIcon className="h-4 w-4" />
-                          <span>
-                            {new Date(info.airDate).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              },
-                            )}
-                          </span>
-                        </div>
-                      )}
-                      {info?.runtime && (
-                        <div className="flex items-center gap-1">
-                          <ClockIcon className="h-4 w-4" />
-                          <span>{info.runtime} minutes</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+    <PageLayout breadcrumbs={breadcrumbs} headerContent={headerContent}>
+      <div className="grid gap-6">
+        {episodesWithFrames.map(({ episodeNumber, frames, info }) => (
+          <Card
+            key={episodeNumber}
+            className="group border border-slate-200 shadow-sm"
+          >
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="space-y-2">
                   <Link
                     href={`/series/${series.number}/episode/${episodeNumber}`}
-                    className="text-slate-600 hover:text-blue-600 transition-colors"
+                    className="inline-block group-hover:text-blue-600 transition-colors"
                   >
-                    <ArrowRightIcon className="h-5 w-5" />
+                    <h2 className="text-2xl font-semibold text-slate-900">
+                      {info?.title || `Episode ${episodeNumber}`}
+                    </h2>
                   </Link>
+                  {info?.shortSummary && (
+                    <p className="text-slate-600">
+                      {processTextWithLinks(info.shortSummary)}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-4 text-sm text-slate-600">
+                    {info?.airDate && (
+                      <div className="flex items-center gap-1">
+                        <CalendarIcon className="h-4 w-4" />
+                        <span>
+                          {new Date(info.airDate).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </div>
+                    )}
+                    {info?.runtime && (
+                      <div className="flex items-center gap-1">
+                        <ClockIcon className="h-4 w-4" />
+                        <span>{info.runtime} minutes</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <EpisodeFramesCard
-                  seriesNumber={series.number}
-                  episodeNumber={episodeNumber}
-                  frames={frames}
-                />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <Link
+                  href={`/series/${series.number}/episode/${episodeNumber}`}
+                  className="text-slate-600 hover:text-blue-600 transition-colors"
+                >
+                  <ArrowRightIcon className="h-5 w-5" />
+                </Link>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <EpisodeFramesCard
+                seriesNumber={series.number}
+                episodeNumber={episodeNumber}
+                frames={frames}
+              />
+            </CardContent>
+          </Card>
+        ))}
       </div>
-    </main>
+    </PageLayout>
   );
 }

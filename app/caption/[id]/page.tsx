@@ -7,9 +7,7 @@ import { CaptionEditor } from "./caption-editor";
 import { FrameStrip } from "@/components/frame-strip";
 import type { Screenshot } from "@/lib/types";
 import { parseEpisodeId } from "@/lib/frames";
-import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { PageHeader } from "@/components/layout/page-header";
-import { PageContainer } from "@/components/layout/page-container";
+import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;
@@ -138,24 +136,18 @@ export default async function Page({ params, searchParams }: PageProps) {
   ];
 
   return (
-    <>
-      <PageHeader>
-        <BreadcrumbNav items={breadcrumbItems} />
-      </PageHeader>
-
-      <div className="space-y-6">
-        <div className="flex items-center justify-center">
-          <FrameStrip
-            screenshots={[...previousFrames, frame, ...nextFrames].filter(
-              (f): f is Screenshot =>
-                !!f && typeof f.id === "string" && typeof f.speech === "string",
-            )}
-            centerScreenshot={frame}
-            frameWidth={200}
-          />
-        </div>
-        <CaptionEditor screenshot={combinedFrame} />
+    <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
+      <div className="flex items-center justify-center">
+        <FrameStrip
+          screenshots={[...previousFrames, frame, ...nextFrames].filter(
+            (f): f is Screenshot =>
+              !!f && typeof f.id === "string" && typeof f.speech === "string",
+          )}
+          centerScreenshot={frame}
+          frameWidth={200}
+        />
       </div>
-    </>
+      <CaptionEditor screenshot={combinedFrame} />
+    </CaptionPageLayout>
   );
 }

@@ -50,9 +50,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = episode?.title || `Episode ${resolvedParams.episodeId}`;
 
+  const description = episode?.shortSummary
+    ? episode.shortSummary
+        .map((part) => (typeof part === "string" ? part : part.text))
+        .join("")
+    : series.shortSummary
+        .map((part) => (typeof part === "string" ? part : part.text))
+        .join("");
+
   return {
     title: formatPageTitle(`${title} | Series ${series.number}`),
-    description: episode?.shortSummary || series.shortSummary,
+    description,
   };
 }
 

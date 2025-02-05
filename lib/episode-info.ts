@@ -1,3 +1,5 @@
+import { characters } from "./profiles";
+
 export type WriterRole = "writer" | "additional material" | "story";
 export interface WriterCredit {
   name: string;
@@ -19,6 +21,9 @@ export enum PolicyArea {
   Housing = "Housing",
 }
 
+/**
+ *
+ */
 export interface EpisodeInfo {
   seriesNumber: number;
   episodeNumber: number;
@@ -30,8 +35,14 @@ export interface EpisodeInfo {
   parsedDate: Date;
   filmingDates?: [Date, Date];
   locations?: string[];
-  shortSummary: string;
-  longSummary?: string;
+  shortSummary: (
+    | string
+    | { text: string; profileId: keyof typeof characters }
+  )[];
+  longSummary?: (
+    | string
+    | { text: string; profileId: keyof typeof characters }
+  )[];
   runtime: number;
   notes?: string[];
   policyAreas?: PolicyArea[];
@@ -54,8 +65,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 4, 19),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Following intense media pressure, Minister Cliff Lawton was removed from office and Hugh Abbott appointed as Minister for Social Affairs. Abbott's first major policy initiative, a benefit fraud detection unit, faced immediate scrutiny when Treasury consultation procedures were bypassed.",
+    shortSummary: [
+      "Following intense media pressure, ",
+      { text: "Cliff Lawton", profileId: "cliff" },
+      " was removed from office and ",
+      { text: "Hugh Abbott", profileId: "hugh" },
+      " appointed as Minister for Social Affairs. Abbott's first major policy initiative, a benefit fraud detection unit, faced immediate scrutiny when Treasury consultation procedures were bypassed.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -80,8 +96,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 4, 26),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Government Communications Director Malcolm Tucker intervened in departmental affairs after concerns arose about Minister Abbott's disconnect from public sentiment. A focus group consultation on contradictory policies was compromised when it emerged that one participant had undisclosed media industry connections.",
+    shortSummary: [
+      "Government Communications Director ",
+      { text: "Malcolm Tucker", profileId: "malcolm" },
+      " intervened in departmental affairs after concerns arose about Minister ",
+      { text: "Abbott", profileId: "hugh" },
+      "'s disconnect from public sentiment. A focus group consultation on contradictory policies was compromised when it emerged that one participant had undisclosed media industry connections.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -105,8 +126,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 4, 26),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Minister Abbott faced serious allegations regarding property holdings when journalists uncovered evidence that he was deliberately maintaining an empty second residence while the Second Home Housing Bill was under consideration.",
+    shortSummary: [
+      "A ministerial communications incident involving an eight-year-old constituent complicated ",
+      { text: "Abbott", profileId: "hugh" },
+      "'s position on special education policy reform. Senior Civil Servant ",
+      { text: "Terri Coverley", profileId: "terri" },
+      " faced scrutiny over departmental email protocols.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
@@ -131,8 +157,17 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 9, 20),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "During Minister Abbott's factory visit, a confrontational encounter with a member of the public sparked a media crisis. Senior Press Officer Robyn Murdoch assumed temporary responsibilities during Terri Coverley's compassionate leave, while adviser Ollie Reeder was seconded to Number 10 for cross-party communications.",
+    shortSummary: [
+      "During Minister ",
+      { text: "Abbott", profileId: "hugh" },
+      "'s factory visit, a confrontational encounter with a member of the public sparked a media crisis. Senior Press Officer ",
+      { text: "Robyn Murdoch", profileId: "robyn" },
+      " assumed temporary responsibilities during ",
+      { text: "Terri Coverley", profileId: "terri" },
+      "'s compassionate leave, while adviser ",
+      { text: "Ollie Reeder", profileId: "ollie" },
+      " was seconded to Number 10 for cross-party communications.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -157,8 +192,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 9, 27),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Amid cabinet reshuffle speculation, the Prime Minister's strategic adviser Julius Nicholson's interventions created departmental tensions. Senior Press Officer Robyn Murdoch was excluded from key communications briefings following procedural concerns.",
+    shortSummary: [
+      "Amid cabinet reshuffle speculation, the Prime Minister's strategic adviser ",
+      { text: "Julius Nicholson", profileId: "julius" },
+      "'s interventions created departmental tensions. Senior Press Officer ",
+      { text: "Robyn Murdoch", profileId: "robyn" },
+      " was excluded from key communications briefings following procedural concerns.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Technology],
     cast: [
@@ -183,8 +223,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2005, 9, 3),
     filmingDates: [new Date(2004, 9, 15), new Date(2004, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "A ministerial communications incident involving an eight-year-old constituent complicated Abbott's position on special education policy reform. Senior Civil Servant Terri Coverley faced scrutiny over departmental email protocols.",
+    shortSummary: [
+      "A ministerial communications incident involving an eight-year-old constituent complicated ",
+      { text: "Abbott", profileId: "hugh" },
+      "'s position on special education policy reform. Senior Civil Servant ",
+      { text: "Terri Coverley", profileId: "terri" },
+      " faced scrutiny over departmental email protocols.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -222,8 +267,17 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 24),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "The appointment of Nicola Murray MP as Secretary of State marked a significant transition at DoSAC. The retention of existing advisory staff Reeder and Cullen provided continuity during this period. Meanwhile, Communications Director Tucker coordinated media strategy for an upcoming by-election.",
+    shortSummary: [
+      "The appointment of ",
+      { text: "Nicola Murray MP", profileId: "nicola" },
+      " as Secretary of State marked a significant transition at DoSAC. The retention of existing advisory staff ",
+      { text: "Reeder", profileId: "ollie" },
+      " and ",
+      { text: "Cullen", profileId: "glenn" },
+      " provided continuity during this period. Meanwhile, Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      " coordinated media strategy for an upcoming by-election.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -266,8 +320,15 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 31),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "One week into Secretary Murray's tenure, the department confronted a serious data integrity crisis involving immigration statistics. Media speculation intensified regarding the new minister's position.",
+    shortSummary: [
+      "Opposition Leader ",
+      { text: "Murray", profileId: "nicola" },
+      " confronted escalating pressures following electoral defeat, including public harassment incidents and leaked strategic documentation. Internal tensions emerged regarding Shadow Cabinet member ",
+      { text: "Dan Miller", profileId: "dan" },
+      "'s increasing collaboration with Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      ".",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -310,10 +371,16 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 7),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Secretary Murray's preparation for her Eastbourne conference address coincided with internal disputes between Communications Director Tucker and Senior Adviser Glenn Cullen over strategic messaging.",
+    shortSummary: [
+      { text: "Stewart Pearson", profileId: "stewart" },
+      " takes ",
+      { text: "Peter Mannion", profileId: "peter" },
+      " to a 'Thought Camp' at a remote country mansion. While they're away and out of mobile phone range, ",
+      { text: "Fergus", profileId: "fergus" },
+      " invites an attractive female economist into the department to discuss her idea about creating a taxpayer-funded community bank. However, when NHS housing campaigner 'Mr Tickle' commits suicide, Fergus is forced to make a rash decision and Peter finds himself on a slippery slope.",
+    ],
     runtime: 30,
-    policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
+    policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
       {
         character: "Nicola Murray",
@@ -354,8 +421,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 14),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "A scheduled departmental review by Shadow Minister Peter Mannion coincided with Secretary Murray addressing urgent matters regarding her daughter's education.",
+    shortSummary: [
+      "A scheduled departmental review by Shadow Minister ",
+      { text: "Peter Mannion", profileId: "peter" },
+      " coincided with Secretary ",
+      { text: "Murray", profileId: "nicola" },
+      " addressing urgent matters regarding her daughter's education.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -396,10 +468,15 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 21),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "During a BBC Radio 5 Live debate between Secretary Murray and Shadow Minister Mannion, breaking news developments prompted emergency intervention from Communications Director Tucker.",
+    shortSummary: [
+      "The controversial key-worker housing policy faced increasing scrutiny as both Secretary ",
+      { text: "Mannion", profileId: "peter" },
+      " and former Opposition Leader ",
+      { text: "Murray", profileId: "nicola" },
+      " attempted to distance themselves from mounting public criticism.",
+    ],
     runtime: 30,
-    policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
+    policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
       {
         character: "Nicola Murray",
@@ -438,8 +515,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 28),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Media speculation about Secretary Murray's leadership potential during the Prime Minister's international diplomatic tour necessitated strategic intervention from Communications Director Tucker.",
+    shortSummary: [
+      "Media speculation about Secretary ",
+      { text: "Murray", profileId: "nicola" },
+      "'s leadership potential during the Prime Minister's international diplomatic tour necessitated strategic intervention from Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      ".",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -482,8 +564,11 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 5),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "The department's Healthy Living initiative launch proceeded during Communications Director Tucker's unprecedented absence from Westminster.",
+    shortSummary: [
+      "The department's Healthy Living initiative launch proceeded during Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      "'s unprecedented absence from Westminster.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Health],
     cast: [
@@ -526,8 +611,11 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2009, 9, 12),
     filmingDates: [new Date(2008, 9, 15), new Date(2008, 9, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "As election preparations intensified, Communications Director Tucker faced diminishing political support until receiving assistance from an unexpected political quarter.",
+    shortSummary: [
+      "As election preparations intensified, Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      " faced diminishing political support until receiving assistance from an unexpected political quarter.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -559,8 +647,15 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 8, 8),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      'MP Peter Mannion is taking charge at the Department of Social Affairs and Citizenship as part of a coalition government. However, he must also work with junior minister Fergus Williams, an arrangement neither man is enjoying. As the series begins, Fergus excitedly prepares to launch his new digital education initiative Silicon Playgrounds, with the tag line "I Call App Britain", until Downing Street spin doctor Stewart Pearson announces technophobe Peter is going to be the spokesman for it instead.',
+    shortSummary: [
+      "MP ",
+      { text: "Peter Mannion", profileId: "peter" },
+      " is taking charge at the Department of Social Affairs and Citizenship as part of a coalition government. However, he must also work with junior minister ",
+      { text: "Fergus Williams", profileId: "fergus" },
+      ", an arrangement neither man is enjoying. As the series begins, Fergus excitedly prepares to launch his new digital education initiative Silicon Playgrounds, with the tag line 'I Call App Britain', until Downing Street spin doctor ",
+      { text: "Stewart Pearson", profileId: "stewart" },
+      " announces technophobe Peter is going to be the spokesman for it instead.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -587,8 +682,15 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 8, 15),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Opposition Leader Murray confronted escalating pressures following electoral defeat, including public harassment incidents and leaked strategic documentation. Internal tensions emerged regarding Shadow Cabinet member Dan Miller's increasing collaboration with Communications Director Tucker.",
+    shortSummary: [
+      "Opposition Leader ",
+      { text: "Murray", profileId: "nicola" },
+      " confronted escalating pressures following electoral defeat, including public harassment incidents and leaked strategic documentation. Internal tensions emerged regarding Shadow Cabinet member ",
+      { text: "Dan Miller", profileId: "dan" },
+      "'s increasing collaboration with Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      ".",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -616,8 +718,14 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 8, 22),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      'Stewart Pearson takes Peter Mannion to a "Thought Camp" at a remote country mansion. While they\'re away and out of mobile phone range, Fergus invites an attractive female economist into the department to discuss her idea about creating a taxpayer-funded community bank. However, when NHS housing campaigner "Mr Tickle" commits suicide, Fergus is forced to make a rash decision and Peter finds himself on a slippery slope.',
+    shortSummary: [
+      { text: "Stewart Pearson", profileId: "stewart" },
+      " takes ",
+      { text: "Peter Mannion", profileId: "peter" },
+      " to a 'Thought Camp' at a remote country mansion. While they're away and out of mobile phone range, ",
+      { text: "Fergus", profileId: "fergus" },
+      " invites an attractive female economist into the department to discuss her idea about creating a taxpayer-funded community bank. However, when NHS housing campaigner 'Mr Tickle' commits suicide, Fergus is forced to make a rash decision and Peter finds himself on a slippery slope.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
@@ -642,8 +750,15 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 8, 29),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Communications Director Tucker orchestrated a coordinated strategy with Shadow Ministers Miller and Swain to secure Opposition Leader Murray's resignation during her Bradford constituency visit.",
+    shortSummary: [
+      "Communications Director ",
+      { text: "Tucker", profileId: "malcolm" },
+      " orchestrated a coordinated strategy with Shadow Ministers ",
+      { text: "Miller", profileId: "dan" },
+      " and Swain to secure Opposition Leader ",
+      { text: "Murray", profileId: "nicola" },
+      "'s resignation during her Bradford constituency visit.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [
@@ -671,8 +786,13 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 9, 13),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "The controversial key-worker housing policy faced increasing scrutiny as both Secretary Mannion and former Opposition Leader Murray attempted to distance themselves from mounting public criticism.",
+    shortSummary: [
+      "The controversial key-worker housing policy faced increasing scrutiny as both Secretary ",
+      { text: "Mannion", profileId: "peter" },
+      " and former Opposition Leader ",
+      { text: "Murray", profileId: "nicola" },
+      " attempted to distance themselves from mounting public criticism.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Housing],
     cast: [
@@ -717,8 +837,17 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 9, 20),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "The Lord Justice Goolding Inquiry examined the circumstances surrounding Mr Tickel's death and systemic issues regarding unauthorized information disclosure within government communications.",
+    shortSummary: [
+      "The Lord Justice Goolding Inquiry examined the circumstances surrounding Mr Tickel's death and systemic issues regarding unauthorized information disclosure within government communications. Key witnesses included ",
+      { text: "Malcolm Tucker", profileId: "malcolm" },
+      ", ",
+      { text: "Nicola Murray", profileId: "nicola" },
+      ", ",
+      { text: "Peter Mannion", profileId: "peter" },
+      ", and ",
+      { text: "Stewart Pearson", profileId: "stewart" },
+      ".",
+    ],
     runtime: 60,
     policyAreas: [PolicyArea.Economy, PolicyArea.Education],
     cast: [
@@ -751,8 +880,11 @@ export const episodeInfo: EpisodeInfo[] = [
     parsedDate: new Date(2012, 9, 27),
     filmingDates: [new Date(2011, 8, 15), new Date(2011, 8, 22)],
     locations: ["BBC Television Centre", "Westminster"],
-    shortSummary:
-      "Home Office police funding reductions created significant administrative backlogs. Shadow Minister Miller's fact-finding visit to local law enforcement facilities highlighted growing tensions between departmental jurisdictions.",
+    shortSummary: [
+      "Home Office police funding reductions created significant administrative backlogs. Shadow Minister ",
+      { text: "Miller", profileId: "dan" },
+      "'s fact-finding visit to local law enforcement facilities highlighted growing tensions between departmental jurisdictions.",
+    ],
     runtime: 30,
     policyAreas: [PolicyArea.Economy, PolicyArea.Immigration],
     cast: [

@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/react";
 import { MainNav } from "@/components/main-nav";
 import { Footer } from "@/components/footer";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { Toaster } from "@/components/ui/toast";
 import { SITE_NAME } from "@/lib/constants";
 
@@ -44,6 +44,7 @@ export const metadata: Metadata = {
  *
  * @param root0
  * @param root0.children
+ * @returns
  */
 export default function RootLayout({
   children,
@@ -62,12 +63,12 @@ export default function RootLayout({
           <Suspense>
             <MainNav />
           </Suspense>
-          <main className="flex flex-col min-h-screen">
-            <div className="flex-1 container max-w-6xl mx-auto px-4 md:px-6">
+          <main className="min-h-screen min-">
+            <div className="container max-w-7xl mx-auto px-4 md:px-6">
               {children}
             </div>
-            <Footer />
           </main>
+          <Footer />
           <Toaster />
         </ThemeProvider>
         <Analytics />

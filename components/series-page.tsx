@@ -6,8 +6,9 @@ import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { parseEpisodeId } from "@/lib/frames";
 import { getSeriesInfo } from "@/lib/series-info";
 import { Badge } from "@/components/ui/badge";
-import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { PageHeader } from "@/components/layout/page-header";
+import { PageLayout } from "@/components/layout/page-layout";
+import { processTextWithLinks } from "@/lib/utils";
+import { getSeriesBreadcrumbs } from "@/lib/navigation";
 
 /**
  * Interface for SeriesPage component props
@@ -54,55 +55,60 @@ async function SeriesPageContent({ params }: SeriesPageProps) {
     })
     .sort((a, b) => a.episodeNumber - b.episodeNumber);
 
-  const breadcrumbItems = [
-    { label: "Series", href: "/series" },
-    { label: `Series ${series.number}`, current: true },
-  ];
+  const breadcrumbs = getSeriesBreadcrumbs(series.number, true);
 
-  return (
-    <main className="container py-12 max-w-7xl">
-      <PageHeader>
-        <BreadcrumbNav items={breadcrumbItems} />
-
-        <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-                Series {series.number}
-              </h1>
-              <div className="mt-4 flex items-center gap-3">
-                <Badge variant="secondary">
-                  {series.episodeCount} Episodes
-                </Badge>
-                <Link
-                  href={`/series/${series.number}/episode`}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  View all episodes →
-                </Link>
-              </div>
-            </div>
-            <div className="prose prose-invert max-w-none">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {series.longSummary}
-              </p>
-            </div>
-          </div>
-
-          {/* Featured frame could go here */}
-          <div className="hidden md:block">
-            {episodes[0]?.frames[0] && (
-              <div className="aspect-video rounded-lg">
-                <ScreenshotGrid
-                  screenshots={[episodes[0].frames[0]]}
-                  multiselect={false}
-                />
-              </div>
-            )}
+  const headerContent = (
+    <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
+            Series {series.number}
+          </h1>
+          <div className="mt-4 flex items-center gap-3">
+            <Badge variant="secondary">{series.episodeCount} Episodes</Badge>
+            <Link
+              href={`/series/${series.number}/episode`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              View all episodes →
+            </Link>
           </div>
         </div>
-      </PageHeader>
-    </main>
+        <div className="prose prose-invert max-w-none">
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            {processTextWithLinks(series.longSummary)}
+          </p>
+        </div>
+      </div>
+
+      {/* Featured frame could go here */}
+      <div className="hidden md:block">
+        {episodes[0]?.frames[0] && (
+          <div className="aspect-video rounded-lg">
+            <ScreenshotGrid
+              screenshots={[episodes[0].frames[0]]}
+              multiselect={false}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <PageLayout breadcrumbs={breadcrumbs} headerContent={headerContent}>
+      <div className="space-y-8">
+        {/* Featured frame */}
+        {episodes[0]?.frames[0] && (
+          <div className="aspect-video rounded-lg">
+            <ScreenshotGrid
+              screenshots={[episodes[0].frames[0]]}
+              multiselect={false}
+            />
+          </div>
+        )}
+      </div>
+    </PageLayout>
   );
 }
 

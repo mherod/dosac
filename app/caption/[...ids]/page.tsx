@@ -4,11 +4,7 @@ import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
 import { DualCaptionEditor } from "./dual-caption-editor";
 import { Suspense } from "react";
-import Link from "next/link";
-import { parseEpisodeId } from "@/lib/frames";
-import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { PageHeader } from "@/components/layout/page-header";
-import { PageContainer } from "@/components/layout/page-container";
+import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;
@@ -164,32 +160,14 @@ export default async function Page({ params, searchParams }: PageProps) {
     notFound();
   }
 
-  // Get series and episode info for the first frame
-  const { season: seriesNumber, episode: episodeNumber } = parseEpisodeId(
-    frames[0].episode,
-  );
-
-  const breadcrumbItems = [
-    { label: "Series", href: "/series" },
-    { label: `Series ${seriesNumber}`, href: `/series/${seriesNumber}` },
-    {
-      label: `Episode ${episodeNumber}`,
-      href: `/series/${seriesNumber}/episode/${episodeNumber}`,
-    },
-    { label: "Multi-Frame Caption", current: true },
-  ];
-
   return (
-    <>
-      <PageHeader>
-        <BreadcrumbNav items={breadcrumbItems} />
-      </PageHeader>
-
-      <div className="space-y-6">
-        <Suspense>
-          <DualCaptionEditor frames={frames} />
-        </Suspense>
-      </div>
-    </>
+    <CaptionPageLayout
+      episodeId={frames[0].episode}
+      pageTitle="Multi-Frame Caption"
+    >
+      <Suspense>
+        <DualCaptionEditor frames={frames} />
+      </Suspense>
+    </CaptionPageLayout>
   );
 }

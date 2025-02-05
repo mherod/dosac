@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ProfileImageBadge } from "@/components/profile-image-badge";
+import { ProfileImageBadge } from "../profile-image-badge";
 import { FEATURED_CHARACTERS } from "@/lib/profiles";
 
 /**
