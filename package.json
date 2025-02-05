@@ -14,7 +14,9 @@
     "face-tagger": "tsx scripts/face-tagger.ts",
     "analyze-clusters": "tsx scripts/analyze-clusters.ts",
     "extract-clusters": "tsx scripts/extract-face-clusters.ts",
-    "analyze-appearances": "tsx scripts/analyze-appearances.ts"
+    "analyze-appearances": "tsx scripts/analyze-appearances.ts",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -74,7 +76,7 @@
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^9.19.0",
     "@next/eslint-plugin-next": "^15.1.6",
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.14",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.11.30",
     "@types/react": "^19.0.8",
@@ -97,7 +99,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.5.12",
     "tailwindcss": "^3.4.1",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2"

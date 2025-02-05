@@ -29,7 +29,8 @@ export type TextOrLink =
  * @param episodeId - The episode ID to format
  * @returns The formatted episode string
  */
-export function formatEpisodeId(episodeId: string): string {
+export function formatEpisodeId(episodeId: string | null | undefined): string {
+  if (!episodeId) return "";
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
   if (!match || !match[1] || !match[2]) return episodeId;
   return `S${parseInt(match[1])} E${parseInt(match[2])}`;
@@ -87,7 +88,7 @@ export function processTextWithLinks(
       return renderLink(`/profiles/${part.profileId}`, text, index);
     }
 
-    if ("episodeId" in part) {
+    if ("episodeId" in part && part.episodeId) {
       return renderLink(
         `/series/episode/${part.episodeId}`,
         `${formatEpisodeId(part.episodeId)} - ${part.text}`,
@@ -103,7 +104,11 @@ export function processTextWithLinks(
       );
     }
 
-    return renderLink(`/series/${part.seriesId}`, part.text, index);
+    if ("seriesId" in part) {
+      return renderLink(`/series/${part.seriesId}`, part.text, index);
+    }
+
+    return <span key={index}>{part.text}</span>;
   });
 }
 

@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["jest", "node"],
+    "isolatedModules": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": false
+  },
+  "include": ["**/*.test.ts", "**/*.test.tsx", "jest.config.js"],
+  "exclude": ["node_modules"]
+}

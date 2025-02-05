@@ -9,11 +9,10 @@ import { type Screenshot } from "@/lib/types";
  * @param episodeId - The episode ID string to format
  * @returns The formatted episode string
  */
-function formatEpisodeString(episodeId: string): string {
-  // Format from "s01e02" to "S1 E2"
+function formatEpisodeString(episodeId: string | null | undefined): string {
+  if (!episodeId) return "";
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
   if (!match || !match[1] || !match[2]) return episodeId;
-
   return `S${parseInt(match[1])} E${parseInt(match[2])}`;
 }
 

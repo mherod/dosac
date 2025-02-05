@@ -45,17 +45,19 @@ export class InvalidFrameIdError extends Error {
  * @returns Object containing the parsed season and episode numbers
  * @throws {InvalidFrameIdError} If the episode ID format is invalid
  */
-export function parseEpisodeId(episodeId: string): ParsedEpisodeId {
+export function parseEpisodeId(
+  episodeId: string | null | undefined,
+): ParsedEpisodeId {
+  if (!episodeId) {
+    throw new InvalidFrameIdError("Episode ID cannot be null or undefined");
+  }
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/);
   if (!match || !match[1] || !match[2]) {
-    throw new InvalidFrameIdError(
-      `Invalid episode ID format: ${episodeId}. Expected format: s01e01`,
-    );
+    throw new InvalidFrameIdError(`Invalid episode ID format: ${episodeId}`);
   }
-
   return {
-    season: parseInt(match[1], 10),
-    episode: parseInt(match[2], 10),
+    season: parseInt(match[1]),
+    episode: parseInt(match[2]),
   };
 }
 
