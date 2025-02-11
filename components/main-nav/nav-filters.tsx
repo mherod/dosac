@@ -7,6 +7,9 @@ import { DosacLogo } from "./dosac-logo";
 import { SeriesSelect } from "./series-select";
 import { SearchBar } from "./search-bar";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { ProfileImageBadge } from "../profile-image-badge";
+import { FEATURED_CHARACTERS } from "@/lib/profiles";
 
 /**
  * Filter state interface for navigation
@@ -76,9 +79,6 @@ export function NavFilters({
     <div className={cn("border-t border-[#ffffff1f] bg-[#0b0c0c]", className)}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
-          <div className="flex-shrink-0 min-w-0">
-            <DosacLogo />
-          </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto min-w-0">
             <div className="min-w-0 flex-shrink-0">
               <SeriesSelect
@@ -94,6 +94,24 @@ export function NavFilters({
                 onChange={handleSearchChange}
                 className="sm:w-64"
               />
+            </div>
+          </div>
+          <div className="flex items-center">
+            <div className="flex -space-x-2">
+              {FEATURED_CHARACTERS.map((character) => (
+                <Link
+                  key={character.id}
+                  href={`/profiles/${character.id}`}
+                  className="group relative hover:z-10"
+                  title={character.name}
+                >
+                  <ProfileImageBadge
+                    characterId={character.id}
+                    size="sm"
+                    className="border-2 border-[#1d70b8] group-hover:border-white transition-colors"
+                  />
+                </Link>
+              ))}
             </div>
           </div>
         </div>

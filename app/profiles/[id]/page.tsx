@@ -267,98 +267,99 @@ export default async function CharacterProfile({
   ).filter((frame): frame is Screenshot => frame !== null);
 
   return (
-    <main className="container py-6 max-w-7xl">
-      <header className="flex flex-col lg:flex-row gap-8 mb-12 items-start">
-        <div className="flex-grow">
-          <div className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {character.role.map((role) => (
-                <Badge
-                  key={role}
-                  variant="secondary"
-                  className="px-4 py-1 text-base font-medium"
-                >
-                  {roleLabels[role]}
-                </Badge>
-              ))}
+    <main className="container py-6 lg:py-12 max-w-7xl">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+        <aside className="lg:col-span-1 order-2 lg:order-1">
+          {character.image && (
+            <div className="mb-8 aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 shadow-lg sticky top-8">
+              <Image
+                src={character.image}
+                alt={character.name}
+                className="object-cover object-top w-full h-full"
+                priority
+                sizes="(max-width: 1024px) 100vw, 25vw"
+              />
             </div>
-            <div className="space-y-3">
-              <h1 className="text-4xl font-bold text-slate-900">
-                {character.name}
-              </h1>
-              <p className="text-xl text-slate-600 leading-relaxed max-w-3xl">
-                {character.description}
-              </p>
-            </div>
-          </div>
-        </div>
-        {character.image && (
-          <div className="w-full lg:w-80 aspect-[3/2] rounded-lg overflow-hidden border border-slate-200 shrink-0 shadow-lg">
-            <Image
-              src={character.image}
-              alt={character.name}
-              width={320}
-              height={213}
-              className="object-cover w-full h-full"
-              priority
-            />
-          </div>
-        )}
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <aside className="lg:col-span-1">
+          )}
           <ContentsList name={character.name} />
           <PersonalInfo character={character} />
         </aside>
 
-        <div className="lg:col-span-3 space-y-12">
-          {screenshots.length > 0 && (
-            <section id="highlights" className="space-y-6">
-              <h2 className="text-2xl font-bold text-slate-900">Highlights</h2>
-              <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
-                <ScreenshotGrid screenshots={screenshots} />
+        <div className="lg:col-span-3 order-1 lg:order-2">
+          <header className="mb-12">
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+                  {character.name}
+                </h1>
+                <p className="text-lg lg:text-xl text-slate-600 leading-relaxed">
+                  {character.description}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {character.role.map((role) => (
+                  <Badge
+                    key={role}
+                    variant="secondary"
+                    className="px-3 py-1 text-sm lg:text-base font-medium bg-slate-100"
+                  >
+                    {roleLabels[role]}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </header>
+
+          <div className="space-y-12">
+            {screenshots.length > 0 && (
+              <section id="highlights" className="space-y-6">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Highlights
+                </h2>
+                <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+                  <ScreenshotGrid screenshots={screenshots} />
+                </div>
+              </section>
+            )}
+
+            <section id="roles" className="space-y-4">
+              <h2 className="text-2xl font-bold text-slate-900">Roles</h2>
+              <div className="space-y-4">
+                {character.department.map((dept) => (
+                  <div key={dept} className="space-y-3">
+                    <h3 className="text-xl font-semibold text-slate-800">
+                      {departmentLabels[dept]}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {character.role.map((role) => (
+                        <Badge
+                          key={role}
+                          variant="secondary"
+                          className="px-3 py-0.5"
+                        >
+                          {roleLabels[role]}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
-          )}
 
-          <section id="roles" className="space-y-4">
-            <h2 className="text-2xl font-bold text-slate-900">Roles</h2>
-            <div className="space-y-4">
-              {character.department.map((dept) => (
-                <div key={dept} className="space-y-3">
-                  <h3 className="text-xl font-semibold text-slate-800">
-                    {departmentLabels[dept]}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {character.role.map((role) => (
-                      <Badge
-                        key={role}
-                        variant="secondary"
-                        className="px-3 py-0.5"
-                      >
-                        {roleLabels[role]}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <CollapsibleSection
-            id="details"
-            title="Details"
-            items={character.details}
-          />
-
-          {character.personal?.background?.career && (
             <CollapsibleSection
-              id="career"
-              title="Career History"
-              items={character.personal.background.career}
+              id="details"
+              title="Details"
+              items={character.details}
             />
-          )}
+
+            {character.personal?.background?.career && (
+              <CollapsibleSection
+                id="career"
+                title="Career History"
+                items={character.personal.background.career}
+              />
+            )}
+          </div>
         </div>
       </div>
 

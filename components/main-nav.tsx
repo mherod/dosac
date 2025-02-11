@@ -7,7 +7,7 @@ import { z } from "zod";
 import { TopBanner } from "./main-nav/top-banner";
 import { CivilServiceHeader } from "./main-nav/civil-service-header";
 import { NavFilters } from "./main-nav/nav-filters";
-import { BottomNav } from "./main-nav/bottom-nav";
+import { CategoryNav } from "./main-nav/category-nav";
 
 // Zod schemas for validation
 const NumberParamSchema = z
@@ -172,7 +172,7 @@ export function MainNav() {
       <Suspense>
         <MainNavContent />
       </Suspense>
-      <BottomNav />
+      <CategoryNav />
     </header>
   );
 }

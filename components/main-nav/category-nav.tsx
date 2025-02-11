@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
-import ProfileBadges from "./profile-badges";
 
-export function BottomNav() {
+export function CategoryNav() {
   return (
     <div className="border-t border-[#1d70b8] bg-[#1d70b8] py-1">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 py-2">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6">
             <Link
               href="/"
@@ -30,8 +29,7 @@ export function BottomNav() {
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <ProfileBadges />
+          <div className="flex items-center">
             <div className="text-xs text-white/60" suppressHydrationWarning>
               Last updated: {new Date().toLocaleDateString("en-GB")} | System
               ID: DQARS-2024

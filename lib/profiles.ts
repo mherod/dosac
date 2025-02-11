@@ -1,8 +1,7 @@
 import malcolm from "@/public/characters/malcom.jpg";
-import malcolm2 from "@/public/characters/malcom2.avif";
 import jamie from "@/public/characters/jamie.jpg";
 import peter from "@/public/characters/peter.jpg";
-import nicola from "@/public/characters/nicola.jpg";
+import nicola2 from "@/public/characters/nicola2.jpg";
 import terri from "@/public/characters/terri.webp";
 import type { StaticImageData } from "next/image";
 
@@ -285,6 +284,7 @@ export const characters: Record<string, Character> = {
       "Leader of the Opposition (2010-2012), Secretary of State for DoSAC (Series 3)",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
+    image: nicola2,
     personal: {
       family: {
         spouse: {
@@ -674,7 +674,6 @@ export const characters: Record<string, Character> = {
     ],
     frameHighlights: [
       "s03e02-04-25.320", // "You can't just overwrite minutes! You specifically can't do it, 'cause you can't unlock a PDF file."
-      "s01e01-17-15.400", // "What if the announcement is...there's no big announcement."
     ],
     party: PARTIES.LABOUR,
     relatedProfiles: [
@@ -1840,9 +1839,19 @@ export const charactersByRole = Object.entries(characters).reduce<
   },
 );
 
-export const FEATURED_CHARACTERS = [
-  { id: "malcolm", name: "Malcolm Tucker" },
-  { id: "nicola", name: "Nicola Murray" },
-  { id: "peter", name: "Peter Mannion" },
-  { id: "terri", name: "Terri Coverley" },
-] as const;
+// export const FEATURED_CHARACTERS = [
+//   { id: "malcolm", name: "Malcolm Tucker" },
+//   { id: "nicola", name: "Nicola Murray" },
+//   { id: "peter", name: "Peter Mannion" },
+//   { id: "terri", name: "Terri Coverley" },
+// ] as const;
+
+export const FEATURED_CHARACTERS = Object.entries(characters)
+  .filter(
+    ([, character]) => character.frameHighlights?.length || character.image,
+  )
+  .slice(0, 6)
+  .map(([id, character]) => ({
+    id,
+    name: character.name,
+  }));
