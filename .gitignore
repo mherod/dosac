@@ -41,3 +41,7 @@ public/*.mp4
 .DS_Store
 
 .env
+# Cursor Tools
+.cursor-tools.env
+.cursor-tools.config.json
+.repomix-output.txt

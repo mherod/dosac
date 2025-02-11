@@ -167,7 +167,11 @@ export async function getProfileImage(
   if (!character) return undefined;
 
   // Return the character's image if it exists
-  if (character.image) return character.image;
+  if (character.image) {
+    return typeof character.image === "string"
+      ? character.image
+      : character.image.src;
+  }
 
   // Try to get first frame highlight as fallback
   if (character.frameHighlights?.length) {

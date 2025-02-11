@@ -1,3 +1,11 @@
+import malcolm from "@/public/characters/malcom.jpg";
+import malcolm2 from "@/public/characters/malcom2.avif";
+import jamie from "@/public/characters/jamie.jpg";
+import peter from "@/public/characters/peter.jpg";
+import nicola from "@/public/characters/nicola.jpg";
+import terri from "@/public/characters/terri.webp";
+import type { StaticImageData } from "next/image";
+
 /** Department constants for character affiliations */
 export const DEPARTMENTS = {
   NUMBER_10: "Number 10",
@@ -86,7 +94,7 @@ export interface Character {
   shortName: string;
   fullName: string;
   description: string;
-  image?: string;
+  image?: string | StaticImageData;
   occupation?: string;
   nationality?: string;
   department: Department[];
@@ -109,7 +117,7 @@ export const characters: Record<string, Character> = {
     fullName: "Malcolm Tucker",
     description:
       "Former Director of Communications for Number 10 and Opposition, feared Scottish enforcer of government policy",
-    image: "/characters/malcolm.jpg",
+    image: malcolm,
     occupation:
       "Media Adviser to the Leader of the Opposition (Series 4), Director of Communications for Number 10 (Series 1-3)",
     nationality: "Scottish",
@@ -209,7 +217,7 @@ export const characters: Record<string, Character> = {
     fullName: "James McDonald",
     description:
       "Senior Press Officer and Malcolm Tucker's enforcer at Number 10",
-    image: "/characters/jamie.jpg",
+    image: jamie,
     occupation: "Senior Press Officer at Number 10",
     nationality: "Scottish",
     department: [DEPARTMENTS.NUMBER_10],
@@ -341,7 +349,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Peter Mannion MP",
     description:
       "Secretary of State for Social Affairs and Citizenship, veteran 'One Nation' Conservative politician with over three decades of parliamentary experience",
-    image: "/characters/peter.jpg",
+    image: peter,
     occupation:
       "Secretary of State for Social Affairs and Citizenship (Series 4-present)",
     department: [DEPARTMENTS.DOSAC],
@@ -426,7 +434,7 @@ export const characters: Record<string, Character> = {
     fullName: "Theresa Jessica Coverley",
     description:
       "Director of Communications at DoSAC, former Waitrose PR executive turned senior civil servant",
-    image: "/characters/terri.webp",
+    image: terri,
     occupation: "Director of Communications - DoSAC",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.CIVIL_SERVANT],
