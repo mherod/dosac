@@ -115,7 +115,7 @@ export const characters: Record<string, Character> = {
     shortName: "Malcolm",
     fullName: "Malcolm Tucker",
     description:
-      "Former Director of Communications for Number 10 and Opposition, feared Scottish enforcer of government policy",
+      "Former Director of Communications for Number 10 and Opposition, Scottish political operative responsible for government communications strategy",
     image: malcolm,
     occupation:
       "Media Adviser to the Leader of the Opposition (Series 4), Director of Communications for Number 10 (Series 1-3)",
@@ -215,7 +215,7 @@ export const characters: Record<string, Character> = {
     shortName: "Jamie",
     fullName: "James McDonald",
     description:
-      "Senior Press Officer and Malcolm Tucker's enforcer at Number 10",
+      "Senior Press Officer and Deputy Communications Director at Number 10",
     image: jamie,
     occupation: "Senior Press Officer at Number 10",
     nationality: "Scottish",
@@ -1016,7 +1016,7 @@ export const characters: Record<string, Character> = {
     shortName: "Cal",
     fullName: "Cal Richards",
     description:
-      "Conservative Party's feared Chief Election Strategist, nicknamed 'The Fucker'",
+      "Conservative Party's Chief Election Strategist, nicknamed 'The Fucker'",
     occupation: "Chief Election Strategist",
     department: [DEPARTMENTS.OTHER_GOVERNMENT],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -1193,7 +1193,7 @@ export const characters: Record<string, Character> = {
     shortName: "Emma",
     fullName: "Emma Florence Messinger",
     description:
-      "Highly competent Special Adviser to Peter Mannion, trusted by party leadership for key assignments",
+      "Special Adviser to Peter Mannion, trusted by party leadership for key assignments",
     occupation:
       "Special Adviser to the Secretary of State for Social Affairs and Citizenship",
     department: [DEPARTMENTS.DOSAC],
@@ -1464,7 +1464,7 @@ export const characters: Record<string, Character> = {
     shortName: "John",
     fullName: "John Duggan",
     description:
-      "Inept Labour Party Press Officer struggling with basic communications duties",
+      "Labour Party Press Officer struggling with basic communications duties",
     occupation: "Party Press Officer",
     department: [DEPARTMENTS.OPPOSITION],
     role: [ROLES.PRESS_OFFICER],
@@ -1633,7 +1633,7 @@ export const characters: Record<string, Character> = {
     shortName: "Robyn",
     fullName: "Robyn Murdoch",
     description:
-      "Senior Press Officer at DoSAC (Civil Service), routinely relegated to secretarial duties",
+      "Senior Press Officer at DoSAC (Civil Service), relegated to secretarial duties",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.CIVIL_SERVANT],
     personal: {
