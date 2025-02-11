@@ -1,7 +1,7 @@
-import malcolm from "@/public/characters/malcom.jpg";
-import jamie from "@/public/characters/jamie.jpg";
+import malcolm from "@/public/characters/malcom4.jpg";
+import jamie from "@/public/characters/jamie2.jpg";
 import peter from "@/public/characters/peter.jpg";
-import nicola2 from "@/public/characters/nicola2.jpg";
+import nicola from "@/public/characters/nicola2.jpg";
 import terri from "@/public/characters/terri.webp";
 import type { StaticImageData } from "next/image";
 
@@ -284,7 +284,7 @@ export const characters: Record<string, Character> = {
       "Leader of the Opposition (2010-2012), Secretary of State for DoSAC (Series 3)",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
-    image: nicola2,
+    image: nicola,
     personal: {
       family: {
         spouse: {
