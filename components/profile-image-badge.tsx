@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { characters, type CharacterId } from "@/lib/profiles";
-import { getProfileImage } from "@/lib/utils";
 import { Suspense } from "react";
 
 /**
@@ -78,7 +77,7 @@ function InitialsPlaceholder({
  * @param props - The component props
  * @returns The profile image or initials placeholder
  */
-async function ProfileImageContent({
+function ProfileImageContent({
   characterId,
   size,
   className,
@@ -86,47 +85,43 @@ async function ProfileImageContent({
   const character = characters[characterId];
   if (!character) return null;
 
-  let imageUrl: string | undefined;
-  try {
-    imageUrl = await getProfileImage(characterId);
-  } catch (error) {
-    console.error(`Failed to load image for character ${characterId}:`, error);
-  }
-
-  if (!imageUrl) {
+  if (character.image) {
+    const imageUrl =
+      typeof character.image === "string"
+        ? character.image
+        : character.image.src;
     return (
-      <InitialsPlaceholder
-        character={character}
-        size={size || "md"}
-        className={className}
-      />
+      <div
+        className={cn(
+          "relative rounded-full overflow-hidden shrink-0 inline-flex border border-slate-200",
+          sizeClasses[size || "md"],
+          className,
+        )}
+      >
+        <Image
+          src={imageUrl}
+          alt={character.name}
+          fill
+          className="object-cover object-top hover:scale-105 transition-transform"
+          sizes={sizesConfig[size || "md"]}
+          priority
+        />
+      </div>
     );
   }
 
   return (
-    <div
-      className={cn(
-        "relative rounded-full overflow-hidden shrink-0 inline-flex border border-slate-200",
-        sizeClasses[size || "md"],
-        className,
-      )}
-    >
-      <Image
-        src={imageUrl}
-        alt={character.name}
-        fill
-        className="object-cover hover:scale-105 transition-transform"
-        sizes={sizesConfig[size || "md"]}
-        priority
-      />
-    </div>
+    <InitialsPlaceholder
+      character={character}
+      size={size || "md"}
+      className={className}
+    />
   );
 }
 
 /**
  * A reusable profile image badge component that displays a character's image
- * with consistent styling and fallback handling. Uses frame highlights as fallback
- * when no profile image is available.
+ * with consistent styling and fallback handling.
  * @param props - The component props
  * @returns A profile badge with image or initials fallback
  */
