@@ -3,6 +3,11 @@ import jamie from "@/public/characters/jamie2.jpg";
 import peter from "@/public/characters/peter.jpg";
 import nicola from "@/public/characters/nicola2.jpg";
 import terri from "@/public/characters/terri.webp";
+import ollie from "@/public/characters/ollie.png";
+import cliff from "@/public/characters/cliff.png";
+import hugh from "@/public/characters/hugh.png";
+import glenn from "@/public/characters/glenn.jpg";
+import dan from "@/public/characters/danmiller.webp";
 import type { StaticImageData } from "next/image";
 
 /** Department constants for character affiliations */
@@ -258,11 +263,7 @@ export const characters: Record<string, Character> = {
       "Often handles the more 'hands-on' aspects of political enforcement",
       "Threatens Ollie Reeder for insulting Al Jolson's music",
     ],
-    frameHighlights: [
-      "s02e01-05-53.200",
-      "s03e02-20-36.840",
-      "s03e05-24-21.400",
-    ],
+    frameHighlights: ["s02e01-05-53.200"],
     relatedProfiles: [
       { id: "malcolm", relationship: "Boss and mentor" },
       { id: "cal", relationship: "Professional rival" },
@@ -416,9 +417,6 @@ export const characters: Record<string, Character> = {
     frameHighlights: [
       "s03e04-21-05.880", // "Ah Stewart, what flavour of nut-brown piss are you gonna pour into my ear?"
       "s03e08-23-09.360", // "The Fucker?! And here you thought he was just a myth created to frighten naughty MPs into eating their truffles and swan."
-      "s03e07-20-14.960", // "Do you not drink coffee any more or is it all port and swans' blood these days?"
-      "s03e02-19-25.680", // "I expect you're probably more a single malt man."
-      "s03e05-13-17.760", // "Yeah, well, actually Stewart called me IN"
     ],
     party: PARTIES.CONSERVATIVE,
     relatedProfiles: [
@@ -512,6 +510,7 @@ export const characters: Record<string, Character> = {
     shortName: "Hugh",
     fullName: "Rt. Hon. Hugh Abbot MP",
     description: "Former Secretary of State for Social Affairs",
+    image: hugh,
     occupation: "Secretary of State for Social Affairs (Series 1-2)",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -573,6 +572,7 @@ export const characters: Record<string, Character> = {
     shortName: "Glenn",
     fullName: "Glenn Cullen",
     description: "Former Senior Special Adviser at DoSAC, Labour Party veteran",
+    image: glenn,
     occupation:
       "Former Senior Special Adviser to the Secretary of State, DoSAC",
     department: [DEPARTMENTS.DOSAC],
@@ -614,6 +614,7 @@ export const characters: Record<string, Character> = {
     fullName: "Dr. Oliver Francis Reeder",
     description:
       "Director of Communications and Policy Adviser to the Leader of the Opposition, former DoSAC Special Advisor",
+    image: ollie,
     occupation: "Director of Communications and Policy Adviser to Dan Miller",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -833,6 +834,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Dan Miller MP",
     description:
       "Leader of the Opposition and Leader of the Labour Party, former Minister of State for Social Affairs",
+    image: dan,
     occupation:
       "Leader of the Opposition and Leader of the Labour Party (Series 4), Former Deputy Leader of the Opposition, Former Minister of State for Social Affairs",
     department: [DEPARTMENTS.DOSAC],
@@ -902,6 +904,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Cliff Lawton MP",
     description:
       "Labour Backbench MP, former Secretary of State for Social Affairs",
+    image: cliff,
     occupation: "Backbench MP, Former Secretary of State for Social Affairs",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP, ROLES.OTHER],

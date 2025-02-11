@@ -165,14 +165,14 @@ function MainNavContent() {
 export function MainNav() {
   return (
     <header className="bg-[#0b0c0c] text-white">
-      <div className="mx-auto">
+      <div className="mx-auto max-w-7xl">
         <TopBanner />
         <CivilServiceHeader />
+        <Suspense>
+          <MainNavContent />
+        </Suspense>
+        <CategoryNav />
       </div>
-      <Suspense>
-        <MainNavContent />
-      </Suspense>
-      <CategoryNav />
     </header>
   );
 }

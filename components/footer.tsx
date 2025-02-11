@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import dosacLogo from "@/public/DOSAC.png";
 
 interface FooterProps {
   className?: string;
@@ -23,8 +24,12 @@ export function Footer({ className }: FooterProps) {
         <b>dosac.uk</b> is a fan project and is not affiliated with the BBC, The
         Thick of It or any of its creators.
       </p>
+      <p className="text-sm text-muted-foreground text-center">
+        This site is not affiliated with or endorsed by the UK Government or any
+        associated bodies.
+      </p>
       <Image
-        src="/DOSAC.png"
+        src={dosacLogo}
         alt="Department of Social Affairs and Citizenship logo"
         className="mx-auto py-4 w-32 md:w-40"
         width={160}
