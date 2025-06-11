@@ -62,7 +62,7 @@ export function ClientCaptionedImage({
   maintainAspectRatio = false,
   autoToggle = false,
   relaxedLineBreaks = false,
-}: CaptionedImageProps) {
+}: CaptionedImageProps): React.ReactElement | null {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
   const [showSecondFrame, setShowSecondFrame] = useState(false);
@@ -72,7 +72,7 @@ export function ClientCaptionedImage({
     if (!autoToggle || !image2Url) return;
 
     const interval = setInterval(() => {
-      setShowSecondFrame((prev) => !prev);
+      setShowSecondFrame((prev: boolean) => !prev);
     }, 2000);
 
     return () => clearInterval(interval);
@@ -81,11 +81,11 @@ export function ClientCaptionedImage({
   // Calculate font size based on container width
   const calculatedFontSize = width * (fontSize / 500);
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
+  const handleDoubleClick = (e: React.MouseEvent): void => {
     e.preventDefault(); // Prevent text selection
     console.log("Double click detected", { image2Url, showSecondFrame });
     if (image2Url) {
-      setShowSecondFrame((prev) => !prev);
+      setShowSecondFrame((prev: boolean) => !prev);
     }
   };
 

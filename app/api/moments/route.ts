@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import { getFrameIndex } from "@/lib/frames.server";
+import type { Frame } from "@/lib/frames";
 
 /**
  * Represents a ranked moment from the show with its metadata
@@ -89,7 +90,7 @@ function timestampToSeconds(timestamp: string): number {
  * )
  * ```
  */
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     // Read the ranked moments from frame-rank.json
     const filePath = path.join(process.cwd(), "public", "frame-rank.json");
@@ -101,19 +102,19 @@ export async function GET() {
 
     // Match each ranked moment to its corresponding frame
     const matchedMoments = data.rankedMoments
-      .map((moment) => {
+      .map((moment: RankedMoment) => {
         const momentSeconds = timestampToSeconds(moment.timestamp);
 
         // Find frames from the same episode within 2 seconds of the timestamp
         const matches = frames
-          .filter((frame) => {
+          .filter((frame: Frame) => {
             if (frame.episode !== moment.episode) return false;
             const frameSeconds = timestampToSeconds(
               frame.timestamp.replace("-", ":"),
             );
             return Math.abs(momentSeconds - frameSeconds) < 2;
           })
-          .sort((a, b) => {
+          .sort((a: Frame, b: Frame) => {
             const aSeconds = timestampToSeconds(a.timestamp.replace("-", ":"));
             const bSeconds = timestampToSeconds(b.timestamp.replace("-", ":"));
             return (

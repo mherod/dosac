@@ -6,9 +6,9 @@ import { readFileSync } from "fs";
 import sharp from "sharp";
 import { memoize } from "lodash-es";
 import { LRUCache } from "lru-cache";
-import { MAX_EMBEDDING_SIZE, SUPPORTED_IMAGE_TYPES } from "./constants";
+import { SUPPORTED_IMAGE_TYPES } from "./constants";
 import { convertToJpeg } from "./image-processing";
-import { createCanvas, Image, Canvas } from "canvas";
+import { Image } from "canvas";
 import { createHash } from "crypto";
 
 // Types

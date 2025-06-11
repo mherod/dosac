@@ -11,8 +11,8 @@ import {
   characters,
   departmentLabels,
   roleLabels,
-  type Character,
   type CharacterId,
+  type Character,
 } from "@/lib/profiles";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { getFrameById } from "@/lib/frames.server";
@@ -27,13 +27,13 @@ export const experimental_ppr = true;
  * Generates static params for all character profile pages at build time
  * @returns An array of objects containing character IDs for static generation
  */
-export async function generateStaticParams() {
-  return Object.keys(characters).map((id) => ({
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  return Object.keys(characters).map((id: string) => ({
     id,
   }));
 }
 
-function ContentsList({ name }: { name: string }) {
+function ContentsList({ name: _name }: { name: string }): React.ReactElement {
   return (
     <nav
       className="govuk-contents-list mb-6 border-l-4 border-slate-200 pl-4"
@@ -91,7 +91,11 @@ function ContentsList({ name }: { name: string }) {
   );
 }
 
-function PersonalInfo({ character }: { character: Character }) {
+function PersonalInfo({
+  character,
+}: {
+  character: Character;
+}): React.ReactElement | null {
   if (!character.personal && !character.origin) return null;
 
   return (
@@ -135,7 +139,10 @@ interface RelatedProfileCardProps {
   relationship: string;
 }
 
-function RelatedProfileCard({ id, relationship }: RelatedProfileCardProps) {
+function RelatedProfileCard({
+  id,
+  relationship,
+}: RelatedProfileCardProps): React.ReactElement | null {
   const profile = characters[id];
   if (!profile) return null;
 
@@ -153,13 +160,13 @@ function RelatedProfileCard({ id, relationship }: RelatedProfileCardProps) {
           {relationship}
         </p>
         <div className="flex flex-wrap gap-2 mt-2">
-          {profile.role.slice(0, 2).map((role) => (
+          {profile.role.slice(0, 2).map((role: string) => (
             <Badge
               key={role}
               variant="secondary"
               className="text-xs px-2 py-0.5"
             >
-              {roleLabels[role]}
+              {roleLabels[role as keyof typeof roleLabels]}
             </Badge>
           ))}
         </div>
@@ -172,20 +179,22 @@ function RelatedProfiles({
   relatedProfiles,
 }: {
   relatedProfiles?: { id: CharacterId; relationship: string }[];
-}) {
+}): React.ReactElement | null {
   if (!relatedProfiles?.length) return null;
 
   return (
     <section id="related" className="space-y-6">
       <h2 className="text-2xl font-bold text-slate-900">Related Profiles</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {relatedProfiles.map((profile) => (
-          <RelatedProfileCard
-            key={profile.id}
-            id={profile.id}
-            relationship={profile.relationship}
-          />
-        ))}
+        {relatedProfiles.map(
+          (profile: { id: CharacterId; relationship: string }) => (
+            <RelatedProfileCard
+              key={profile.id}
+              id={profile.id}
+              relationship={profile.relationship}
+            />
+          ),
+        )}
       </div>
     </section>
   );
@@ -199,7 +208,7 @@ function CollapsibleSection({
   id: string;
   title: string;
   items: string[];
-}) {
+}): React.ReactElement {
   return (
     <section id={id} className="space-y-4">
       <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
@@ -210,7 +219,7 @@ function CollapsibleSection({
           </AccordionTrigger>
           <AccordionContent>
             <ul className="space-y-4 text-slate-600">
-              {items.map((item, index) => (
+              {items.map((item: string, index: number) => (
                 <li key={index} className="flex items-start leading-relaxed">
                   <span className="mr-3 text-slate-400">•</span>
                   {item}
@@ -234,7 +243,7 @@ export default async function CharacterProfile({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
+}): Promise<React.ReactElement> {
   const { id } = await params;
   const character = characters[id as keyof typeof characters];
 
@@ -245,16 +254,9 @@ export default async function CharacterProfile({
   // Get frame data for all highlights and convert to Screenshot type
   const screenshots: Screenshot[] = (
     await Promise.all(
-      (character.frameHighlights || []).map(async (highlight) => {
+      (character.frameHighlights || []).map(async (highlight: string) => {
         try {
-          const frame = await getFrameById(highlight);
-          return {
-            id: frame.id,
-            imageUrl: frame.imageUrl,
-            image2Url: frame.image2Url,
-            speech: frame.speech,
-            timestamp: frame.timestamp,
-          };
+          return await getFrameById(highlight);
         } catch (error) {
           console.warn(
             `Failed to load frame ${highlight} for character ${id}:`,
@@ -264,7 +266,7 @@ export default async function CharacterProfile({
         }
       }),
     )
-  ).filter((frame): frame is Screenshot => frame !== null);
+  ).filter((frame: Screenshot | null): frame is Screenshot => frame !== null);
 
   return (
     <main className="container py-6 lg:py-12 max-w-7xl">
@@ -297,13 +299,13 @@ export default async function CharacterProfile({
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {character.role.map((role) => (
+                {character.role.map((role: string) => (
                   <Badge
                     key={role}
                     variant="secondary"
                     className="px-3 py-1 text-sm lg:text-base font-medium bg-slate-100"
                   >
-                    {roleLabels[role]}
+                    {roleLabels[role as keyof typeof roleLabels]}
                   </Badge>
                 ))}
               </div>
@@ -325,19 +327,19 @@ export default async function CharacterProfile({
             <section id="roles" className="space-y-4">
               <h2 className="text-2xl font-bold text-slate-900">Roles</h2>
               <div className="space-y-4">
-                {character.department.map((dept) => (
+                {character.department.map((dept: string) => (
                   <div key={dept} className="space-y-3">
                     <h3 className="text-xl font-semibold text-slate-800">
-                      {departmentLabels[dept]}
+                      {departmentLabels[dept as keyof typeof departmentLabels]}
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {character.role.map((role) => (
+                      {character.role.map((role: string) => (
                         <Badge
                           key={role}
                           variant="secondary"
                           className="px-3 py-0.5"
                         >
-                          {roleLabels[role]}
+                          {roleLabels[role as keyof typeof roleLabels]}
                         </Badge>
                       ))}
                     </div>

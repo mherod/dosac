@@ -12,6 +12,9 @@ export interface AlignmentResult {
   alignmentScore: number;
 }
 
+/**
+ *
+ */
 export class FaceProcessor {
   private landmarksModel: faceLandmarksDetection.FaceLandmarksDetector | null =
     null;
@@ -88,7 +91,7 @@ export class FaceProcessor {
 
       // Compute pseudo-inverse using SVD
       const Sinv = tf.tensor2d(
-        singularValues.map((v) => (v < threshold ? 0 : 1 / v)),
+        singularValues.map((v: any) => (v < threshold ? 0 : 1 / v)),
         [singularValues.length, 1],
       );
 

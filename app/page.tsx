@@ -35,12 +35,14 @@ type Props = {
  * @param props.searchParams - Promise resolving to search parameters for filtering content
  * @returns The home page with filtered screenshot grid and ranked moments
  */
-export default async function Home({ searchParams }: Props) {
+export default async function Home({
+  searchParams,
+}: Props): Promise<React.ReactElement> {
   const [screenshots, rankedMoments] = await Promise.all([
     getFrameIndex(),
     fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/moments`,
-    ).then((res) => res.json()),
+    ).then((res: Response) => res.json()),
   ]);
 
   const resolvedParams = await searchParams;
@@ -80,7 +82,9 @@ export default async function Home({ searchParams }: Props) {
  *
  * @returns Array of search parameter combinations for static generation
  */
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<
+  { searchParams: Partial<SearchParams> }[]
+> {
   const frames = await getFrameIndex();
   const params: Array<{ searchParams: Partial<SearchParams> }> = [
     { searchParams: {} },
@@ -88,7 +92,7 @@ export async function generateStaticParams() {
 
   // Get unique seasons and episodes
   const episodeSet = new Set<string>();
-  frames.forEach((frame) => {
+  frames.forEach((frame: Screenshot) => {
     try {
       episodeSet.add(frame.episode);
     } catch (error) {
@@ -97,7 +101,7 @@ export async function generateStaticParams() {
   });
 
   // Generate params for each season/episode combination
-  episodeSet.forEach((episodeId) => {
+  episodeSet.forEach((episodeId: string) => {
     try {
       const { season, episode } = parseEpisodeId(episodeId);
       // Add season-only view

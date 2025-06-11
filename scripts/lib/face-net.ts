@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import { loadModels } from "./face-embedding";
-import { calculateRotationAngle, FacePrediction } from "./face-embedding";
+import { FacePrediction } from "./face-embedding";
 
 // Constants for FaceNet
 const FACENET_INPUT_SIZE = 224; // MobileNet V2 input size
@@ -27,6 +27,9 @@ export interface FaceNetEmbedding {
 }
 
 // FaceNet model class
+/**
+ *
+ */
 export class FaceNet {
   private model: tf.LayersModel | null = null;
   private readonly options: Required<FaceNetOptions>;
@@ -174,11 +177,11 @@ export class FaceNet {
   }> {
     return tf.tidy(() => {
       const uniqueLabels = Array.from(new Set(labels));
-      const numClasses = uniqueLabels.length;
+      const _numClasses = uniqueLabels.length;
 
       // Create label mapping
       const labelMap = new Map(uniqueLabels.map((label, i) => [label, i]));
-      const labelIndices = labels.map((label) => labelMap.get(label)!);
+      const labelIndices = labels.map((label: any) => labelMap.get(label)!);
 
       // Calculate pairwise distances
       const distances = tf.matMul(embeddings, embeddings.transpose());
@@ -190,10 +193,12 @@ export class FaceNet {
 
       // Find hardest positive and negative pairs
       const positiveMask = tf.tensor(
-        labelIndices.map((i) => labelIndices.map((j) => i === j && i !== j)),
+        labelIndices.map((i: any) =>
+          labelIndices.map((j: any) => i === j && i !== j),
+        ),
       );
       const negativeMask = tf.tensor(
-        labelIndices.map((i) => labelIndices.map((j) => i !== j)),
+        labelIndices.map((i: any) => labelIndices.map((j: any) => i !== j)),
       );
 
       const hardestPositives = tf.argMax(
@@ -246,7 +251,7 @@ export class FaceNet {
       // Process in batches
       for (let i = 0; i < dataset.length; i += batchSize) {
         const batchData = dataset.slice(i, i + batchSize);
-        const labels = batchData.map((d) => d.label);
+        const labels = batchData.map((d: any) => d.label);
 
         // Generate embeddings for the batch
         const embeddings = await tf.tidy(async () => {

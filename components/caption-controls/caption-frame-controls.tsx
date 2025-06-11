@@ -41,7 +41,7 @@ export function CaptionFrameControls({
   onCaptionChange,
   label = "Frame",
   singleSelection = true,
-}: CaptionFrameControlsProps) {
+}: CaptionFrameControlsProps): React.ReactElement | null {
   const [firstFrameImageUrl, secondFrameImageUrl] = imageUrls.filter(Boolean);
   if (!firstFrameImageUrl || !secondFrameImageUrl) {
     return null;
@@ -59,7 +59,9 @@ export function CaptionFrameControls({
         <div className="flex-1 h-full">
           <Textarea
             value={caption}
-            onChange={(e) => onCaptionChange(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              onCaptionChange(e.target.value)
+            }
             placeholder={`Enter caption for ${label.toLowerCase()}...`}
             className="min-h-[125px] h-full resize-none transition-colors focus:border-primary rounded-r-none p-4 text-sm flex items-center"
           />

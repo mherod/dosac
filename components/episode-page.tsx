@@ -1,25 +1,24 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import {
-  ChevronRight,
-  CalendarIcon,
-  ClockIcon,
-  PlayIcon,
-  UsersIcon,
-  PenToolIcon,
-} from "lucide-react";
+import { CalendarIcon, ClockIcon, UsersIcon, PenToolIcon } from "lucide-react";
 
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { getFrameIndex } from "@/lib/frames.server";
+import type { Frame } from "@/lib/frames";
 import { getSeriesInfo } from "@/lib/series-info";
-import { getEpisodeInfo } from "@/lib/episode-info";
+import {
+  getEpisodeInfo,
+  type CastMember,
+  type WriterCredit,
+} from "@/lib/episode-info";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { charactersList } from "@/lib/profiles";
-import { cn, processTextWithLinks } from "@/lib/utils";
+import { charactersList, type Character } from "@/lib/profiles";
+import { processTextWithLinks } from "@/lib/utils";
 import { PageLayout } from "@/components/layout/page-layout";
 import { getEpisodeBreadcrumbs } from "@/lib/navigation";
 
@@ -30,7 +29,9 @@ interface EpisodePageProps {
   }>;
 }
 
-async function EpisodePageContent({ params }: EpisodePageProps) {
+async function EpisodePageContent({
+  params,
+}: EpisodePageProps): Promise<React.ReactElement> {
   const resolvedParams = await params;
   const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
   const episode = getEpisodeInfo(
@@ -45,7 +46,7 @@ async function EpisodePageContent({ params }: EpisodePageProps) {
   // Get all frames and filter for this episode
   const allFrames = await getFrameIndex();
   const episodeFrames = allFrames.filter(
-    (frame) => frame.episode === episodeId,
+    (frame: Frame) => frame.episode === episodeId,
   );
 
   if (!episode) notFound();
@@ -121,9 +122,9 @@ async function EpisodePageContent({ params }: EpisodePageProps) {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  {episode.cast.map((member, index) => {
+                  {episode.cast.map((member: CastMember, index: number) => {
                     const characterProfile = charactersList.find(
-                      (char) =>
+                      (char: Character & { id: string }) =>
                         char.name === member.character ||
                         char.fullName === member.character,
                     );
@@ -201,7 +202,7 @@ async function EpisodePageContent({ params }: EpisodePageProps) {
                       Direction
                     </h4>
                     <div className="space-y-2">
-                      {episode.directors.map((director) => (
+                      {episode.directors.map((director: string) => (
                         <div key={director} className="text-sm text-slate-600">
                           {director}
                         </div>
@@ -217,7 +218,7 @@ async function EpisodePageContent({ params }: EpisodePageProps) {
                       Writing
                     </h4>
                     <div className="space-y-2">
-                      {episode.writers.map((writer) => (
+                      {episode.writers.map((writer: WriterCredit) => (
                         <div
                           key={writer.name}
                           className="flex items-baseline justify-between text-sm"
@@ -247,7 +248,7 @@ async function EpisodePageContent({ params }: EpisodePageProps) {
  * @param props
  * @returns
  */
-export function EpisodePage(props: EpisodePageProps) {
+export function EpisodePage(props: EpisodePageProps): React.ReactElement {
   return (
     <Suspense>
       <EpisodePageContent {...props} />

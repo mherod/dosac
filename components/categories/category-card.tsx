@@ -6,7 +6,11 @@ type CategoryCardProps = {
   description: string;
 };
 
-export const CategoryCard = ({ id, title, description }: CategoryCardProps) => (
+export const CategoryCard = ({
+  id,
+  title,
+  description,
+}: CategoryCardProps): React.ReactElement => (
   <Link
     href={`/categories/${id}`}
     className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:border-[#1d70b8] transition-colors"

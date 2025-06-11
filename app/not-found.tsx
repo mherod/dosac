@@ -5,7 +5,7 @@ import Link from "next/link";
  * Shows a friendly error message with a link to return home
  * @returns The 404 error page with message and home link
  */
-export default function NotFound() {
+export default function NotFound(): React.ReactElement {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
       <h1 className="mb-4 text-4xl font-bold">404 - Page Not Found</h1>

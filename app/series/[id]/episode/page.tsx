@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import {
-  getSeriesInfo,
-  getAllSeries,
-  type SeriesInfo,
-} from "@/lib/series-info";
+import { getSeriesInfo, getAllSeries } from "@/lib/series-info";
 import { formatPageTitle } from "@/lib/constants";
 import { EpisodesPage } from "@/components/episodes-page";
 import { notFound } from "next/navigation";
@@ -11,9 +7,9 @@ import { notFound } from "next/navigation";
 /**
  * Generates static params for all episode pages at build time
  */
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ id: string }[]> {
   const allSeries = getAllSeries();
-  return allSeries.map((series: SeriesInfo) => ({
+  return allSeries.map((series: { number: number }) => ({
     id: series.number.toString(),
   }));
 }
@@ -39,7 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: formatPageTitle(`Series ${series.number} Episodes`),
     description: series.shortSummary
-      .map((part) => (typeof part === "string" ? part : part.text))
+      .map((part: unknown) =>
+        typeof part === "string" ? part : (part as { text: string }).text,
+      )
       .join(""),
   };
 }
@@ -50,6 +48,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * @param props.params - Route parameters containing series ID
  * @returns React component for the episodes page
  */
-export default function Page(props: Props) {
+export default function Page(props: Props): React.ReactElement {
   return <EpisodesPage {...props} />;
 }

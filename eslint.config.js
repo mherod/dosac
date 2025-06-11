@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import jsdoc from "eslint-plugin-jsdoc";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
+import promisePlugin from "eslint-plugin-promise";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,12 +20,21 @@ const config = [
   {
     ignores: ["out/**/*", ".next/**/*"],
   },
+  {
+    files: ["components/ui/**/*.{ts,tsx}", "components/ui/chart.tsx"],
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
   ...compat.extends(
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
+    "plugin:promise/recommended",
   ),
   ...compat.config({
     root: true,
@@ -34,6 +44,7 @@ const config = [
       "plugin:react/recommended",
       "plugin:react/jsx-runtime",
       "plugin:react-hooks/recommended",
+      "plugin:promise/recommended",
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -56,10 +67,67 @@ const config = [
       jsdoc: jsdoc,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
+      promise: promisePlugin,
     },
     rules: {
-      "@typescript-eslint/no-unused-vars": ["warn"],
-      "@typescript-eslint/no-explicit-any": ["warn"],
+      // Stricter TypeScript rules for explicit types
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/typedef": [
+        "error",
+        {
+          arrayDestructuring: false,
+          arrowParameter: false,
+          memberVariableDeclaration: false,
+          objectDestructuring: false,
+          parameter: false,
+          propertyDeclaration: false,
+          variableDeclaration: false,
+          variableDeclarationIgnoreFunction: true,
+        },
+      ],
+      "@typescript-eslint/no-inferrable-types": "off",
+
+      // Promise-related rules
+      "promise/always-return": "error",
+      "promise/no-return-wrap": "error",
+      "promise/param-names": "error",
+      "promise/catch-or-return": "error",
+      "promise/no-native": "off",
+      "promise/no-nesting": "warn",
+      "promise/no-promise-in-callback": "warn",
+      "promise/no-callback-in-promise": "warn",
+      "promise/avoid-new": "off",
+      "promise/no-new-statics": "error",
+      "promise/no-return-in-finally": "warn",
+      "promise/valid-params": "warn",
+      "promise/prefer-await-to-then": "warn",
+      "promise/prefer-await-to-callbacks": "warn",
+
+      // Stricter unused declarations
+      "no-unused-expressions": "error",
+      "no-unused-labels": "error",
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowShortCircuit: false,
+          allowTernary: false,
+          allowTaggedTemplates: false,
+        },
+      ],
       "react/no-unescaped-entities": "off",
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",

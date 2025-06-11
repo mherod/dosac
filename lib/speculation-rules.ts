@@ -87,7 +87,7 @@ class SpeculationRulesManager {
 
     // Filter out rules containing any of the specified URLs
     this.rules[behavior] = this.rules[behavior]!.filter(
-      (rule) => !urls.some((url) => rule.urls.includes(url)),
+      (rule) => !urls.some((url: string) => rule.urls.includes(url)),
     );
 
     this.updateScript();
@@ -114,7 +114,7 @@ export function useSpeculationRules(
     requires?: SpeculationRequirement[];
     eagerness?: SpeculationEagerness;
   } = {},
-) {
+): void {
   const {
     behavior = "prerender",
     score = 0.5,

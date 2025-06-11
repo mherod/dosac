@@ -12,7 +12,7 @@ function CategoryHeader({
   title: string;
   description: string;
   itemCount: number;
-}) {
+}): React.ReactElement {
   return (
     <div className="bg-[#1d70b8] text-white py-6 w-[100vw] relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
@@ -45,13 +45,15 @@ type Props = {
 export default async function CategoryLayout({
   children,
   params,
-}: PropsWithChildren<Props>) {
+}: PropsWithChildren<Props>): Promise<React.ReactElement> {
   const resolvedParams = await params;
-  const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
+  const category = CATEGORIES.find(
+    (c: { id: string }) => c.id === resolvedParams.id,
+  );
   if (!category) return notFound();
 
   const allFrames = await getFrameIndex();
-  const categoryFrames = allFrames.filter((frame) =>
+  const categoryFrames = allFrames.filter((frame: { speech: string }) =>
     category.filter(frame.speech),
   );
 

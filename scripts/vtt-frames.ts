@@ -118,7 +118,7 @@ function parseVTTFile(filePath: string): VTTFile {
   // Merge frames with same timestamps
   console.log(
     "\nBefore merging, frames with 01:01.360:",
-    frames.filter((f) => f.startTime === "01:01.360"),
+    frames.filter((f: any) => f.startTime === "01:01.360"),
   );
 
   const mergedFrames = mergeFrames(frames);
@@ -273,7 +273,7 @@ async function main() {
   // Get episode IDs from command line arguments
   const requestedEpisodes = process.argv
     .slice(2)
-    .filter((arg) => !arg.startsWith("--"));
+    .filter((arg: any) => !arg.startsWith("--"));
 
   // If no specific episodes requested, find all VTT files
   const episodeIds =

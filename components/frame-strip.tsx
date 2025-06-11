@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useRef, useEffect, type MouseEvent } from "react";
+import { useState, useEffect, useRef } from "react";
+import React from "react";
 import { type Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { CaptionedImage } from "@/components/captioned-image";
@@ -34,7 +35,7 @@ export function FrameStrip({
   screenshots,
   centerScreenshot,
   frameWidth = 256, // Default to 256px width (original size)
-}: FrameStripProps) {
+}: FrameStripProps): React.ReactElement | null {
   // All Hooks must be called unconditionally first
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -51,8 +52,8 @@ export function FrameStrip({
   // Move useEffect before any conditional returns
   useEffect(() => {
     const selected = Array.from(selectedIds)
-      .map((id) => screenshots.find((s) => s.id === id))
-      .filter(Boolean);
+      .map((id: string) => screenshots.find((s: Screenshot) => s.id === id))
+      .filter((s: Screenshot | undefined): s is Screenshot => Boolean(s));
 
     if (selected.length > 0) {
       // Update display logic if needed
@@ -61,7 +62,9 @@ export function FrameStrip({
 
   useEffect(() => {
     if (centerScreenshot && stripRef.current) {
-      const index = screenshots.findIndex((s) => s.id === centerScreenshot.id);
+      const index = screenshots.findIndex(
+        (s: Screenshot) => s.id === centerScreenshot.id,
+      );
       if (index === -1) return;
 
       // Calculate after layout with proper gap accounting
@@ -99,7 +102,7 @@ export function FrameStrip({
     (stripRef.current?.clientWidth || 0) / frameWidth,
   );
 
-  const handleFrameClick = (id: string, e: MouseEvent) => {
+  const handleFrameClick = (id: string, e: React.MouseEvent): void => {
     let newSelectedIds = new Set(selectedIds);
 
     if (e.ctrlKey || e.metaKey) {
@@ -112,12 +115,16 @@ export function FrameStrip({
       setLastSelectedId(id);
     } else if (e.shiftKey && lastSelectedId) {
       // Range selection
-      const lastIndex = screenshots.findIndex((s) => s.id === lastSelectedId);
-      const currentIndex = screenshots.findIndex((s) => s.id === id);
+      const lastIndex = screenshots.findIndex(
+        (s: Screenshot) => s.id === lastSelectedId,
+      );
+      const currentIndex = screenshots.findIndex(
+        (s: Screenshot) => s.id === id,
+      );
       const start = Math.min(lastIndex, currentIndex);
       const end = Math.max(lastIndex, currentIndex);
       newSelectedIds = new Set(
-        screenshots.slice(start, end + 1).map((s) => s.id),
+        screenshots.slice(start, end + 1).map((s: Screenshot) => s.id),
       );
     } else {
       // Single click behavior
@@ -136,7 +143,7 @@ export function FrameStrip({
     updateUrl(newSelectedIds);
   };
 
-  const updateUrl = (ids: Set<string>) => {
+  const updateUrl = (ids: Set<string>): void => {
     if (ids.size === 0) {
       router.push(`/caption`, { scroll: false });
       return;
@@ -144,8 +151,11 @@ export function FrameStrip({
 
     const frames = Array.from(ids).slice(0, 4);
     const combinedText = frames
-      .map((id) => screenshots.find((s) => s.id === id)?.speech)
-      .filter(Boolean)
+      .map(
+        (id: string) =>
+          screenshots.find((s: Screenshot) => s.id === id)?.speech,
+      )
+      .filter((speech: string | undefined): speech is string => Boolean(speech))
       .join("\n");
 
     const [first, second, ...rest] = frames;
@@ -160,28 +170,30 @@ export function FrameStrip({
     });
   };
 
-  const handleDragStart = (id: string) => {
+  const handleDragStart = (id: string): void => {
     setIsDragging(true);
     setDragStartId(id);
   };
 
-  const handleDragMove = (id: string) => {
+  const handleDragMove = (id: string): void => {
     if (isDragging && dragStartId) {
-      const startIndex = screenshots.findIndex((s) => s.id === dragStartId);
-      const endIndex = screenshots.findIndex((s) => s.id === id);
+      const startIndex = screenshots.findIndex(
+        (s: Screenshot) => s.id === dragStartId,
+      );
+      const endIndex = screenshots.findIndex((s: Screenshot) => s.id === id);
 
       if (startIndex !== -1 && endIndex !== -1) {
         const start = Math.min(startIndex, endIndex);
         const end = Math.max(startIndex, endIndex);
         const selectedFrames = screenshots
           .slice(start, end + 1)
-          .map((s) => s.id);
+          .map((s: Screenshot) => s.id);
         setSelectedIds(new Set(selectedFrames));
       }
     }
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (): void => {
     setIsDragging(false);
     setDragStartId(null);
   };
@@ -218,11 +230,11 @@ export function FrameStrip({
                 style={{ height: `${frameHeight}px` }}
               >
                 <AnimatePresence>
-                  {screenshots.map((screenshot, index) => (
+                  {screenshots.map((screenshot: Screenshot, index: number) => (
                     <motion.button
                       key={`frame-${screenshot.id}-${index}`}
-                      onClick={(e) =>
-                        handleFrameClick(screenshot.id, e as MouseEvent)
+                      onClick={(e: React.MouseEvent) =>
+                        handleFrameClick(screenshot.id, e)
                       }
                       onMouseEnter={() => setHoverIndex(index)}
                       onMouseLeave={() => setHoverIndex(null)}

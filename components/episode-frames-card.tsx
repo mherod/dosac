@@ -30,7 +30,7 @@ export function EpisodeFramesCard({
   episodeNumber,
   frames,
   className,
-}: EpisodeFramesCardProps) {
+}: EpisodeFramesCardProps): React.ReactElement {
   return (
     <Card
       className={cn(

@@ -1,6 +1,5 @@
 import * as tf from "./tensorflow-setup";
 import { loadModels } from "./model-loader";
-import { FacePrediction } from "./face-detector";
 
 // Define attribute types
 export interface FaceAttributes {
@@ -17,6 +16,9 @@ export interface AttributeConfidence {
   skinTone: number;
 }
 
+/**
+ *
+ */
 export class FaceAttributeDetector {
   private genderModel: tf.GraphModel | null = null;
   private ageModel: tf.GraphModel | null = null;

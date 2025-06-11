@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getFrameIndex } from "@/lib/frames.server";
+import { type Screenshot } from "@/lib/types";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { parseEpisodeId } from "@/lib/frames";
-import { seriesInfo } from "@/lib/series-info";
+import { seriesInfo, type SeriesInfo } from "@/lib/series-info";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Badge } from "@/components/ui/badge";
 import { getBaseBreadcrumbs } from "@/lib/navigation";
@@ -14,13 +15,13 @@ import { processTextWithLinks } from "@/lib/utils";
  * Fetches and organizes frames by series
  * @returns A grid layout of series sections with their frames
  */
-async function SeriesContent() {
+async function SeriesContent(): Promise<React.ReactElement> {
   // Get all frames
   const allFrames = await getFrameIndex();
 
   // Group frames by series
   const seriesFrames = new Map<number, typeof allFrames>();
-  allFrames.forEach((frame) => {
+  allFrames.forEach((frame: Screenshot) => {
     const { season } = parseEpisodeId(frame.episode);
     if (!seriesFrames.has(season)) {
       seriesFrames.set(season, []);
@@ -30,7 +31,7 @@ async function SeriesContent() {
 
   return (
     <div className="space-y-16">
-      {seriesInfo.map((series) => {
+      {seriesInfo.map((series: SeriesInfo) => {
         const frames = seriesFrames.get(series.number) || [];
         return (
           <div key={series.number} className="space-y-6">
@@ -89,9 +90,10 @@ async function SeriesContent() {
  * Displays all series with their associated frames
  * @returns The series page with content wrapped in PageLayout
  */
-export function AllSeriesPage() {
-  const breadcrumbs = getBaseBreadcrumbs().map((item) =>
-    item.label === "Series" ? { ...item, current: true } : item,
+export function AllSeriesPage(): React.ReactElement {
+  const breadcrumbs = getBaseBreadcrumbs().map(
+    (item: { label: string; href?: string }) =>
+      item.label === "Series" ? { ...item, current: true } : item,
   );
 
   const headerContent = (

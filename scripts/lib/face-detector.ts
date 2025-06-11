@@ -7,6 +7,9 @@ export interface FacePrediction {
   probability: number;
 }
 
+/**
+ *
+ */
 export class FaceDetector {
   private blazefaceModel: tf.GraphModel | null = null;
   private mobileNet: tf.GraphModel | null = null;

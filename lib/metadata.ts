@@ -153,7 +153,7 @@ export function generateMultiFrameMetadata(
 
   const title = `${frames[0].episode} - ${frames.length}-Panel Meme`;
   const description = `Create a ${frames.length}-panel meme from ${frames[0].episode} with frames from ${frames
-    .map((f) => f.timestamp)
+    .map((f: Screenshot) => f.timestamp)
     .join(", ")}`;
 
   const ogImageUrl = constructOgImageUrl({
@@ -165,7 +165,7 @@ export function generateMultiFrameMetadata(
 
   const imageUrlString = ogImageUrl.toString();
   const pageUrl = new URL(
-    `caption/${frames.map((f) => f.id).join("/")}`,
+    `caption/${frames.map((f: Screenshot) => f.id).join("/")}`,
     BASE_URL,
   ).toString();
 

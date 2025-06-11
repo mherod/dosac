@@ -3,7 +3,6 @@ import {
   getSeriesInfo,
   getAllSeries,
   getSeriesEpisodes,
-  type SeriesInfo,
 } from "@/lib/series-info";
 import { getEpisodeInfo } from "@/lib/episode-info";
 import { formatPageTitle } from "@/lib/constants";
@@ -14,11 +13,13 @@ import { EpisodePage } from "@/components/episode-page";
  * Creates paths for each episode in each series
  * @returns Array of objects containing series and episode IDs for static generation
  */
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<
+  { id: string; episodeId: string }[]
+> {
   const allSeries = getAllSeries();
-  return allSeries.flatMap((series: SeriesInfo) => {
+  return allSeries.flatMap((series: { number: number }) => {
     const episodes = getSeriesEpisodes(series.number);
-    return episodes.map((episodeNumber) => ({
+    return episodes.map((episodeNumber: number) => ({
       id: series.number.toString(),
       episodeId: episodeNumber.toString(),
     }));
@@ -52,10 +53,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = episode?.shortSummary
     ? episode.shortSummary
-        .map((part) => (typeof part === "string" ? part : part.text))
+        .map((part: unknown) =>
+          typeof part === "string" ? part : (part as { text: string }).text,
+        )
         .join("")
     : series.shortSummary
-        .map((part) => (typeof part === "string" ? part : part.text))
+        .map((part: unknown) =>
+          typeof part === "string" ? part : (part as { text: string }).text,
+        )
         .join("");
 
   return {
@@ -71,6 +76,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * @param props.params - Promise resolving to route parameters containing series and episode IDs
  * @returns The episode page with details and frame grid
  */
-export default function Page(props: Props) {
+export default function Page(props: Props): React.ReactElement {
   return <EpisodePage {...props} />;
 }

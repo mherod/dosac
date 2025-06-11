@@ -4,8 +4,9 @@ import { UserMenu } from "./user-menu";
 import Image from "next/image";
 import crown from "@/public/crown.png";
 import Link from "next/link";
+import React from "react";
 
-export function CivilServiceHeader() {
+export function CivilServiceHeader(): React.ReactElement {
   return (
     <Link href="/">
       <div
@@ -52,7 +53,7 @@ export function CivilServiceHeader() {
   );
 }
 
-function Crown() {
+function Crown(): React.ReactElement {
   return (
     <Image
       src={crown}

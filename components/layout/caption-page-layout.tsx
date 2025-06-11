@@ -1,3 +1,4 @@
+import React from "react";
 import { type ReactNode } from "react";
 import { PageLayout } from "./page-layout";
 import { parseEpisodeId } from "@/lib/frames";
@@ -25,7 +26,7 @@ export function CaptionPageLayout({
   children,
   episodeId,
   pageTitle,
-}: CaptionPageLayoutProps) {
+}: CaptionPageLayoutProps): React.ReactElement {
   const { season: seriesNumber, episode: episodeNumber } =
     parseEpisodeId(episodeId);
 

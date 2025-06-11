@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { formatPageTitle } from "@/lib/constants";
 import { AllSeriesPage } from "@/components/all-series-page";
@@ -11,6 +12,6 @@ export const metadata: Metadata = {
  * Main series page component
  * @returns The series page component
  */
-export default function SeriesPage() {
+export default function SeriesPage(): React.ReactElement {
   return <AllSeriesPage />;
 }

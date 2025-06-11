@@ -24,7 +24,7 @@ import { getFrameIndex } from "@/lib/frames.server";
  * ])
  * ```
  */
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   const frames = await getFrameIndex();
   return NextResponse.json(frames);
 }

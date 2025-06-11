@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import * as htmlToImage from "html-to-image";
@@ -20,13 +19,13 @@ interface MultiCaptionEditorProps {
 
 export function DualCaptionEditor({
   frames: initialFrames,
-}: MultiCaptionEditorProps) {
+}: MultiCaptionEditorProps): React.ReactElement {
   const combinedRef = useRef<HTMLDivElement>(null);
 
   // State for frames and captions
   const [frames, setFrames] = useState(initialFrames);
   const [selectedImages, setSelectedImages] = useState(
-    initialFrames.map((frame) => frame.imageUrl),
+    initialFrames.map((frame: Screenshot) => frame.imageUrl),
   );
 
   const {
@@ -45,7 +44,7 @@ export function DualCaptionEditor({
     defaultFontFamily: CAPTION_DEFAULTS.fontFamily,
   });
 
-  const handleDownload = async () => {
+  const handleDownload = async (): Promise<void> => {
     if (!combinedRef.current) return;
 
     try {
@@ -67,7 +66,7 @@ export function DualCaptionEditor({
     }
   };
 
-  const handleCaptionChange = (index: number, value: string) => {
+  const handleCaptionChange = (index: number, value: string): void => {
     const newFrames = [...frames];
     const currentFrame = newFrames[index];
     if (!currentFrame) return;
@@ -85,13 +84,13 @@ export function DualCaptionEditor({
     setFrames(newFrames);
   };
 
-  const onShare = async () => {
+  const onShare = async (): Promise<void> => {
     if (!frames.length || !frames[0]) return;
-    const path = `/caption/${frames.map((f) => f.id).join("/")}`;
-    await handleShare(path, frames.map((f) => f.speech).join("\n"));
+    const path = `/caption/${frames.map((f: Screenshot) => f.id).join("/")}`;
+    await handleShare(path, frames.map((f: Screenshot) => f.speech).join("\n"));
   };
 
-  const handleFrameSelect = (index: number, imageUrl: string) => {
+  const handleFrameSelect = (index: number, imageUrl: string): void => {
     const newSelected = [...selectedImages];
     newSelected[index] = imageUrl;
 
@@ -102,11 +101,13 @@ export function DualCaptionEditor({
     const finalUrl = newSelected[index] || frame.imageUrl;
 
     setSelectedImages(
-      newSelected.map((url, i) => (i === index ? finalUrl : url)),
+      newSelected.map((url: string, i: number) =>
+        i === index ? finalUrl : url,
+      ),
     );
 
     // Update the frames array with the new image URL
-    const updatedFrames = frames.map((frame, i) =>
+    const updatedFrames = frames.map((frame: Screenshot, i: number) =>
       i === index ? { ...frame, imageUrl: finalUrl } : frame,
     );
     setFrames(updatedFrames);
@@ -146,7 +147,7 @@ export function DualCaptionEditor({
             {frames.length === 4 ? (
               <FrameGrid
                 frames={frames}
-                captions={frames.map((f) => f.speech)}
+                captions={frames.map((f: Screenshot) => f.speech)}
                 fontSize={fontSize}
                 outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
@@ -154,7 +155,7 @@ export function DualCaptionEditor({
             ) : (
               <FrameStack
                 frames={frames}
-                captions={frames.map((f) => f.speech)}
+                captions={frames.map((f: Screenshot) => f.speech)}
                 fontSize={fontSize}
                 outlineWidth={outlineWidth}
                 fontFamily={fontFamily}
@@ -178,15 +179,17 @@ export function DualCaptionEditor({
           onDownload={handleDownload}
           onShare={onShare}
         >
-          {frames.map((frame, index) => (
+          {frames.map((frame: Screenshot, index: number) => (
             <CaptionFrameControls
               key={`${frame.id}-${index}`}
               imageUrls={[frame.imageUrl, frame.image2Url]}
               selectedImage={selectedImages[index]}
-              onSelect={(url) => handleFrameSelect(index, url)}
+              onSelect={(url: string) => handleFrameSelect(index, url)}
               singleSelection={true}
               caption={frame.speech}
-              onCaptionChange={(value) => handleCaptionChange(index, value)}
+              onCaptionChange={(value: string) =>
+                handleCaptionChange(index, value)
+              }
               label={`Frame ${index + 1}`}
             />
           ))}

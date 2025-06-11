@@ -1,3 +1,4 @@
+import React from "react";
 import { type ReactNode } from "react";
 import { PageContainer } from "@/components/layout/page-container";
 
@@ -13,6 +14,8 @@ interface SeriesLayoutProps {
  * @param props.children - The content to render inside the layout
  * @returns The series layout with consistent container and spacing
  */
-export default function SeriesLayout({ children }: SeriesLayoutProps) {
+export default function SeriesLayout({
+  children,
+}: SeriesLayoutProps): React.ReactElement {
   return <PageContainer>{children}</PageContainer>;
 }

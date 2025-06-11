@@ -1,3 +1,4 @@
+import React from "react";
 import { Card } from "@/components/ui/card";
 import { Clapperboard, Clock, Check } from "lucide-react";
 import { CaptionedImage } from "@/components/captioned-image";
@@ -79,8 +80,8 @@ export function FrameCard({
   onTouchStart,
   onTouchMove,
   onTouchEnd,
-}: FrameCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
+}: FrameCardProps): React.ReactElement {
+  const handleClick = (e: React.MouseEvent): void => {
     // Only handle selection if using modifier keys
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
       e.preventDefault();
@@ -90,13 +91,13 @@ export function FrameCard({
     // Otherwise let the link handle it
   };
 
-  const handleSelectClick = (e: React.MouseEvent) => {
+  const handleSelectClick = (e: React.MouseEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     onSelect?.(e);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent): void => {
     if (e.button === 0) {
       // Left click only
       e.preventDefault();
@@ -105,19 +106,19 @@ export function FrameCard({
     }
   };
 
-  const handleMouseEnter = (e: React.MouseEvent) => {
+  const handleMouseEnter = (e: React.MouseEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     onDragMove?.();
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = (e: React.TouchEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     onTouchStart?.();
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = (e: React.TouchEvent): void => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -136,7 +137,7 @@ export function FrameCard({
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = (e: React.TouchEvent): void => {
     e.preventDefault();
     e.stopPropagation();
     onTouchEnd?.();

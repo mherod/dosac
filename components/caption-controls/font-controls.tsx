@@ -36,7 +36,7 @@ export function FontControls({
   setShadowSize,
   fontFamily,
   setFontFamily,
-}: FontControlsProps) {
+}: FontControlsProps): React.ReactElement {
   return (
     <div className="flex flex-col gap-4">
       <div className="p-0">
@@ -50,7 +50,7 @@ export function FontControls({
             <SelectValue style={{ fontFamily: fontFamily }} />
           </SelectTrigger>
           <SelectContent>
-            {fonts.map((font) => (
+            {fonts.map((font: string) => (
               <SelectItem key={font} value={font} style={{ fontFamily: font }}>
                 {font}
               </SelectItem>
@@ -70,7 +70,7 @@ export function FontControls({
         </div>
         <Slider
           value={[fontSize]}
-          onValueChange={([value]) => setFontSize(value ?? 18)}
+          onValueChange={([value]: number[]) => setFontSize(value ?? 18)}
           min={16}
           max={36}
           step={1}
@@ -89,7 +89,7 @@ export function FontControls({
         </div>
         <Slider
           value={[outlineWidth]}
-          onValueChange={([value]) => setOutlineWidth(value ?? 1)}
+          onValueChange={([value]: number[]) => setOutlineWidth(value ?? 1)}
           min={1}
           max={4}
           step={1}
@@ -108,7 +108,7 @@ export function FontControls({
         </div>
         <Slider
           value={[shadowSize]}
-          onValueChange={([value]) => setShadowSize(value ?? 1)}
+          onValueChange={([value]: number[]) => setShadowSize(value ?? 1)}
           min={0}
           max={10}
           step={1}

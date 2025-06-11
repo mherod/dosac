@@ -1,6 +1,6 @@
 import { faceNet, FaceNetEmbedding } from "./face-net";
 import { faceProcessor } from "./face-processor";
-import { loadModels, detectFaces, FacePrediction } from "./face-embedding";
+import { FacePrediction } from "./face-embedding";
 import { FaceEmbedding } from "./face-cache";
 import { LRUCache } from "lru-cache";
 import { createHash } from "crypto";
@@ -31,6 +31,9 @@ const processedFacesCache = new LRUCache<string, RecognitionResult>({
   updateAgeOnGet: true,
 });
 
+/**
+ *
+ */
 export class FaceRecognitionService {
   private initialized = false;
   private readonly options: Required<RecognitionOptions>;
@@ -91,8 +94,8 @@ export class FaceRecognitionService {
 
       // Sort by confidence and limit number of faces
       const sortedFaces = predictions
-        .filter((face) => face.probability >= mergedOptions.minConfidence)
-        .sort((a, b) => b.probability - a.probability)
+        .filter((face: any) => face.probability >= mergedOptions.minConfidence)
+        .sort((a: any, b: any) => b.probability - a.probability)
         .slice(0, mergedOptions.maxFaces);
 
       // Process each face
@@ -177,7 +180,7 @@ export class FaceRecognitionService {
     }
 
     // Sort by similarity score
-    return matches.sort((a, b) => b.similarity - a.similarity);
+    return matches.sort((a: any, b: any) => b.similarity - a.similarity);
   }
 
   async compareFaces(

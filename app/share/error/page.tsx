@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import Link from "next/link";
  * Component that displays the error content with message from URL parameters
  * @returns The error content with message and home button
  */
-function ErrorContent() {
+function ErrorContent(): React.ReactElement {
   const searchParams = useSearchParams();
   const errorMessage =
     searchParams.get("message") || "An unknown error occurred";
@@ -41,7 +41,7 @@ function ErrorContent() {
  * Wraps error content in a Suspense boundary
  * @returns The share error page with error message and home button
  */
-export default function ShareErrorPage() {
+export default function ShareErrorPage(): React.ReactElement {
   return (
     <Suspense>
       <ErrorContent />

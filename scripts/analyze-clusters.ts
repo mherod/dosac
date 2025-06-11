@@ -10,11 +10,11 @@ async function main(): Promise<void> {
   );
 
   // Sort clusters by size and categorize them
-  const largeClusters = stats.clusters.filter((c) => c.size > 5);
+  const largeClusters = stats.clusters.filter((c: any) => c.size > 5);
   const mediumClusters = stats.clusters.filter(
     (c) => c.size >= 3 && c.size <= 5,
   );
-  const smallClusters = stats.clusters.filter((c) => c.size < 3);
+  const smallClusters = stats.clusters.filter((c: any) => c.size < 3);
 
   // Print large clusters (more than 5 faces)
   if (largeClusters.length > 0) {
@@ -65,7 +65,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
+main().catch((error: Error) => {
   console.error("Error:", error);
   process.exit(1);
 });

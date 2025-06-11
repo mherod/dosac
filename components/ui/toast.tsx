@@ -1,8 +1,9 @@
 "use client";
 
+import React from "react";
 import { Toaster as SonnerToaster } from "sonner";
 
-export function Toaster() {
+export function Toaster(): React.ReactElement {
   return (
     <SonnerToaster
       position="bottom-right"

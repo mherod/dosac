@@ -23,9 +23,9 @@ interface BreadcrumbNavProps {
  */
 export function BreadcrumbNav({
   items,
-  className,
+  className: _className,
   showHome = true,
-}: BreadcrumbNavProps) {
+}: BreadcrumbNavProps): React.ReactElement {
   const homeItem: NavItem = {
     label: "Home",
     href: "/",
@@ -33,13 +33,13 @@ export function BreadcrumbNav({
 
   const allItems = uniqBy(
     showHome ? [homeItem, ...items] : items,
-    (item) => item.href,
+    (item: NavItem) => item.href,
   );
 
   return (
     <nav className="mb-6" aria-label="Breadcrumb navigation">
       <ol className="flex flex-wrap items-center text-[#1d70b8] text-base">
-        {allItems.map((item, index) => (
+        {allItems.map((item: NavItem, index: number) => (
           <Fragment key={`${item.label}-${item.href || "current"}-${index}`}>
             {index > 0 && (
               <li className="mx-2 text-[#505a5f]" aria-hidden="true">

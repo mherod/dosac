@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import * as htmlToImage from "html-to-image";
@@ -26,7 +25,9 @@ interface CaptionEditorProps {
   screenshot: Screenshot;
 }
 
-export function CaptionEditor({ screenshot }: CaptionEditorProps) {
+export function CaptionEditor({
+  screenshot,
+}: CaptionEditorProps): React.ReactElement {
   const imageRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -58,7 +59,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     }
   }, [searchParams, screenshot.speech]);
 
-  const handleDownload = async () => {
+  const handleDownload = async (): Promise<void> => {
     if (!imageRef.current) return;
 
     try {
@@ -79,7 +80,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
   const [primaryImage, setPrimaryImage] = useState<string>(screenshot.imageUrl);
   const [secondaryImage, setSecondaryImage] = useState(screenshot.image2Url);
 
-  const handleFrameSelect = (selectedImage: string) => {
+  const handleFrameSelect = (selectedImage: string): void => {
     if (selectedImage === primaryImage) {
       // If selecting the primary image, swap primary and secondary
       setPrimaryImage(secondaryImage);
@@ -90,7 +91,7 @@ export function CaptionEditor({ screenshot }: CaptionEditorProps) {
     }
   };
 
-  const onShare = async () => {
+  const onShare = async (): Promise<void> => {
     const path = `/caption/${screenshot.id}`;
     await handleShare(path, caption);
   };

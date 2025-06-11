@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 export function CategoryNav({
   className,
@@ -10,7 +11,7 @@ export function CategoryNav({
 }: {
   className?: string;
   containerClassName?: string;
-}) {
+}): React.ReactElement {
   return (
     <div
       className={cn(
@@ -29,7 +30,7 @@ export function CategoryNav({
               Ministerial Database
             </Link>
             <div className="flex flex-wrap gap-4">
-              {CATEGORIES.map((category) => (
+              {CATEGORIES.map((category: { id: string; title: string }) => (
                 <Link
                   key={category.id}
                   href={`/categories/${category.id}`}

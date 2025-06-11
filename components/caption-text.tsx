@@ -26,7 +26,10 @@ interface CaptionTextProps {
  * @param shadowSize - Size of the drop shadow in pixels
  * @returns CSS text-shadow property value string
  */
-function getTextShadow(outlineWidth: number = 1, shadowSize: number = 0) {
+function getTextShadow(
+  outlineWidth: number = 1,
+  shadowSize: number = 0,
+): string {
   const shadows = [];
 
   // Add outline effect
@@ -83,7 +86,7 @@ export function CaptionText({
   relaxedLineBreaks,
   className = "",
   shadowSize = 0,
-}: CaptionTextProps) {
+}: CaptionTextProps): React.ReactElement | null {
   if (!caption) return null;
 
   const lines = relaxedLineBreaks
@@ -105,7 +108,7 @@ export function CaptionText({
         fontFamily,
       }}
     >
-      {lines.map((line, index) => (
+      {lines.map((line: string, index: number) => (
         <p key={index} className="whitespace-pre-wrap break-words w-full">
           {line}
         </p>

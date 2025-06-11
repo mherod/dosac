@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getFrameIndex } from "@/lib/frames.server";
 
 /**
@@ -11,7 +11,7 @@ import { getFrameIndex } from "@/lib/frames.server";
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ caption: string }> },
-) {
+): Promise<Response> {
   try {
     const resolvedParams = await params;
     const allFrames = await getFrameIndex();

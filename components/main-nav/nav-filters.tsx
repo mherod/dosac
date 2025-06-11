@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
 import { SeriesSelect } from "./series-select";
@@ -51,7 +51,7 @@ export function NavFilters({
   onFilterChange,
   onQueryChange,
   className = "",
-}: NavFiltersProps) {
+}: NavFiltersProps): React.ReactElement {
   const [localQuery, setLocalQuery] = useState(filters.query);
   const debouncedQuery = useDebounce(localQuery, 300);
   const queryString = useSearchParams();
@@ -70,7 +70,7 @@ export function NavFilters({
     onQueryChange(query);
   }, [onQueryChange, queryString]);
 
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = (value: string): void => {
     setLocalQuery(value);
   };
 
@@ -97,20 +97,22 @@ export function NavFilters({
           </div>
           <div className="flex items-center">
             <div className="flex -space-x-2">
-              {FEATURED_CHARACTERS.map((character) => (
-                <Link
-                  key={character.id}
-                  href={`/profiles/${character.id}`}
-                  className="group relative hover:z-10"
-                  title={character.name}
-                >
-                  <ProfileImageBadge
-                    characterId={character.id}
-                    size="sm"
-                    className="border-2 border-[#1d70b8] group-hover:border-white transition-colors"
-                  />
-                </Link>
-              ))}
+              {FEATURED_CHARACTERS.map(
+                (character: { id: string; name: string }) => (
+                  <Link
+                    key={character.id}
+                    href={`/profiles/${character.id}`}
+                    className="group relative hover:z-10"
+                    title={character.name}
+                  >
+                    <ProfileImageBadge
+                      characterId={character.id}
+                      size="sm"
+                      className="border-2 border-[#1d70b8] group-hover:border-white transition-colors"
+                    />
+                  </Link>
+                ),
+              )}
             </div>
           </div>
         </div>

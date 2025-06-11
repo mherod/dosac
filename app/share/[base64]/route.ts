@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 /**
  * Route handler for sharing functionality
@@ -10,7 +10,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ base64: string }> },
-) {
+): Promise<Response> {
   try {
     const resolvedParams = await params;
 

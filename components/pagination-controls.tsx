@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import React from "react";
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -12,12 +13,12 @@ interface PaginationControlsProps {
 export function PaginationControls({
   currentPage,
   totalPages,
-}: PaginationControlsProps) {
+}: PaginationControlsProps): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const setPage = (page: number) => {
+  const setPage = (page: number): void => {
     const params = new URLSearchParams(searchParams);
     if (page === 1) {
       params.delete("page");

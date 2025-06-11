@@ -1,5 +1,5 @@
 import fastGlob from "fast-glob";
-import { statSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { existsSync } from "fs";
 import { cpus } from "os";
 import { basename, join, resolve } from "path";
 import {
@@ -42,7 +42,7 @@ const NUM_WORKERS = Math.max(1, Math.floor(cpus().length * 0.75)); // Use 75% of
 // Process images in parallel batches
 async function processBatch(batch: string[], currentIndex: CacheIndex) {
   const results = await Promise.all(
-    batch.map((filePath) => processImage(filePath, currentIndex)),
+    batch.map((filePath: any) => processImage(filePath, currentIndex)),
   );
   await saveIndex(currentIndex);
   return results;
@@ -153,7 +153,7 @@ async function main() {
   console.log(`Last update: ${stats.lastUpdate}`);
 }
 
-main().catch((error) => {
+main().catch((error: Error) => {
   console.error("Unhandled error:", error);
   process.exit(1);
 });

@@ -14,7 +14,7 @@ export const dynamicParams = true;
  * Creates paths for comparing adjacent frames in the sequence
  * @returns Array of objects containing frame ID pairs for static generation
  */
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ ids: string[] }[]> {
   const frames = await getFrameIndex();
   const params = [];
 
@@ -93,7 +93,7 @@ export async function generateMetadata({
   }
 
   // Validate all IDs are strings
-  if (!allIds.every((id): id is string => typeof id === "string")) {
+  if (!allIds.every((id: unknown): id is string => typeof id === "string")) {
     return {
       title: "Invalid Frame IDs",
       description: "All frame IDs must be strings",
@@ -101,12 +101,11 @@ export async function generateMetadata({
   }
 
   // Fetch all frames in parallel
-  const frames = await Promise.all(
-    allIds.map((id) => getFrameById(id).catch(() => null)),
-  ).then((results) =>
-    results.filter(
-      (frame): frame is NonNullable<typeof frame> => frame !== null,
-    ),
+  const frameResults = await Promise.all(
+    allIds.map((id: string) => getFrameById(id).catch(() => null)),
+  );
+  const frames = frameResults.filter(
+    (frame): frame is NonNullable<typeof frame> => frame !== null,
   );
 
   if (!frames.length) {
@@ -126,7 +125,10 @@ export async function generateMetadata({
  * @param props.searchParams - Promise resolving to search parameters for additional frames and text
  * @returns The frame comparison page with dual caption editor
  */
-export default async function Page({ params, searchParams }: PageProps) {
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps): Promise<React.ReactElement> {
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
@@ -142,13 +144,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
 
   // Validate all IDs are strings
-  if (!allIds.every((id): id is string => typeof id === "string")) {
+  if (!allIds.every((id: unknown): id is string => typeof id === "string")) {
     notFound();
   }
 
   // Fetch all frames in parallel
   const frames = await Promise.all(
-    allIds.map((id) =>
+    allIds.map((id: string) =>
       getFrameById(id).catch(() => {
         notFound();
       }),

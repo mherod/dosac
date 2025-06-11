@@ -21,7 +21,9 @@ type Props = {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
+  const category = CATEGORIES.find(
+    (c: { id: string }) => c.id === resolvedParams.id,
+  );
   if (!category) return {};
 
   return {
@@ -36,13 +38,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * @param props.params - Promise resolving to route parameters containing category ID
  * @returns The category page with filtered screenshot grid
  */
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({
+  params,
+}: Props): Promise<React.ReactElement> {
   const resolvedParams = await params;
-  const category = CATEGORIES.find((c) => c.id === resolvedParams.id);
+  const category = CATEGORIES.find(
+    (c: { id: string }) => c.id === resolvedParams.id,
+  );
   if (!category) return notFound();
 
   const allFrames = await getFrameIndex();
-  const categoryFrames = allFrames.filter((frame) =>
+  const categoryFrames = allFrames.filter((frame: { speech: string }) =>
     category.filter(frame.speech),
   );
 

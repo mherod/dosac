@@ -1,6 +1,6 @@
 import * as tf from "./tensorflow-setup";
 import { join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync } from "fs";
 import { homedir } from "os";
 
 const MODEL_CACHE_DIR = join(homedir(), ".face-models");

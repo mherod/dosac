@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from "react";
+
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
@@ -38,7 +39,11 @@ export interface BadgeProps
  * @param props.variant - Visual style variant (default, secondary, destructive, or outline)
  * @returns A styled badge element
  */
-function Badge({ className, variant, ...props }: BadgeProps) {
+function Badge({
+  className,
+  variant,
+  ...props
+}: BadgeProps): React.ReactElement {
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props} />
   );

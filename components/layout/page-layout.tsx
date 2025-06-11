@@ -1,3 +1,4 @@
+import React from "react";
 import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
@@ -30,7 +31,7 @@ export function PageLayout({
   breadcrumbs,
   headerContent,
   className,
-}: PageLayoutProps) {
+}: PageLayoutProps): React.ReactElement {
   return (
     <div className={cn("space-y-6", className)}>
       <div className="space-y-4">

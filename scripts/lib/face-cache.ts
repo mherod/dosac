@@ -10,7 +10,7 @@ import {
 import { join } from "path";
 import { createHash } from "crypto";
 import { generateFaceEmbedding } from "./face-embedding";
-import { CACHE_DIRS, PRIMARY_CACHE_DIR, CACHE_FILE_PATTERN } from "./config";
+import { CACHE_DIRS, PRIMARY_CACHE_DIR } from "./config";
 import { FaceAttributes, AttributeConfidence } from "./face-attributes";
 
 export const INDEX_FILE = join(PRIMARY_CACHE_DIR, "index.json");
@@ -247,7 +247,9 @@ export function searchCache(
     }
   }
 
-  return results.sort((a, b) => b.similarity - a.similarity).slice(0, limit);
+  return results
+    .sort((a: any, b: any) => b.similarity - a.similarity)
+    .slice(0, limit);
 }
 
 // Helper function to calculate cosine similarity
@@ -678,8 +680,8 @@ export async function analyzeFaceClusters(
           if (i !== j) {
             // Calculate average similarity between clusters
             const similarities = clusters[i].faces
-              .map((face1) =>
-                clusters[j].faces.map((face2) =>
+              .map((face1: any) =>
+                clusters[j].faces.map((face2: any) =>
                   cosineSimilarity(face1, face2),
                 ),
               )
@@ -730,8 +732,8 @@ export async function analyzeFaceClusters(
 
   // Format results
   const formattedClusters = clusters
-    .filter((cluster) => cluster.faces.length >= MIN_CLUSTER_SIZE)
-    .map((cluster) => ({
+    .filter((cluster: any) => cluster.faces.length >= MIN_CLUSTER_SIZE)
+    .map((cluster: any) => ({
       size: cluster.paths.length,
       episodes: cluster.episodes,
       sampleImages: cluster.paths
@@ -742,10 +744,10 @@ export async function analyzeFaceClusters(
               ? 1.0
               : cosineSimilarity(cluster.faces[0], cluster.faces[idx]),
         }))
-        .sort((a, b) => b.similarity - a.similarity)
+        .sort((a: any, b: any) => b.similarity - a.similarity)
         .slice(0, 5),
     }))
-    .sort((a, b) => b.size - a.size);
+    .sort((a: any, b: any) => b.size - a.size);
 
   return {
     clusters: formattedClusters,

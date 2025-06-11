@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import dosacLogo from "@/public/DOSAC.png";
+import React from "react";
 
 interface FooterProps {
   className?: string;
@@ -12,7 +13,7 @@ interface FooterProps {
  * @param x
  * @returns A footer element containing the site disclaimer and DOSAC logo
  */
-export function Footer({ className }: FooterProps) {
+export function Footer({ className }: FooterProps): React.ReactElement {
   return (
     <footer
       className={cn(

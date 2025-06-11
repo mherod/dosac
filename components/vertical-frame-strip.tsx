@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
@@ -16,7 +17,7 @@ export function VerticalFrameStrip({
   frameWidth = 256,
   onFrameSelect,
   singleSelection = true,
-}: FrameStripProps) {
+}: FrameStripProps): React.ReactElement | null {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   if (!imageUrls?.length) {
@@ -46,47 +47,52 @@ export function VerticalFrameStrip({
               className="flex flex-col gap-2 scroll-py-[8px]"
               style={{ width: `${frameWidth}px` }}
             >
-              {imageUrls.filter(Boolean).map((imageUrl, index) => (
-                <button
-                  key={`${imageUrl}-${index}`}
-                  onClick={() => {
-                    if (singleSelection) {
-                      onFrameSelect?.(imageUrl);
-                    } else {
-                      onFrameSelect?.(
-                        selectedImage === imageUrl ? "" : imageUrl,
-                      );
-                    }
-                  }}
-                  className={cn(
-                    "group relative flex-shrink-0 snap-start cursor-pointer transition-all duration-200 hover:scale-105",
-                    selectedImage === imageUrl
-                      ? "ring-2 ring-yellow-400/80 scale-105 z-10"
-                      : "ring-1 ring-white/10 hover:ring-white/30",
-                  )}
-                  style={{
-                    width: `${frameWidth}px`,
-                    height: `${frameHeight}px`,
-                  }}
-                >
-                  {!loadedImages[imageUrl] && (
-                    <div className="absolute inset-0 bg-gray-800 animate-pulse" />
-                  )}
-                  <Image
-                    src={imageUrl}
-                    alt={`Frame ${index}`}
-                    width={frameWidth}
-                    height={frameHeight}
+              {imageUrls
+                .filter(Boolean)
+                .map((imageUrl: string, index: number) => (
+                  <button
+                    key={`${imageUrl}-${index}`}
+                    onClick={() => {
+                      if (singleSelection) {
+                        onFrameSelect?.(imageUrl);
+                      } else {
+                        onFrameSelect?.(
+                          selectedImage === imageUrl ? "" : imageUrl,
+                        );
+                      }
+                    }}
                     className={cn(
-                      "object-cover transition-opacity duration-300",
-                      !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
+                      "group relative flex-shrink-0 snap-start cursor-pointer transition-all duration-200 hover:scale-105",
+                      selectedImage === imageUrl
+                        ? "ring-2 ring-yellow-400/80 scale-105 z-10"
+                        : "ring-1 ring-white/10 hover:ring-white/30",
                     )}
-                    onLoad={() =>
-                      setLoadedImages((prev) => ({ ...prev, [imageUrl]: true }))
-                    }
-                  />
-                </button>
-              ))}
+                    style={{
+                      width: `${frameWidth}px`,
+                      height: `${frameHeight}px`,
+                    }}
+                  >
+                    {!loadedImages[imageUrl] && (
+                      <div className="absolute inset-0 bg-gray-800 animate-pulse" />
+                    )}
+                    <Image
+                      src={imageUrl}
+                      alt={`Frame ${index}`}
+                      width={frameWidth}
+                      height={frameHeight}
+                      className={cn(
+                        "object-cover transition-opacity duration-300",
+                        !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
+                      )}
+                      onLoad={(): void =>
+                        setLoadedImages((prev: Record<string, boolean>) => ({
+                          ...prev,
+                          [imageUrl]: true,
+                        }))
+                      }
+                    />
+                  </button>
+                ))}
             </div>
           </div>
         </div>

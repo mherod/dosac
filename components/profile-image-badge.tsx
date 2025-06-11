@@ -1,7 +1,10 @@
+import React from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { characters, type CharacterId } from "@/lib/profiles";
+import { characters } from "@/lib/profiles";
 import { Suspense } from "react";
+
+type CharacterId = keyof typeof characters;
 
 /**
  * Props for the ProfileImageBadge component
@@ -43,10 +46,10 @@ function InitialsPlaceholder({
   character: (typeof characters)[CharacterId];
   size: keyof typeof sizeClasses;
   className?: string;
-}) {
+}): React.ReactElement {
   const initials = character.name
     .split(" ")
-    .map((word) => word[0])
+    .map((word: string) => word[0])
     .filter(Boolean)
     .slice(0, 2)
     .join("")
@@ -81,7 +84,7 @@ function ProfileImageContent({
   characterId,
   size,
   className,
-}: ProfileImageBadgeProps) {
+}: ProfileImageBadgeProps): React.ReactElement | null {
   const character = characters[characterId];
   if (!character) return null;
 
@@ -125,7 +128,9 @@ function ProfileImageContent({
  * @param props - The component props
  * @returns A profile badge with image or initials fallback
  */
-export function ProfileImageBadge(props: ProfileImageBadgeProps) {
+export function ProfileImageBadge(
+  props: ProfileImageBadgeProps,
+): React.ReactElement | null {
   const character = characters[props.characterId];
   if (!character) return null;
 

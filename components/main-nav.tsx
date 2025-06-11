@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
@@ -35,7 +35,7 @@ type QueryUpdates = Record<string, string | null>;
  * Handles search parameters, routing, and filter state
  * @returns The main navigation content with filters and controls
  */
-function MainNavContent() {
+function MainNavContent(): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -43,13 +43,15 @@ function MainNavContent() {
   const createQueryString = useCallback(
     (updates: QueryUpdates) => {
       const params = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value === null) {
-          params.delete(key);
-        } else {
-          params.set(key, value);
-        }
-      });
+      Object.entries(updates).forEach(
+        ([key, value]: [string, string | null]) => {
+          if (value === null) {
+            params.delete(key);
+          } else {
+            params.set(key, value);
+          }
+        },
+      );
       return params.toString();
     },
     [searchParams],
@@ -162,7 +164,7 @@ function MainNavContent() {
  * Wraps the navigation content in a Suspense boundary and includes header components
  * @returns The complete navigation bar with all controls and filters
  */
-export function MainNav() {
+export function MainNav(): React.ReactElement {
   return (
     <header className="bg-[#0b0c0c] text-white">
       <div className="mx-auto max-w-7xl">

@@ -21,13 +21,19 @@ interface SearchBarProps {
  * @param props.className - Additional CSS classes
  * @returns A styled search input component
  */
-export function SearchBar({ value, onChange, className }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onChange,
+  className,
+}: SearchBarProps): React.ReactElement {
   return (
     <TextInput
       type="search"
       placeholder="Search ministerial quotes..."
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+        onChange(e.target.value)
+      }
       className={cn(
         "px-3 py-1.5 text-sm",
         "bg-transparent border border-white/20 rounded",

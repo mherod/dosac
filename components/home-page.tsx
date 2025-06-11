@@ -25,7 +25,7 @@ function SearchWrapper({
   screenshots: Frame[];
   rankedMoments: Frame[];
   initialSearchParams?: HomePageProps["initialSearchParams"];
-}) {
+}): React.ReactElement {
   const searchParams = useSearchParams();
 
   // Get current filters from URL or initial props
@@ -46,10 +46,12 @@ function SearchWrapper({
     const isShowingRanked =
       !filters.season && !filters.episode && !filters.query;
     const screenshotsToFilter = isShowingRanked
-      ? screenshots.filter((s) => !rankedMoments.some((r) => r.id === s.id))
+      ? screenshots.filter(
+          (s: Frame) => !rankedMoments.some((r: Frame) => r.id === s.id),
+        )
       : screenshots;
 
-    return screenshotsToFilter.filter((screenshot) => {
+    return screenshotsToFilter.filter((screenshot: Frame) => {
       try {
         const { season, episode } = parseEpisodeId(screenshot.episode);
 
@@ -107,7 +109,7 @@ export function HomePage({
   screenshots,
   rankedMoments,
   initialSearchParams,
-}: HomePageProps) {
+}: HomePageProps): React.ReactElement {
   return (
     <>
       <Suspense>

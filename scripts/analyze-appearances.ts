@@ -67,20 +67,22 @@ async function analyzeAppearances() {
   }
 
   // Sort characters by total appearances
-  characterStats.sort((a, b) => b.totalAppearances - a.totalAppearances);
+  characterStats.sort(
+    (a: any, b: any) => b.totalAppearances - a.totalAppearances,
+  );
 
   // Print character statistics
   console.log("\nCharacter Statistics:");
   console.log("===================");
   console.log(`\nTotal characters detected: ${characterStats.length}`);
   console.log(
-    `Main characters: ${characterStats.filter((c) => c.isMainCharacter).length}`,
+    `Main characters: ${characterStats.filter((c: any) => c.isMainCharacter).length}`,
   );
 
   // Print main character details
   console.log("\nMain Character Appearances:");
   characterStats
-    .filter((char) => char.isMainCharacter)
+    .filter((char: any) => char.isMainCharacter)
     .forEach((char, index) => {
       console.log(`\nCharacter #${index + 1}:`);
       console.log(`- Total appearances: ${char.totalAppearances}`);

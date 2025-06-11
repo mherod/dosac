@@ -1,6 +1,7 @@
 import Image from "next/image";
+import React from "react";
 
-export function UserMenu() {
+export function UserMenu(): React.ReactElement {
   return (
     <div className="flex items-center gap-4 border-l border-[#ffffff33] pl-4">
       <div className="text-xs text-[#6f777b] flex items-center gap-2">

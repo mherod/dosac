@@ -1,6 +1,6 @@
 import { FileText } from "lucide-react";
 
-export const CategoriesHeader = () => (
+export const CategoriesHeader = (): React.ReactElement => (
   <div className="bg-[#1d70b8] text-white py-6">
     <div className="container">
       <div className="flex items-center gap-3">

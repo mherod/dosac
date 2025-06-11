@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 
 export function useImageBounds(
   containerRef: React.RefObject<HTMLDivElement | null>,
-) {
+): { width: number; height: number } {
   const [bounds, setBounds] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    const updateBounds = () => {
+    const updateBounds = (): void => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
         setBounds({ width, height });

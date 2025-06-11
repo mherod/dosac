@@ -1,6 +1,6 @@
 import { ResultWithEmbedding } from "@/app/utils/similarity";
 import { cosineSimilarity } from "@/app/utils/similarity";
-import { orderBy, uniqBy, partition, maxBy, memoize } from "lodash-es";
+import { orderBy, uniqBy } from "lodash-es";
 
 export interface GroupedResults {
   groupedResults: ResultWithEmbedding[][];

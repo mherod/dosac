@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -17,9 +18,9 @@ import {
   charactersByRole,
   departmentLabels,
   roleLabels,
+  type Character,
   type Department,
   type Role,
-  type Character,
 } from "@/lib/profiles";
 import { Badge } from "@/components/ui/badge";
 
@@ -54,7 +55,7 @@ function CharacterCard({
   department,
   role,
   priority = false,
-}: CharacterCardProps) {
+}: CharacterCardProps): React.ReactElement {
   // Use first department and role for display
   const primaryDepartment = (
     Array.isArray(department) ? department[0] : department
@@ -115,20 +116,25 @@ interface CharacterGroupProps {
  * @param props.characters - Array of characters to display
  * @returns A section containing a title and grid of character cards
  */
-function CharacterGroup({ title, characters }: CharacterGroupProps) {
+function CharacterGroup({
+  title,
+  characters,
+}: CharacterGroupProps): React.ReactElement | null {
   if (characters.length === 0) return null;
 
   return (
     <section className="mb-8">
       <h2 className="text-xl font-semibold mb-4">{title}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {characters.map((character, index) => (
-          <CharacterCard
-            key={character.id}
-            {...character}
-            priority={index < 6}
-          />
-        ))}
+        {characters.map(
+          (character: Character & { id: string }, index: number) => (
+            <CharacterCard
+              key={character.id}
+              {...character}
+              priority={index < 6}
+            />
+          ),
+        )}
       </div>
     </section>
   );
@@ -139,7 +145,7 @@ function CharacterGroup({ title, characters }: CharacterGroupProps) {
  * Shows profiles grouped by department and role in collapsible sections
  * @returns The profiles page with accordion sections for different groupings
  */
-export default function ProfilesPage() {
+export default function ProfilesPage(): React.ReactElement {
   return (
     <main className="container py-8">
       <h1 className="text-4xl font-bold mb-8">Character Profiles</h1>
@@ -160,13 +166,18 @@ export default function ProfilesPage() {
                 Department,
                 (Character & { id: string })[],
               ][]
-            ).map(([department, characters]) => (
-              <CharacterGroup
-                key={department}
-                title={departmentLabels[department]}
-                characters={characters}
-              />
-            ))}
+            ).map(
+              ([department, characters]: [
+                Department,
+                (Character & { id: string })[],
+              ]) => (
+                <CharacterGroup
+                  key={department}
+                  title={departmentLabels[department]}
+                  characters={characters}
+                />
+              ),
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -180,13 +191,15 @@ export default function ProfilesPage() {
                 Role,
                 (Character & { id: string })[],
               ][]
-            ).map(([role, characters]) => (
-              <CharacterGroup
-                key={role}
-                title={roleLabels[role]}
-                characters={characters}
-              />
-            ))}
+            ).map(
+              ([role, characters]: [Role, (Character & { id: string })[]]) => (
+                <CharacterGroup
+                  key={role}
+                  title={roleLabels[role]}
+                  characters={characters}
+                />
+              ),
+            )}
           </AccordionContent>
         </AccordionItem>
       </Accordion>

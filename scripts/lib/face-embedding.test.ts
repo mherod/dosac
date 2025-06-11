@@ -1,4 +1,4 @@
-import { describe, expect, test, afterEach } from "bun:test";
+import { expect, test } from "bun:test";
 import { readFileSync } from "fs";
 import { join } from "path";
 import sharp from "sharp";

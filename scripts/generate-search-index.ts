@@ -89,7 +89,7 @@ async function generateSearchIndex() {
     }
 
     // Sort results by episode and timestamp
-    const sortedResults = allResults.sort((a, b) => {
+    const sortedResults = allResults.sort((a: any, b: any) => {
       if (a.episodeId !== b.episodeId) {
         return a.episodeId.localeCompare(b.episodeId);
       }

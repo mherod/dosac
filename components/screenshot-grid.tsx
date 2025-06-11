@@ -1,10 +1,12 @@
 "use client";
 
+import React from "react";
+
 import { FrameCard } from "@/components/frame-card";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import React from "react";
+
 import Link from "next/link";
 import { type Screenshot } from "@/lib/types";
 import { useSpeculationRules } from "@/lib/speculation-rules";
@@ -36,7 +38,7 @@ function ScreenshotGridInner({
   screenshots,
   rankedMoments,
   multiselect = false,
-}: ScreenshotGridProps) {
+}: ScreenshotGridProps): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -62,16 +64,22 @@ function ScreenshotGridInner({
       }
 
       const selectedFrames = currentScreenshots
-        .filter((s) => selectedIds.has(s.id))
-        .sort((a, b) => {
-          const aIndex = currentScreenshots.findIndex((s) => s.id === a.id);
-          const bIndex = currentScreenshots.findIndex((s) => s.id === b.id);
+        .filter((s: Screenshot) => selectedIds.has(s.id))
+        .sort((a: Screenshot, b: Screenshot) => {
+          const aIndex = currentScreenshots.findIndex(
+            (s: Screenshot) => s.id === a.id,
+          );
+          const bIndex = currentScreenshots.findIndex(
+            (s: Screenshot) => s.id === b.id,
+          );
           return aIndex - bIndex;
         });
 
       // Add the clicked frame if it's not already selected
       if (!selectedIds.has(id)) {
-        const clickedFrame = currentScreenshots.find((s) => s.id === id);
+        const clickedFrame = currentScreenshots.find(
+          (s: Screenshot) => s.id === id,
+        );
         if (clickedFrame) {
           selectedFrames.push(clickedFrame);
         }
@@ -79,10 +87,10 @@ function ScreenshotGridInner({
 
       // Limit to 4 frames total
       const frames = selectedFrames.slice(0, 4);
-      const combinedText = frames.map((s) => s.speech).join("\n");
+      const combinedText = frames.map((s: Screenshot) => s.speech).join("\n");
 
       // Use path for first two IDs and compare query param for additional IDs
-      const [first, second, ...rest] = frames.map((f) => f.id);
+      const [first, second, ...rest] = frames.map((f: Screenshot) => f.id);
       const basePath = second ? `${first}/${second}` : first;
       const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
       const textParam = combinedText
@@ -96,12 +104,14 @@ function ScreenshotGridInner({
 
   // Get all possible URLs for current page
   const allPossibleUrls = React.useMemo(() => {
-    const urls = currentScreenshots.map((screenshot) =>
+    const urls = currentScreenshots.map((screenshot: Screenshot) =>
       getScreenshotUrl(screenshot.id),
     );
     if (rankedMoments) {
       urls.push(
-        ...rankedMoments.map((screenshot) => getScreenshotUrl(screenshot.id)),
+        ...rankedMoments.map((screenshot: Screenshot) =>
+          getScreenshotUrl(screenshot.id),
+        ),
       );
     }
     return urls;
@@ -154,9 +164,11 @@ function ScreenshotGridInner({
     (id: string) => {
       if (isDragging && dragStartId) {
         const startIndex = currentScreenshots.findIndex(
-          (s) => s.id === dragStartId,
+          (s: Screenshot) => s.id === dragStartId,
         );
-        const endIndex = currentScreenshots.findIndex((s) => s.id === id);
+        const endIndex = currentScreenshots.findIndex(
+          (s: Screenshot) => s.id === id,
+        );
 
         if (startIndex !== -1 && endIndex !== -1) {
           const start = Math.min(startIndex, endIndex);
@@ -166,7 +178,7 @@ function ScreenshotGridInner({
           if (start !== end) {
             const selectedFrames = currentScreenshots
               .slice(start, end + 1)
-              .map((s) => s.id);
+              .map((s: Screenshot) => s.id);
             safeSetSelectedIds(new Set(selectedFrames));
           }
         }
@@ -181,11 +193,11 @@ function ScreenshotGridInner({
   }, []);
 
   React.useEffect(() => {
-    const handleMouseUp = () => {
+    const handleMouseUp = (): void => {
       handleDragEnd();
     };
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (): void => {
       handleDragEnd();
     };
 
@@ -202,7 +214,7 @@ function ScreenshotGridInner({
       {rankedMoments && rankedMoments.length > 0 && (
         <>
           <div className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
-            {rankedMoments.map((screenshot, index) => (
+            {rankedMoments.map((screenshot: Screenshot, index: number) => (
               <div key={screenshot.id} className="relative">
                 <Link
                   key={`ranked-moment-${screenshot.id}-${index}`}
@@ -247,7 +259,7 @@ function ScreenshotGridInner({
           ref={gridRef}
           className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0"
         >
-          {currentScreenshots.map((screenshot, index) => (
+          {currentScreenshots.map((screenshot: Screenshot, index: number) => (
             <div key={screenshot.id}>
               <Link
                 key={`screenshot-${screenshot.id}-${index}`}
@@ -317,7 +329,7 @@ function ScreenshotGridInner({
  *
  * @param props
  */
-export function ScreenshotGrid(props: ScreenshotGridProps) {
+export function ScreenshotGrid(props: ScreenshotGridProps): React.ReactElement {
   return (
     <Suspense>
       <ScreenshotGridInner {...props} />

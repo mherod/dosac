@@ -25,7 +25,7 @@ export function ActionButtons({
   onDownload,
   onShare,
   className = "",
-}: ActionButtonsProps) {
+}: ActionButtonsProps): React.ReactElement {
   return (
     <div className={`flex gap-2 ${className}`}>
       <Button

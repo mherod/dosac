@@ -21,7 +21,7 @@ export function FrameGrid({
   outlineWidth,
   fontFamily,
   relaxedLineBreaks,
-}: FrameGridProps) {
+}: FrameGridProps): React.ReactElement {
   const maxWidth = 600;
   const frameW = 4;
   const frameH = 3;
@@ -40,7 +40,7 @@ export function FrameGrid({
     frames: Screenshot[];
     startIndex: number;
     priorityIndex: number;
-  }) => {
+  }): React.ReactElement => {
     const rowRef = useRef<HTMLDivElement>(null);
     const rowRect = rowRef.current?.getBoundingClientRect();
     const frameCount = frames.length;
@@ -61,7 +61,7 @@ export function FrameGrid({
           userSelect: "none",
         }}
       >
-        {frames.map((frame, index) => (
+        {frames.map((frame: Screenshot, index: number) => (
           <div
             key={frame.id}
             style={{

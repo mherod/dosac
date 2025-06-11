@@ -25,7 +25,7 @@ export const SeriesHeader = ({
   title,
   description,
   itemCount,
-}: SeriesHeaderProps) => (
+}: SeriesHeaderProps): React.ReactElement => (
   <div className="bg-[#1d70b8] text-white py-6 w-[100vw] relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
     <div className="mx-auto max-w-6xl px-4 md:px-6">
       <div className="flex items-start gap-4">

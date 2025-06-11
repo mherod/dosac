@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Card } from "@/components/ui/card";
 import { FontControls } from "@/components/caption-controls/font-controls";
 import { ActionButtons } from "@/components/caption-controls/action-buttons";
@@ -59,7 +58,7 @@ export function EditorControlsCard({
   onDownload,
   onShare,
   children,
-}: EditorControlsCardProps) {
+}: EditorControlsCardProps): React.ReactElement {
   return (
     <Card
       className="p-4 shadow-md w-full max-w-[400px]"

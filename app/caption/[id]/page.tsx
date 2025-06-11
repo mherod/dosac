@@ -1,6 +1,6 @@
+import React from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { CaptionEditor } from "./caption-editor";
@@ -15,9 +15,9 @@ export const dynamicParams = true;
 /**
  *
  */
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Array<{ id: string }>> {
   const frames = await getFrameIndex();
-  return frames.map((frame) => ({
+  return frames.map((frame: Screenshot) => ({
     id: frame.id,
   }));
 }
@@ -82,7 +82,10 @@ export async function generateMetadata({
  * @param props.searchParams - Promise resolving to search parameters for text and range
  * @returns The frame display page with caption editor and frame strip
  */
-export default async function Page({ params, searchParams }: PageProps) {
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps): Promise<React.ReactElement> {
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
@@ -98,12 +101,12 @@ export default async function Page({ params, searchParams }: PageProps) {
   );
 
   const [previousFrames, nextFrames] = await Promise.all([
-    getFrameIndex().then((index) => {
-      const i = index.findIndex((f) => f.id === frame.id);
+    getFrameIndex().then((index: Screenshot[]) => {
+      const i = index.findIndex((f: Screenshot) => f.id === frame.id);
       return i > 0 ? index.slice(Math.max(0, i - 3), i) : [];
     }),
-    getFrameIndex().then((index) => {
-      const i = index.findIndex((f) => f.id === frame.id);
+    getFrameIndex().then((index: Screenshot[]) => {
+      const i = index.findIndex((f: Screenshot) => f.id === frame.id);
       return i < index.length - 1 ? index.slice(i + 1, i + 10) : [];
     }),
   ]).catch(() => {
@@ -125,7 +128,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         }
       : frame;
 
-  const breadcrumbItems = [
+  const _breadcrumbItems = [
     { label: "Series", href: "/series" },
     { label: `Series ${seriesNumber}`, href: `/series/${seriesNumber}` },
     {
@@ -140,8 +143,11 @@ export default async function Page({ params, searchParams }: PageProps) {
       <div className="flex items-center justify-center">
         <FrameStrip
           screenshots={[...previousFrames, frame, ...nextFrames].filter(
-            (f): f is Screenshot =>
-              !!f && typeof f.id === "string" && typeof f.speech === "string",
+            (f: Screenshot | null | undefined): f is Screenshot =>
+              f !== null &&
+              f !== undefined &&
+              typeof f.id === "string" &&
+              typeof f.speech === "string",
           )}
           centerScreenshot={frame}
           frameWidth={200}

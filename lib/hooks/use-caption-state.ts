@@ -51,7 +51,16 @@ export function useCaptionState({
   defaultOutlineWidth = CAPTION_DEFAULTS.outlineWidth,
   defaultShadowSize = CAPTION_DEFAULTS.shadowSize,
   defaultFontFamily = CAPTION_DEFAULTS.fontFamily,
-}: CaptionStateOptions = {}) {
+}: CaptionStateOptions = {}): {
+  fontSize: number;
+  setFontSize: (fontSize: number) => void;
+  outlineWidth: number;
+  setOutlineWidth: (outlineWidth: number) => void;
+  shadowSize: number;
+  setShadowSize: (shadowSize: number) => void;
+  fontFamily: string;
+  setFontFamily: (fontFamily: string) => void;
+} {
   const [fontSize, setFontSize] = useState(defaultFontSize);
   const [outlineWidth, setOutlineWidth] = useState(defaultOutlineWidth);
   const [shadowSize, setShadowSize] = useState(defaultShadowSize);

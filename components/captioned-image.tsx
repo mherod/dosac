@@ -11,6 +11,6 @@ export type { CaptionedImageProps };
  * @param props - The component props (see CaptionedImageProps for details)
  * @returns The client-side captioned image component with the provided props
  */
-export function CaptionedImage(props: CaptionedImageProps) {
+export function CaptionedImage(props: CaptionedImageProps): React.ReactElement {
   return <ClientCaptionedImage {...props} />;
 }

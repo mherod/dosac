@@ -912,7 +912,7 @@ export function getEpisodeInfo(
   episodeNumber: number,
 ): EpisodeInfo | undefined {
   return episodeInfo.find(
-    (ep) =>
+    (ep: EpisodeInfo) =>
       ep.seriesNumber === seriesNumber && ep.episodeNumber === episodeNumber,
   );
 }
@@ -924,8 +924,10 @@ export function getEpisodeInfo(
  */
 export function getSeriesEpisodes(seriesNumber: number): EpisodeInfo[] {
   return episodeInfo
-    .filter((ep) => ep.seriesNumber === seriesNumber)
-    .sort((a, b) => a.episodeNumber - b.episodeNumber);
+    .filter((ep: EpisodeInfo) => ep.seriesNumber === seriesNumber)
+    .sort(
+      (a: EpisodeInfo, b: EpisodeInfo) => a.episodeNumber - b.episodeNumber,
+    );
 }
 
 /**
@@ -933,7 +935,7 @@ export function getSeriesEpisodes(seriesNumber: number): EpisodeInfo[] {
  * @returns An array of unique director names
  */
 export function getDirectors(): string[] {
-  return [...new Set(episodeInfo.flatMap((ep) => ep.directors))];
+  return [...new Set(episodeInfo.flatMap((ep: EpisodeInfo) => ep.directors))];
 }
 
 /**
@@ -942,8 +944,8 @@ export function getDirectors(): string[] {
  */
 export function getAllWriters(): WriterCredit[] {
   const writersMap = new Map<string, WriterCredit>();
-  episodeInfo.forEach((ep) => {
-    ep.writers.forEach((writer) => {
+  episodeInfo.forEach((ep: EpisodeInfo) => {
+    ep.writers.forEach((writer: WriterCredit) => {
       writersMap.set(writer.name, writer);
     });
   });

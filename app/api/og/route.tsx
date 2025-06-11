@@ -13,7 +13,7 @@ export const runtime = "edge";
  * getTextShadow(2) // returns "2px 2px 0 #000, 2px -2px 0 #000, ..."
  * ```
  */
-function getTextShadow(width: number = 1) {
+function getTextShadow(width: number = 1): string {
   const shadows = [];
   for (let x = -width; x <= width; x++) {
     for (let y = -width; y <= width; y++) {
@@ -56,7 +56,7 @@ function getTextShadow(width: number = 1) {
  * })
  * ```
  */
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
   try {
     const { searchParams } = new URL(req.url);
     const caption = searchParams.get("caption") || "No caption provided";
@@ -153,7 +153,7 @@ export async function GET(req: NextRequest) {
                 fontFamily,
               }}
             >
-              {caption.split("\n").map((line, i) => (
+              {caption.split("\n").map((line: string, i: number) => (
                 <span key={i} style={{ margin: 0 }}>
                   {line}
                 </span>

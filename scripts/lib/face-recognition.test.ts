@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeAll, afterEach } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { readFileSync } from "fs";
 import { join } from "path";
 import sharp from "sharp";
@@ -138,7 +138,7 @@ describe("face-recognition", () => {
       },
       {
         path: "test2.jpg",
-        embedding: queryEmbedding.embedding.map((v) => v * 0.5), // Different embedding
+        embedding: queryEmbedding.embedding.map((v: any) => v * 0.5), // Different embedding
         faces: 1,
         cached: new Date().toISOString(),
         predictions: [],
@@ -256,7 +256,7 @@ describe("face-net", () => {
     expect(similarity1).toBeCloseTo(1, 5);
 
     // Different embedding should have lower similarity
-    const differentEmbedding = embedding.map((v) => v * 0.5);
+    const differentEmbedding = embedding.map((v: any) => v * 0.5);
     const similarity2 = faceNet.calculateSimilarity(
       embedding,
       differentEmbedding,

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageContainerProps {
@@ -15,7 +15,10 @@ interface PageContainerProps {
  * @param props.className - Optional additional className
  * @returns A main element containing the page content with consistent padding and width
  */
-export function PageContainer({ children, className }: PageContainerProps) {
+export function PageContainer({
+  children,
+  className,
+}: PageContainerProps): React.ReactElement {
   return (
     <main
       className={cn(

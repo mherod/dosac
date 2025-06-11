@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Select,
   SelectContent,
@@ -54,21 +55,26 @@ interface SelectOptionProps {
 const SelectOption = forwardRef<
   React.ComponentRef<typeof SelectItem>,
   SelectOptionProps
->(({ value, href, children, className }, ref) => {
-  if (href) {
+>(
+  (
+    { value, href, children, className }: SelectOptionProps,
+    ref: React.ForwardedRef<React.ComponentRef<typeof SelectItem>>,
+  ): React.ReactElement => {
+    if (href) {
+      return (
+        <SelectItem ref={ref} value={value} className={className}>
+          {children}
+        </SelectItem>
+      );
+    }
+
     return (
       <SelectItem ref={ref} value={value} className={className}>
         {children}
       </SelectItem>
     );
-  }
-
-  return (
-    <SelectItem ref={ref} value={value} className={className}>
-      {children}
-    </SelectItem>
-  );
-});
+  },
+);
 SelectOption.displayName = "SelectOption";
 
 /**
@@ -105,12 +111,12 @@ export function SeriesSelect({
   onFilterChange,
   className = "",
   isSearchMode = false,
-}: SeriesSelectProps) {
+}: SeriesSelectProps): React.ReactElement {
   /**
    * Handles changes to the series selection
    * @param value - The new series value
    */
-  const handleSeriesChange = (value: string) => {
+  const handleSeriesChange = (value: string): void => {
     const newSeason = value !== "all" ? parseInt(value, 10) : undefined;
 
     if (isSearchMode) {
@@ -130,7 +136,7 @@ export function SeriesSelect({
    * Handles changes to the episode selection
    * @param value - The new episode value
    */
-  const handleEpisodeChange = (value: string) => {
+  const handleEpisodeChange = (value: string): void => {
     const newEpisode = value !== "all" ? parseInt(value, 10) : undefined;
 
     if (isSearchMode) {
@@ -161,7 +167,7 @@ export function SeriesSelect({
           {isSearchMode ? (
             <>
               <SelectOption value="all">All Series</SelectOption>
-              {[1, 2, 3, 4].map((s) => (
+              {[1, 2, 3, 4].map((s: number) => (
                 <SelectOption key={s} value={s.toString()}>
                   Series {s}
                 </SelectOption>
@@ -172,7 +178,7 @@ export function SeriesSelect({
               <Link href="/series" scroll={false} className="block w-full">
                 <SelectOption value="all">All Series</SelectOption>
               </Link>
-              {[1, 2, 3, 4].map((s) => (
+              {[1, 2, 3, 4].map((s: number) => (
                 <Link
                   key={s}
                   href={`/series/${s}`}
@@ -200,7 +206,7 @@ export function SeriesSelect({
             <>
               <SelectOption value="all">All Episodes</SelectOption>
               {season &&
-                [1, 2, 3].map((ep) => (
+                [1, 2, 3].map((ep: number) => (
                   <SelectOption key={ep} value={ep.toString()}>
                     Episode {ep}
                   </SelectOption>
@@ -216,7 +222,7 @@ export function SeriesSelect({
                 <SelectOption value="all">All Episodes</SelectOption>
               </Link>
               {season &&
-                [1, 2, 3].map((ep) => (
+                [1, 2, 3].map((ep: number) => (
                   <Link
                     key={ep}
                     href={`/series/${season}/episode/${ep}`}
