@@ -36,9 +36,9 @@ export function SearchBar({
       }
       className={cn(
         "px-3 py-1.5 text-sm",
-        "bg-transparent border border-white/20 rounded",
+        "rounded border border-white/20 bg-transparent",
         "text-white placeholder:text-white/60",
-        "focus:ring-[#1d70b8] focus:border-white/40",
+        "focus:border-white/40 focus:ring-[#1d70b8]",
         className,
       )}
     />

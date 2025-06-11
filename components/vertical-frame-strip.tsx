@@ -28,23 +28,23 @@ export function VerticalFrameStrip({
   const frameHeight = Math.round(frameWidth * (9 / 16));
 
   return (
-    <div className="relative max-h-fit mx-auto group">
+    <div className="group relative mx-auto max-h-fit">
       <div
         style={{
           width: `${frameWidth + margin * 2}px`,
           height: `${frameHeight * imageUrls.length + margin * 2}px`,
         }}
       >
-        <div className="m-auto whitespace-nowrap scrollbar-custom snap-y snap-mandatory scroll-pt-[8px] scroll-pb-[8px]">
+        <div className="scrollbar-custom m-auto snap-y snap-mandatory scroll-pb-[8px] scroll-pt-[8px] whitespace-nowrap">
           <div
-            className="flex flex-col items-center justify-center m-auto"
+            className="m-auto flex flex-col items-center justify-center"
             style={{
               height: `${frameHeight * imageUrls.length + margin * 2}px`,
               width: `${frameWidth + margin * 2}px`,
             }}
           >
             <div
-              className="flex flex-col gap-2 scroll-py-[8px]"
+              className="flex scroll-py-[8px] flex-col gap-2"
               style={{ width: `${frameWidth}px` }}
             >
               {imageUrls
@@ -62,9 +62,9 @@ export function VerticalFrameStrip({
                       }
                     }}
                     className={cn(
-                      "group relative flex-shrink-0 snap-start cursor-pointer transition-all duration-200 hover:scale-105",
+                      "group relative flex-shrink-0 cursor-pointer snap-start transition-all duration-200 hover:scale-105",
                       selectedImage === imageUrl
-                        ? "ring-2 ring-yellow-400/80 scale-105 z-10"
+                        ? "z-10 scale-105 ring-2 ring-yellow-400/80"
                         : "ring-1 ring-white/10 hover:ring-white/30",
                     )}
                     style={{
@@ -73,7 +73,7 @@ export function VerticalFrameStrip({
                     }}
                   >
                     {!loadedImages[imageUrl] && (
-                      <div className="absolute inset-0 bg-gray-800 animate-pulse" />
+                      <div className="absolute inset-0 animate-pulse bg-gray-800" />
                     )}
                     <Image
                       src={imageUrl}

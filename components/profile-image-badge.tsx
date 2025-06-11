@@ -58,7 +58,7 @@ function InitialsPlaceholder({
   return (
     <div
       className={cn(
-        "relative rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium overflow-hidden",
+        "relative flex items-center justify-center overflow-hidden rounded-full bg-slate-100 font-medium text-slate-600",
         "inline-flex shrink-0 border border-slate-200",
         {
           "text-sm": size === "sm",
@@ -96,7 +96,7 @@ function ProfileImageContent({
     return (
       <div
         className={cn(
-          "relative rounded-full overflow-hidden shrink-0 inline-flex border border-slate-200",
+          "relative inline-flex shrink-0 overflow-hidden rounded-full border border-slate-200",
           sizeClasses[size || "md"],
           className,
         )}
@@ -105,7 +105,7 @@ function ProfileImageContent({
           src={imageUrl}
           alt={character.name}
           fill
-          className="object-cover object-top hover:scale-105 transition-transform"
+          className="object-cover object-top transition-transform hover:scale-105"
           sizes={sizesConfig[size || "md"]}
           priority
         />

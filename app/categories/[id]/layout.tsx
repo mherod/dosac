@@ -14,7 +14,7 @@ function CategoryHeader({
   itemCount: number;
 }): React.ReactElement {
   return (
-    <div className="bg-[#1d70b8] text-white py-6 w-[100vw] relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw]">
+    <div className="relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] w-[100vw] bg-[#1d70b8] py-6 text-white">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <div className="flex items-start gap-4">
           <div className="rounded-lg bg-white/10 p-2.5">
@@ -22,7 +22,7 @@ function CategoryHeader({
           </div>
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-            <p className="text-base text-white/90 leading-relaxed max-w-2xl">
+            <p className="max-w-2xl text-base leading-relaxed text-white/90">
               {description}
             </p>
             <div className="flex items-center gap-2">

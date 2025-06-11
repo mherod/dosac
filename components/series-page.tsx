@@ -76,14 +76,14 @@ async function SeriesPageContent({
             <Badge variant="secondary">{series.episodeCount} Episodes</Badge>
             <Link
               href={`/series/${series.number}/episode`}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               View all episodes →
             </Link>
           </div>
         </div>
         <div className="prose prose-invert max-w-none">
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-lg leading-relaxed text-muted-foreground">
             {processTextWithLinks(series.longSummary)}
           </p>
         </div>

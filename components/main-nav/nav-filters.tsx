@@ -77,8 +77,8 @@ export function NavFilters({
   return (
     <div className={cn("border-t border-[#ffffff1f] bg-[#0b0c0c]", className)}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto min-w-0">
+        <div className="flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center">
+          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
             <div className="min-w-0 flex-shrink-0">
               <SeriesSelect
                 season={filters.season}
@@ -108,7 +108,7 @@ export function NavFilters({
                     <ProfileImageBadge
                       characterId={character.id}
                       size="sm"
-                      className="border-2 border-[#1d70b8] group-hover:border-white transition-colors"
+                      className="border-2 border-[#1d70b8] transition-colors group-hover:border-white"
                     />
                   </Link>
                 ),

@@ -116,11 +116,11 @@ export function DualCaptionEditor({
   return (
     <div
       className={cn(
-        "flex flex-wrap justify-center gap-4 lg:gap-8 max-w-full mx-auto",
+        "mx-auto flex max-w-full flex-wrap justify-center gap-4 lg:gap-8",
       )}
     >
       {/* Combined Preview */}
-      <div className="flex mx-auto min-w-[30vw] w-full max-w-[500px]">
+      <div className="mx-auto flex w-full min-w-[30vw] max-w-[500px]">
         <Card
           style={{
             boxShadow:
@@ -166,7 +166,7 @@ export function DualCaptionEditor({
       </div>
 
       {/* Updated Controls */}
-      <div className="mx-auto flex flex-col gap-4 w-full min-w-[30vw] max-w-[400px]">
+      <div className="mx-auto flex w-full min-w-[30vw] max-w-[400px] flex-col gap-4">
         <EditorControlsCard
           fontSize={fontSize}
           setFontSize={setFontSize}

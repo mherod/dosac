@@ -95,7 +95,7 @@ export function CaptionText({
 
   return (
     <div
-      className={`whitespace-pre-wrap break-words w-full ${className}`}
+      className={`w-full whitespace-pre-wrap break-words ${className}`}
       style={{
         fontSize: `${fontSize}px`,
         color: "#ffffff",
@@ -109,7 +109,7 @@ export function CaptionText({
       }}
     >
       {lines.map((line: string, index: number) => (
-        <p key={index} className="whitespace-pre-wrap break-words w-full">
+        <p key={index} className="w-full whitespace-pre-wrap break-words">
           {line}
         </p>
       ))}

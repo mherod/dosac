@@ -63,13 +63,13 @@ async function EpisodePageContent({
         {episode?.title}
       </h1>
       {episode?.shortSummary && (
-        <p className="text-lg text-slate-600 max-w-[750px] leading-relaxed">
+        <p className="max-w-[750px] text-lg leading-relaxed text-slate-600">
           {processTextWithLinks(episode.shortSummary)}
         </p>
       )}
       <div className="flex flex-wrap items-center gap-6 text-sm">
         {episode?.airDate && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+          <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-blue-600">
             <CalendarIcon className="h-4 w-4 opacity-70" />
             <span>
               {new Date(episode.airDate).toLocaleDateString("en-GB", {
@@ -81,7 +81,7 @@ async function EpisodePageContent({
           </div>
         )}
         {episode?.runtime && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+          <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-blue-600">
             <ClockIcon className="h-4 w-4 opacity-70" />
             <span>{episode.runtime} minutes</span>
           </div>
@@ -116,7 +116,7 @@ async function EpisodePageContent({
           {/* Cast */}
           {episode?.cast && episode.cast.length > 0 && (
             <Card className="border border-slate-200 shadow-sm">
-              <CardHeader className="flex flex-row items-center gap-2 pb-3 border-b border-slate-200 bg-slate-50">
+              <CardHeader className="flex flex-row items-center gap-2 border-b border-slate-200 bg-slate-50 pb-3">
                 <UsersIcon className="h-4 w-4 text-blue-600" />
                 <CardTitle className="text-slate-900">Featured Cast</CardTitle>
               </CardHeader>
@@ -138,7 +138,7 @@ async function EpisodePageContent({
                           {characterProfile?.image && (
                             <Link
                               href={`/profiles/${characterProfile.id}`}
-                              className="relative shrink-0 w-12 h-12 rounded-full overflow-hidden ring-1 ring-slate-200 ring-offset-2 ring-offset-background transition-all duration-200 group-hover:ring-blue-600"
+                              className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-1 ring-slate-200 ring-offset-2 ring-offset-background transition-all duration-200 group-hover:ring-blue-600"
                             >
                               <Image
                                 src={characterProfile.image}
@@ -149,14 +149,14 @@ async function EpisodePageContent({
                               />
                             </Link>
                           )}
-                          <div className="flex-1 min-w-0">
+                          <div className="min-w-0 flex-1">
                             <div className="flex items-baseline justify-between gap-2">
                               <div className="space-y-1.5">
-                                <div className="font-medium truncate text-slate-900">
+                                <div className="truncate font-medium text-slate-900">
                                   {characterProfile ? (
                                     <Link
                                       href={`/profiles/${characterProfile.id}`}
-                                      className="hover:text-blue-600 transition-colors"
+                                      className="transition-colors hover:text-blue-600"
                                     >
                                       {member.character}
                                     </Link>
@@ -164,14 +164,14 @@ async function EpisodePageContent({
                                     member.character
                                   )}
                                 </div>
-                                <div className="text-sm text-slate-600 truncate">
+                                <div className="truncate text-sm text-slate-600">
                                   {member.actor}
                                 </div>
                               </div>
                               {member.isGuest && (
                                 <Badge
                                   variant="outline"
-                                  className="text-xs shrink-0 bg-blue-50 text-blue-600 border-blue-100"
+                                  className="shrink-0 border-blue-100 bg-blue-50 text-xs text-blue-600"
                                 >
                                   Guest
                                 </Badge>
@@ -189,7 +189,7 @@ async function EpisodePageContent({
 
           {/* Credits with improved typography */}
           <Card className="border border-slate-200 shadow-sm">
-            <CardHeader className="flex flex-row items-center gap-2 pb-3 border-b border-slate-200 bg-slate-50">
+            <CardHeader className="flex flex-row items-center gap-2 border-b border-slate-200 bg-slate-50 pb-3">
               <PenToolIcon className="h-4 w-4 text-blue-600" />
               <CardTitle className="text-slate-900">Credits</CardTitle>
             </CardHeader>
@@ -198,7 +198,7 @@ async function EpisodePageContent({
                 {/* Directors */}
                 {episode?.directors && episode.directors.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-blue-600">
+                    <h4 className="text-sm font-medium text-blue-600">
                       Direction
                     </h4>
                     <div className="space-y-2">
@@ -214,7 +214,7 @@ async function EpisodePageContent({
                 {/* Writers */}
                 {episode?.writers && episode.writers.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-blue-600">
+                    <h4 className="text-sm font-medium text-blue-600">
                       Writing
                     </h4>
                     <div className="space-y-2">

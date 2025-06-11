@@ -97,7 +97,7 @@ export function ClientCaptionedImage({
 
   return (
     <div
-      className={`min-h-12 relative select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-fit"}`}
+      className={`relative min-h-12 select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-fit"}`}
       ref={containerRef}
       onDoubleClick={handleDoubleClick}
       style={{ cursor: image2Url ? "pointer" : "default" }}
@@ -106,7 +106,7 @@ export function ClientCaptionedImage({
         src={currentImageUrl}
         alt="Screenshot"
         fill
-        className="object-cover pointer-events-none"
+        className="pointer-events-none object-cover"
         sizes="(max-width: 1200px) 100vw, 1200px"
         priority={priority}
         unoptimized

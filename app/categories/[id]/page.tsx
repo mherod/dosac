@@ -54,7 +54,7 @@ export default async function CategoryPage({
 
   return (
     <main className="flex-1 bg-[#f3f2f1]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <ScreenshotGrid screenshots={categoryFrames} />
       </div>
     </main>

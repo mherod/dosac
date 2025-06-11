@@ -48,22 +48,22 @@ export function CaptionFrameControls({
   }
 
   return (
-    <div className="space-y-4 flex flex-col gap-2">
-      <div className="h-fit flex flex-row items-baseline justify-between p-0 absolute z-10 gap-3 mb-2">
-        <label className="text-sm font-medium text-foreground leading-6">
+    <div className="flex flex-col gap-2 space-y-4">
+      <div className="absolute z-10 mb-2 flex h-fit flex-row items-baseline justify-between gap-3 p-0">
+        <label className="text-sm font-medium leading-6 text-foreground">
           {label}
         </label>
       </div>
 
-      <div className="flex p-2 h-fit">
-        <div className="flex-1 h-full">
+      <div className="flex h-fit p-2">
+        <div className="h-full flex-1">
           <Textarea
             value={caption}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               onCaptionChange(e.target.value)
             }
             placeholder={`Enter caption for ${label.toLowerCase()}...`}
-            className="min-h-[125px] h-full resize-none transition-colors focus:border-primary rounded-r-none p-4 text-sm flex items-center"
+            className="flex h-full min-h-[125px] resize-none items-center rounded-r-none p-4 text-sm transition-colors focus:border-primary"
           />
         </div>
 

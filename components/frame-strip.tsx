@@ -202,8 +202,8 @@ export function FrameStrip({
   const frameHeight = Math.round(frameWidth * (9 / 16));
 
   return (
-    <div className="relative bg-black/95 backdrop-blur-lg p-2 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] max-w-screen overflow-x-hidden">
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg">
+      <div className="mx-auto max-w-7xl">
         {/* Yellow border frame */}
         <motion.div
           className="relative rounded-xl shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
@@ -214,19 +214,19 @@ export function FrameStrip({
         >
           <div
             ref={stripRef}
-            className="relative overflow-x-scroll whitespace-nowrap scrollbar-custom snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px]"
+            className="scrollbar-custom relative snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px] overflow-x-scroll whitespace-nowrap"
           >
             {/* Frames */}
             <div
               ref={framesParent}
-              className="flex gap-[1px] p-1 min-w-full items-center justify-center"
+              className="flex min-w-full items-center justify-center gap-[1px] p-1"
               style={{
                 width: `${frameWidth * screenshots.length}px`,
                 height: `${frameHeight + margin}px`,
               }}
             >
               <div
-                className="flex gap-2 scroll-px-[8px]"
+                className="flex scroll-px-[8px] gap-2"
                 style={{ height: `${frameHeight}px` }}
               >
                 <AnimatePresence>
@@ -242,7 +242,7 @@ export function FrameStrip({
                       onMouseMove={() => handleDragMove(screenshot.id)}
                       onMouseUp={handleDragEnd}
                       className={cn(
-                        "group relative flex-shrink-0 snap-start z-10",
+                        "group relative z-10 flex-shrink-0 snap-start",
                         centerScreenshot?.id === screenshot.id &&
                           "ring-2 ring-yellow-400/80",
                         selectedIds.has(screenshot.id) &&
@@ -289,7 +289,7 @@ export function FrameStrip({
 
             {/* Edge fades - now using sticky positioning with motion */}
             <motion.div
-              className="sticky left-0 top-0 bottom-0 w-8 h-full bg-gradient-to-r from-black to-transparent pointer-events-none"
+              className="pointer-events-none sticky bottom-0 left-0 top-0 h-full w-8 bg-gradient-to-r from-black to-transparent"
               style={{ position: "sticky" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

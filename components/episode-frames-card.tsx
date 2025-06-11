@@ -38,7 +38,7 @@ export function EpisodeFramesCard({
         "bg-gradient-to-b from-background to-background/80",
         "transition-all duration-300 ease-in-out",
         "hover:shadow-xl hover:shadow-primary/5",
-        "hover:scale-[1.02] hover:-translate-y-0.5",
+        "hover:-translate-y-0.5 hover:scale-[1.02]",
         "border border-border/50",
         className,
       )}
@@ -46,15 +46,15 @@ export function EpisodeFramesCard({
       <div
         className={cn(
           "absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0",
-          "group-hover:opacity-100 transition-opacity duration-500",
+          "transition-opacity duration-500 group-hover:opacity-100",
         )}
       />
-      <div className="relative flex items-start justify-between mb-8">
+      <div className="relative mb-8 flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight mb-2">
+          <h2 className="mb-2 text-2xl font-semibold tracking-tight">
             Episode {episodeNumber}
           </h2>
-          <p className="text-sm text-muted-foreground/80 font-medium">
+          <p className="text-sm font-medium text-muted-foreground/80">
             {frames.length} captions
           </p>
         </div>

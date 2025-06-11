@@ -63,8 +63,8 @@ export default function RootLayout({
           <Suspense>
             <MainNav />
           </Suspense>
-          <main className="min-h-screen min-">
-            <div className="container max-w-7xl mx-auto px-4 md:px-6">
+          <main className="min- min-h-screen">
+            <div className="container mx-auto max-w-7xl px-4 md:px-6">
               {children}
             </div>
           </main>

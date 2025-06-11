@@ -213,7 +213,7 @@ function ScreenshotGridInner({
     <div className="space-y-4 sm:space-y-8">
       {rankedMoments && rankedMoments.length > 0 && (
         <>
-          <div className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0">
+          <div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3">
             {rankedMoments.map((screenshot: Screenshot, index: number) => (
               <div key={screenshot.id} className="relative">
                 <Link
@@ -257,7 +257,7 @@ function ScreenshotGridInner({
       <div className="space-y-2 sm:space-y-4">
         <div
           ref={gridRef}
-          className="grid grid-cols-1 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 px-2 sm:px-0"
+          className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3"
         >
           {currentScreenshots.map((screenshot: Screenshot, index: number) => (
             <div key={screenshot.id}>

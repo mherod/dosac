@@ -38,7 +38,7 @@ export function BreadcrumbNav({
 
   return (
     <nav className="mb-6" aria-label="Breadcrumb navigation">
-      <ol className="flex flex-wrap items-center text-[#1d70b8] text-base">
+      <ol className="flex flex-wrap items-center text-base text-[#1d70b8]">
         {allItems.map((item: NavItem, index: number) => (
           <Fragment key={`${item.label}-${item.href || "current"}-${index}`}>
             {index > 0 && (

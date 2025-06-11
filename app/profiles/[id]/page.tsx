@@ -39,13 +39,13 @@ function ContentsList({ name: _name }: { name: string }): React.ReactElement {
       className="govuk-contents-list mb-6 border-l-4 border-slate-200 pl-4"
       aria-label="Contents"
     >
-      <h2 className="text-lg font-semibold mb-4">Contents</h2>
+      <h2 className="mb-4 text-lg font-semibold">Contents</h2>
       <ol className="space-y-3">
         <li className="flex items-center space-x-2">
           <span className="text-slate-500">-</span>
           <a
             href="#highlights"
-            className="text-blue-600 hover:underline hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:underline"
           >
             Highlights
           </a>
@@ -54,7 +54,7 @@ function ContentsList({ name: _name }: { name: string }): React.ReactElement {
           <span className="text-slate-500">-</span>
           <a
             href="#biography"
-            className="text-blue-600 hover:underline hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:underline"
           >
             Biography
           </a>
@@ -63,7 +63,7 @@ function ContentsList({ name: _name }: { name: string }): React.ReactElement {
           <span className="text-slate-500">-</span>
           <a
             href="#roles"
-            className="text-blue-600 hover:underline hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:underline"
           >
             Roles
           </a>
@@ -72,7 +72,7 @@ function ContentsList({ name: _name }: { name: string }): React.ReactElement {
           <span className="text-slate-500">-</span>
           <a
             href="#details"
-            className="text-blue-600 hover:underline hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:underline"
           >
             Details
           </a>
@@ -81,7 +81,7 @@ function ContentsList({ name: _name }: { name: string }): React.ReactElement {
           <span className="text-slate-500">-</span>
           <a
             href="#related"
-            className="text-blue-600 hover:underline hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 hover:underline"
           >
             Related Profiles
           </a>
@@ -102,7 +102,7 @@ function PersonalInfo({
     <div className="space-y-6 text-sm">
       {character.origin && (
         <div className="border-t pt-4">
-          <h3 className="font-semibold text-slate-600 mb-2">Origin</h3>
+          <h3 className="mb-2 font-semibold text-slate-600">Origin</h3>
           <p className="leading-relaxed">
             {[
               character.origin.city,
@@ -117,14 +117,14 @@ function PersonalInfo({
 
       {character.personal?.age && (
         <div className="border-t pt-4">
-          <h3 className="font-semibold text-slate-600 mb-2">Age</h3>
+          <h3 className="mb-2 font-semibold text-slate-600">Age</h3>
           <p className="leading-relaxed">{character.personal.age} years old</p>
         </div>
       )}
 
       {character.personal?.background?.education && (
         <div className="border-t pt-4">
-          <h3 className="font-semibold text-slate-600 mb-2">Education</h3>
+          <h3 className="mb-2 font-semibold text-slate-600">Education</h3>
           <p className="leading-relaxed">
             {character.personal.background.education}
           </p>
@@ -149,22 +149,22 @@ function RelatedProfileCard({
   return (
     <Link
       href={`/profiles/${id}`}
-      className="group flex items-start space-x-4 p-4 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors"
+      className="group flex items-start space-x-4 rounded-lg border border-slate-200 p-4 transition-colors hover:border-slate-300"
     >
       <ProfileImageBadge characterId={id} size="lg" />
-      <div className="flex-grow min-w-0">
-        <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+      <div className="min-w-0 flex-grow">
+        <h3 className="truncate font-semibold text-slate-900 transition-colors group-hover:text-blue-600">
           {profile.name}
         </h3>
-        <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+        <p className="mt-1 line-clamp-2 text-sm text-slate-600">
           {relationship}
         </p>
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           {profile.role.slice(0, 2).map((role: string) => (
             <Badge
               key={role}
               variant="secondary"
-              className="text-xs px-2 py-0.5"
+              className="px-2 py-0.5 text-xs"
             >
               {roleLabels[role as keyof typeof roleLabels]}
             </Badge>
@@ -185,7 +185,7 @@ function RelatedProfiles({
   return (
     <section id="related" className="space-y-6">
       <h2 className="text-2xl font-bold text-slate-900">Related Profiles</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {relatedProfiles.map(
           (profile: { id: CharacterId; relationship: string }) => (
             <RelatedProfileCard
@@ -269,15 +269,15 @@ export default async function CharacterProfile({
   ).filter((frame: Screenshot | null): frame is Screenshot => frame !== null);
 
   return (
-    <main className="container py-6 lg:py-12 max-w-7xl">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
-        <aside className="lg:col-span-1 order-2 lg:order-1">
+    <main className="container max-w-7xl py-6 lg:py-12">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
+        <aside className="order-2 lg:order-1 lg:col-span-1">
           {character.image && (
-            <div className="mb-8 aspect-[3/4] rounded-xl overflow-hidden border border-slate-200 shadow-lg sticky top-8">
+            <div className="sticky top-8 mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg">
               <Image
                 src={character.image}
                 alt={character.name}
-                className="object-cover object-top w-full h-full"
+                className="h-full w-full object-cover object-top"
                 priority
                 sizes="(max-width: 1024px) 100vw, 25vw"
               />
@@ -287,14 +287,14 @@ export default async function CharacterProfile({
           <PersonalInfo character={character} />
         </aside>
 
-        <div className="lg:col-span-3 order-1 lg:order-2">
+        <div className="order-1 lg:order-2 lg:col-span-3">
           <header className="mb-12">
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+                <h1 className="mb-4 text-3xl font-bold text-slate-900 lg:text-4xl">
                   {character.name}
                 </h1>
-                <p className="text-lg lg:text-xl text-slate-600 leading-relaxed">
+                <p className="text-lg leading-relaxed text-slate-600 lg:text-xl">
                   {character.description}
                 </p>
               </div>
@@ -303,7 +303,7 @@ export default async function CharacterProfile({
                   <Badge
                     key={role}
                     variant="secondary"
-                    className="px-3 py-1 text-sm lg:text-base font-medium bg-slate-100"
+                    className="bg-slate-100 px-3 py-1 text-sm font-medium lg:text-base"
                   >
                     {roleLabels[role as keyof typeof roleLabels]}
                   </Badge>
@@ -366,7 +366,7 @@ export default async function CharacterProfile({
       </div>
 
       {character.relatedProfiles && character.relatedProfiles.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-slate-200">
+        <div className="mt-12 border-t border-slate-200 pt-8">
           <RelatedProfiles relatedProfiles={character.relatedProfiles} />
         </div>
       )}

@@ -64,10 +64,10 @@ function CharacterCard({
 
   return (
     <Link href={`/profiles/${id}`} className="block h-full">
-      <Card className="hover:bg-accent transition-colors cursor-pointer group h-full">
+      <Card className="group h-full cursor-pointer transition-colors hover:bg-accent">
         <CardHeader>
           {image && (
-            <div className="relative w-full aspect-video mb-4 rounded-lg overflow-hidden">
+            <div className="relative mb-4 aspect-video w-full overflow-hidden rounded-lg">
               <Image
                 src={image}
                 alt={`Portrait of ${name}`}
@@ -124,8 +124,8 @@ function CharacterGroup({
 
   return (
     <section className="mb-8">
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h2 className="mb-4 text-xl font-semibold">{title}</h2>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {characters.map(
           (character: Character & { id: string }, index: number) => (
             <CharacterCard
@@ -148,7 +148,7 @@ function CharacterGroup({
 export default function ProfilesPage(): React.ReactElement {
   return (
     <main className="container py-8">
-      <h1 className="text-4xl font-bold mb-8">Character Profiles</h1>
+      <h1 className="mb-8 text-4xl font-bold">Character Profiles</h1>
 
       <Accordion
         type="single"

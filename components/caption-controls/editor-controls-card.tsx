@@ -61,19 +61,19 @@ export function EditorControlsCard({
 }: EditorControlsCardProps): React.ReactElement {
   return (
     <Card
-      className="p-4 shadow-md w-full max-w-[400px]"
+      className="w-full max-w-[400px] p-4 shadow-md"
       style={{ height: "max-content" }}
     >
       <div className="space-y-4">
         {children}
 
-        <div className="space-y-6 pt-6 border-t">
+        <div className="space-y-6 border-t pt-6">
           <div className="h-6">
-            <label className="text-sm font-medium text-foreground leading-6">
+            <label className="text-sm font-medium leading-6 text-foreground">
               Font Settings
             </label>
           </div>
-          <div className="bg-muted/50 rounded-lg p-4">
+          <div className="rounded-lg bg-muted/50 p-4">
             <FontControls
               fontSize={fontSize}
               setFontSize={setFontSize}

@@ -10,37 +10,37 @@ export function CivilServiceHeader(): React.ReactElement {
   return (
     <Link href="/">
       <div
-        className="flex h-14 items-center justify-between px-4 lg:px-8 max-w-7xl mx-auto select-none"
+        className="mx-auto flex h-14 max-w-7xl select-none items-center justify-between px-4 lg:px-8"
         draggable="false"
       >
-        <div className="flex items-center gap-2 select-none" draggable="false">
+        <div className="flex select-none items-center gap-2" draggable="false">
           <div
-            className="w-0.5 h-10 bg-white select-none"
+            className="h-10 w-0.5 select-none bg-white"
             draggable="false"
           ></div>
           <Crown />
           <span
-            className="select-none whitespace-normal w-[225px] break-words"
+            className="w-[225px] select-none whitespace-normal break-words"
             draggable="false"
           >
             Department for Social Affairs & Citizenship
           </span>
         </div>
-        <div className="flex items-center gap-2 select-none" draggable="false">
-          <div className="flex flex-col select-none" draggable="false">
+        <div className="flex select-none items-center gap-2" draggable="false">
+          <div className="flex select-none flex-col" draggable="false">
             <span
-              className="text-xs font-bold text-white leading-[1.5] break-words tab-[4] box-border bg-no-repeat select-none"
+              className="tab-[4] box-border select-none break-words bg-no-repeat text-xs font-bold leading-[1.5] text-white"
               draggable="false"
             >
               Civil Service Digital
             </span>
           </div>
           <div
-            className="rounded-sm border border-white/20 bg-[#1d70b8] px-1.5 py-1 flex items-center select-none"
+            className="flex select-none items-center rounded-sm border border-white/20 bg-[#1d70b8] px-1.5 py-1"
             draggable="false"
           >
             <span
-              className="text-[10px] font-semibold uppercase tracking-wider text-white my-auto select-none"
+              className="my-auto select-none text-[10px] font-semibold uppercase tracking-wider text-white"
               draggable="false"
             >
               Beta
@@ -61,7 +61,7 @@ function Crown(): React.ReactElement {
       height={38}
       width={38}
       priority
-      className="invert mix-blend-hard-light select-none"
+      className="select-none mix-blend-hard-light invert"
       draggable="false"
     />
   );

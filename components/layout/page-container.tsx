@@ -22,7 +22,7 @@ export function PageContainer({
   return (
     <main
       className={cn(
-        "container mx-auto px-4 md:px-6 py-6 md:py-8 max-w-7xl",
+        "container mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8",
         className,
       )}
     >

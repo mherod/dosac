@@ -40,8 +40,8 @@ export function FontControls({
   return (
     <div className="flex flex-col gap-4">
       <div className="p-0">
-        <div className="flex items-center justify-between h-6">
-          <label className="text-sm font-medium text-foreground leading-6">
+        <div className="flex h-6 items-center justify-between">
+          <label className="text-sm font-medium leading-6 text-foreground">
             Font
           </label>
         </div>
@@ -60,11 +60,11 @@ export function FontControls({
       </div>
 
       <div className="py-4">
-        <div className="flex items-center justify-between h-6">
-          <label className="text-sm font-medium text-foreground leading-6">
+        <div className="flex h-6 items-center justify-between">
+          <label className="text-sm font-medium leading-6 text-foreground">
             Font Size
           </label>
-          <span className="text-sm text-muted-foreground leading-6">
+          <span className="text-sm leading-6 text-muted-foreground">
             {fontSize}px
           </span>
         </div>
@@ -79,11 +79,11 @@ export function FontControls({
       </div>
 
       <div className="py-4">
-        <div className="flex items-center justify-between h-6">
-          <label className="text-sm font-medium text-foreground leading-6">
+        <div className="flex h-6 items-center justify-between">
+          <label className="text-sm font-medium leading-6 text-foreground">
             Outline Width
           </label>
-          <span className="text-sm text-muted-foreground leading-6">
+          <span className="text-sm leading-6 text-muted-foreground">
             {outlineWidth}px
           </span>
         </div>
@@ -98,11 +98,11 @@ export function FontControls({
       </div>
 
       <div className="py-4">
-        <div className="flex items-center justify-between h-6">
-          <label className="text-sm font-medium text-foreground leading-6">
+        <div className="flex h-6 items-center justify-between">
+          <label className="text-sm font-medium leading-6 text-foreground">
             Shadow Size
           </label>
-          <span className="text-sm text-muted-foreground leading-6">
+          <span className="text-sm leading-6 text-muted-foreground">
             {shadowSize}px
           </span>
         </div>

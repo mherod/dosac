@@ -20,7 +20,7 @@ export function FrameStack({
 }: FrameStackProps): React.ReactElement {
   return (
     <div
-      className="flex flex-col h-full m-auto min-h-96"
+      className="m-auto flex h-full min-h-96 flex-col"
       style={{
         aspectRatio: 16 / (9 * frames.length),
         maxHeight: 900 + "px",

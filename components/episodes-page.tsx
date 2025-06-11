@@ -75,7 +75,7 @@ export async function EpisodesPage({
       <h1 className="text-5xl font-bold tracking-tight text-slate-900">
         Series {series.number} Episodes
       </h1>
-      <p className="text-lg text-slate-600 max-w-[750px]">
+      <p className="max-w-[750px] text-lg text-slate-600">
         {series.longSummary.map(
           (
             part: string | { text: string; profileId: keyof typeof characters },
@@ -125,7 +125,7 @@ export async function EpisodesPage({
                   <div className="space-y-2">
                     <Link
                       href={`/series/${series.number}/episode/${episodeNumber}`}
-                      className="inline-block group-hover:text-blue-600 transition-colors"
+                      className="inline-block transition-colors group-hover:text-blue-600"
                     >
                       <h2 className="text-2xl font-semibold text-slate-900">
                         {info?.title || `Episode ${episodeNumber}`}
@@ -162,7 +162,7 @@ export async function EpisodesPage({
                   </div>
                   <Link
                     href={`/series/${series.number}/episode/${episodeNumber}`}
-                    className="text-slate-600 hover:text-blue-600 transition-colors"
+                    className="text-slate-600 transition-colors hover:text-blue-600"
                   >
                     <ArrowRightIcon className="h-5 w-5" />
                   </Link>
