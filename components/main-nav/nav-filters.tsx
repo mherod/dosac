@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
-import { DosacLogo } from "./dosac-logo";
 import { SeriesSelect } from "./series-select";
 import { SearchBar } from "./search-bar";
 import { useSearchParams } from "next/navigation";
