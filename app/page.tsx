@@ -1,22 +1,9 @@
 import { getFrameIndex } from "@/lib/frames.server";
 import { HomePage } from "@/components/home-page";
-import { parseEpisodeId } from "@/lib/frames";
 import type { Screenshot } from "@/lib/types";
 
-// Add revalidation period (e.g., 1 hour)
-export const revalidate = 3600;
-
-/**
- * Interface for search parameters
- */
-type SearchParams = {
-  /** Optional series number to filter by */
-  season?: string;
-  /** Optional episode number to filter by */
-  episode?: string;
-  /** Optional search query */
-  q?: string;
-};
+// Force dynamic rendering to prevent static generation timeout
+export const dynamic = "force-dynamic";
 
 /**
  * Interface for page component props
@@ -75,67 +62,4 @@ export default async function Home({
       initialSearchParams={initialSearchParams}
     />
   );
-}
-
-/**
- * Generate static parameters for up to 2000 pages to avoid build timeouts
- *
- * @returns Array of search parameter combinations for static generation
- */
-export async function generateStaticParams(): Promise<
-  { searchParams: Partial<SearchParams> }[]
-> {
-  try {
-    const frames = await getFrameIndex();
-    const params: Array<{ searchParams: Partial<SearchParams> }> = [
-      { searchParams: {} },
-    ]; // Default view with no filters
-
-    // Get unique seasons and episodes (limited to prevent timeout)
-    const episodeSet = new Set<string>();
-    frames.slice(0, 1000).forEach((frame: Screenshot) => {
-      try {
-        episodeSet.add(frame.episode);
-      } catch (error) {
-        console.error("Error parsing episode ID:", error);
-      }
-    });
-
-    // Generate params for each season/episode combination
-    let count = 1; // Start at 1 for default page
-    for (const episodeId of episodeSet) {
-      if (count >= 2000) break; // Hard limit to prevent timeout
-
-      try {
-        const { season, episode } = parseEpisodeId(episodeId);
-
-        // Add season-only view
-        if (count < 2000) {
-          params.push({
-            searchParams: { season: season.toString() },
-          });
-          count++;
-        }
-
-        // Add season+episode view
-        if (count < 2000) {
-          params.push({
-            searchParams: {
-              season: season.toString(),
-              episode: episode.toString(),
-            },
-          });
-          count++;
-        }
-      } catch (error) {
-        console.error("Error parsing episode ID:", error);
-      }
-    }
-
-    return params;
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    // Fallback to just the default page if anything fails
-    return [{ searchParams: {} }];
-  }
 }
