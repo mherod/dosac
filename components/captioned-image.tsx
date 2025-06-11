@@ -1,6 +1,6 @@
 import {
-  ClientCaptionedImage,
   type CaptionedImageProps,
+  ClientCaptionedImage,
 } from "./client-captioned-image";
 
 export type { CaptionedImageProps };

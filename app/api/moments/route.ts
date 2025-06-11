@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-import { getFrameIndex } from "@/lib/frames.server";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import type { Frame } from "@/lib/frames";
+import { getFrameIndex } from "@/lib/frames.server";
+import { NextResponse } from "next/server";
 
 /**
  * Represents a ranked moment from the show with its metadata
@@ -40,16 +40,15 @@ function timestampToSeconds(timestamp: string): number {
   // Handle both "MM:SS.mmm" and raw seconds formats
   const parts = timestamp.split(".");
   const time = parts[0] || "0";
-  const ms = parseInt(parts[1] || "000", 10) / 1000;
+  const ms = Number.parseInt(parts[1] || "000", 10) / 1000;
 
   if (time.includes(":")) {
     const [minutesStr = "0", secondsStr = "0"] = time.split(":");
-    const minutes = parseInt(minutesStr, 10);
-    const seconds = parseInt(secondsStr, 10);
+    const minutes = Number.parseInt(minutesStr, 10);
+    const seconds = Number.parseInt(secondsStr, 10);
     return minutes * 60 + seconds + ms;
-  } else {
-    return parseInt(time, 10) + ms;
   }
+  return Number.parseInt(time, 10) + ms;
 }
 
 /**

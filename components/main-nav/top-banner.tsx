@@ -1,7 +1,7 @@
 "use client";
 
-import { Lock, HelpCircle } from "lucide-react";
-import React from "react";
+import { HelpCircle, Lock } from "lucide-react";
+import type React from "react";
 
 export function TopBanner(): React.ReactElement {
   return (

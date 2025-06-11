@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 import glob from "fast-glob";
 
 async function main() {
@@ -11,8 +11,12 @@ async function main() {
       const output = execSync(
         `sips -g pixelWidth -g pixelHeight "${image}"`,
       ).toString();
-      const width = parseInt(output.match(/pixelWidth: (\d+)/)?.[1] || "0");
-      const height = parseInt(output.match(/pixelHeight: (\d+)/)?.[1] || "0");
+      const width = Number.parseInt(
+        output.match(/pixelWidth: (\d+)/)?.[1] || "0",
+      );
+      const height = Number.parseInt(
+        output.match(/pixelHeight: (\d+)/)?.[1] || "0",
+      );
 
       if (width > 500) {
         console.log(`❌ ${image}: ${width}x${height}`);

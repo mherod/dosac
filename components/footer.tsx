@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import dosacLogo from "@/public/DOSAC.png";
-import React from "react";
+import Image from "next/image";
+import type React from "react";
 
 interface FooterProps {
   className?: string;

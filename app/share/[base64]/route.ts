@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 /**
  * Route handler for sharing functionality

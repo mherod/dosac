@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 import { cn } from "@/lib/utils";
-import React from "react";
+import Link from "next/link";
+import type React from "react";
 
 export function CategoryNav({
   className,

@@ -1,4 +1,3 @@
-import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -6,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 const fonts = [
   "Arial",

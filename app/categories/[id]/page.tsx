@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
-import { CATEGORIES } from "@/lib/categories";
-import { getFrameIndex } from "@/lib/frames.server";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+import { CATEGORIES } from "@/lib/categories";
 import { formatPageTitle } from "@/lib/constants";
+import { getFrameIndex } from "@/lib/frames.server";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 /**
  * Interface for page component props

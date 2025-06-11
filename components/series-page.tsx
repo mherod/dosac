@@ -1,16 +1,16 @@
-import React from "react";
+import { PageLayout } from "@/components/layout/page-layout";
+import { ScreenshotGrid } from "@/components/screenshot-grid";
+import { Badge } from "@/components/ui/badge";
+import { parseEpisodeId } from "@/lib/frames";
+import { getFrameIndex } from "@/lib/frames.server";
+import { getSeriesBreadcrumbs } from "@/lib/navigation";
+import { getSeriesInfo } from "@/lib/series-info";
+import type { Screenshot } from "@/lib/types";
+import { processTextWithLinks } from "@/lib/utils";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type React from "react";
 import { Suspense } from "react";
-import type { Screenshot } from "@/lib/types";
-import { getFrameIndex } from "@/lib/frames.server";
-import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { parseEpisodeId } from "@/lib/frames";
-import { getSeriesInfo } from "@/lib/series-info";
-import { Badge } from "@/components/ui/badge";
-import { PageLayout } from "@/components/layout/page-layout";
-import { processTextWithLinks } from "@/lib/utils";
-import { getSeriesBreadcrumbs } from "@/lib/navigation";
 
 /**
  * Interface for SeriesPage component props
@@ -33,7 +33,7 @@ async function SeriesPageContent({
   params,
 }: SeriesPageProps): Promise<React.ReactElement> {
   const resolvedParams = await params;
-  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
   // Get all frames

@@ -1,28 +1,28 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  type Character,
+  type Department,
+  type Role,
   charactersByDepartment,
   charactersByRole,
   departmentLabels,
   roleLabels,
-  type Character,
-  type Department,
-  type Role,
 } from "@/lib/profiles";
-import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import Link from "next/link";
+import type React from "react";
 
 /**
  * Props for the CharacterCard component

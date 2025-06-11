@@ -1,13 +1,14 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
+import { Suspense } from "react";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
-import { TopBanner } from "./main-nav/top-banner";
+import { CategoryNav } from "./main-nav/category-nav";
 import { CivilServiceHeader } from "./main-nav/civil-service-header";
 import { NavFilters } from "./main-nav/nav-filters";
-import { CategoryNav } from "./main-nav/category-nav";
+import { TopBanner } from "./main-nav/top-banner";
 
 // Zod schemas for validation
 const NumberParamSchema = z

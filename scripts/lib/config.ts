@@ -1,6 +1,6 @@
-// Cache directory configuration
-import path from "path";
 import * as os from "node:os";
+// Cache directory configuration
+import path from "node:path";
 
 export const NUM_CACHE_DIRS = 1;
 export const PRIMARY_CACHE_DIR = path.join(os.homedir(), ".face-cache");

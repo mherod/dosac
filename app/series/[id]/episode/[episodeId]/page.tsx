@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
+import { EpisodePage } from "@/components/episode-page";
+import { formatPageTitle } from "@/lib/constants";
+import { getEpisodeInfo } from "@/lib/episode-info";
 import {
-  getSeriesInfo,
   getAllSeries,
   getSeriesEpisodes,
+  getSeriesInfo,
 } from "@/lib/series-info";
-import { getEpisodeInfo } from "@/lib/episode-info";
-import { formatPageTitle } from "@/lib/constants";
-import { EpisodePage } from "@/components/episode-page";
+import type { Metadata } from "next";
 
 /**
  * Generates static params for all episode pages at build time
@@ -42,10 +42,10 @@ type Props = {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   const episode = getEpisodeInfo(
-    parseInt(resolvedParams.id, 10),
-    parseInt(resolvedParams.episodeId, 10),
+    Number.parseInt(resolvedParams.id, 10),
+    Number.parseInt(resolvedParams.episodeId, 10),
   );
   if (!series) return {};
 

@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "clsx";
 import Link from "next/link";
-import { type ReactNode } from "react";
-import { characters, type CharacterId } from "./profiles";
+import type { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 import { getFrameData } from "./actions";
+import { type CharacterId, characters } from "./profiles";
 
 /**
  * Combines multiple class names using clsx and tailwind-merge
@@ -33,7 +33,7 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
   if (!episodeId) return "";
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
   if (!match || !match[1] || !match[2]) return episodeId;
-  return `S${parseInt(match[1])} E${parseInt(match[2])}`;
+  return `S${Number.parseInt(match[1])} E${Number.parseInt(match[2])}`;
 }
 
 /**
@@ -44,8 +44,8 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
 export function formatTimestamp(timestamp: string): string {
   const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
   if (!match || !match[1] || !match[2]) return timestamp;
-  const minutes = parseInt(match[1]);
-  const seconds = parseInt(match[2]);
+  const minutes = Number.parseInt(match[1]);
+  const seconds = Number.parseInt(match[2]);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 

@@ -1,8 +1,8 @@
-import React from "react";
-import { type ReactNode } from "react";
-import { PageLayout } from "./page-layout";
 import { parseEpisodeId } from "@/lib/frames";
 import { getCaptionBreadcrumbs } from "@/lib/navigation";
+import type React from "react";
+import type { ReactNode } from "react";
+import { PageLayout } from "./page-layout";
 
 interface CaptionPageLayoutProps {
   /** The main content to render inside the container */

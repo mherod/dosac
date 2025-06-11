@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { useDebounce } from "@/hooks/use-debounce";
-import { SeriesSelect } from "./series-select";
-import { SearchBar } from "./search-bar";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { ProfileImageBadge } from "../profile-image-badge";
 import { FEATURED_CHARACTERS } from "@/lib/profiles";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ProfileImageBadge } from "../profile-image-badge";
+import { SearchBar } from "./search-bar";
+import { SeriesSelect } from "./series-select";
 
 /**
  * Filter state interface for navigation

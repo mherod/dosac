@@ -1,5 +1,5 @@
 import { ImageResponse } from "@vercel/og";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
@@ -61,7 +61,9 @@ export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
     const { searchParams } = new URL(req.url);
     const caption = searchParams.get("caption") || "No caption provided";
     const imageUrlString = searchParams.get("imageUrl") || "";
-    const requestedFontSize = parseInt(searchParams.get("fontSize") || "24");
+    const requestedFontSize = Number.parseInt(
+      searchParams.get("fontSize") || "24",
+    );
     const fontFamily = searchParams.get("fontFamily") || "Arial";
 
     // Handle both absolute and relative image URLs
@@ -81,7 +83,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
     const calculatedOutlineWidth = Math.max(2, Math.floor(fontSize * 0.04));
     const finalOutlineWidth = Math.max(
       calculatedOutlineWidth,
-      parseInt(searchParams.get("outlineWidth") || "1"),
+      Number.parseInt(searchParams.get("outlineWidth") || "1"),
     );
 
     // Fetch image
@@ -154,7 +156,10 @@ export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
               }}
             >
               {caption.split("\n").map((line: string, i: number) => (
-                <span key={i} style={{ margin: 0 }}>
+                <span
+                  key={`line-${i}-${line.slice(0, 10)}`}
+                  style={{ margin: 0 }}
+                >
                   {line}
                 </span>
               ))}

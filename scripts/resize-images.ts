@@ -1,6 +1,6 @@
+import fs from "node:fs/promises";
 import fastGlob from "fast-glob";
 import sharp from "sharp";
-import fs from "fs/promises";
 
 const MAX_WIDTH = 500;
 

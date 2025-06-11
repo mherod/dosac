@@ -1,10 +1,10 @@
 "use client";
 
-import { UserMenu } from "./user-menu";
-import Image from "next/image";
 import crown from "@/public/crown.png";
+import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import type React from "react";
+import { UserMenu } from "./user-menu";
 
 export function CivilServiceHeader(): React.ReactElement {
   return (
@@ -14,10 +14,7 @@ export function CivilServiceHeader(): React.ReactElement {
         draggable="false"
       >
         <div className="flex select-none items-center gap-2" draggable="false">
-          <div
-            className="h-10 w-0.5 select-none bg-white"
-            draggable="false"
-          ></div>
+          <div className="h-10 w-0.5 select-none bg-white" draggable="false" />
           <Crown />
           <span
             className="w-[225px] select-none whitespace-normal break-words"

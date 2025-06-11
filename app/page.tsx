@@ -1,5 +1,5 @@
-import { getFrameIndex } from "@/lib/frames.server";
 import { HomePage } from "@/components/home-page";
+import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 
 // Force dynamic rendering to prevent static generation timeout

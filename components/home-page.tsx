@@ -1,11 +1,11 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { FrameStrip } from "@/components/frame-strip";
+import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { parseEpisodeId } from "@/lib/frames";
 import type { Frame } from "@/lib/frames";
-import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { FrameStrip } from "@/components/frame-strip";
+import { useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
 
 interface HomePageProps {
   screenshots: Frame[];

@@ -1,5 +1,5 @@
-import type { Screenshot } from "./types";
 import { SITE_NAME } from "./constants";
+import type { Screenshot } from "./types";
 
 const BASE_URL = "https://dosac.uk";
 

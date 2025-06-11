@@ -1,7 +1,7 @@
 "use client";
 
 import { CaptionedImage } from "@/components/captioned-image";
-import { type Frame } from "@/lib/frames";
+import type { Frame } from "@/lib/frames";
 
 interface FrameStackProps {
   frames: Frame[];
@@ -23,7 +23,7 @@ export function FrameStack({
       className="m-auto flex h-full min-h-96 flex-col"
       style={{
         aspectRatio: 16 / (9 * frames.length),
-        maxHeight: 900 + "px",
+        maxHeight: `${900}px`,
       }}
     >
       {frames.map((frame: Frame, index: number) => (

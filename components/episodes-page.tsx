@@ -1,18 +1,18 @@
-import React from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { getSeriesInfo, getSeriesEpisodes } from "@/lib/series-info";
-import { getEpisodeInfo } from "@/lib/episode-info";
-import { getFrameIndex } from "@/lib/frames.server";
-import { parseEpisodeId, type Frame } from "@/lib/frames";
 import { EpisodeFramesCard } from "@/components/episode-frames-card";
+import { PageLayout } from "@/components/layout/page-layout";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CalendarIcon, ClockIcon, ArrowRightIcon } from "lucide-react";
-import { PageLayout } from "@/components/layout/page-layout";
-import { characters } from "@/lib/profiles";
+import { getEpisodeInfo } from "@/lib/episode-info";
+import { type Frame, parseEpisodeId } from "@/lib/frames";
+import { getFrameIndex } from "@/lib/frames.server";
 import { getEpisodeListBreadcrumbs } from "@/lib/navigation";
+import { characters } from "@/lib/profiles";
+import { getSeriesEpisodes, getSeriesInfo } from "@/lib/series-info";
 import { processTextWithLinks } from "@/lib/utils";
+import { ArrowRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type React from "react";
 
 /**
  * Interface for EpisodesPage component props
@@ -36,7 +36,7 @@ export async function EpisodesPage({
   params,
 }: EpisodesPageProps): Promise<React.ReactElement> {
   const resolvedParams = await params;
-  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
   const episodes = getSeriesEpisodes(series.number);

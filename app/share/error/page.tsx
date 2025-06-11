@@ -1,11 +1,12 @@
 "use client";
 
-import React, { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Home } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import type React from "react";
+import { Suspense } from "react";
 
 /**
  * Component that displays the error content with message from URL parameters

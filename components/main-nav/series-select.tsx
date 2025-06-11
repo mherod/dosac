@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Select,
   SelectContent,
@@ -7,6 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import type React from "react";
 import { forwardRef } from "react";
 
 /**
@@ -117,7 +117,7 @@ export function SeriesSelect({
    * @param value - The new series value
    */
   const handleSeriesChange = (value: string): void => {
-    const newSeason = value !== "all" ? parseInt(value, 10) : undefined;
+    const newSeason = value !== "all" ? Number.parseInt(value, 10) : undefined;
 
     if (isSearchMode) {
       // In search mode, use filter change callback
@@ -137,7 +137,7 @@ export function SeriesSelect({
    * @param value - The new episode value
    */
   const handleEpisodeChange = (value: string): void => {
-    const newEpisode = value !== "all" ? parseInt(value, 10) : undefined;
+    const newEpisode = value !== "all" ? Number.parseInt(value, 10) : undefined;
 
     if (isSearchMode) {
       // In search mode, use filter change callback

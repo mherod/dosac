@@ -3,13 +3,13 @@
 import React from "react";
 
 import { FrameCard } from "@/components/frame-card";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import Link from "next/link";
-import { type Screenshot } from "@/lib/types";
 import { useSpeculationRules } from "@/lib/speculation-rules";
+import type { Screenshot } from "@/lib/types";
+import Link from "next/link";
 import { Suspense } from "react";
 
 /**
@@ -212,46 +212,44 @@ function ScreenshotGridInner({
   return (
     <div className="space-y-4 sm:space-y-8">
       {rankedMoments && rankedMoments.length > 0 && (
-        <>
-          <div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3">
-            {rankedMoments.map((screenshot: Screenshot, index: number) => (
-              <div key={screenshot.id} className="relative">
-                <Link
-                  key={`ranked-moment-${screenshot.id}-${index}`}
-                  href={getScreenshotUrl(screenshot.id)}
-                  prefetch={true}
-                  rel="prerender"
-                  scroll={false}
-                  suppressHydrationWarning
-                >
-                  <FrameCard
-                    screenshot={screenshot}
-                    priority={true}
-                    isSelected={selectedIds.has(screenshot.id)}
-                    onSelect={(e: React.MouseEvent) => {
-                      if (e.ctrlKey || e.metaKey || e.shiftKey) {
-                        safeSetSelectedIds(new Set([screenshot.id]));
-                      }
-                    }}
-                    onDragStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onDragMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                    onTouchStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onTouchMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                    onTouchEnd={handleDragEnd}
-                  />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3">
+          {rankedMoments.map((screenshot: Screenshot, index: number) => (
+            <div key={screenshot.id} className="relative">
+              <Link
+                key={`ranked-moment-${screenshot.id}-${index}`}
+                href={getScreenshotUrl(screenshot.id)}
+                prefetch={true}
+                rel="prerender"
+                scroll={false}
+                suppressHydrationWarning
+              >
+                <FrameCard
+                  screenshot={screenshot}
+                  priority={true}
+                  isSelected={selectedIds.has(screenshot.id)}
+                  onSelect={(e: React.MouseEvent) => {
+                    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                      safeSetSelectedIds(new Set([screenshot.id]));
+                    }
+                  }}
+                  onDragStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onDragMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                  onTouchStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onTouchMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                  onTouchEnd={handleDragEnd}
+                />
+              </Link>
+            </div>
+          ))}
+        </div>
       )}
 
       <div className="space-y-2 sm:space-y-4">

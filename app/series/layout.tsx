@@ -1,6 +1,6 @@
-import React from "react";
-import { type ReactNode } from "react";
 import { PageContainer } from "@/components/layout/page-container";
+import type React from "react";
+import type { ReactNode } from "react";
 
 interface SeriesLayoutProps {
   /** The content to render inside the layout */

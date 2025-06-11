@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 interface SearchResult {
   episodeId: string;
@@ -46,15 +46,15 @@ async function parseVTTFile(
       const secondsPart = timeParts.pop()!;
       const ms = secondsPart.split(".")[1] || "0";
       currentStartTime =
-        timeParts.reduce((acc, val) => acc * 60 + parseInt(val), 0) +
-        parseInt(secondsPart) +
-        parseInt(ms) / 1000;
+        timeParts.reduce((acc, val) => acc * 60 + Number.parseInt(val), 0) +
+        Number.parseInt(secondsPart) +
+        Number.parseInt(ms) / 1000;
     } else if (line !== "") {
       // Add non-empty lines as text
       currentText.push(line);
     } else if (currentText.length > 0) {
       // Merge consecutive text lines
-      currentText[currentText.length - 1] += " " + line;
+      currentText[currentText.length - 1] += ` ${line}`;
     }
   }
 

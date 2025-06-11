@@ -10,6 +10,9 @@
     "start": "next start",
     "lint": "next lint",
     "lint:strict": "eslint .",
+    "biome:check": "biome check .",
+    "biome:format": "biome format --write .",
+    "biome:lint": "biome lint --write .",
     "prepare": "husky install",
     "face-tagger": "tsx scripts/face-tagger.ts",
     "analyze-clusters": "tsx scripts/analyze-clusters.ts",
@@ -71,6 +74,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@eslint/eslintrc": "^3.0.2",

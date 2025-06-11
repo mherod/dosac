@@ -1,13 +1,13 @@
-import malcolm from "@/public/characters/malcom4.jpg";
-import jamie from "@/public/characters/jamie2.jpg";
-import peter from "@/public/characters/peter.jpg";
-import nicola from "@/public/characters/nicola2.jpg";
-import terri from "@/public/characters/terri.webp";
-import ollie from "@/public/characters/ollie.png";
 import cliff from "@/public/characters/cliff.png";
-import hugh from "@/public/characters/hugh.png";
-import glenn from "@/public/characters/glenn.jpg";
 import dan from "@/public/characters/danmiller.webp";
+import glenn from "@/public/characters/glenn.jpg";
+import hugh from "@/public/characters/hugh.png";
+import jamie from "@/public/characters/jamie2.jpg";
+import malcolm from "@/public/characters/malcom4.jpg";
+import nicola from "@/public/characters/nicola2.jpg";
+import ollie from "@/public/characters/ollie.png";
+import peter from "@/public/characters/peter.jpg";
+import terri from "@/public/characters/terri.webp";
 import type { StaticImageData } from "next/image";
 
 /** Department constants for character affiliations */

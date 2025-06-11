@@ -7,7 +7,7 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
   if (!episodeId) return "";
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
   if (!match || !match[1] || !match[2]) return episodeId;
-  return `S${parseInt(match[1])} E${parseInt(match[2])}`;
+  return `S${Number.parseInt(match[1])} E${Number.parseInt(match[2])}`;
 }
 
 /**
@@ -18,8 +18,8 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
 export function formatTimestamp(timestamp: string): string {
   const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
   if (!match || !match[1] || !match[2]) return timestamp;
-  const minutes = parseInt(match[1]);
-  const seconds = parseInt(match[2]);
+  const minutes = Number.parseInt(match[1]);
+  const seconds = Number.parseInt(match[2]);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
@@ -65,8 +65,8 @@ export function parseEpisodeId(episodeId: string | null | undefined): {
     throw new Error(`Invalid episode ID format: ${episodeId}`);
   }
   return {
-    season: parseInt(match[1]),
-    episode: parseInt(match[2]),
+    season: Number.parseInt(match[1]),
+    episode: Number.parseInt(match[2]),
   };
 }
 

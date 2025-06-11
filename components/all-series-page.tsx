@@ -1,14 +1,13 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { getFrameIndex } from "@/lib/frames.server";
-import { type Screenshot } from "@/lib/types";
-import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { parseEpisodeId } from "@/lib/frames";
-import { seriesInfo, type SeriesInfo } from "@/lib/series-info";
 import { PageLayout } from "@/components/layout/page-layout";
+import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
+import { parseEpisodeId } from "@/lib/frames";
+import { getFrameIndex } from "@/lib/frames.server";
 import { getBaseBreadcrumbs } from "@/lib/navigation";
+import { type SeriesInfo, seriesInfo } from "@/lib/series-info";
 import { processTextWithLinks } from "@/lib/utils";
+import Link from "next/link";
+import { Suspense } from "react";
 
 /**
  * Content component for the series page
@@ -21,13 +20,13 @@ async function SeriesContent(): Promise<React.ReactElement> {
 
   // Group frames by series
   const seriesFrames = new Map<number, typeof allFrames>();
-  allFrames.forEach((frame: Screenshot) => {
+  for (const frame of allFrames) {
     const { season } = parseEpisodeId(frame.episode);
     if (!seriesFrames.has(season)) {
       seriesFrames.set(season, []);
     }
     seriesFrames.get(season)?.push(frame);
-  });
+  }
 
   return (
     <div className="space-y-16">

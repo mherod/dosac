@@ -87,7 +87,7 @@ async function analyzeAppearances() {
       console.log(`\nCharacter #${index + 1}:`);
       console.log(`- Total appearances: ${char.totalAppearances}`);
       console.log(`- Episodes: ${Object.keys(char.episodes).length}`);
-      console.log(`- Episode distribution:`);
+      console.log("- Episode distribution:");
       Object.entries(char.episodes)
         .sort(([a], [b]) => a.localeCompare(b))
         .forEach(([episode, count]) => {

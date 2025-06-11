@@ -1,24 +1,24 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import { ProfileImageBadge } from "@/components/profile-image-badge";
+import { ScreenshotGrid } from "@/components/screenshot-grid";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { getFrameById } from "@/lib/frames.server";
 import {
+  type Character,
+  type CharacterId,
   characters,
   departmentLabels,
   roleLabels,
-  type CharacterId,
-  type Character,
 } from "@/lib/profiles";
-import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { getFrameById } from "@/lib/frames.server";
-import { type Screenshot } from "@/lib/types";
+import type { Screenshot } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
-import { ProfileImageBadge } from "@/components/profile-image-badge";
+import { notFound } from "next/navigation";
 
 // Enable PPR for this route
 export const experimental_ppr = true;

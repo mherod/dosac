@@ -1,26 +1,26 @@
-import React from "react";
-import Link from "next/link";
+import { CalendarIcon, ClockIcon, PenToolIcon, UsersIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import type React from "react";
 import { Suspense } from "react";
-import { CalendarIcon, ClockIcon, UsersIcon, PenToolIcon } from "lucide-react";
 
+import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { getFrameIndex } from "@/lib/frames.server";
-import type { Frame } from "@/lib/frames";
-import { getSeriesInfo } from "@/lib/series-info";
-import {
-  getEpisodeInfo,
-  type CastMember,
-  type WriterCredit,
-} from "@/lib/episode-info";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { charactersList, type Character } from "@/lib/profiles";
-import { processTextWithLinks } from "@/lib/utils";
-import { PageLayout } from "@/components/layout/page-layout";
+import {
+  type CastMember,
+  type WriterCredit,
+  getEpisodeInfo,
+} from "@/lib/episode-info";
+import type { Frame } from "@/lib/frames";
+import { getFrameIndex } from "@/lib/frames.server";
 import { getEpisodeBreadcrumbs } from "@/lib/navigation";
+import { type Character, charactersList } from "@/lib/profiles";
+import { getSeriesInfo } from "@/lib/series-info";
+import { processTextWithLinks } from "@/lib/utils";
 
 interface EpisodePageProps {
   params: Promise<{
@@ -33,10 +33,10 @@ async function EpisodePageContent({
   params,
 }: EpisodePageProps): Promise<React.ReactElement> {
   const resolvedParams = await params;
-  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   const episode = getEpisodeInfo(
-    parseInt(resolvedParams.id, 10),
-    parseInt(resolvedParams.episodeId, 10),
+    Number.parseInt(resolvedParams.id, 10),
+    Number.parseInt(resolvedParams.episodeId, 10),
   );
   if (!series) notFound();
 

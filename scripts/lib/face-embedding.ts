@@ -1,15 +1,15 @@
-import * as tf from "./tensorflow-setup";
-import { FaceDetector } from "./face-detector";
-import { faceAttributeDetector } from "./face-attributes";
-import { decodeImage } from "./tensorflow-setup";
-import { readFileSync } from "fs";
-import sharp from "sharp";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { Image } from "canvas";
 import { memoize } from "lodash-es";
 import { LRUCache } from "lru-cache";
+import sharp from "sharp";
 import { SUPPORTED_IMAGE_TYPES } from "./constants";
+import { faceAttributeDetector } from "./face-attributes";
+import { FaceDetector } from "./face-detector";
 import { convertToJpeg } from "./image-processing";
-import { Image } from "canvas";
-import { createHash } from "crypto";
+import * as tf from "./tensorflow-setup";
+import { decodeImage } from "./tensorflow-setup";
 
 // Types
 export interface FacePrediction {
@@ -402,9 +402,11 @@ export async function recalculateFaceProbability(
         const pred = predictions[0];
         if (typeof pred.probability === "number") {
           return pred.probability;
-        } else if (Array.isArray(pred.probability)) {
+        }
+        if (Array.isArray(pred.probability)) {
           return pred.probability[0];
-        } else if (
+        }
+        if (
           pred.probability &&
           typeof pred.probability.dataSync === "function"
         ) {
@@ -465,10 +467,10 @@ export async function convertPredictions(
 
       // Validate coordinates
       if (
-        isNaN(topLeft[0]) ||
-        isNaN(topLeft[1]) ||
-        isNaN(bottomRight[0]) ||
-        isNaN(bottomRight[1])
+        Number.isNaN(topLeft[0]) ||
+        Number.isNaN(topLeft[1]) ||
+        Number.isNaN(bottomRight[0]) ||
+        Number.isNaN(bottomRight[1])
       ) {
         throw new Error("Invalid face coordinates");
       }
@@ -504,7 +506,6 @@ export async function convertPredictions(
       });
     } catch (error) {
       console.error("Error converting face prediction:", error);
-      continue; // Skip invalid predictions
     }
   }
 

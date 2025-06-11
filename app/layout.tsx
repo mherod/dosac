@@ -1,13 +1,14 @@
 import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Analytics } from "@vercel/analytics/react";
-import { MainNav } from "@/components/main-nav";
 import { Footer } from "@/components/footer";
-import React, { Suspense } from "react";
+import { MainNav } from "@/components/main-nav";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { SITE_NAME } from "@/lib/constants";
+import { Analytics } from "@vercel/analytics/react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import type React from "react";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],

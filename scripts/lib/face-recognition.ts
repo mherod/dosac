@@ -1,9 +1,9 @@
-import { faceNet, FaceNetEmbedding } from "./face-net";
-import { faceProcessor } from "./face-processor";
-import { FacePrediction } from "./face-embedding";
-import { FaceEmbedding } from "./face-cache";
+import { createHash } from "node:crypto";
 import { LRUCache } from "lru-cache";
-import { createHash } from "crypto";
+import type { FaceEmbedding } from "./face-cache";
+import type { FacePrediction } from "./face-embedding";
+import { type FaceNetEmbedding, faceNet } from "./face-net";
+import { faceProcessor } from "./face-processor";
 
 // Types
 export interface RecognitionOptions {

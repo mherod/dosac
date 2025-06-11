@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/card";
-import { FontControls } from "@/components/caption-controls/font-controls";
 import { ActionButtons } from "@/components/caption-controls/action-buttons";
+import { FontControls } from "@/components/caption-controls/font-controls";
+import { Card } from "@/components/ui/card";
 
 /**
  * Props for the EditorControlsCard component

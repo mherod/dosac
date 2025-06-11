@@ -1,9 +1,9 @@
 "use client";
 
-import { Fragment } from "react";
-import Link from "next/link";
-import { uniqBy } from "lodash-es";
 import type { BreadcrumbItem as NavItem } from "@/lib/navigation";
+import { uniqBy } from "lodash-es";
+import Link from "next/link";
+import { Fragment } from "react";
 
 /**
  * Props for the BreadcrumbNav component

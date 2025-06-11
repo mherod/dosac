@@ -1,20 +1,20 @@
+import { existsSync } from "node:fs";
+import { promises as fs } from "node:fs";
+import { cpus } from "node:os";
+import { basename, join, resolve } from "node:path";
 import fastGlob from "fast-glob";
-import { existsSync } from "fs";
-import { cpus } from "os";
-import { basename, join, resolve } from "path";
+import { BATCH_SIZE, PRIMARY_CACHE_DIR } from "./lib/config";
 import {
-  loadIndex,
-  saveIndex,
-  saveEmbedding,
-  updateIndex,
+  type CacheIndex,
+  type FaceEmbedding,
   getCacheStats,
+  loadIndex,
   rebuildCacheIndex,
-  FaceEmbedding,
-  CacheIndex,
+  saveEmbedding,
+  saveIndex,
+  updateIndex,
 } from "./lib/face-cache";
 import { generateFaceEmbedding } from "./lib/face-embedding";
-import { BATCH_SIZE, PRIMARY_CACHE_DIR } from "./lib/config";
-import { promises as fs } from "fs";
 
 const localDir = resolve("public/frames");
 
@@ -94,7 +94,7 @@ async function processImage(
 }
 
 async function getAllImageFiles(): Promise<string[]> {
-  const files = fastGlobSync(localDir + "/**/frame-blank*.jpg");
+  const files = fastGlobSync(`${localDir}/**/frame-blank*.jpg`);
   console.log(`\nFound ${files.length} image files`);
   return files;
 }

@@ -1,7 +1,7 @@
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import * as tf from "./tensorflow-setup";
-import { join } from "path";
-import { existsSync } from "fs";
-import { homedir } from "os";
 
 const MODEL_CACHE_DIR = join(homedir(), ".face-models");
 const BLAZEFACE_URL =

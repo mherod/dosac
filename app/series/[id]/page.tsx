@@ -1,8 +1,8 @@
+import { SeriesPage } from "@/components/series-page";
+import { formatPageTitle } from "@/lib/constants";
+import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getSeriesInfo, getAllSeries } from "@/lib/series-info";
-import { formatPageTitle } from "@/lib/constants";
-import { SeriesPage } from "@/components/series-page";
 
 // Enable PPR for this route
 // noinspection JSUnusedGlobalSymbols
@@ -39,7 +39,7 @@ interface Props {
  */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
-  const series = getSeriesInfo(parseInt(resolvedParams.id, 10));
+  const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
   return {

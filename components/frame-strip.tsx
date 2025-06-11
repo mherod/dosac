@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import React from "react";
-import { type Screenshot } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { CaptionedImage } from "@/components/captioned-image";
+import type { Screenshot } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import type React from "react";
 
 /**
  * Props for the FrameStrip component
@@ -145,7 +145,7 @@ export function FrameStrip({
 
   const updateUrl = (ids: Set<string>): void => {
     if (ids.size === 0) {
-      router.push(`/caption`, { scroll: false });
+      router.push("/caption", { scroll: false });
       return;
     }
 

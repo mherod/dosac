@@ -1,4 +1,4 @@
-import { ResultWithEmbedding } from "@/app/utils/similarity";
+import type { ResultWithEmbedding } from "@/app/utils/similarity";
 import { cosineSimilarity } from "@/app/utils/similarity";
 import { orderBy, uniqBy } from "lodash-es";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import type { Screenshot } from "@/lib/types";
+import Image from "next/image";
 import { useRef } from "react";
 import { CaptionText } from "./caption-text";
 
@@ -113,8 +113,8 @@ export function FrameGrid({
       style={{
         display: "grid",
         width: "100%",
-        maxWidth: maxWidth + "px",
-        height: gridHeight + "px",
+        maxWidth: `${maxWidth}px`,
+        height: `${gridHeight}px`,
         gap: "4px", // Add spacing between rows
         backgroundColor: "black",
         aspectRatio: frameW / frameH,

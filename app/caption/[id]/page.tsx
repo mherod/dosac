@@ -1,13 +1,13 @@
-import React from "react";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { FrameStrip } from "@/components/frame-strip";
+import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
+import { parseEpisodeId } from "@/lib/frames";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
-import { CaptionEditor } from "./caption-editor";
-import { FrameStrip } from "@/components/frame-strip";
 import type { Screenshot } from "@/lib/types";
-import { parseEpisodeId } from "@/lib/frames";
-import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import type React from "react";
+import { CaptionEditor } from "./caption-editor";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;

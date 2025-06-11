@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
-import { useRef, useState, useEffect } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { CaptionText } from "./caption-text";
 
 /**

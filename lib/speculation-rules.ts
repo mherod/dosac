@@ -47,7 +47,7 @@ class SpeculationRulesManager {
     if (!this.rules[behavior]) {
       this.rules[behavior] = [];
     }
-    this.rules[behavior]!.push(rule);
+    this.rules[behavior]?.push(rule);
     this.updateScript();
   }
 
@@ -86,7 +86,7 @@ class SpeculationRulesManager {
     if (!this.rules[behavior]) return;
 
     // Filter out rules containing any of the specified URLs
-    this.rules[behavior] = this.rules[behavior]!.filter(
+    this.rules[behavior] = this.rules[behavior]?.filter(
       (rule) => !urls.some((url: string) => rule.urls.includes(url)),
     );
 

@@ -1,7 +1,7 @@
-import React from "react";
-import type { Metadata } from "next";
-import { formatPageTitle } from "@/lib/constants";
 import { AllSeriesPage } from "@/components/all-series-page";
+import { formatPageTitle } from "@/lib/constants";
+import type { Metadata } from "next";
+import type React from "react";
 
 export const metadata: Metadata = {
   title: formatPageTitle("Series"),

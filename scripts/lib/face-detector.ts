@@ -1,5 +1,5 @@
-import * as tf from "./tensorflow-setup";
 import { loadModels } from "./model-loader";
+import * as tf from "./tensorflow-setup";
 
 export interface FacePrediction {
   topLeft: [number, number];

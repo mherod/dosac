@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { getFrameIndex } from "@/lib/frames.server";
+import { NextResponse } from "next/server";
 
 /**
  * API route handler for fetching all available frames

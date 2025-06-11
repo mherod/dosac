@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 import { loadModels } from "./face-embedding";
-import { FacePrediction } from "./face-embedding";
+import type { FacePrediction } from "./face-embedding";
 
 // Constants for FaceNet
 const FACENET_INPUT_SIZE = 224; // MobileNet V2 input size
@@ -132,7 +132,7 @@ export class FaceNet {
       processedTensor = tensor;
 
       const embedding = await tf.tidy(() => {
-        const prediction = this.model!.predict(processedTensor!) as tf.Tensor2D;
+        const prediction = this.model?.predict(processedTensor!) as tf.Tensor2D;
         // L2 normalize the embeddings
         const normalized = tf.div(prediction, tf.norm(prediction, 2, 1, true));
         return Array.from(normalized.dataSync());
@@ -268,7 +268,7 @@ export class FaceNet {
           const validTensors = tensors.filter(
             (t): t is tf.Tensor4D => t !== null,
           );
-          return this.model!.predict(tf.concat(validTensors, 0)) as tf.Tensor2D;
+          return this.model?.predict(tf.concat(validTensors, 0)) as tf.Tensor2D;
         });
 
         // Perform triplet mining if enabled

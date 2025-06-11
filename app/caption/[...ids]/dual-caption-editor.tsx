@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Card } from "@/components/ui/card";
-import * as htmlToImage from "html-to-image";
+import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
+import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
 import { FrameGrid } from "@/components/frame-grid";
 import { FrameStack } from "@/components/frame-stack";
-import { useCaptionState } from "@/lib/hooks/use-caption-state";
-import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
-import type { Screenshot } from "@/lib/types";
-import { handleShare } from "@/lib/share";
-import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 import { CAPTION_DEFAULTS } from "@/lib/config/caption";
-import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
+import { useCaptionState } from "@/lib/hooks/use-caption-state";
+import { handleShare } from "@/lib/share";
+import type { Screenshot } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import * as htmlToImage from "html-to-image";
+import { useRef, useState } from "react";
 
 interface MultiCaptionEditorProps {
   frames: Screenshot[];

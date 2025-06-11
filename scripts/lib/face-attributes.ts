@@ -1,5 +1,5 @@
-import * as tf from "./tensorflow-setup";
 import { loadModels } from "./model-loader";
+import * as tf from "./tensorflow-setup";
 
 // Define attribute types
 export interface FaceAttributes {

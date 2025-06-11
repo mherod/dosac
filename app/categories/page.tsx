@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import { CATEGORIES } from "@/lib/categories";
 import { CategoriesHeader } from "@/components/categories/categories-header";
 import { CategoryCard } from "@/components/categories/category-card";
+import { CATEGORIES } from "@/lib/categories";
 import { formatPageTitle } from "@/lib/constants";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: formatPageTitle("Categories"),

@@ -1,10 +1,10 @@
-import { join } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
 import sharp from "sharp";
 import {
   analyzeFaceClusters,
-  loadEmbedding,
   getEmbeddingFileFromPath,
+  loadEmbedding,
 } from "./lib/face-cache";
 
 async function extractFaceCrops(similarityThreshold = 0.75) {

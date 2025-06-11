@@ -1,14 +1,14 @@
 import { expect, test } from "bun:test";
-import { readFileSync } from "fs";
-import { join } from "path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import type { NormalizedFace } from "@tensorflow-models/blazeface";
+import * as tf from "@tensorflow/tfjs-node";
 import sharp from "sharp";
 import {
-  generateFaceEmbedding,
-  detectFaces,
   convertPredictions,
+  detectFaces,
+  generateFaceEmbedding,
 } from "./face-embedding";
-import * as tf from "@tensorflow/tfjs-node";
-import { NormalizedFace } from "@tensorflow-models/blazeface";
 
 const TEST_IMAGE = join(process.cwd(), "scripts", "search.webp");
 

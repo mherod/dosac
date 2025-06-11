@@ -1,4 +1,4 @@
-import { characters } from "./profiles";
+import type { characters } from "./profiles";
 
 export type WriterRole = "writer" | "additional material" | "story";
 export interface WriterCredit {

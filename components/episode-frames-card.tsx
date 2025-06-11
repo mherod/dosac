@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { PlayCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
+import { Card } from "@/components/ui/card";
 import type { Frame } from "@/lib/frames";
+import { cn } from "@/lib/utils";
+import { PlayCircle } from "lucide-react";
+import Link from "next/link";
 
 interface EpisodeFramesCardProps {
   /** The series number */

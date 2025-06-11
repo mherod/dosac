@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import glob from "fast-glob";
 
 interface VTTFrame {
@@ -20,7 +20,7 @@ function parseTimestamp(timestamp: string): string {
 
 function timestampToSeconds(timestamp: string): number {
   const [minutes, seconds] = timestamp.split(":");
-  return parseFloat(minutes) * 60 + parseFloat(seconds);
+  return Number.parseFloat(minutes) * 60 + Number.parseFloat(seconds);
 }
 
 function ensureDirectoryExists(dirPath: string) {
@@ -63,14 +63,19 @@ function parseVTTFile(filePath: string): VTTFile {
 
     // Empty line indicates end of current frame
     if (line === "") {
-      if (currentFrame && currentText.length > 0) {
+      if (
+        currentFrame &&
+        currentText.length > 0 &&
+        currentFrame.startTime &&
+        currentFrame.endTime
+      ) {
         console.log(
           `Adding frame with timestamp ${currentFrame.startTime}:`,
           currentText,
         );
         frames.push({
-          startTime: currentFrame.startTime!,
-          endTime: currentFrame.endTime!,
+          startTime: currentFrame.startTime,
+          endTime: currentFrame.endTime,
           text: [...currentText],
         });
         currentFrame = null;
@@ -103,14 +108,19 @@ function parseVTTFile(filePath: string): VTTFile {
   }
 
   // Handle last frame if exists
-  if (currentFrame && currentText.length > 0) {
+  if (
+    currentFrame &&
+    currentText.length > 0 &&
+    currentFrame.startTime &&
+    currentFrame.endTime
+  ) {
     console.log(
       `Adding final frame with timestamp ${currentFrame.startTime}:`,
       currentText,
     );
     frames.push({
-      startTime: currentFrame.startTime!,
-      endTime: currentFrame.endTime!,
+      startTime: currentFrame.startTime,
+      endTime: currentFrame.endTime,
       text: [...currentText],
     });
   }
@@ -118,7 +128,7 @@ function parseVTTFile(filePath: string): VTTFile {
   // Merge frames with same timestamps
   console.log(
     "\nBefore merging, frames with 01:01.360:",
-    frames.filter((f: any) => f.startTime === "01:01.360"),
+    frames.filter((f: VTTFrame) => f.startTime === "01:01.360"),
   );
 
   const mergedFrames = mergeFrames(frames);
@@ -147,11 +157,11 @@ function mergeFrames(frames: VTTFrame[]): VTTFrame[] {
 
       // Merge the text arrays while avoiding duplicates
       const mergedText = [...existing.text];
-      frame.text.forEach((line) => {
+      for (const line of frame.text) {
         if (!mergedText.includes(line)) {
           mergedText.push(line);
         }
-      });
+      }
 
       mergedFrames.set(frame.startTime, {
         startTime: frame.startTime,
@@ -249,7 +259,7 @@ async function processVideoFrames(episodeId: string) {
     // Write speech text file
     console.log(`Writing speech file for ${timestamp}:`, frame.text);
     try {
-      const speechContent = frame.text.join("\n") + "\n";
+      const speechContent = `${frame.text.join("\n")}\n`;
       fs.writeFileSync(speechPath, speechContent, "utf8");
     } catch (error) {
       console.error(`Error writing speech file at ${timestamp}:`, error);
@@ -273,7 +283,7 @@ async function main() {
   // Get episode IDs from command line arguments
   const requestedEpisodes = process.argv
     .slice(2)
-    .filter((arg: any) => !arg.startsWith("--"));
+    .filter((arg: string) => !arg.startsWith("--"));
 
   // If no specific episodes requested, find all VTT files
   const episodeIds =

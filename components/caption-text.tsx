@@ -109,7 +109,10 @@ export function CaptionText({
       }}
     >
       {lines.map((line: string, index: number) => (
-        <p key={index} className="w-full whitespace-pre-wrap break-words">
+        <p
+          key={`caption-line-${index}-${line.slice(0, 15)}`}
+          className="w-full whitespace-pre-wrap break-words"
+        >
           {line}
         </p>
       ))}

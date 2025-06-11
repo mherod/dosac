@@ -1,8 +1,8 @@
-import tf from "./tensorflow-setup";
 import * as faceLandmarksDetection from "@mediapipe/face_mesh";
-import { FacePrediction } from "./face-embedding";
 import sharp from "sharp";
+import type { FacePrediction } from "./face-embedding";
 import { convertToJpeg } from "./image-processing";
+import tf from "./tensorflow-setup";
 import { decodeImage } from "./tensorflow-setup";
 
 export interface AlignmentResult {

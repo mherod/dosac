@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "fs";
-import { join } from "path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import * as tf from "@tensorflow/tfjs-node";
 import sharp from "sharp";
-import { faceRecognition } from "./face-recognition";
+import { generateFaceEmbedding } from "./face-embedding";
 import { faceNet } from "./face-net";
 import { faceProcessor } from "./face-processor";
-import { generateFaceEmbedding } from "./face-embedding";
-import * as tf from "@tensorflow/tfjs-node";
+import { faceRecognition } from "./face-recognition";
 
 const TEST_IMAGE = join(process.cwd(), "scripts", "search.webp");
 

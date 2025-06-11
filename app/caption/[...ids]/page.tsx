@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
-import { DualCaptionEditor } from "./dual-caption-editor";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
+import { DualCaptionEditor } from "./dual-caption-editor";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;

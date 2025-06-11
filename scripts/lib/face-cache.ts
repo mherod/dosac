@@ -1,17 +1,17 @@
+import { createHash } from "node:crypto";
 import {
-  readFileSync,
-  writeFileSync,
   existsSync,
   mkdirSync,
+  readFileSync,
   readdirSync,
-  unlinkSync,
   statSync,
-} from "fs";
-import { join } from "path";
-import { createHash } from "crypto";
-import { generateFaceEmbedding } from "./face-embedding";
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { join } from "node:path";
 import { CACHE_DIRS, PRIMARY_CACHE_DIR } from "./config";
-import { FaceAttributes, AttributeConfidence } from "./face-attributes";
+import type { AttributeConfidence, FaceAttributes } from "./face-attributes";
+import { generateFaceEmbedding } from "./face-embedding";
 
 export const INDEX_FILE = join(PRIMARY_CACHE_DIR, "index.json");
 
@@ -74,7 +74,7 @@ export function loadIndex(): CacheIndex {
         for (const dir of CACHE_DIRS) {
           const embeddingPath = join(dir, entry.embeddingFile);
           if (process.env.DEBUG_CACHE) {
-            console.log("Checking " + embeddingPath);
+            console.log(`Checking ${embeddingPath}`);
           }
           if (existsSync(embeddingPath)) {
             embeddingExists = true;
@@ -657,7 +657,6 @@ export async function analyzeFaceClusters(
       }
     } catch (error) {
       console.error(`Error processing ${entry.path}:`, error);
-      continue;
     }
   }
 
@@ -679,13 +678,11 @@ export async function analyzeFaceClusters(
         for (let j = 0; j < clusters.length; j++) {
           if (i !== j) {
             // Calculate average similarity between clusters
-            const similarities = clusters[i].faces
-              .map((face1: any) =>
-                clusters[j].faces.map((face2: any) =>
-                  cosineSimilarity(face1, face2),
-                ),
-              )
-              .flat();
+            const similarities = clusters[i].faces.flatMap((face1: any) =>
+              clusters[j].faces.map((face2: any) =>
+                cosineSimilarity(face1, face2),
+              ),
+            );
             const avgSimilarity =
               similarities.reduce((a, b) => a + b, 0) / similarities.length;
 

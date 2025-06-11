@@ -1,5 +1,5 @@
-import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 import { Textarea } from "@/components/ui/textarea";
+import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 
 /**
  * Props for the CaptionFrameControls component
