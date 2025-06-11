@@ -16,6 +16,12 @@ const nextConfig = {
       },
     ],
   },
+  // Configure build timeouts and static generation
+  staticPageGenerationTimeout: 300, // 5 minutes instead of default 60 seconds
+  generateBuildId: async () => {
+    // Use timestamp to ensure unique builds
+    return `build-${Date.now()}`;
+  },
   // Enable experimental features
   experimental: {
     // Enable server actions
