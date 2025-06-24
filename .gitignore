@@ -45,3 +45,6 @@ public/*.mp4
 .cursor-tools.env
 .cursor-tools.config.json
 .repomix-output.txt
+
+.claude
+CLAUDE.local.md
