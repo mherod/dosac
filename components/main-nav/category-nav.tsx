@@ -15,7 +15,7 @@ export function CategoryNav({
   return (
     <div
       className={cn(
-        "mr-[-50vw relative left-[50%] right-[50%] ml-[-50vw] w-[100vw] border-t border-[#1d70b8] bg-[#1d70b8] bg-[#1d70b8] py-1",
+        "relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] w-[100vw] border-t border-[#1d70b8] bg-[#1d70b8] py-1",
         containerClassName,
       )}
     >

@@ -102,6 +102,15 @@ export function ClientCaptionedImage({
       ref={containerRef}
       onDoubleClick={handleDoubleClick}
       style={{ cursor: image2Url ? "pointer" : "default" }}
+      role="img"
+      aria-label={caption ? `Screenshot: ${caption}` : "Screenshot"}
+      tabIndex={image2Url ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (image2Url && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          setShowSecondFrame((prev: boolean) => !prev);
+        }
+      }}
     >
       <AnimatePresence mode="wait">
         <motion.div
@@ -111,13 +120,13 @@ export function ClientCaptionedImage({
           exit={{ opacity: 0 }}
           transition={{
             duration: 0.3,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
           className="absolute inset-0"
         >
           <Image
             src={currentImageUrl}
-            alt="Screenshot"
+            alt={caption ? `Screenshot: ${caption}` : "Screenshot"}
             fill
             className="pointer-events-none object-cover"
             sizes="(max-width: 1200px) 100vw, 1200px"
@@ -130,6 +139,8 @@ export function ClientCaptionedImage({
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
           style={{ paddingBottom: "4%" }}
+          role="text"
+          aria-label={`Caption: ${caption}`}
         >
           <CaptionText
             caption={caption}

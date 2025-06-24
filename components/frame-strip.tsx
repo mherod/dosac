@@ -202,7 +202,11 @@ export function FrameStrip({
   const frameHeight = Math.round(frameWidth * (9 / 16));
 
   return (
-    <div className="max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg">
+    <div
+      className="max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg"
+      role="region"
+      aria-label="Frame selection strip"
+    >
       <div className="mx-auto max-w-7xl">
         {/* Yellow border frame */}
         <motion.div
@@ -215,6 +219,8 @@ export function FrameStrip({
           <div
             ref={stripRef}
             className="scrollbar-custom relative snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px] overflow-x-scroll whitespace-nowrap"
+            role="tablist"
+            aria-label="Video frames"
           >
             {/* Frames */}
             <div
@@ -242,7 +248,7 @@ export function FrameStrip({
                       onMouseMove={() => handleDragMove(screenshot.id)}
                       onMouseUp={handleDragEnd}
                       className={cn(
-                        "group relative z-10 flex-shrink-0 snap-start",
+                        "group relative z-10 flex-shrink-0 snap-start focus:outline-none focus:ring-2 focus:ring-yellow-400",
                         centerScreenshot?.id === screenshot.id &&
                           "ring-2 ring-yellow-400/80",
                         selectedIds.has(screenshot.id) &&
