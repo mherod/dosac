@@ -1,6 +1,7 @@
 "use client";
 
 import { useImageBounds } from "@/hooks/useImageBounds";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { CaptionText } from "./caption-text";
@@ -102,15 +103,29 @@ export function ClientCaptionedImage({
       onDoubleClick={handleDoubleClick}
       style={{ cursor: image2Url ? "pointer" : "default" }}
     >
-      <Image
-        src={currentImageUrl}
-        alt="Screenshot"
-        fill
-        className="pointer-events-none object-cover"
-        sizes="(max-width: 1200px) 100vw, 1200px"
-        priority={priority}
-        unoptimized
-      />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentImageUrl}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            duration: 0.3,
+            ease: "easeInOut"
+          }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={currentImageUrl}
+            alt="Screenshot"
+            fill
+            className="pointer-events-none object-cover"
+            sizes="(max-width: 1200px) 100vw, 1200px"
+            priority={priority}
+            unoptimized
+          />
+        </motion.div>
+      </AnimatePresence>
       {caption && (
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"

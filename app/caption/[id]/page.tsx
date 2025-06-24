@@ -1,3 +1,4 @@
+import { AnimatedCaptionPage, AnimatedFrameStripWrapper, AnimatedCaptionEditorWrapper } from "@/components/animated-caption-page";
 import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { parseEpisodeId } from "@/lib/frames";
@@ -140,20 +141,24 @@ export default async function Page({
 
   return (
     <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
-      <div className="flex items-center justify-center">
-        <FrameStrip
-          screenshots={[...previousFrames, frame, ...nextFrames].filter(
-            (f: Screenshot | null | undefined): f is Screenshot =>
-              f !== null &&
-              f !== undefined &&
-              typeof f.id === "string" &&
-              typeof f.speech === "string",
-          )}
-          centerScreenshot={frame}
-          frameWidth={200}
-        />
-      </div>
-      <CaptionEditor screenshot={combinedFrame} />
+      <AnimatedCaptionPage>
+        <AnimatedFrameStripWrapper>
+          <FrameStrip
+            screenshots={[...previousFrames, frame, ...nextFrames].filter(
+              (f: Screenshot | null | undefined): f is Screenshot =>
+                f !== null &&
+                f !== undefined &&
+                typeof f.id === "string" &&
+                typeof f.speech === "string",
+            )}
+            centerScreenshot={frame}
+            frameWidth={200}
+          />
+        </AnimatedFrameStripWrapper>
+        <AnimatedCaptionEditorWrapper>
+          <CaptionEditor screenshot={combinedFrame} />
+        </AnimatedCaptionEditorWrapper>
+      </AnimatedCaptionPage>
     </CaptionPageLayout>
   );
 }
