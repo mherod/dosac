@@ -1,4 +1,26 @@
 #!/bin/sh
 
-echo "🏗️ Running build check before push..."
-pnpm build 
+echo "🏗️ Running pre-push validations..."
+
+# Detect package manager
+if command -v pnpm >/dev/null 2>&1; then
+    PKG_MANAGER="pnpm"
+    PKG_EXEC="pnpm exec"
+    echo "📦 Using pnpm"
+elif command -v npm >/dev/null 2>&1; then
+    PKG_MANAGER="npm"
+    PKG_EXEC="npx"
+    echo "📦 Using npm"
+else
+    echo "❌ No package manager found (pnpm or npm required)"
+    exit 1
+fi
+
+# Run type checking and linting (faster than full build)
+echo "📝 Type checking..."
+$PKG_EXEC tsc --noEmit
+
+echo "🔍 Linting..."
+$PKG_MANAGER run lint
+
+echo "✅ Pre-push validations passed!"
