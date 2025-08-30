@@ -59,7 +59,7 @@
     "lodash-es": "^4.17.21",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.358.0",
-    "next": "15.4.0-canary.77",
+    "next": "15.4.7",
     "next-themes": "^0.3.0",
     "react": "19.2.0-canary-56408a5b-20250610",
     "react-dom": "19.2.0-canary-56408a5b-20250610",
