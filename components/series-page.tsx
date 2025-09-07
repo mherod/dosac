@@ -41,7 +41,7 @@ async function SeriesPageContent({
 
   // Group frames by episode
   const episodeFrames = new Map<string, typeof allFrames>();
-  allFrames.forEach((frame: Screenshot) => {
+  for (const frame of allFrames) {
     const { season } = parseEpisodeId(frame.episode);
     if (season === series.number) {
       if (!episodeFrames.has(frame.episode)) {
@@ -49,7 +49,7 @@ async function SeriesPageContent({
       }
       episodeFrames.get(frame.episode)?.push(frame);
     }
-  });
+  }
 
   // Convert to array and sort by episode number
   const episodes: Array<{ episodeNumber: number; frames: Screenshot[] }> =

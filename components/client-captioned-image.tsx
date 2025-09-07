@@ -139,7 +139,6 @@ export function ClientCaptionedImage({
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
           style={{ paddingBottom: "4%" }}
-          role="text"
           aria-label={`Caption: ${caption}`}
         >
           <CaptionText

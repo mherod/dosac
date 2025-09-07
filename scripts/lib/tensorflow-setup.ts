@@ -34,11 +34,11 @@ export const { dispose, tidy, zeros, tensor, tensor2d, tensor3d, tensor4d } =
 
 // Helper function to clean up tensors
 export function disposeTensors(tensors: tf.Tensor[]): void {
-  tensors.forEach((tensor) => {
+  for (const tensor of tensors) {
     if (tensor && !tensor.isDisposed) {
       tensor.dispose();
     }
-  });
+  }
 }
 
 // Export the configured TensorFlow.js instance

@@ -50,9 +50,9 @@ export function CaptionFrameControls({
   return (
     <div className="flex flex-col gap-2 space-y-4">
       <div className="absolute z-10 mb-2 flex h-fit flex-row items-baseline justify-between gap-3 p-0">
-        <label className="text-sm font-medium leading-6 text-foreground">
+        <span className="text-sm font-medium leading-6 text-foreground">
           {label}
-        </label>
+        </span>
       </div>
 
       <div className="flex h-fit p-2">

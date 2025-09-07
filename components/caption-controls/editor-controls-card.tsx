@@ -69,9 +69,9 @@ export function EditorControlsCard({
 
         <div className="space-y-6 border-t pt-6">
           <div className="h-6">
-            <label className="text-sm font-medium leading-6 text-foreground">
+            <span className="text-sm font-medium leading-6 text-foreground">
               Font Settings
-            </label>
+            </span>
           </div>
           <div className="rounded-lg bg-muted/50 p-4">
             <FontControls

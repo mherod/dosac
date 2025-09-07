@@ -77,6 +77,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null;
   }
 
+  // biome-ignore lint/security/noDangerouslySetInnerHtml: CSS generation is safe
   return (
     <style
       dangerouslySetInnerHTML={{

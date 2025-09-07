@@ -86,7 +86,9 @@ export function FrameStrip({
         } else {
           container.style.transition = "scroll-left 0.5s ease-in-out";
           container.scrollLeft = scrollPosition;
-          setTimeout(() => (container.style.transition = ""), 500);
+          setTimeout(() => {
+            container.style.transition = "";
+          }, 500);
         }
       });
     }
@@ -204,7 +206,6 @@ export function FrameStrip({
   return (
     <div
       className="max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg"
-      role="region"
       aria-label="Frame selection strip"
     >
       <div className="mx-auto max-w-7xl">

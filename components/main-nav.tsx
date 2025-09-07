@@ -44,15 +44,13 @@ function MainNavContent(): React.ReactElement {
   const createQueryString = useCallback(
     (updates: QueryUpdates) => {
       const params = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(
-        ([key, value]: [string, string | null]) => {
-          if (value === null) {
-            params.delete(key);
-          } else {
-            params.set(key, value);
-          }
-        },
-      );
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null) {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      }
       return params.toString();
     },
     [searchParams],

@@ -45,7 +45,7 @@ export function AnimatedCaptionPage({ children }: AnimatedCaptionPageProps) {
   return (
     <AnimatePresence mode="wait">
       {isVisible && (
-        <motion.div
+        <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
@@ -55,11 +55,10 @@ export function AnimatedCaptionPage({ children }: AnimatedCaptionPageProps) {
             staggerChildren: 0.1,
           }}
           className="space-y-8"
-          role="main"
           aria-label="Caption editing interface"
         >
           {children}
-        </motion.div>
+        </motion.main>
       )}
     </AnimatePresence>
   );
@@ -76,18 +75,17 @@ export function AnimatedFrameStripWrapper({
 
   if (prefersReducedMotion) {
     return (
-      <div
+      <section
         className="flex items-center justify-center"
-        role="region"
         aria-label="Frame selection"
       >
         {children}
-      </div>
+      </section>
     );
   }
 
   return (
-    <motion.div
+    <motion.section
       initial={{ opacity: 0, scale: 0.95, x: -30 }}
       animate={{ opacity: 1, scale: 1, x: 0 }}
       exit={{ opacity: 0, scale: 0.95, x: 30 }}
@@ -99,11 +97,10 @@ export function AnimatedFrameStripWrapper({
         stiffness: 100,
       }}
       className="flex items-center justify-center"
-      role="region"
       aria-label="Frame selection"
     >
       {children}
-    </motion.div>
+    </motion.section>
   );
 }
 
@@ -117,15 +114,11 @@ export function AnimatedCaptionEditorWrapper({
   const prefersReducedMotion = useReducedMotion();
 
   if (prefersReducedMotion) {
-    return (
-      <div role="region" aria-label="Caption editor">
-        {children}
-      </div>
-    );
+    return <section aria-label="Caption editor">{children}</section>;
   }
 
   return (
-    <motion.div
+    <motion.section
       initial={{ opacity: 0, y: 50, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -20, scale: 0.98 }}
@@ -136,10 +129,9 @@ export function AnimatedCaptionEditorWrapper({
         type: "spring",
         stiffness: 80,
       }}
-      role="region"
       aria-label="Caption editor"
     >
       {children}
-    </motion.div>
+    </motion.section>
   );
 }

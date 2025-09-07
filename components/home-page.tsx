@@ -154,20 +154,22 @@ export function HomePage({
         fallback={
           <div
             className="container mx-auto px-4 py-8"
-            role="status"
             aria-live="polite"
             aria-label="Loading content"
           >
             <div className="text-center">
               <div className="animate-pulse">
-                <div className="mx-auto mb-4 h-4 w-1/4 rounded bg-gray-200"></div>
+                <div className="mx-auto mb-4 h-4 w-1/4 rounded bg-gray-200" />
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-video rounded bg-gray-200"
-                    ></div>
-                  ))}
+                  {Array.from({ length: 8 }).map((_, i) => {
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Skeleton placeholders
+                    return (
+                      <div
+                        key={`skeleton-${i}`}
+                        className="aspect-video rounded bg-gray-200"
+                      />
+                    );
+                  })}
                 </div>
               </div>
             </div>

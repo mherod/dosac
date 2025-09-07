@@ -75,6 +75,7 @@ export function processTextWithLinks(
 
   return parts.map((part, index) => {
     if (typeof part === "string") {
+      // biome-ignore lint/suspicious/noArrayIndexKey: Text segments need index keys
       return <span key={index}>{part}</span>;
     }
 
@@ -108,6 +109,7 @@ export function processTextWithLinks(
       return renderLink(`/series/${part.seriesId}`, part.text, index);
     }
 
+    // biome-ignore lint/suspicious/noArrayIndexKey: Fallback text segments
     return <span key={index}>{part.text}</span>;
   });
 }

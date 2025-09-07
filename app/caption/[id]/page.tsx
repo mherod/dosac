@@ -1,4 +1,8 @@
-import { AnimatedCaptionPage, AnimatedFrameStripWrapper, AnimatedCaptionEditorWrapper } from "@/components/animated-caption-page";
+import {
+  AnimatedCaptionEditorWrapper,
+  AnimatedCaptionPage,
+  AnimatedFrameStripWrapper,
+} from "@/components/animated-caption-page";
 import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { parseEpisodeId } from "@/lib/frames";

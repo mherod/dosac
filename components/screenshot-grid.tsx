@@ -147,12 +147,9 @@ function ScreenshotGridInner({
     [router, pathname, totalPages, createQueryString],
   );
 
-  const safeSetSelectedIds = React.useCallback(
-    (newIds: Set<string>) => {
-      setSelectedIds(new Set([...newIds]));
-    },
-    [setSelectedIds],
-  );
+  const safeSetSelectedIds = React.useCallback((newIds: Set<string>) => {
+    setSelectedIds(new Set([...newIds]));
+  }, []);
 
   const handleDragStart = React.useCallback((id: string) => {
     setIsDragging(true);

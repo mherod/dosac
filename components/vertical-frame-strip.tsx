@@ -47,52 +47,51 @@ export function VerticalFrameStrip({
               className="flex scroll-py-[8px] flex-col gap-2"
               style={{ width: `${frameWidth}px` }}
             >
-              {imageUrls
-                .filter(Boolean)
-                .map((imageUrl: string, index: number) => (
-                  <button
-                    key={`${imageUrl}-${index}`}
-                    onClick={() => {
-                      if (singleSelection) {
-                        onFrameSelect?.(imageUrl);
-                      } else {
-                        onFrameSelect?.(
-                          selectedImage === imageUrl ? "" : imageUrl,
-                        );
-                      }
-                    }}
+              {imageUrls.filter(Boolean).map((imageUrl: string) => (
+                <button
+                  type="button"
+                  key={imageUrl}
+                  onClick={() => {
+                    if (singleSelection) {
+                      onFrameSelect?.(imageUrl);
+                    } else {
+                      onFrameSelect?.(
+                        selectedImage === imageUrl ? "" : imageUrl,
+                      );
+                    }
+                  }}
+                  className={cn(
+                    "group relative flex-shrink-0 cursor-pointer snap-start transition-all duration-200 hover:scale-105",
+                    selectedImage === imageUrl
+                      ? "z-10 scale-105 ring-2 ring-yellow-400/80"
+                      : "ring-1 ring-white/10 hover:ring-white/30",
+                  )}
+                  style={{
+                    width: `${frameWidth}px`,
+                    height: `${frameHeight}px`,
+                  }}
+                >
+                  {!loadedImages[imageUrl] && (
+                    <div className="absolute inset-0 animate-pulse bg-gray-800" />
+                  )}
+                  <Image
+                    src={imageUrl}
+                    alt="Frame"
+                    width={frameWidth}
+                    height={frameHeight}
                     className={cn(
-                      "group relative flex-shrink-0 cursor-pointer snap-start transition-all duration-200 hover:scale-105",
-                      selectedImage === imageUrl
-                        ? "z-10 scale-105 ring-2 ring-yellow-400/80"
-                        : "ring-1 ring-white/10 hover:ring-white/30",
+                      "object-cover transition-opacity duration-300",
+                      !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
                     )}
-                    style={{
-                      width: `${frameWidth}px`,
-                      height: `${frameHeight}px`,
-                    }}
-                  >
-                    {!loadedImages[imageUrl] && (
-                      <div className="absolute inset-0 animate-pulse bg-gray-800" />
-                    )}
-                    <Image
-                      src={imageUrl}
-                      alt={`Frame ${index}`}
-                      width={frameWidth}
-                      height={frameHeight}
-                      className={cn(
-                        "object-cover transition-opacity duration-300",
-                        !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
-                      )}
-                      onLoad={(): void =>
-                        setLoadedImages((prev: Record<string, boolean>) => ({
-                          ...prev,
-                          [imageUrl]: true,
-                        }))
-                      }
-                    />
-                  </button>
-                ))}
+                    onLoad={(): void =>
+                      setLoadedImages((prev: Record<string, boolean>) => ({
+                        ...prev,
+                        [imageUrl]: true,
+                      }))
+                    }
+                  />
+                </button>
+              ))}
             </div>
           </div>
         </div>

@@ -219,8 +219,8 @@ function CollapsibleSection({
           </AccordionTrigger>
           <AccordionContent>
             <ul className="space-y-4 text-slate-600">
-              {items.map((item: string, index: number) => (
-                <li key={index} className="flex items-start leading-relaxed">
+              {items.map((item: string) => (
+                <li key={item} className="flex items-start leading-relaxed">
                   <span className="mr-3 text-slate-400">•</span>
                   {item}
                 </li>

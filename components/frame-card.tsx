@@ -152,11 +152,20 @@ export function FrameCard({
         isSelected && "z-10 rounded-lg ring-2 ring-primary ring-offset-2",
       )}
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (onSelect) {
+            onSelect(e as any);
+          }
+        }
+      }}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      tabIndex={onSelect ? 0 : -1}
     >
       <Card className="relative overflow-hidden bg-black/5 shadow-[0_10px_50px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_20px_80px_rgba(0,0,0,0.3)] dark:bg-white/5 dark:shadow-[0_10px_50px_rgba(0,0,0,0.5)] dark:hover:shadow-[0_20px_80px_rgba(0,0,0,0.6)]">
         <div className="relative overflow-hidden rounded-lg">
@@ -202,6 +211,7 @@ export function FrameCard({
           {/* Selection button */}
           {onSelect && (
             <button
+              type="button"
               onClick={handleSelectClick}
               className={cn(
                 "absolute right-2 top-2 rounded-full p-1.5 transition-all",

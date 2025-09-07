@@ -41,12 +41,15 @@ export function FontControls({
     <div className="flex flex-col gap-4">
       <div className="p-0">
         <div className="flex h-6 items-center justify-between">
-          <label className="text-sm font-medium leading-6 text-foreground">
+          <label
+            htmlFor="font-select"
+            className="text-sm font-medium leading-6 text-foreground"
+          >
             Font
           </label>
         </div>
         <Select value={fontFamily} onValueChange={setFontFamily}>
-          <SelectTrigger className="mt-4">
+          <SelectTrigger id="font-select" className="mt-4">
             <SelectValue style={{ fontFamily: fontFamily }} />
           </SelectTrigger>
           <SelectContent>
@@ -61,9 +64,9 @@ export function FontControls({
 
       <div className="py-4">
         <div className="flex h-6 items-center justify-between">
-          <label className="text-sm font-medium leading-6 text-foreground">
+          <span className="text-sm font-medium leading-6 text-foreground">
             Font Size
-          </label>
+          </span>
           <span className="text-sm leading-6 text-muted-foreground">
             {fontSize}px
           </span>
@@ -80,9 +83,9 @@ export function FontControls({
 
       <div className="py-4">
         <div className="flex h-6 items-center justify-between">
-          <label className="text-sm font-medium leading-6 text-foreground">
+          <span className="text-sm font-medium leading-6 text-foreground">
             Outline Width
-          </label>
+          </span>
           <span className="text-sm leading-6 text-muted-foreground">
             {outlineWidth}px
           </span>
@@ -99,9 +102,9 @@ export function FontControls({
 
       <div className="py-4">
         <div className="flex h-6 items-center justify-between">
-          <label className="text-sm font-medium leading-6 text-foreground">
+          <span className="text-sm font-medium leading-6 text-foreground">
             Shadow Size
-          </label>
+          </span>
           <span className="text-sm leading-6 text-muted-foreground">
             {shadowSize}px
           </span>

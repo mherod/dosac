@@ -37,17 +37,22 @@
         "noParameterAssign": "warn",
         "useNodejsImportProtocol": "warn",
         "useNumberNamespace": "warn",
-        "useTemplate": "warn"
+        "useTemplate": "warn",
+        "noNonNullAssertion": "warn"
       },
       "suspicious": {
         "noArrayIndexKey": "warn",
-        "noExplicitAny": "warn"
+        "noExplicitAny": "warn",
+        "noImplicitAnyLet": "warn"
       },
       "complexity": {
         "noForEach": "warn"
       },
       "a11y": {
         "noLabelWithoutControl": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
       }
     }
   },

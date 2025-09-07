@@ -82,12 +82,13 @@ export async function EpisodesPage({
             index: number,
           ) => {
             if (typeof part === "string") {
-              return <span key={index}>{part}</span>;
+              // biome-ignore lint/suspicious/noArrayIndexKey: Text parts don't have unique IDs
+              return <span key={`text-${index}`}>{part}</span>;
             }
             const character = characters[part.profileId];
             return (
               <Link
-                key={index}
+                key={`link-${part.profileId}`}
                 href={`/profiles/${part.profileId}`}
                 className="text-blue-600 hover:underline"
               >

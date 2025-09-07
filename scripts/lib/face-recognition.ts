@@ -94,8 +94,14 @@ export class FaceRecognitionService {
 
       // Sort by confidence and limit number of faces
       const sortedFaces = predictions
-        .filter((face: any) => face.probability >= mergedOptions.minConfidence)
-        .sort((a: any, b: any) => b.probability - a.probability)
+        .filter(
+          (face: { probability: number }) =>
+            face.probability >= mergedOptions.minConfidence,
+        )
+        .sort(
+          (a: { probability: number }, b: { probability: number }) =>
+            b.probability - a.probability,
+        )
         .slice(0, mergedOptions.maxFaces);
 
       // Process each face
@@ -180,7 +186,10 @@ export class FaceRecognitionService {
     }
 
     // Sort by similarity score
-    return matches.sort((a: any, b: any) => b.similarity - a.similarity);
+    return matches.sort(
+      (a: { similarity: number }, b: { similarity: number }) =>
+        b.similarity - a.similarity,
+    );
   }
 
   async compareFaces(

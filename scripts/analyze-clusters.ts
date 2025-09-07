@@ -10,11 +10,15 @@ async function main(): Promise<void> {
   );
 
   // Sort clusters by size and categorize them
-  const largeClusters = stats.clusters.filter((c: any) => c.size > 5);
+  const largeClusters = stats.clusters.filter(
+    (c: { size: number }) => c.size > 5,
+  );
   const mediumClusters = stats.clusters.filter(
     (c) => c.size >= 3 && c.size <= 5,
   );
-  const smallClusters = stats.clusters.filter((c: any) => c.size < 3);
+  const smallClusters = stats.clusters.filter(
+    (c: { size: number }) => c.size < 3,
+  );
 
   // Print large clusters (more than 5 faces)
   if (largeClusters.length > 0) {
@@ -28,9 +32,9 @@ async function main(): Promise<void> {
           .join(", "),
       );
       console.log("Sample images (with similarity):");
-      cluster.sampleImages.forEach((img) =>
-        console.log(`- ${img.path} (${img.similarity.toFixed(3)})`),
-      );
+      for (const img of cluster.sampleImages) {
+        console.log(`- ${img.path} (${img.similarity.toFixed(3)})`);
+      }
     });
   }
 
@@ -48,9 +52,9 @@ async function main(): Promise<void> {
           .join(", "),
       );
       console.log("Sample images (with similarity):");
-      cluster.sampleImages.forEach((img) =>
-        console.log(`- ${img.path} (${img.similarity.toFixed(3)})`),
-      );
+      for (const img of cluster.sampleImages) {
+        console.log(`- ${img.path} (${img.similarity.toFixed(3)})`);
+      }
     });
   }
 
