@@ -2,8 +2,8 @@ import { HomePage } from "@/components/home-page";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 
-// Force dynamic rendering to prevent static generation timeout
-export const dynamic = "force-dynamic";
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600; // Revalidate every hour
 
 /**
  * Interface for page component props
@@ -46,14 +46,6 @@ export default async function Home({
         : undefined,
     q: typeof resolvedParams.q === "string" ? resolvedParams.q : undefined,
   };
-
-  // If there's a search query, we need to force dynamic rendering
-  if (initialSearchParams.q) {
-    const dynamicConfig = {
-      dynamic: "force-dynamic" as const,
-    };
-    Object.assign(exports, dynamicConfig);
-  }
 
   return (
     <HomePage
