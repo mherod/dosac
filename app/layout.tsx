@@ -38,6 +38,7 @@ export const metadata: Metadata = {
     "og:site_name": SITE_NAME,
     "og:logo": `${urlObject.origin}/logo.svg`,
     "format-detection": "telephone=no",
+    "google-site-verification": "3zDxylAILVG4stRVm15vY1iA9viFumha9D-SlU1jq50",
   },
 };
 
