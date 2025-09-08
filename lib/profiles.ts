@@ -1,12 +1,20 @@
+import ben from "@/public/characters/ben.png";
+import cal from "@/public/characters/cal.jpg";
 import cliff from "@/public/characters/cliff.png";
 import dan from "@/public/characters/danmiller.webp";
+import emma from "@/public/characters/emma.jpg";
 import glenn from "@/public/characters/glenn.jpg";
 import hugh from "@/public/characters/hugh.png";
 import jamie from "@/public/characters/jamie2.jpg";
+import julius from "@/public/characters/julius.jpg";
 import malcolm from "@/public/characters/malcom4.jpg";
+import mary from "@/public/characters/mary.png";
 import nicola from "@/public/characters/nicola2.jpg";
 import ollie from "@/public/characters/ollie.png";
 import peter from "@/public/characters/peter.jpg";
+import phil_smith from "@/public/characters/phil_smith.jpg";
+import steve from "@/public/characters/steve.jpg";
+import stewart from "@/public/characters/stewart.png";
 import terri from "@/public/characters/terri.webp";
 import type { StaticImageData } from "next/image";
 
@@ -976,6 +984,7 @@ export const characters: Record<string, Character> = {
     shortName: "Julius",
     fullName: "Rt. Hon. the Lord Julius Nicholson of Arnage",
     description: "Life Peer and former Special Adviser to the Prime Minister",
+    image: julius,
     occupation:
       "Special Adviser and Head of Advanced Implementation Unit, Number 10",
     department: [DEPARTMENTS.NUMBER_10],
@@ -1020,6 +1029,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Ben Swain MP",
     description:
       "Former Minister of State for Immigration at DoSAC and Shadow Cabinet Minister",
+    image: ben,
     occupation:
       "Former Shadow Cabinet Minister, Former Minister of State for Immigration - DoSAC",
     department: [DEPARTMENTS.DOSAC],
@@ -1323,6 +1333,7 @@ export const characters: Record<string, Character> = {
     fullName: "Cal Richards",
     description:
       "Conservative Party's Chief Election Strategist, nicknamed 'The Fucker'",
+    image: cal,
     occupation: "Chief Election Strategist",
     department: [DEPARTMENTS.OTHER_GOVERNMENT],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -1360,6 +1371,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Steve Fleming MP",
     description:
       "Former Chief Whip and Acting Director of Communications for Number 10",
+    image: steve,
     occupation:
       "Acting Director of Communications - Number 10, Former Chief Whip",
     department: [DEPARTMENTS.NUMBER_10],
@@ -1400,6 +1412,7 @@ export const characters: Record<string, Character> = {
     fullName: "Dr. Stewart Pearson",
     description:
       "Former Director of Communications at Cabinet Office, eco-friendly moderniser known for incomprehensible jargon",
+    image: stewart,
     occupation:
       "Director of Communications - Cabinet Office, Former Opposition Director of Communications",
     department: [DEPARTMENTS.OTHER_GOVERNMENT],
@@ -1499,6 +1512,7 @@ export const characters: Record<string, Character> = {
     fullName: "Emma Florence Messinger",
     description:
       "Special Adviser to Peter Mannion, trusted by party leadership for key assignments",
+    image: emma,
     occupation:
       "Special Adviser to the Secretary of State for Social Affairs and Citizenship",
     department: [DEPARTMENTS.DOSAC],
@@ -1676,6 +1690,7 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Mary Drake MP",
     description:
       "Director of Communications for Number 10, replacing Stewart Pearson",
+    image: mary,
     occupation: "Director of Communications - Number 10",
     department: [DEPARTMENTS.NUMBER_10],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -2067,6 +2082,7 @@ export const characters: Record<string, Character> = {
     shortName: "Phil",
     fullName: "Phil Smith",
     description: "Special Adviser to the Secretary of State",
+    image: phil_smith,
     occupation: "Special Adviser to the Secretary of State",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SPECIAL_ADVISOR],
