@@ -123,7 +123,7 @@ export const characters: Record<string, Character> = {
       "Former Director of Communications for Number 10 and Opposition, Scottish political operative responsible for government communications strategy",
     image: malcolm,
     occupation:
-      "Media Adviser to the Leader of the Opposition (Series 4), Director of Communications for Number 10 (Series 1-3)",
+      "Media Adviser to the Leader of the Opposition, Former Director of Communications for Number 10",
     nationality: "Scottish",
     department: [DEPARTMENTS.NUMBER_10],
     role: [ROLES.SENIOR_LEADERSHIP],
@@ -145,11 +145,11 @@ export const characters: Record<string, Character> = {
       },
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
-          "Media Adviser to the Leader of the Opposition (Series 4)",
-          "General Election Advisor (Series 4)",
-          "Director of Communications - Number 10 (Series 1-3)",
+          "Media Adviser to the Leader of the Opposition",
+          "General Election Advisor",
+          "Former Director of Communications - Number 10",
         ],
       },
     },
@@ -160,8 +160,8 @@ export const characters: Record<string, Character> = {
       "Spends his 50th birthday alone in his office, reflecting his solitary life",
       "No wife or children of his own, and claims to have no real friends",
       "Former relationship with BBC health correspondent Kelly Grogan, who later dates Simon Hewitt",
-      "Scottish Director of Communications for Number 10 (Series 1-3)",
-      "Later becomes Director of Communications for the Opposition (Series 4)",
+      "Former Director of Communications for Number 10",
+      "Later becomes Director of Communications for the Opposition",
       "Known for his ruthless approach to managing government communications",
       "Has very few real friends due to his aggressive management style",
       "Maintains a complex rivalry with other spin doctors including Cal Richards",
@@ -178,7 +178,7 @@ export const characters: Record<string, Character> = {
       "Successfully spins policy U-turns and governmental miscommunications",
       "Struggles with the rise of the 'nutters' loyal to the future PM Tom",
       "Orchestrates complex political manipulations during leadership transition",
-      "Successfully maneuvers to become Tom's media liaison despite opposition",
+      "Successfully manoeuvres to become Tom's media liaison despite opposition",
       "Eventually falls from power during the Goolding Inquiry",
     ],
     party: PARTIES.LABOUR,
@@ -197,21 +197,70 @@ export const characters: Record<string, Character> = {
       "s01e01-05-15.400", // "You no longer have purchase in the sarcasm world. Get on the phone..."
     ],
     relatedProfiles: [
-      { id: "jamie", relationship: "Right-hand man and enforcer" },
-      { id: "sam", relationship: "Trusted personal secretary" },
-      { id: "julius", relationship: "Professional rival turned ally" },
-      { id: "steve", relationship: "Former colleague and bitter enemy" },
-      { id: "kelly", relationship: "Former romantic relationship" },
-      { id: "hugh", relationship: "Minister whose PR disasters he managed" },
+      {
+        id: "jamie",
+        relationship:
+          "Right-hand man and enforcer - Scottish deputy who shares his aggressive approach, later betrays him during leadership crisis",
+      },
+      {
+        id: "sam",
+        relationship:
+          "Trusted personal secretary - One of few people he shows genuine affection for, loyal through his downfall",
+      },
+      {
+        id: "julius",
+        relationship:
+          "Professional rival turned ally - Initially enemies over departmental cuts, later unite against Steve Fleming",
+      },
+      {
+        id: "steve",
+        relationship:
+          "Former colleague and bitter enemy - Forced his resignation in 2003, returns briefly before Malcolm destroys him again",
+      },
+      {
+        id: "kelly",
+        relationship:
+          "Former romantic relationship - BBC correspondent, now with Simon Hewitt causing personal tension",
+      },
+      {
+        id: "hugh",
+        relationship:
+          "Minister whose PR disasters he managed - Incompetent Secretary of State requiring constant damage control",
+      },
       {
         id: "nicola",
-        relationship: "Minister he initially supported then ousted",
+        relationship:
+          "Minister he initially supported then ousted - Hand-picked replacement for Hugh, later orchestrates her resignation for Dan Miller",
       },
-      { id: "tom", relationship: "Future PM he maneuvered to serve" },
-      { id: "ollie", relationship: "Useful pawn in political schemes" },
+      {
+        id: "tom",
+        relationship:
+          "Future PM he manoeuvred to serve - Leader of 'nutters' faction, accepts Malcolm despite initial resistance",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Useful pawn in political schemes - Ambitious adviser he manipulates while finding him irritating",
+      },
       {
         id: "cal",
-        relationship: "Professional rival and occasional tennis partner",
+        relationship:
+          "Professional rival and occasional tennis partner - Conservative enforcer nicknamed 'The Fucker', mutual respect despite opposition",
+      },
+      {
+        id: "glenn",
+        relationship:
+          "Respected adviser - Shows rare warmth due to Glenn's loyalty and common sense",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Departmental press officer - Civil servant he considers incompetent but tolerates",
+      },
+      {
+        id: "ben",
+        relationship:
+          "Failed ministerial project - Junior minister whose Paxman interview becomes legendary disaster",
       },
     ],
   },
@@ -238,7 +287,7 @@ export const characters: Record<string, Character> = {
         previousCareer: "Training to be a priest before entering politics",
         interests: ["Al Jolson's music"],
         party: "Labour",
-        affiliation: "HM Government (Series 2 & Specials)",
+        affiliation: "HM Government",
       },
     },
     details: [
@@ -265,14 +314,46 @@ export const characters: Record<string, Character> = {
     ],
     frameHighlights: ["s02e01-05-53.200"],
     relatedProfiles: [
-      { id: "malcolm", relationship: "Boss and mentor" },
-      { id: "cal", relationship: "Professional rival" },
+      {
+        id: "malcolm",
+        relationship:
+          "Boss and mentor - Serves as Malcolm's violent enforcer, shares Scottish background and seminary training",
+      },
+      {
+        id: "cal",
+        relationship:
+          "Professional rival - Conservative counterpart in aggression and intimidation tactics",
+      },
       {
         id: "tom",
-        relationship: "Leaked damaging story about his antidepressant use",
+        relationship:
+          "Leaked damaging story about his antidepressant use - Attempted to sabotage during leadership transition",
       },
-      { id: "ben", relationship: "Failed to prepare for Paxman interview" },
-      { id: "ollie", relationship: "Threatened over Al Jolson insult" },
+      {
+        id: "ben",
+        relationship:
+          "Failed to prepare for Paxman interview - Disastrous attempt at media training ends in humiliation",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Threatened over Al Jolson insult - Nearly assaulted him for mocking his musical tastes",
+      },
+      {
+        id: "hugh",
+        relationship:
+          "Terrorized minister - Regular target of intimidation campaigns",
+      },
+      {
+        id: "nicola",
+        relationship:
+          "Later ministerial target - Continues intimidation tactics under new Secretary of State",
+      },
+      {
+        id: "glenn",
+        relationship:
+          "Fellow enforcer target - Despite being on same side, frequently threatens",
+      },
     ],
   },
   nicola: {
@@ -282,7 +363,7 @@ export const characters: Record<string, Character> = {
     description:
       "Former Leader of the Opposition (2010-2012) and Secretary of State for DoSAC",
     occupation:
-      "Leader of the Opposition (2010-2012), Secretary of State for DoSAC (Series 3)",
+      "Former Leader of the Opposition (2010-2012) and Secretary of State for DoSAC",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
     image: nicola,
@@ -297,10 +378,10 @@ export const characters: Record<string, Character> = {
       },
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 4), HM Government (Series 3)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
           "Leader of the Opposition (2010-2012)",
-          "Secretary of State for Social Affairs and Citizenship (Series 3)",
+          "Former Secretary of State for Social Affairs and Citizenship",
         ],
       },
     },
@@ -337,11 +418,45 @@ export const characters: Record<string, Character> = {
     ],
     party: PARTIES.LABOUR,
     relatedProfiles: [
-      { id: "malcolm", relationship: "Director of Communications and nemesis" },
-      { id: "helen", relationship: "Special Adviser" },
-      { id: "dan", relationship: "Leadership rival and successor" },
-      { id: "ollie", relationship: "Special Adviser at DoSAC" },
-      { id: "glenn", relationship: "Special Adviser at DoSAC" },
+      {
+        id: "malcolm",
+        relationship:
+          "Director of Communications and nemesis - Initially supportive, becomes her destroyer through 'omnishambles' campaign",
+      },
+      {
+        id: "helen",
+        relationship:
+          "Special Adviser - Loyal aide throughout DoSAC and Opposition leadership",
+      },
+      {
+        id: "dan",
+        relationship:
+          "Leadership rival and successor - Lost to her on technicality, ultimately replaces her through Malcolm's scheme",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Special Adviser at DoSAC - Inherited from Hugh, ambitious and unreliable",
+      },
+      {
+        id: "glenn",
+        relationship:
+          "Special Adviser at DoSAC - Inherited from Hugh, more reliable but she insults his appearance",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Civil Service communications - Bureaucratic obstacle to her initiatives",
+      },
+      {
+        id: "ben",
+        relationship:
+          "Junior minister she sacked - Removed him from Immigration post",
+      },
+      {
+        id: "jamie",
+        relationship: "Malcolm's enforcer - Frequent target of his aggression",
+      },
     ],
   },
   peter: {
@@ -351,8 +466,7 @@ export const characters: Record<string, Character> = {
     description:
       "Secretary of State for Social Affairs and Citizenship, veteran 'One Nation' Conservative politician with over three decades of parliamentary experience",
     image: peter,
-    occupation:
-      "Secretary of State for Social Affairs and Citizenship (Series 4-present)",
+    occupation: "Secretary of State for Social Affairs and Citizenship",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
@@ -372,12 +486,11 @@ export const characters: Record<string, Character> = {
       background: {
         education: "Classics",
         party: "Conservative",
-        affiliation:
-          "HM Government (Series 4), HM Opposition (Series 3 & Specials), House of Commons (1980's-present)",
+        affiliation: "HM Government, Former HM Opposition, House of Commons",
         career: [
-          "Secretary of State for Social Affairs and Citizenship (Series 4)",
-          "Shadow Secretary of State for Social Affairs (Series 3 & Specials)",
-          "Conservative Party Leadership Candidate (pre-Series 3)",
+          "Secretary of State for Social Affairs and Citizenship",
+          "Former Shadow Secretary of State for Social Affairs",
+          "Former Conservative Party Leadership Candidate",
           "Junior Minister for Fisheries, DEFRA (mid-1980s, resigned)",
           "Member of Parliament (1980's-present)",
         ],
@@ -394,7 +507,7 @@ export const characters: Record<string, Character> = {
       "Marriage nearly ended in 1989 due to affair with Opposition MP Jackie Williamson",
       "Makes maintenance payments for illegitimate son from Williamson affair",
       "Had another affair with an unnamed researcher in 1995",
-      "Challenged JB for Conservative Party leadership pre-Series 3",
+      "Challenged JB for Conservative Party leadership",
       "Appointed Shadow Secretary for Social Affairs after losing leadership contest",
       "Serves on the board of three major tobacco companies and is a smoker",
       "Current Secretary of State for Social Affairs and Citizenship",
@@ -420,10 +533,41 @@ export const characters: Record<string, Character> = {
     ],
     party: PARTIES.CONSERVATIVE,
     relatedProfiles: [
-      { id: "emma", relationship: "Trusted but feared Special Adviser" },
-      { id: "phil", relationship: "Long-term Special Adviser" },
-      { id: "stewart", relationship: "Communications Director and moderniser" },
-      { id: "fergus", relationship: "Coalition partner and Junior Minister" },
+      {
+        id: "emma",
+        relationship:
+          "Trusted but feared Special Adviser - Most competent aide, respects while mistrusting her",
+      },
+      {
+        id: "phil",
+        relationship:
+          "Long-term Special Adviser - Childish pop culture obsessive, loyal but less effective",
+      },
+      {
+        id: "stewart",
+        relationship:
+          "Communications Director and moderniser - Jargon-spouting guru he despises, forces unwanted changes",
+      },
+      {
+        id: "fergus",
+        relationship:
+          "Coalition partner and Junior Minister - Liberal Democrat forced on him, frequent policy clashes",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Opposition communications chief - Occasional cooperation despite party differences",
+      },
+      {
+        id: "nicola",
+        relationship:
+          "Opposition counterpart - Shadow minister in same department",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Civil Service bureaucrat - Represents everything wrong with government machinery",
+      },
     ],
   },
   terri: {
@@ -449,7 +593,7 @@ export const characters: Record<string, Character> = {
           },
         },
         parents: {
-          father: "Deceased (Series 2, stroke)",
+          father: "Deceased (stroke)",
           mother: "In care home (as of Specials)",
         },
       },
@@ -490,19 +634,49 @@ export const characters: Record<string, Character> = {
       "Focuses on process and procedure over actual outcomes",
       "Often uses her 'private sector' experience to justify decisions",
       "Survives multiple ministerial changes through careful neutrality",
-      "Takes extended leave during personal crises, including father's death from stroke in Series 2",
+      "Takes extended leave during personal crises, including father's death from stroke",
       "Known for 'mopping up' the department's bad press",
       "Masters the art of avoiding responsibility while maintaining position",
-      "Active member of an amateur dramatic and musical society, often organizing rehearsals during work hours",
-      "Has a diabetic dog named Max who she attempts to get on Britain's Got Talent in Series 4",
+      "Active member of an amateur dramatic and musical society, often organising rehearsals during work hours",
+      "Has a diabetic dog named Max who she attempts to get on Britain's Got Talent",
       "Sister works in mental health sector in Hastings",
       "Mother resides in a care home as of the Specials",
       "Enjoys wine tasting and gardening in her spare time",
     ],
     relatedProfiles: [
-      { id: "robyn", relationship: "Press Office assistant" },
-      { id: "glenn", relationship: "Departmental colleague" },
-      { id: "ollie", relationship: "Departmental colleague" },
+      {
+        id: "robyn",
+        relationship:
+          "Press Office assistant - Delegates all actual work while taking credit",
+      },
+      {
+        id: "glenn",
+        relationship:
+          "Departmental colleague - Senior adviser she considers beneath her Civil Service status",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Departmental colleague - Junior adviser she finds irritating and unreliable",
+      },
+      {
+        id: "malcolm",
+        relationship: "Number 10 enforcer - Lives in fear of his interventions",
+      },
+      {
+        id: "hugh",
+        relationship: "Former minister - Managed his numerous PR disasters",
+      },
+      {
+        id: "nicola",
+        relationship:
+          "Later minister - Introduces her to department, continues crisis management",
+      },
+      {
+        id: "peter",
+        relationship:
+          "Coalition minister - Serves under Conservative leadership",
+      },
     ],
   },
   hugh: {
@@ -511,14 +685,14 @@ export const characters: Record<string, Character> = {
     fullName: "Rt. Hon. Hugh Abbot MP",
     description: "Former Secretary of State for Social Affairs",
     image: hugh,
-    occupation: "Secretary of State for Social Affairs (Series 1-2)",
+    occupation: "Former Secretary of State for Social Affairs",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Government (Series 1-3)",
-        career: ["Secretary of State for Social Affairs (Series 1-2)"],
+        affiliation: "Former HM Government",
+        career: ["Former Secretary of State for Social Affairs"],
       },
     },
     details: [
@@ -555,16 +729,49 @@ export const characters: Record<string, Character> = {
     relatedProfiles: [
       {
         id: "malcolm",
-        relationship: "Communications Director who managed his crises",
+        relationship:
+          "Communications Director who managed his crises - Constant source of intimidation and forced policy U-turns",
       },
-      { id: "glenn", relationship: "Senior Special Adviser and confidant" },
-      { id: "ollie", relationship: "Junior Special Adviser" },
-      { id: "terri", relationship: "Civil Service Press Secretary" },
+      {
+        id: "glenn",
+        relationship:
+          "Senior Special Adviser and confidant - Loyal supporter, shares concerns about conscience",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Junior Special Adviser - Ambitious young aide, jealous of his relationship with Dan Miller",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Civil Service Press Secretary - Bureaucratic communications head, often clashes over protocol",
+      },
       {
         id: "dan",
-        relationship: "Co-author of housing bill and strategic rival",
+        relationship:
+          "Co-author of housing bill and strategic rival - Junior minister who outmanoeuvres him through strategic resignation",
       },
-      { id: "cliff", relationship: "Predecessor as Secretary of State" },
+      {
+        id: "cliff",
+        relationship:
+          "Predecessor as Secretary of State - Previous minister forced out by Malcolm",
+      },
+      {
+        id: "angela",
+        relationship:
+          "Journalist covering scandals - Exposes his empty flat controversy",
+      },
+      {
+        id: "jamie",
+        relationship:
+          "Malcolm's enforcer - Frequent source of aggressive intimidation",
+      },
+      {
+        id: "julius",
+        relationship:
+          "PM's adviser - Threatens departmental cuts, helps plot against him",
+      },
     ],
   },
   glenn: {
@@ -583,7 +790,7 @@ export const characters: Record<string, Character> = {
       },
       background: {
         party: "Labour (former)",
-        affiliation: "HM Government (Series 1-3)",
+        affiliation: "Former HM Government",
       },
     },
     details: [
@@ -601,11 +808,45 @@ export const characters: Record<string, Character> = {
       "s01e01-17-50.760", // "That's good, that, because it sounds like a lot, doesn't it?"
     ],
     relatedProfiles: [
-      { id: "hugh", relationship: "Minister he served as Senior Adviser" },
-      { id: "ollie", relationship: "Fellow Special Adviser" },
-      { id: "malcolm", relationship: "Respected for loyalty and common sense" },
-      { id: "terri", relationship: "Civil Service colleague" },
-      { id: "nicola", relationship: "Later minister he advised" },
+      {
+        id: "hugh",
+        relationship:
+          "Minister he served as Senior Adviser - Close confidant, provides emotional support during crises",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Fellow Special Adviser - Younger colleague, generational and ideological differences",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Respected for loyalty and common sense - Rare recipient of Malcolm's genuine warmth",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Civil Service colleague - Works alongside despite her bureaucratic approach",
+      },
+      {
+        id: "nicola",
+        relationship:
+          "Later minister he advised - New boss who insults his appearance, compares to menswear salesman",
+      },
+      {
+        id: "jamie",
+        relationship:
+          "Occasional intimidator - Target of threats despite being allies",
+      },
+      {
+        id: "julius",
+        relationship:
+          "Plotting partner - Helps scheme against during reshuffle",
+      },
+      {
+        id: "dan",
+        relationship: "Ministerial colleague - Works with during Hugh's tenure",
+      },
     ],
   },
   ollie: {
@@ -628,19 +869,19 @@ export const characters: Record<string, Character> = {
         education:
           "University of Cambridge (Undergraduate), PhD in Funding Structures",
         party: "Labour",
-        affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
-          "Director of Communications for the Opposition (Series 4)",
-          "Policy Adviser to the Leader of the Opposition (Series 4)",
-          "Special Adviser to the Secretary of State, DoSAC (Series 3)",
-          "Junior Policy Adviser to the Secretary of State, DoSAC (Series 1-Specials)",
+          "Director of Communications for the Opposition",
+          "Policy Adviser to the Leader of the Opposition",
+          "Former Special Adviser to the Secretary of State, DoSAC",
+          "Former Junior Policy Adviser to the Secretary of State, DoSAC",
           "Political Analyst at Millbank Think Tank (3 years post-Cambridge)",
         ],
       },
       relationships: {
         past: [
-          "Emma Messinger (Opposition Advisor, Series 2-3, ended during leadership transition)",
-          "Angela Heaney (Political Journalist, Prior to Series 1, ended via email)",
+          "Emma Messinger (Opposition Advisor, ended during leadership transition)",
+          "Angela Heaney (Political Journalist, ended via email)",
         ],
       },
     },
@@ -653,8 +894,8 @@ export const characters: Record<string, Character> = {
       "Started as Junior Policy Adviser at DoSAC under Hugh Abbot",
       "Promoted to Special Adviser under Nicola Murray's leadership",
       "Eventually becomes Director of Communications for Dan Miller's Opposition",
-      "Past relationship with journalist Angela Heaney ended via email before Series 1",
-      "Dated Opposition advisor Emma Messinger during Series 2-3",
+      "Past relationship with journalist Angela Heaney ended via email",
+      "Dated Opposition advisor Emma Messinger",
       "Emma steals Malcolm's immigration centre visit idea during their relationship",
       "Often used by Malcolm Tucker in various political schemes",
       "Frequently caught between departmental politics and press relations",
@@ -678,16 +919,56 @@ export const characters: Record<string, Character> = {
     ],
     party: PARTIES.LABOUR,
     relatedProfiles: [
-      { id: "hugh", relationship: "First minister as Junior Adviser" },
-      { id: "malcolm", relationship: "Used in various political schemes" },
-      { id: "glenn", relationship: "Fellow Special Adviser" },
+      {
+        id: "hugh",
+        relationship:
+          "First minister as Junior Adviser - Bumbling boss whose mistakes he often inadvertently causes",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Used in various political schemes - Manipulates him as 'wannabe Malcolm', eventual successor",
+      },
+      {
+        id: "glenn",
+        relationship:
+          "Fellow Special Adviser - Senior colleague, often clash over approaches and generation gap",
+      },
       {
         id: "emma",
-        relationship: "Former romantic relationship and political rival",
+        relationship:
+          "Former romantic relationship and political rival - Opposition adviser, used relationship for intelligence gathering",
       },
-      { id: "angela", relationship: "Former girlfriend turned journalist" },
-      { id: "dan", relationship: "Squash partner and eventual boss" },
-      { id: "nicola", relationship: "Minister at DoSAC" },
+      {
+        id: "angela",
+        relationship:
+          "Former girlfriend turned journalist - Ended via email, maintains press connections through her",
+      },
+      {
+        id: "dan",
+        relationship:
+          "Squash partner and eventual boss - Regular sports companion, becomes his Communications Director",
+      },
+      {
+        id: "nicola",
+        relationship:
+          "Minister at DoSAC - Second departmental boss, continues advisory role",
+      },
+      {
+        id: "jamie",
+        relationship:
+          "Target of threats - Nearly assaulted over Al Jolson comment",
+      },
+      {
+        id: "terri",
+        relationship:
+          "Departmental bureaucrat - Frequent conflicts over press strategy",
+      },
+      {
+        id: "ben",
+        relationship:
+          "Fellow political climber - Both represent ambitious younger generation",
+      },
     ],
   },
   julius: {
@@ -746,11 +1027,11 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
-          "Shadow Cabinet Minister (Series 4)",
-          "Minister of State for Immigration - DoSAC (Series 3)",
-          "Minister of State for Social Affairs and Citizenship (Series 3)",
+          "Shadow Cabinet Minister",
+          "Former Minister of State for Immigration - DoSAC",
+          "Former Minister of State for Social Affairs and Citizenship",
         ],
       },
     },
@@ -800,7 +1081,7 @@ export const characters: Record<string, Character> = {
       "Further compromised by suggesting Ben Swain as candidate",
       "Exposed as disloyal to Tom through Malcolm's scheming",
       "Represents the ambitious 'nutter' faction challenging established power",
-      "Ultimately outmaneuvered by Malcolm's political expertise",
+      "Ultimately outmanoeuvred by Malcolm's political expertise",
     ],
   },
   clare: {
@@ -820,7 +1101,7 @@ export const characters: Record<string, Character> = {
       },
     },
     details: [
-      "Used as a pawn in Malcolm's political maneuvering",
+      "Used as a pawn in Malcolm's political manoeuvring",
       "Suggested as potential leadership candidate",
       "Part of Malcolm's scheme to expose Nick's disloyalty",
       "Ultimately refuses to stand for leadership",
@@ -836,18 +1117,18 @@ export const characters: Record<string, Character> = {
       "Leader of the Opposition and Leader of the Labour Party, former Minister of State for Social Affairs",
     image: dan,
     occupation:
-      "Leader of the Opposition and Leader of the Labour Party (Series 4), Former Deputy Leader of the Opposition, Former Minister of State for Social Affairs",
+      "Leader of the Opposition and Leader of the Labour Party, Former Deputy Leader of the Opposition, Former Minister of State for Social Affairs",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 4), HM Government (Series 1-3)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
-          "Leader of the Opposition and Labour Party (Series 4-present)",
+          "Leader of the Opposition and Labour Party",
           "Deputy Leader of the Opposition under Nicola Murray",
           "Leadership candidate (lost to Murray on technicality)",
-          "Minister of State for Social Affairs (Series 1)",
+          "Former Minister of State for Social Affairs",
         ],
       },
     },
@@ -874,7 +1155,7 @@ export const characters: Record<string, Character> = {
       "Finally assumes Labour leadership after Murray's resignation",
       "Murray's resignation orchestrated by Malcolm Tucker",
       "Masters the art of political timing and public perception",
-      "Known for smooth political maneuvering and strategic ambition",
+      "Known for smooth political manoeuvring and strategic ambition",
       "Popular with both press and public throughout career",
       "Built career through carefully timed political moves",
       "Successfully navigated multiple leadership transitions",
@@ -914,7 +1195,7 @@ export const characters: Record<string, Character> = {
         affiliation: "HM Opposition",
         career: [
           "Backbench MP (Present)",
-          "Secretary of State for Social Affairs (Series 1)",
+          "Former Secretary of State for Social Affairs",
         ],
       },
     },
@@ -923,7 +1204,7 @@ export const characters: Record<string, Character> = {
       "Forced to resign due to press pressure orchestrated by Malcolm Tucker",
       "Given the illusion of resigning voluntarily ('jumping before being pushed')",
       "Replaced by Hugh Abbot as Secretary of State",
-      "Victim of Malcolm Tucker's strategic political maneuvering",
+      "Victim of Malcolm Tucker's strategic political manoeuvring",
       "His resignation marks one of Malcolm's typical power plays",
       "Currently serves as backbench MP after ministerial career",
       "Led department during its original incarnation as Social Affairs",
@@ -989,29 +1270,51 @@ export const characters: Record<string, Character> = {
       "His perceived threat led to unnecessary self-inflicted wounds by the department",
       "Personal connection to Malcolm adds extra tension to their professional conflicts",
     ],
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship:
+          "Professional and personal rival - Dating Malcolm's ex Kelly, frequent conflict target",
+      },
+      {
+        id: "kelly",
+        relationship:
+          "Current romantic partner - BBC correspondent, Malcolm's former girlfriend",
+      },
+      {
+        id: "hugh",
+        relationship:
+          "Ministerial target - Writes critical coverage of his failures",
+      },
+      {
+        id: "angela",
+        relationship: "Fellow journalist - Both cover political beat",
+      },
+    ],
   },
   liam: {
     name: "Liam Bentley",
     shortName: "Liam",
-    fullName: "Rt. Hon. Liam Bentley MP",
-    description: "Labour MP for Leamington Spa",
-    occupation: "Member of Parliament for Leamington Spa",
+    fullName: "Liam Bentley",
+    description: "Labour candidate in Leamington Spa by-election",
+    occupation: "Labour Party Candidate (later MP for Leamington Spa)",
     department: [DEPARTMENTS.OPPOSITION],
-    role: [ROLES.OTHER],
+    role: [ROLES.CANDIDATE],
     personal: {
       background: {
         party: "Labour",
         affiliation: "HM Opposition",
-        career: ["Member of Parliament for Leamington Spa"],
+        career: ["Labour candidate in Leamington Spa by-election"],
       },
     },
     details: [
       "Labour Party candidate in the Leamington Spa by-election",
-      "Campaign threatened by independent candidate (previous MP's daughter)",
-      "Receives support from party figures including Nicola Murray",
-      "Central figure in Malcolm's by-election crisis management",
-      "Nickname 'Bent' leads to unfortunate photo opportunity with Nicola",
-      "Campaign becomes entangled with DoSAC's public relations issues",
+      "By-election triggered by death of previous MP Jim Lane",
+      "Campaign threatened by Jim Lane's daughter running as independent",
+      "Central to famous 'I AM BENT' poster incident with Nicola Murray",
+      "Malcolm Tucker deliberately positioned Nicola in front of his campaign poster",
+      "Letters of his name were blocked to spell 'I AM BENT' behind Nicola",
+      "Incident became part of Nicola's first day 'omnishambles'",
     ],
   },
   cal: {
@@ -1026,7 +1329,7 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Conservative",
-        affiliation: "HM Government (Series 4)",
+        affiliation: "HM Government",
       },
     },
     details: [
@@ -1098,7 +1401,7 @@ export const characters: Record<string, Character> = {
     description:
       "Former Director of Communications at Cabinet Office, eco-friendly moderniser known for incomprehensible jargon",
     occupation:
-      "Director of Communications - Cabinet Office (Series 4), Opposition Director of Communications (Series 3 & Specials)",
+      "Director of Communications - Cabinet Office, Former Opposition Director of Communications",
     department: [DEPARTMENTS.OTHER_GOVERNMENT],
     role: [ROLES.SENIOR_LEADERSHIP],
     origin: {
@@ -1110,11 +1413,10 @@ export const characters: Record<string, Character> = {
       background: {
         education: "PhD (subject unspecified)",
         party: "Conservative",
-        affiliation:
-          "HM Government (Series 4), HM Opposition (Series 3 & Specials)",
+        affiliation: "HM Government, Former HM Opposition",
         career: [
-          "Director of Communications - Cabinet Office (Series 4)",
-          "Opposition Director of Communications (Series 3 & Specials)",
+          "Director of Communications - Cabinet Office",
+          "Former Opposition Director of Communications",
           "Conservative Party Communications (2002-present)",
         ],
         interests: [
@@ -1137,7 +1439,7 @@ export const characters: Record<string, Character> = {
       "Strong admirer of Steve Jobs, took morning off when Jobs died",
       "May suffer from claustrophobia",
       "Working for Conservative Party since 2002 on 'detoxifying' image",
-      "Close personal friend of JB, though influence declines in Series 4",
+      "Close personal friend of JB, though influence has declined",
       "Published academic paper 'The Iconography of Consensus' (2006) on government transparency",
       "Known for eco-friendly, media-savvy approach to politics",
       "Struggles to communicate in plain English, favouring technical jargon",
@@ -1204,16 +1506,15 @@ export const characters: Record<string, Character> = {
     personal: {
       age: 29,
       relationships: {
-        past: ["Dr. Oliver Reeder (Series 2-Series 3)"],
+        past: ["Dr. Oliver Reeder"],
       },
       background: {
         party: "Conservative",
-        affiliation:
-          "HM Government (Series 4-present), HM Opposition (Specials-Series 3)",
+        affiliation: "HM Government, Former HM Opposition",
         career: [
-          "Special Adviser to the Secretary of State, DoSAC (Series 4-present)",
-          "Policy Adviser to the Shadow Secretary of State (Series 3 & Specials)",
-          "Special Adviser to Minister Levitt (Series 2)",
+          "Special Adviser to the Secretary of State, DoSAC",
+          "Former Policy Adviser to the Shadow Secretary of State",
+          "Former Special Adviser to Minister Levitt",
           "Advisor in Shadow Social Affairs",
           "Advisor in Shadow Defence",
         ],
@@ -1224,7 +1525,7 @@ export const characters: Record<string, Character> = {
       "Highly regarded by Stewart Pearson compared to other advisors",
       "Trusted by Peter Mannion despite him 'fearing and mistrusting' her",
       "Career progression from Shadow Defence to DoSAC Special Adviser",
-      "Previously worked as advisor to Minister Levitt during Series 2",
+      "Previously worked as advisor to Minister Levitt",
       "Served in both Shadow Social Affairs and Shadow Defence",
       "Transitions from Opposition to Government with Conservative victory",
       "Regularly selected for important party assignments and projects",
@@ -1290,19 +1591,19 @@ export const characters: Record<string, Character> = {
     shortName: "Tom",
     fullName: "Rt. Hon. Tom Davis MP",
     description: "Future Prime Minister and leader of the 'nutters' faction",
-    occupation: "Prime Minister (Series 4)",
+    occupation: "Prime Minister",
     department: [DEPARTMENTS.NUMBER_10],
     role: [ROLES.SENIOR_LEADERSHIP],
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Government (Series 4)",
+        affiliation: "HM Government",
       },
     },
     details: [
       "Rises to become Prime Minister after leadership transition",
       "Leader of the 'nutters' faction within the party",
-      "Subject of leaked rumors about antidepressant use",
+      "Subject of leaked rumours about antidepressant use",
       "Target of Jamie McDonald's attempted political sabotage",
       "Eventually accepts Malcolm Tucker as media liaison",
       "Central figure in party's power shift",
@@ -1326,11 +1627,10 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Conservative",
-        affiliation:
-          "HM Government (Series 4), HM Opposition (Series 3 & Specials)",
+        affiliation: "HM Government, Former HM Opposition",
         career: [
-          "Special Adviser to the Secretary of State, DoSAC (Series 4-present)",
-          "Policy Adviser to the Shadow Secretary of State (Series 3 & Specials)",
+          "Special Adviser to the Secretary of State, DoSAC",
+          "Former Policy Adviser to the Shadow Secretary of State",
           "Long-term advisor to Peter Mannion during Opposition years",
         ],
         interests: [
@@ -1382,9 +1682,9 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Conservative",
-        affiliation: "HM Government (Series 4)",
+        affiliation: "HM Government",
         career: [
-          "Director of Communications - Number 10 (Series 4-present)",
+          "Director of Communications - Number 10",
           "Minister of State - Home Office (Previous)",
         ],
       },
@@ -1414,7 +1714,7 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 3-4)",
+        affiliation: "HM Opposition",
         career: [
           "Special Adviser to Nicola Murray MP",
           "Special Adviser to the Leader of the Opposition",
@@ -1445,9 +1745,9 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Labour",
-        affiliation: "HM Opposition (Series 4)",
+        affiliation: "HM Opposition",
         career: [
-          "Shadow Cabinet Minister (Series 4)",
+          "Shadow Cabinet Minister",
           "Secretary of State for Defence (Previous)",
         ],
       },
@@ -1475,11 +1775,10 @@ export const characters: Record<string, Character> = {
       age: 35,
       background: {
         party: "Labour",
-        affiliation:
-          "HM Opposition (Series 4-present), HM Government (Series 3-4)",
+        affiliation: "HM Opposition, Former HM Government",
         career: [
-          "Labour Party Press Officer (Series 4-present)",
-          "Junior Communications Officer (Series 3-4)",
+          "Labour Party Press Officer",
+          "Former Junior Communications Officer",
         ],
       },
     },
@@ -1518,6 +1817,23 @@ export const characters: Record<string, Character> = {
       "Became cautionary tale about patronage over competence in politics",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "nicola",
+        relationship:
+          "Boss during Opposition - Manages her communications incompetently",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Forced to leak false stories - Malcolm orders him to spread Tom Davis rumours",
+      },
+      {
+        id: "ollie",
+        relationship:
+          "Fellow incompetent - Makes tasteless jokes together about disasters",
+      },
+    ],
   },
   ed: {
     name: "Ed Atkins",
@@ -1541,6 +1857,17 @@ export const characters: Record<string, Character> = {
       "Manages press office responsibilities",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "malcolm",
+        relationship:
+          "Boss at Number 10 - Works under his aggressive leadership",
+      },
+      {
+        id: "jamie",
+        relationship: "Fellow press officer - Part of same communications team",
+      },
+    ],
   },
   doug: {
     name: "Doug Hayes",
@@ -1607,6 +1934,17 @@ export const characters: Record<string, Character> = {
       "Part of Ben Swain's advisory team",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "ben",
+        relationship: "Boss - Provides advisory support to failed minister",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Communications chief - Witnesses his attempts to save Ben",
+      },
+    ],
   },
   nick_h: {
     name: "Nick Hanway",
@@ -1630,6 +1968,17 @@ export const characters: Record<string, Character> = {
       "Key member of PM's press operation",
     ],
     party: PARTIES.LABOUR,
+    relatedProfiles: [
+      {
+        id: "tom",
+        relationship: "Prime Minister - Handles his media relations",
+      },
+      {
+        id: "malcolm",
+        relationship:
+          "Former communications director - Part of new regime after Malcolm",
+      },
+    ],
   },
   robyn: {
     name: "Robyn Murdoch",
@@ -1659,7 +2008,7 @@ export const characters: Record<string, Character> = {
       "Maintains secret archive of unminuted meetings",
       "Knows more about department operations than any special adviser",
       "Compensated at Grade 7 level for HEO responsibilities",
-      "Last line of defense against ministerial code violations",
+      "Last line of defence against ministerial code violations",
       "Only remembers to claim overtime during spending reviews",
     ],
     relatedProfiles: [
@@ -1678,10 +2027,8 @@ export const characters: Record<string, Character> = {
     personal: {
       background: {
         party: "Liberal Democrat",
-        affiliation: "Coalition Government (Series 4)",
-        career: [
-          "Minister of State for Social Affairs and Citizenship (Series 4-present)",
-        ],
+        affiliation: "Coalition Government",
+        career: ["Minister of State for Social Affairs and Citizenship"],
         interests: [
           "Digital technology",
           "Community banking",
@@ -1759,7 +2106,7 @@ export const characters: Record<string, Character> = {
     name: "Andrew",
     shortName: "Andrew",
     fullName: "Andrew",
-    description: "Former Civil Servant at DoSAC (Series 3)",
+    description: "Former Civil Servant at DoSAC",
     occupation: "Civil Servant",
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.CIVIL_SERVANT],

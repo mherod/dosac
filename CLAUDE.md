@@ -40,7 +40,7 @@ A Next.js application called "DOSAC.UK" that serves as a sophisticated screensho
 - **`types.ts`**: Main type definitions including `Screenshot` interface
 - **`frames.ts`** & **`frames.server.ts`**: Frame handling (client/server split)
 - **`series-info.ts`**: Comprehensive series metadata with character cross-references
-- **`profiles.ts`**: Character profile definitions with images and metadata
+- **`profiles.ts`**: Character profile definitions with images and metadata (written from in-universe perspective, no Series/Episode references)
 - **`categories.ts`**: Content categorization system
 - **`constants.ts`**: Site configuration and constants
 - **`utils.tsx`**: General utility functions and helpers
@@ -112,3 +112,13 @@ A Next.js application called "DOSAC.UK" that serves as a sophisticated screensho
 - **Advanced Search**: Pre-indexed full-text search across all dialogue
 - **Image Optimization**: Multiple formats (AVIF, WebP), responsive sizing
 - **Modern Architecture**: App Router, Server Components, incremental static generation
+
+## Important Development Notes
+
+### Character Profiles
+
+- Character profiles in `lib/profiles.ts` are written from an in-universe perspective
+- Do NOT include Series/Episode references (e.g., "Series 3, Episode 1") in profile data
+- Character information should be factual and based on what's shown in the series
+- Relationships between characters should be clearly established in the show
+- **ALWAYS use British English spelling** (e.g., "manoeuvre" not "maneuver", "organising" not "organizing", "defence" not "defense", "rumours" not "rumors")
