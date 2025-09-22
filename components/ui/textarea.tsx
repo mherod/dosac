@@ -1,14 +1,16 @@
-import React from "react";
+"use client";
+
+import React, { forwardRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-const Textarea = React.forwardRef<
+const Textarea = forwardRef<
   HTMLTextAreaElement,
   React.TextareaHTMLAttributes<HTMLTextAreaElement>
 >((props, ref) => {
   const { className, onChange, value, ...rest } = props;
   const isControlled = value !== undefined;
-  const [internalValue, setInternalValue] = React.useState("");
+  const [internalValue, setInternalValue] = useState("");
   const displayValue = isControlled ? String(value) : internalValue;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

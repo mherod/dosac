@@ -1,3 +1,5 @@
+"use client";
+
 import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
 import type { Screenshot } from "@/lib/types";

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -6,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type React from "react";
 import { forwardRef } from "react";
 
@@ -112,6 +115,8 @@ export function SeriesSelect({
   className = "",
   isSearchMode = false,
 }: SeriesSelectProps): React.ReactElement {
+  const router = useRouter();
+
   /**
    * Handles changes to the series selection
    * @param value - The new series value
@@ -128,7 +133,7 @@ export function SeriesSelect({
     } else {
       // In navigation mode, update the selection and navigate
       const href = newSeason ? `/series/${newSeason}` : "/series";
-      window.location.href = href;
+      router.push(href);
     }
   };
 
@@ -150,7 +155,7 @@ export function SeriesSelect({
       const href = newEpisode
         ? `/series/${season}/episode/${newEpisode}`
         : `/series/${season}`;
-      window.location.href = href;
+      router.push(href);
     }
   };
 

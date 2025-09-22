@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import { forwardRef, useId } from "react";
+import type { InputHTMLAttributes } from "react";
 
 import { cn } from "@/lib/utils";
 import { Input } from "./input";
@@ -10,8 +11,7 @@ import { Label } from "./label";
  * Props for the TextInput component
  * Extends native input element props with additional features
  */
-export interface TextInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   /** Optional label text to display above the input */
   label?: string;
   /** Optional error message to display below the input */
@@ -31,9 +31,9 @@ export interface TextInputProps
  * @param props.id - Optional ID for the input (auto-generated if not provided)
  * @returns A styled input component with optional label, error, and description
  */
-const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   ({ className, label, error, description, id, ...props }, ref) => {
-    const generatedId = React.useId();
+    const generatedId = useId();
     const inputId = id || generatedId;
 
     return (

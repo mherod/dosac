@@ -8,6 +8,13 @@ import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import promisePlugin from "eslint-plugin-promise";
 
+// Try CommonJS require approach for the custom plugin
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const customReactPlugin = require("@mherod/eslint-plugin-custom/react");
+
+// Successfully loaded custom React plugin with rules
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -68,6 +75,7 @@ const config = [
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
       promise: promisePlugin,
+      "@mherod/react": customReactPlugin.default,
     },
     rules: {
       // Stricter TypeScript rules for explicit types
@@ -185,6 +193,18 @@ const config = [
       "jsdoc/valid-types": "warn",
       "jsdoc/check-types": "off",
       "jsdoc/no-undefined-types": "off",
+
+      // Custom React rules from @mherod/eslint-plugin-custom
+      "@mherod/react/no-dynamic-tailwind-classes": "warn",
+      "@mherod/react/no-event-handlers-to-client-props": "error",
+      "@mherod/react/no-unstable-math-random": "warn",
+      "@mherod/react/no-use-state-in-async-component": "error",
+      "@mherod/react/prefer-link-over-router-push": "warn",
+      "@mherod/react/prefer-next-navigation": "warn",
+      "@mherod/react/prefer-react-destructured-imports": "off", // Too noisy
+      "@mherod/react/prevent-environment-poisoning": "error",
+      "@mherod/react/enforce-server-client-separation": "error",
+      "@mherod/react/enforce-component-patterns": "off", // Too strict for this codebase
     },
     settings: {
       jsdoc: {

@@ -1,3 +1,5 @@
+import "server-only";
+
 import * as sharp from "sharp";
 
 export interface ImageProcessingResult {

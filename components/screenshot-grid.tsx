@@ -10,7 +10,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSpeculationRules } from "@/lib/speculation-rules";
 import type { Screenshot } from "@/lib/types";
 import Link from "next/link";
-import { Suspense } from "react";
+import {
+  Suspense,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 
 /**
  * Props for the ScreenshotGrid component
@@ -42,10 +49,10 @@ function ScreenshotGridInner({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartId, setDragStartId] = React.useState<string | null>(null);
-  const gridRef = React.useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const totalScreenshots = screenshots.length;
@@ -55,7 +62,7 @@ function ScreenshotGridInner({
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalScreenshots);
   const currentScreenshots = screenshots.slice(startIndex, endIndex);
 
-  const getScreenshotUrl = React.useCallback(
+  const getScreenshotUrl = useCallback(
     (id: string) => {
       if (!currentScreenshots || !multiselect) return `/caption/${id}`;
 
@@ -103,7 +110,7 @@ function ScreenshotGridInner({
   );
 
   // Get all possible URLs for current page
-  const allPossibleUrls = React.useMemo(() => {
+  const allPossibleUrls = useMemo(() => {
     const urls = currentScreenshots.map((screenshot: Screenshot) =>
       getScreenshotUrl(screenshot.id),
     );
@@ -189,7 +196,7 @@ function ScreenshotGridInner({
     setDragStartId(null);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleMouseUp = (): void => {
       handleDragEnd();
     };

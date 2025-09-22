@@ -147,6 +147,9 @@ importers:
       '@eslint/js':
         specifier: ^9.29.0
         version: 9.29.0
+      '@mherod/eslint-plugin-custom':
+        specifier: ^1.1.0
+        version: 1.1.0(@typescript-eslint/parser@8.35.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)
       '@next/eslint-plugin-next':
         specifier: 15.5.1-canary.31
         version: 15.5.1-canary.31
@@ -1155,6 +1158,14 @@ packages:
 
   '@mediapipe/face_mesh@0.4.1633559619':
     resolution: {integrity: sha512-Vc8cdjxS5+O2gnjWH9KncYpUCVXT0h714KlWAsyqJvJbIgUJBqpppbIx8yWcAzBDxm/5cYSuBI5p5ySIPxzcEg==}
+
+  '@mherod/eslint-plugin-custom@1.1.0':
+    resolution: {integrity: sha512-b+0MDqQyKVA869wTnbQNKrJHtIzJwSqibzBidwuH2H1qaNpF+wbMSnmx9kVuxuR24kGqrMqI7bP/e/ZbKEPSpA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@typescript-eslint/parser': ^8.0.0
+      eslint: ^8.0.0 || ^9.0.0
+      typescript: ^5.0.0
 
   '@napi-rs/nice-android-arm-eabi@1.0.1':
     resolution: {integrity: sha512-5qpvOu5IGwDo7MEKVqqyAxF90I6aLj4n07OzpARdgDRfz8UbBztTByBp0RC59r3J1Ij8uzYi6jI7r5Lws7nn6w==}
@@ -6350,6 +6361,12 @@ snapshots:
   '@mediapipe/face_detection@0.4.1646425229': {}
 
   '@mediapipe/face_mesh@0.4.1633559619': {}
+
+  '@mherod/eslint-plugin-custom@1.1.0(@typescript-eslint/parser@8.35.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)':
+    dependencies:
+      '@typescript-eslint/parser': 8.35.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)
+      eslint: 9.29.0(jiti@2.4.2)
+      typescript: 5.8.3
 
   '@napi-rs/nice-android-arm-eabi@1.0.1':
     optional: true

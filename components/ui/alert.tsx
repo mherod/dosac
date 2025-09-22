@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 import { type VariantProps, cva } from "class-variance-authority";
 
@@ -20,7 +20,7 @@ const alertVariants = cva(
   },
 );
 
-const Alert = React.forwardRef<
+const Alert = forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
 >(

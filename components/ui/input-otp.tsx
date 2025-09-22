@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { forwardRef, useContext } from "react";
 
 import { OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-const InputOTP = React.forwardRef<
+const InputOTP = forwardRef<
   React.ElementRef<typeof OTPInput>,
   React.ComponentPropsWithoutRef<typeof OTPInput>
 >(({ className, containerClassName, ...props }, ref) => (
@@ -37,7 +37,7 @@ const InputOTPSlot = React.forwardRef<
     index: number;
   }
 >(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext);
+  const inputOTPContext = useContext(OTPInputContext);
   const slot = inputOTPContext.slots[index];
   if (!slot) return null;
 

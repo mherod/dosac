@@ -5,10 +5,10 @@ import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { parseEpisodeId } from "@/lib/frames";
 import type { Frame } from "@/lib/frames";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense } from "react";
+import React, { Suspense, Component, useMemo } from "react";
 
 // Error boundary component for better error handling
-class HomePageErrorBoundary extends React.Component<
+class HomePageErrorBoundary extends Component<
   { children: React.ReactNode },
   { hasError: boolean }
 > {
@@ -80,7 +80,7 @@ function SearchWrapper({
   };
 
   // Filter screenshots based on URL parameters
-  const filteredScreenshots = React.useMemo(() => {
+  const filteredScreenshots = useMemo(() => {
     const isShowingRanked =
       !filters.season && !filters.episode && !filters.query;
     const screenshotsToFilter = isShowingRanked

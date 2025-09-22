@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, isValidElement, cloneElement } from "react";
 
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
@@ -11,7 +11,7 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = React.forwardRef<
+const SelectTrigger = forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
@@ -93,12 +93,8 @@ const SelectItem = React.forwardRef<
       )}
       {...props}
     >
-      {props.asChild && React.isValidElement(children)
-        ? React.cloneElement(
-            children as React.ReactElement<any>,
-            undefined,
-            content,
-          )
+      {props.asChild && isValidElement(children)
+        ? cloneElement(children as React.ReactElement<any>, undefined, content)
         : content}
     </SelectPrimitive.Item>
   );

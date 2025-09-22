@@ -1,3 +1,5 @@
+"use client";
+
 import { TextInput } from "@/components/ui/text-input";
 import { cn } from "@/lib/utils";
 

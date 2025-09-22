@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { Image } from "canvas";

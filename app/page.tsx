@@ -25,12 +25,10 @@ type Props = {
 export default async function Home({
   searchParams,
 }: Props): Promise<React.ReactElement> {
-  const [screenshots, rankedMoments] = await Promise.all([
-    getFrameIndex(),
-    fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/moments`,
-    ).then((res: Response) => res.json()),
-  ]);
+  const screenshots = await getFrameIndex();
+
+  // Use empty array for ranked moments during build to avoid fetch issues
+  const rankedMoments: Screenshot[] = [];
 
   const resolvedParams = await searchParams;
 
@@ -50,7 +48,7 @@ export default async function Home({
   return (
     <HomePage
       screenshots={screenshots}
-      rankedMoments={rankedMoments.map((m: { frame: Screenshot }) => m.frame)}
+      rankedMoments={rankedMoments}
       initialSearchParams={initialSearchParams}
     />
   );

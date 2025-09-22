@@ -1,3 +1,5 @@
+"use client";
+
 import { Textarea } from "@/components/ui/textarea";
 import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 

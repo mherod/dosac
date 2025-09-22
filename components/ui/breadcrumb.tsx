@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * @param props.separator - Optional custom separator between items
  * @returns A nav element with breadcrumb role and ARIA label
  */
-const Breadcrumb = React.forwardRef<
+const Breadcrumb = forwardRef<
   HTMLElement,
   React.ComponentPropsWithoutRef<"nav"> & {
     separator?: React.ReactNode;

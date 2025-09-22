@@ -1,3 +1,5 @@
+import "server-only";
+
 import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import sharp from "sharp";
 import type { FacePrediction } from "./face-embedding";
