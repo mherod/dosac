@@ -46,10 +46,14 @@ async function generateFrameIndex(): Promise<void> {
         const urlSafeTimestamp = timestamp.replace(/:/g, "-");
         const id = `${season}-${urlSafeTimestamp}`;
 
+        // Use the actual directory name that exists for image URLs
+        // This handles both old (colon) and new (dash) formats gracefully
+        const actualTimestamp = timestamp; // Use the actual directory name
+
         const frame: Frame = {
           id,
-          imageUrl: `/frames/${season}/${timestamp}/frame-blank.webp`,
-          image2Url: `/frames/${season}/${timestamp}/frame-blank2.webp`,
+          imageUrl: `/frames/${season}/${actualTimestamp}/frame-blank.webp`,
+          image2Url: `/frames/${season}/${actualTimestamp}/frame-blank2.webp`,
           timestamp: urlSafeTimestamp,
           subtitle: speech,
           speech,
