@@ -111,7 +111,7 @@ export const seriesInfo: SeriesInfo[] = [
       { text: "Dan Miller", profileId: "dan" },
       " in the opposition leadership contest. The administration faced its greatest crisis following the public eviction and subsequent suicide of Douglas Tickel, a nurse with documented mental health issues, during the implementation of a controversial healthcare bill. The tragedy triggered the Goolding Inquiry, a comprehensive investigation that revealed all three main parties had participated in the illegal leaking of documents, including Tickel's medical records. This scandal ultimately led to Murray's resignation and replacement by Miller, while exposing deep-rooted issues in government communication practices.",
     ],
-    episodeCount: 3,
+    episodeCount: 7,
   },
 ];
 

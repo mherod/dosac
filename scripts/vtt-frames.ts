@@ -19,8 +19,23 @@ function parseTimestamp(timestamp: string): string {
 }
 
 function timestampToSeconds(timestamp: string): number {
-  const [minutes, seconds] = timestamp.split(":");
-  return Number.parseFloat(minutes) * 60 + Number.parseFloat(seconds);
+  const parts = timestamp.split(":");
+  if (parts.length === 3) {
+    // HH:MM:SS.mmm format
+    const [hours, minutes, seconds] = parts;
+    return (
+      Number.parseFloat(hours) * 3600 +
+      Number.parseFloat(minutes) * 60 +
+      Number.parseFloat(seconds)
+    );
+  } else if (parts.length === 2) {
+    // MM:SS.mmm format
+    const [minutes, seconds] = parts;
+    return Number.parseFloat(minutes) * 60 + Number.parseFloat(seconds);
+  } else {
+    console.error(`Invalid timestamp format: ${timestamp}`);
+    return 0;
+  }
 }
 
 function ensureDirectoryExists(dirPath: string) {

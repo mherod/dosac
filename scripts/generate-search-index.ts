@@ -88,18 +88,48 @@ async function generateSearchIndex() {
       allResults.push(...fileResults);
     }
 
-    // Sort results by episode and timestamp
-    const sortedResults = allResults.sort((a: any, b: any) => {
-      if (a.episodeId !== b.episodeId) {
-        return a.episodeId.localeCompare(b.episodeId);
+    // Merge duplicate entries with same episodeId and timestamp
+    const mergedResults = new Map<string, SearchResult>();
+
+    for (const result of allResults) {
+      const key = `${result.episodeId}-${result.timestamp}`;
+      const existing = mergedResults.get(key);
+
+      if (existing) {
+        // Merge text content, avoiding duplicates
+        const existingText = existing.text.toLowerCase();
+        const newText = result.text.toLowerCase();
+
+        if (
+          !existingText.includes(newText) &&
+          !newText.includes(existingText)
+        ) {
+          existing.text = `${existing.text} ${result.text}`;
+        } else if (result.text.length > existing.text.length) {
+          // Keep the longer text if one contains the other
+          existing.text = result.text;
+        }
+      } else {
+        mergedResults.set(key, { ...result });
       }
-      return a.startTime - b.startTime;
-    });
+    }
+
+    // Sort results by episode and timestamp
+    const sortedResults = Array.from(mergedResults.values()).sort(
+      (a: any, b: any) => {
+        if (a.episodeId !== b.episodeId) {
+          return a.episodeId.localeCompare(b.episodeId);
+        }
+        return a.startTime - b.startTime;
+      },
+    );
 
     // Write the search index to a JSON file
     const outputPath = path.join(publicDir, "search-index.json");
     await fs.writeFile(outputPath, JSON.stringify(sortedResults, null, 2));
-    console.log("Search index generated successfully!");
+    console.log(
+      `Search index generated successfully! ${sortedResults.length} entries from ${allResults.length} original entries.`,
+    );
   } catch (error) {
     console.error("Error generating search index:", error);
     process.exit(1);
