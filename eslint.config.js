@@ -8,12 +8,8 @@ import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import promisePlugin from "eslint-plugin-promise";
 
-// Try CommonJS require approach for the custom plugin
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const customReactPlugin = require("@mherod/eslint-plugin-custom/react");
-
-// Successfully loaded custom React plugin with rules
+// Standard ESM import now works with the fixed package v1.2.0
+import customReactPlugin from "@mherod/eslint-plugin-custom/react";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,7 +71,7 @@ const config = [
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
       promise: promisePlugin,
-      "@mherod/react": customReactPlugin.default,
+      "@mherod/react": customReactPlugin,
     },
     rules: {
       // Stricter TypeScript rules for explicit types
