@@ -84,7 +84,7 @@ A Next.js application called "DOSAC.UK" that serves as a sophisticated screensho
 ### Data Organization (`/public/`)
 
 - **`frames/s[XX]e[XX]/[timestamp]/`**: Frame data structure:
-  - `frame-blank.jpg` & `frame-blank2.jpg`: Primary + 1-second-later frames
+  - `frame-blank.webp` & `frame-blank2.webp`: Primary + 1-second-later frames
   - `speech.txt`: Processed dialogue text
 - **`characters/`**: Character portrait images (multiple formats)
 - **`search-index.json`**: Pre-built searchable dialogue index

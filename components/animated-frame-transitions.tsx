@@ -153,7 +153,7 @@ export function FramePreloader({
           const img = new Image();
           img.onload = () => resolve(id);
           img.onerror = () => reject(id);
-          img.src = `/frames/${id}/frame-blank.jpg`;
+          img.src = `/frames/${id}/frame-blank.webp`;
         });
       });
 

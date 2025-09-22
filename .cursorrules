@@ -153,8 +153,8 @@
 - Located in `/public/frames/{episodeId}/`
 - Each timestamp has its own directory named by timestamp (e.g., "05-31-360" for "05:31.360")
 - Each timestamp directory contains:
-  - `frame-blank.jpg` - Original frame at exact timestamp
-  - `frame-blank2.jpg` - Frame captured 1 second after timestamp
+  - `frame-blank.webp` - Original frame at exact timestamp
+  - `frame-blank2.webp` - Frame captured 1 second after timestamp
   - `speech.txt` - Plain text of the subtitles
 - Frame characteristics:
   - Extracted using ffmpeg at exact timestamps from VTT

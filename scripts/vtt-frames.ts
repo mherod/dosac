@@ -236,8 +236,8 @@ async function processVideoFrames(episodeId: string) {
     const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
     ensureDirectoryExists(frameDir);
 
-    const frameBlankPath = path.join(frameDir, "frame-blank.jpg");
-    const frameBlank2Path = path.join(frameDir, "frame-blank2.jpg");
+    const frameBlankPath = path.join(frameDir, "frame-blank.webp");
+    const frameBlank2Path = path.join(frameDir, "frame-blank2.webp");
     const speechPath = path.join(frameDir, "speech.txt");
 
     // Extract frames

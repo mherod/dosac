@@ -94,7 +94,7 @@ async function processImage(
 }
 
 async function getAllImageFiles(): Promise<string[]> {
-  const files = fastGlobSync(`${localDir}/**/frame-blank*.jpg`);
+  const files = fastGlobSync(`${localDir}/**/frame-blank*.webp`);
   console.log(`\nFound ${files.length} image files`);
   return files;
 }
