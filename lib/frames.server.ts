@@ -5,17 +5,25 @@ import type { Frame, ParsedFrameId } from "./frames";
 
 /**
  * Validates and parses a frame ID into its components
- * @param id - The frame ID to validate (format: s01e01-00-00-000)
+ * @param id - The frame ID to validate (format: s01e01-00-00-00.000)
  * @returns Object containing parsed season, episode, and timestamp
  * @throws InvalidFrameIdError if the ID format is invalid
  */
 export function validateFrameId(id: string): ParsedFrameId {
-  const [season, ...timestampParts] = id.split("-");
-  const timestamp = timestampParts.join("-");
+  // Split on first dash after episode ID to separate season from timestamp
+  const dashIndex = id.indexOf("-", 6); // Skip past s##e## format
+  if (dashIndex === -1) {
+    throw new InvalidFrameIdError(
+      `Invalid frame ID format: ${id}. Expected format: s01e01-00-00-00.000`,
+    );
+  }
+
+  const season = id.substring(0, dashIndex);
+  const timestamp = id.substring(dashIndex + 1);
 
   if (!season || !timestamp) {
     throw new InvalidFrameIdError(
-      `Invalid frame ID format: ${id}. Expected format: s01e01-00-00-000`,
+      `Invalid frame ID format: ${id}. Expected format: s01e01-00-00-00.000`,
     );
   }
 
@@ -31,7 +39,8 @@ export function validateFrameId(id: string): ParsedFrameId {
 export async function getFrameById(id: string): Promise<Frame> {
   const { season, timestamp } = validateFrameId(id);
 
-  const framePath = path.join(
+  // Try the new format first (all dashes)
+  let framePath = path.join(
     process.cwd(),
     "public",
     "frames",
@@ -39,8 +48,24 @@ export async function getFrameById(id: string): Promise<Frame> {
     timestamp,
   );
 
+  // Fallback: try the old format (with colons) if new format doesn't exist
   if (!fs.existsSync(framePath)) {
-    throw new InvalidFrameIdError(`Frame not found: ${id}`);
+    const legacyTimestamp = timestamp.replace(/-(\d{2}\.\d{3})$/, ":$1");
+    const legacyFramePath = path.join(
+      process.cwd(),
+      "public",
+      "frames",
+      season,
+      legacyTimestamp,
+    );
+
+    if (fs.existsSync(legacyFramePath)) {
+      framePath = legacyFramePath;
+    } else {
+      throw new InvalidFrameIdError(
+        `Frame not found: ${id} (tried both ${timestamp} and ${legacyTimestamp})`,
+      );
+    }
   }
 
   const speechPath = path.join(framePath, "speech.txt");
@@ -59,11 +84,32 @@ export async function getFrameById(id: string): Promise<Frame> {
 }
 
 /**
- * Retrieves all frames from the filesystem
- * Recursively scans the frames directory for all available frames
+ * Retrieves all frames from the prebuilt index file
+ * Falls back to filesystem scanning if index doesn't exist
  * @returns Promise resolving to array of all frame data
  */
 export async function getFrameIndex(): Promise<Frame[]> {
+  const indexPath = path.join(process.cwd(), "public", "frame-index.json");
+
+  // Try to use prebuilt index first
+  if (fs.existsSync(indexPath)) {
+    try {
+      const indexContent = fs.readFileSync(indexPath, "utf-8");
+      const frames: Frame[] = JSON.parse(indexContent);
+      console.log(`Loaded ${frames.length} frames from prebuilt index`);
+      return frames;
+    } catch (error) {
+      console.error(
+        "Error reading prebuilt frame index, falling back to filesystem scan:",
+        error,
+      );
+    }
+  }
+
+  // Fallback: scan filesystem (original implementation)
+  console.warn(
+    "Prebuilt frame index not found, scanning filesystem (this will be slow)...",
+  );
   const frames: Frame[] = [];
   const seasonsDir = path.join(process.cwd(), "public", "frames");
 
@@ -80,7 +126,10 @@ export async function getFrameIndex(): Promise<Frame[]> {
     for (const timestamp of timestamps) {
       if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
 
-      const id = `${season}-${timestamp}`;
+      // Normalize timestamp to URL-safe format (replace colons with dashes)
+      const urlSafeTimestamp = timestamp.replace(/:/g, "-");
+      const id = `${season}-${urlSafeTimestamp}`;
+
       try {
         const frame = await getFrameById(id);
         frames.push(frame);

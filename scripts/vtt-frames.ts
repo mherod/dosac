@@ -248,7 +248,7 @@ async function processVideoFrames(episodeId: string) {
   const framesArray = Array.from(parsedVTT.frames.entries());
   for (const [index, frame] of framesArray) {
     const timestamp = frame.startTime;
-    const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
+    const frameDir = path.join(framesBasePath, timestamp.replace(/:/g, "-"));
     ensureDirectoryExists(frameDir);
 
     const frameBlankPath = path.join(frameDir, "frame-blank.webp");
