@@ -160,8 +160,11 @@ export function FramePreloader({
       try {
         const results = await Promise.allSettled(promises);
         const loaded = results
-          .filter((result) => result.status === "fulfilled")
-          .map((result) => (result as PromiseFulfilledResult<string>).value);
+          .filter(
+            (result): result is PromiseFulfilledResult<string> =>
+              result.status === "fulfilled",
+          )
+          .map((result) => result.value);
 
         setLoadedIds(loaded);
         onPreloadComplete?.(loaded);

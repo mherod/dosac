@@ -54,7 +54,7 @@ export class FaceRecognitionService {
     try {
       // Initialize all required models
       await Promise.all([
-        loadModels(),
+        // loadModels() - Removed as it's not defined
         faceNet.loadModel(),
         faceProcessor.initialize(),
       ]);
@@ -86,8 +86,11 @@ export class FaceRecognitionService {
     const mergedOptions = { ...this.options, ...options };
 
     try {
-      // Detect faces
-      const { predictions } = await detectFaces(buffer);
+      // Detect faces using face-detector
+      const { detectFaces } = await import("./face-detector");
+      const { predictions } = (await detectFaces(buffer)) as {
+        predictions: FacePrediction[];
+      };
       if (!predictions.length) {
         return [];
       }
@@ -106,7 +109,7 @@ export class FaceRecognitionService {
 
       // Process each face
       const results = await Promise.all(
-        sortedFaces.map(async (face) => {
+        sortedFaces.map(async (face: FacePrediction) => {
           const cacheKey = this.generateCacheKey(buffer, face);
           const cached = processedFacesCache.get(cacheKey);
           if (cached) {

@@ -45,9 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: formatPageTitle(`Series ${series.number}`),
     description: series.shortSummary
-      .map((part: unknown) =>
-        typeof part === "string" ? part : (part as { text: string }).text,
-      )
+      .map((part) => (typeof part === "string" ? part : part.text))
       .join(""),
   };
 }

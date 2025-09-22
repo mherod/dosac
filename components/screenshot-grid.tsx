@@ -224,8 +224,11 @@ function ScreenshotGridInner({
                   screenshot={screenshot}
                   priority={true}
                   isSelected={selectedIds.has(screenshot.id)}
-                  onSelect={(e: React.MouseEvent) => {
-                    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                  onSelect={(e) => {
+                    if (
+                      "ctrlKey" in e &&
+                      (e.ctrlKey || e.metaKey || e.shiftKey)
+                    ) {
                       safeSetSelectedIds(new Set([screenshot.id]));
                     }
                   }}
@@ -268,8 +271,11 @@ function ScreenshotGridInner({
                   screenshot={screenshot}
                   priority={index < 6}
                   isSelected={selectedIds.has(screenshot.id)}
-                  onSelect={(e: React.MouseEvent) => {
-                    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+                  onSelect={(e) => {
+                    if (
+                      "ctrlKey" in e &&
+                      (e.ctrlKey || e.metaKey || e.shiftKey)
+                    ) {
                       safeSetSelectedIds(new Set([screenshot.id]));
                     }
                   }}
@@ -321,8 +327,9 @@ function ScreenshotGridInner({
 }
 
 /**
- *
- * @param props
+ * Screenshot grid component with suspense wrapper
+ * @param props - The screenshot grid props
+ * @returns The screenshot grid component wrapped in suspense
  */
 export function ScreenshotGrid(props: ScreenshotGridProps): React.ReactElement {
   return (

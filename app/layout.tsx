@@ -43,10 +43,10 @@ export const metadata: Metadata = {
 };
 
 /**
- *
- * @param root0
- * @param root0.children
- * @returns
+ * Root layout component for the application
+ * @param props - The layout props
+ * @param props.children - The child components to render
+ * @returns The root layout element
  */
 export default function RootLayout({
   children,

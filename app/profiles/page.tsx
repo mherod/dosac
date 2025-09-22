@@ -56,11 +56,11 @@ function CharacterCard({
   role,
   priority = false,
 }: CharacterCardProps): React.ReactElement {
-  // Use first department and role for display
-  const primaryDepartment = (
-    Array.isArray(department) ? department[0] : department
-  ) as Department;
-  const primaryRole = (Array.isArray(role) ? role[0] : role) as Role;
+  // Use first department and role for display with proper type narrowing
+  const primaryDepartment: Department | undefined = Array.isArray(department)
+    ? department[0]
+    : department;
+  const primaryRole: Role | undefined = Array.isArray(role) ? role[0] : role;
 
   return (
     <Link href={`/profiles/${id}`} className="block h-full">
@@ -82,15 +82,19 @@ function CharacterCard({
           <CardDescription className="space-y-2">
             <p className="line-clamp-3">{description}</p>
             <div className="flex flex-wrap gap-2 pt-2">
-              <Badge
-                variant="secondary"
-                title={departmentLabels[primaryDepartment]}
-              >
-                {departmentLabels[primaryDepartment]}
-              </Badge>
-              <Badge variant="outline" title={roleLabels[primaryRole]}>
-                {roleLabels[primaryRole]}
-              </Badge>
+              {primaryDepartment && (
+                <Badge
+                  variant="secondary"
+                  title={departmentLabels[primaryDepartment]}
+                >
+                  {departmentLabels[primaryDepartment]}
+                </Badge>
+              )}
+              {primaryRole && (
+                <Badge variant="outline" title={roleLabels[primaryRole]}>
+                  {roleLabels[primaryRole]}
+                </Badge>
+              )}
             </div>
           </CardDescription>
         </CardHeader>

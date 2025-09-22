@@ -56,10 +56,11 @@ interface PageProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.params
- * @param root0.searchParams
+ * Generates metadata for the caption page
+ * @param props - The page props
+ * @param props.params - Promise resolving to route parameters
+ * @param props.searchParams - Promise resolving to search parameters
+ * @returns Promise resolving to the page metadata
  */
 export async function generateMetadata({
   params,

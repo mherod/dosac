@@ -1,14 +1,29 @@
-import * as faceLandmarksDetection from "@mediapipe/face_mesh";
+import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import sharp from "sharp";
 import type { FacePrediction } from "./face-embedding";
 import { convertToJpeg } from "./image-processing";
 import tf from "./tensorflow-setup";
 import { decodeImage } from "./tensorflow-setup";
 
+// Define canonical face points for alignment
+const CANONICAL_FACE_POINTS = {
+  leftEye: [0.36, 0.5],
+  rightEye: [0.64, 0.5],
+  noseTip: [0.5, 0.6],
+  mouthLeft: [0.4, 0.75],
+  mouthRight: [0.6, 0.75],
+} as const;
+
 export interface AlignmentResult {
   buffer: Buffer;
   transformMatrix: number[][];
-  landmarks: faceLandmarksDetection.Keypoint[];
+  landmarks: Array<{
+    x: number;
+    y: number;
+    z?: number;
+    score?: number;
+    name?: string;
+  }>;
   alignmentScore: number;
 }
 
@@ -39,14 +54,16 @@ export class FaceProcessor {
 
   private async detectLandmarks(
     buffer: Buffer,
-  ): Promise<faceLandmarksDetection.Face[]> {
+  ): Promise<
+    Array<{ keypoints: Array<{ x: number; y: number; z?: number }> }>
+  > {
     if (!this.landmarksModel) {
       throw new Error("Face landmarks model not initialized");
     }
 
     let tensor: tf.Tensor3D | null = null;
     try {
-      tensor = await decodeImage(buffer, 3);
+      tensor = (await decodeImage(buffer)) as tf.Tensor3D;
       const predictions = await this.landmarksModel.estimateFaces(tensor);
       return predictions;
     } finally {
@@ -85,7 +102,13 @@ export class FaceProcessor {
       const ATb = tf.matMul(AT.transpose(), bT.expandDims(1));
 
       // Use SVD for numerical stability
-      const svd = tf.linalg.svd(ATA);
+      // Using QR decomposition as a workaround for SVD
+      const { q, r } = tf.linalg.qr(ATA);
+      const svd = {
+        s: tf.diag(r),
+        u: q,
+        v: tf.transpose(q),
+      };
       const singularValues = svd.s.arraySync() as number[];
       const threshold = 1e-10;
 
@@ -143,7 +166,7 @@ export class FaceProcessor {
       // Calculate transformation matrix
       const matrix = await this.calculateAlignmentTransform(
         face.landmarks || [],
-        this.targetLandmarks,
+        CANONICAL_FACE_POINTS,
       );
 
       // Apply transformation using sharp

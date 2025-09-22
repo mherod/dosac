@@ -34,15 +34,16 @@ interface OpenGraphMetadata {
 }
 
 /**
- *
- * @param params
- * @param params.caption
- * @param params.episode
- * @param params.timestamp
- * @param params.imageUrl
- * @param params.fontSize
- * @param params.outlineWidth
- * @param params.fontFamily
+ * Constructs an OG image URL with the provided parameters
+ * @param params - The parameters for the OG image
+ * @param params.caption - The caption text to display on the image
+ * @param params.episode - The episode identifier
+ * @param params.timestamp - The timestamp from the episode
+ * @param params.imageUrl - The URL of the base image
+ * @param params.fontSize - Optional font size for the caption
+ * @param params.outlineWidth - Optional outline width for the caption
+ * @param params.fontFamily - Optional font family for the caption
+ * @returns The constructed URL for the OG image
  */
 export function constructOgImageUrl(params: {
   caption: string;
@@ -72,9 +73,10 @@ export function constructOgImageUrl(params: {
 }
 
 /**
- *
- * @param frame
- * @param caption
+ * Generates metadata for a single frame with caption
+ * @param frame - The screenshot frame to generate metadata for
+ * @param caption - The caption text for the frame
+ * @returns The OpenGraph metadata object
  */
 export function generateSingleFrameMetadata(
   frame: Screenshot,
@@ -123,8 +125,9 @@ export function generateSingleFrameMetadata(
 }
 
 /**
- *
- * @param frames
+ * Generates metadata for multiple frames
+ * @param frames - Array of screenshot frames to generate metadata for
+ * @returns The OpenGraph metadata object
  */
 export function generateMultiFrameMetadata(
   frames: Screenshot[],

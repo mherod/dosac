@@ -23,8 +23,8 @@ interface PageLayoutProps {
 
 /**
  * A standardized page layout component for content areas
- * @param root0
- * @returns
+ * @param props - The page layout props
+ * @returns The page layout component
  */
 export function PageLayout({
   children,

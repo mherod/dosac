@@ -43,7 +43,7 @@ interface FrameCardProps {
   /** Whether this frame is currently selected */
   isSelected?: boolean;
   /** Callback when the frame is selected with modifier keys */
-  onSelect?: (e: React.MouseEvent) => void;
+  onSelect?: (e: React.MouseEvent | React.KeyboardEvent) => void;
   /** Callback when drag interaction starts */
   onDragStart?: () => void;
   /** Callback when drag interaction moves */
@@ -156,7 +156,7 @@ export function FrameCard({
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           if (onSelect) {
-            onSelect(e as any);
+            onSelect(e);
           }
         }
       }}

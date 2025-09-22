@@ -244,9 +244,9 @@ async function EpisodePageContent({
 }
 
 /**
- *
- * @param props
- * @returns
+ * Episode page component with suspense wrapper
+ * @param props - The episode page props
+ * @returns The episode page component wrapped in suspense
  */
 export function EpisodePage(props: EpisodePageProps): React.ReactElement {
   return (

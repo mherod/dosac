@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
-import glob from "fast-glob";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as glob from "fast-glob";
 
 interface VTTFrame {
   startTime: string;
@@ -230,7 +230,8 @@ async function processVideoFrames(episodeId: string) {
   ensureDirectoryExists(framesBasePath);
 
   // Process each frame
-  for (const [index, frame] of parsedVTT.frames.entries()) {
+  const framesArray = Array.from(parsedVTT.frames.entries());
+  for (const [index, frame] of framesArray) {
     const timestamp = frame.startTime;
     const frameDir = path.join(framesBasePath, timestamp.replace(":", "-"));
     ensureDirectoryExists(frameDir);

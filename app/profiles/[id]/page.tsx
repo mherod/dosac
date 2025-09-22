@@ -11,6 +11,8 @@ import { getFrameById } from "@/lib/frames.server";
 import {
   type Character,
   type CharacterId,
+  type Department,
+  type Role,
   characters,
   departmentLabels,
   roleLabels,
@@ -166,7 +168,7 @@ function RelatedProfileCard({
               variant="secondary"
               className="px-2 py-0.5 text-xs"
             >
-              {roleLabels[role as keyof typeof roleLabels]}
+              {roleLabels[role as Role]}
             </Badge>
           ))}
         </div>
@@ -245,7 +247,7 @@ export default async function CharacterProfile({
   params: Promise<{ id: string }>;
 }): Promise<React.ReactElement> {
   const { id } = await params;
-  const character = characters[id as keyof typeof characters];
+  const character = characters[id];
 
   if (!character) {
     notFound();
@@ -305,7 +307,7 @@ export default async function CharacterProfile({
                     variant="secondary"
                     className="bg-slate-100 px-3 py-1 text-sm font-medium lg:text-base"
                   >
-                    {roleLabels[role as keyof typeof roleLabels]}
+                    {roleLabels[role as Role]}
                   </Badge>
                 ))}
               </div>
@@ -330,7 +332,7 @@ export default async function CharacterProfile({
                 {character.department.map((dept: string) => (
                   <div key={dept} className="space-y-3">
                     <h3 className="text-xl font-semibold text-slate-800">
-                      {departmentLabels[dept as keyof typeof departmentLabels]}
+                      {departmentLabels[dept as Department]}
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {character.role.map((role: string) => (
@@ -339,7 +341,7 @@ export default async function CharacterProfile({
                           variant="secondary"
                           className="px-3 py-0.5"
                         >
-                          {roleLabels[role as keyof typeof roleLabels]}
+                          {roleLabels[role as Role]}
                         </Badge>
                       ))}
                     </div>

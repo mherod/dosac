@@ -53,14 +53,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const description = episode?.shortSummary
     ? episode.shortSummary
-        .map((part: unknown) =>
-          typeof part === "string" ? part : (part as { text: string }).text,
-        )
+        .map((part) => (typeof part === "string" ? part : part.text))
         .join("")
     : series.shortSummary
-        .map((part: unknown) =>
-          typeof part === "string" ? part : (part as { text: string }).text,
-        )
+        .map((part) => (typeof part === "string" ? part : part.text))
         .join("");
 
   return {

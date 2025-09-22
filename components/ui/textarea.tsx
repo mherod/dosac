@@ -9,7 +9,7 @@ const Textarea = React.forwardRef<
   const { className, onChange, value, ...rest } = props;
   const isControlled = value !== undefined;
   const [internalValue, setInternalValue] = React.useState("");
-  const displayValue = isControlled ? (value as string) : internalValue;
+  const displayValue = isControlled ? String(value) : internalValue;
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isControlled) {

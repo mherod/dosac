@@ -110,7 +110,7 @@ BreadcrumbPage.displayName = "BreadcrumbPage";
  * Renders a chevron icon by default or custom children
  * @param props - Component props including children and className
  * @param props.children - Optional custom separator content
- * @param props.className
+ * @param props.className - Optional CSS class name for styling
  * @returns A list item with presentation role containing the separator
  */
 const BreadcrumbSeparator = ({
@@ -132,7 +132,7 @@ BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 /**
  * Ellipsis component for truncated breadcrumbs
  * Renders a horizontal dots icon with screen reader text
- * @param props.className
+ * @param props.className - Optional CSS class name for styling
  * @param props - Component props including className
  * @returns A span element with presentation role containing the ellipsis
  */

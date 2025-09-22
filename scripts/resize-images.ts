@@ -1,6 +1,6 @@
-import fs from "node:fs/promises";
-import fastGlob from "fast-glob";
-import sharp from "sharp";
+import * as fs from "node:fs/promises";
+import * as fastGlob from "fast-glob";
+import * as sharp from "sharp";
 
 const MAX_WIDTH = 500;
 
@@ -35,7 +35,7 @@ async function resizeImages() {
           mozjpeg: true,
         })
         .toBuffer()
-        .then((buffer) => fs.writeFile(imagePath, buffer));
+        .then((buffer: Buffer) => fs.writeFile(imagePath, buffer));
 
       console.log(
         `Resized ${imagePath} from ${metadata.width}px to ${MAX_WIDTH}px`,

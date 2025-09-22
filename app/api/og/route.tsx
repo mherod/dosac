@@ -111,6 +111,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
           }}
         >
           {/* Background Image */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={base64Image}
             alt={caption}

@@ -93,14 +93,11 @@ const SelectItem = React.forwardRef<
       )}
       {...props}
     >
-      {props.asChild
+      {props.asChild && React.isValidElement(children)
         ? React.cloneElement(
-            React.Children.only(children) as React.ReactElement<{
-              children?: React.ReactNode;
-            }>,
-            {
-              children: content,
-            },
+            children as React.ReactElement<any>,
+            undefined,
+            content,
           )
         : content}
     </SelectPrimitive.Item>

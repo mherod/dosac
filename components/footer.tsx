@@ -9,8 +9,8 @@ interface FooterProps {
 
 /**
  * Footer component that displays the site disclaimer and DOSAC logo
- * @param props
- * @param x
+ * @param props - The footer props
+ * @param props.className - Optional CSS class name for styling
  * @returns A footer element containing the site disclaimer and DOSAC logo
  */
 export function Footer({ className }: FooterProps): React.ReactElement {

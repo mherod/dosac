@@ -92,8 +92,10 @@ export async function generateMetadata({
     };
   }
 
-  // Validate all IDs are strings
-  if (!allIds.every((id: unknown): id is string => typeof id === "string")) {
+  // Validate all IDs are non-empty strings
+  if (
+    !allIds.every((id): id is string => typeof id === "string" && id.length > 0)
+  ) {
     return {
       title: "Invalid Frame IDs",
       description: "All frame IDs must be strings",
@@ -143,8 +145,10 @@ export default async function Page({
     notFound();
   }
 
-  // Validate all IDs are strings
-  if (!allIds.every((id: unknown): id is string => typeof id === "string")) {
+  // Validate all IDs are non-empty strings
+  if (
+    !allIds.every((id): id is string => typeof id === "string" && id.length > 0)
+  ) {
     notFound();
   }
 

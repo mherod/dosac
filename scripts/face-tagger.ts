@@ -153,6 +153,7 @@ async function main() {
   console.log(`Last update: ${stats.lastUpdate}`);
 }
 
+// eslint-disable-next-line promise/prefer-await-to-callbacks
 main().catch((error: Error) => {
   console.error("Unhandled error:", error);
   process.exit(1);
