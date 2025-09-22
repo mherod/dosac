@@ -6,9 +6,10 @@ const { execSync } = require('child_process');
 
 const FRAMES_DIR = path.join(__dirname, '../public/frames');
 
-// Optimized settings for ~180MB target
-const WEBP_QUALITY = 78;  // Down from 85
-const KEEP_ORIGINAL_SIZE = true; // Keep 500px width for quality
+// Settings for Season 4 recompression to 450px width
+const WEBP_QUALITY = 78;
+const TARGET_WIDTH = 450; // Resize from 500px to 450px
+const SEASON_FILTER = 's04'; // Only process Season 4
 
 function getFileSize(filePath) {
   try {
@@ -30,8 +31,8 @@ function recompressWebP(webpPath) {
   try {
     const tempPath = webpPath + '.tmp';
 
-    // Recompress with new settings
-    execSync(`cwebp -q ${WEBP_QUALITY} "${webpPath}" -o "${tempPath}"`, {
+    // Resize and recompress to 450px width with aspect ratio maintained
+    execSync(`cwebp -q ${WEBP_QUALITY} -resize ${TARGET_WIDTH} 0 "${webpPath}" -o "${tempPath}"`, {
       stdio: 'ignore'
     });
 
@@ -55,6 +56,9 @@ function processDirectory(dirPath, stats) {
     if (stat.isDirectory()) {
       // Skip .DS_Store and other hidden directories
       if (item.startsWith('.')) continue;
+
+      // Only process Season 4 directories
+      if (!fullPath.includes(SEASON_FILTER)) continue;
 
       processDirectory(fullPath, stats);
     } else if (item.endsWith('.webp')) {
@@ -81,8 +85,8 @@ function processDirectory(dirPath, stats) {
 }
 
 function main() {
-  console.log('🖼️  Recompressing WebP frames for optimal size/quality balance...');
-  console.log(`📐 Settings: Quality ${WEBP_QUALITY}, Original dimensions\n`);
+  console.log('🖼️  Recompressing Season 4 WebP frames to 450px width...');
+  console.log(`📐 Settings: Quality ${WEBP_QUALITY}, Width ${TARGET_WIDTH}px, Season ${SEASON_FILTER}\n`);
 
   const stats = {
     filesProcessed: 0,
