@@ -5,7 +5,7 @@ import React from "react";
 import { FrameCard } from "@/components/frame-card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { useSpeculationRules } from "@/lib/speculation-rules";
 import type { Screenshot } from "@/lib/types";
@@ -47,7 +47,6 @@ function ScreenshotGridInner({
   multiselect = false,
 }: ScreenshotGridProps): React.ReactElement {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDragging, setIsDragging] = React.useState(false);
@@ -134,7 +133,7 @@ function ScreenshotGridInner({
 
   const createQueryString = React.useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       if (value === "1") {
         params.delete(name);
       } else {
@@ -145,13 +144,13 @@ function ScreenshotGridInner({
     [searchParams],
   );
 
-  const handlePageChange = React.useCallback(
+  const getPageUrl = React.useCallback(
     (newPage: number) => {
       const validPage = Math.min(Math.max(1, newPage), totalPages);
       const queryString = createQueryString("page", validPage.toString());
-      router.push(`${pathname}?${queryString}`, { scroll: false });
+      return queryString ? `${pathname}?${queryString}` : pathname;
     },
-    [router, pathname, totalPages, createQueryString],
+    [pathname, totalPages, createQueryString],
   );
 
   const safeSetSelectedIds = React.useCallback((newIds: Set<string>) => {
@@ -311,10 +310,22 @@ function ScreenshotGridInner({
           <Button
             variant="outline"
             size="icon"
-            onClick={() => handlePageChange(currentPage - 1)}
+            asChild
             disabled={currentPage === 1}
           >
-            <ChevronLeft className="h-4 w-4" />
+            {currentPage === 1 ? (
+              <span>
+                <ChevronLeft className="h-4 w-4" />
+              </span>
+            ) : (
+              <Link
+                href={getPageUrl(currentPage - 1)}
+                scroll={false}
+                prefetch={true}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+            )}
           </Button>
           <span className="text-sm">
             Page {currentPage} of {totalPages}
@@ -322,10 +333,22 @@ function ScreenshotGridInner({
           <Button
             variant="outline"
             size="icon"
-            onClick={() => handlePageChange(currentPage + 1)}
+            asChild
             disabled={currentPage === totalPages}
           >
-            <ChevronRight className="h-4 w-4" />
+            {currentPage === totalPages ? (
+              <span>
+                <ChevronRight className="h-4 w-4" />
+              </span>
+            ) : (
+              <Link
+                href={getPageUrl(currentPage + 1)}
+                scroll={false}
+                prefetch={true}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            )}
           </Button>
         </div>
       )}
