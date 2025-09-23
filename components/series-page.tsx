@@ -95,6 +95,15 @@ async function SeriesPageContent({
           <div className="aspect-video rounded-lg">
             <ScreenshotGrid
               screenshots={[episodes[0].frames[0]]}
+              allScreenshots={episodes[0].frames}
+              filters={{ query: "", page: 1 }}
+              paginationData={{
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 1,
+                hasNextPage: false,
+                hasPrevPage: false,
+              }}
               multiselect={false}
             />
           </div>
@@ -111,6 +120,15 @@ async function SeriesPageContent({
           <div className="aspect-video rounded-lg">
             <ScreenshotGrid
               screenshots={[episodes[0].frames[0]]}
+              allScreenshots={episodes[0].frames}
+              filters={{ query: "", page: 1 }}
+              paginationData={{
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: 1,
+                hasNextPage: false,
+                hasPrevPage: false,
+              }}
               multiselect={false}
             />
           </div>

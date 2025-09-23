@@ -1,4 +1,5 @@
 import { HomePage } from "@/components/home-page";
+import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 
@@ -25,33 +26,72 @@ type Props = {
 export default async function Home({
   searchParams,
 }: Props): Promise<React.ReactElement> {
-  const screenshots = await getFrameIndex();
-
-  // Use empty array for ranked moments during build to avoid fetch issues
-  const rankedMoments: Screenshot[] = [];
-
+  const allScreenshots = await getFrameIndex();
   const resolvedParams = await searchParams;
 
-  // Convert search params to the expected format
-  const initialSearchParams = {
-    season:
-      typeof resolvedParams.season === "string"
-        ? resolvedParams.season
-        : undefined,
-    episode:
-      typeof resolvedParams.episode === "string"
-        ? resolvedParams.episode
-        : undefined,
-    q: typeof resolvedParams.q === "string" ? resolvedParams.q : undefined,
-    page:
-      typeof resolvedParams.page === "string" ? resolvedParams.page : undefined,
+  // Parse search parameters
+  const currentPage = Number(resolvedParams.page) || 1;
+  const season = resolvedParams.season
+    ? Number(resolvedParams.season)
+    : undefined;
+  const episode = resolvedParams.episode
+    ? Number(resolvedParams.episode)
+    : undefined;
+  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : "";
+
+  // Apply server-side filtering (same logic as client-side)
+  let filteredScreenshots = allScreenshots;
+  if (season || episode || query) {
+    filteredScreenshots = allScreenshots.filter((screenshot) => {
+      try {
+        const { season: screenshotSeason, episode: screenshotEpisode } =
+          parseEpisodeId(screenshot.episode);
+
+        if (season && screenshotSeason !== season) return false;
+        if (episode && screenshotEpisode !== episode) return false;
+        if (
+          query &&
+          !screenshot.speech.toLowerCase().includes(query.toLowerCase())
+        )
+          return false;
+
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  }
+
+  // Server-side pagination
+  const ITEMS_PER_PAGE = 36;
+  const totalItems = filteredScreenshots.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const validPage = Math.min(Math.max(1, currentPage), totalPages || 1);
+
+  const startIndex = (validPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+  const pageScreenshots = filteredScreenshots.slice(startIndex, endIndex);
+
+  // Ranked moments only for homepage (no filters)
+  const rankedMoments: Screenshot[] = [];
+
+  const paginationData = {
+    currentPage: validPage,
+    totalPages,
+    totalItems,
+    hasNextPage: validPage < totalPages,
+    hasPrevPage: validPage > 1,
   };
+
+  const filters = { season, episode, query, page: validPage };
 
   return (
     <HomePage
-      screenshots={screenshots}
+      screenshots={pageScreenshots}
+      allScreenshots={allScreenshots}
       rankedMoments={rankedMoments}
-      initialSearchParams={initialSearchParams}
+      filters={filters}
+      paginationData={paginationData}
     />
   );
 }

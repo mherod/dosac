@@ -2,10 +2,8 @@
 
 import { FrameStrip } from "@/components/frame-strip";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
-import { parseEpisodeId } from "@/lib/frames";
 import type { Frame } from "@/lib/frames";
-import { useSearchParams } from "next/navigation";
-import React, { Suspense, Component, useMemo } from "react";
+import React, { Suspense, Component } from "react";
 
 // Error boundary component for better error handling
 class HomePageErrorBoundary extends Component<
@@ -45,110 +43,71 @@ class HomePageErrorBoundary extends Component<
   }
 }
 
-interface HomePageProps {
-  screenshots: Frame[];
-  rankedMoments: Frame[];
-  initialSearchParams?: {
-    season?: string;
-    episode?: string;
-    q?: string;
-    page?: string;
-  };
+interface PaginationData {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
 }
 
-function SearchWrapper({
-  screenshots,
-  rankedMoments,
-  initialSearchParams,
-}: {
+interface Filters {
+  season?: number;
+  episode?: number;
+  query: string;
+  page: number;
+}
+
+interface HomePageProps {
   screenshots: Frame[];
+  allScreenshots: Frame[];
   rankedMoments: Frame[];
-  initialSearchParams?: HomePageProps["initialSearchParams"];
-}): React.ReactElement {
-  const searchParams = useSearchParams();
+  filters: Filters;
+  paginationData: PaginationData;
+}
 
-  // Get current filters from URL or initial props
-  const filters = {
-    season:
-      (searchParams.get("season") ?? initialSearchParams?.season)
-        ? Number(searchParams.get("season") ?? initialSearchParams?.season)
-        : undefined,
-    episode:
-      (searchParams.get("episode") ?? initialSearchParams?.episode)
-        ? Number(searchParams.get("episode") ?? initialSearchParams?.episode)
-        : undefined,
-    query: searchParams.get("q") ?? initialSearchParams?.q ?? "",
-  };
-
-  // Filter screenshots based on URL parameters
-  const filteredScreenshots = useMemo(() => {
-    const isShowingRanked =
-      !filters.season && !filters.episode && !filters.query;
-    const screenshotsToFilter = isShowingRanked
-      ? screenshots.filter(
-          (s: Frame) => !rankedMoments.some((r: Frame) => r.id === s.id),
-        )
-      : screenshots;
-
-    return screenshotsToFilter.filter((screenshot: Frame) => {
-      try {
-        const { season, episode } = parseEpisodeId(screenshot.episode);
-
-        if (filters.season && season !== filters.season) return false;
-        if (filters.episode && episode !== filters.episode) return false;
-        if (filters.query) {
-          return screenshot.speech
-            .toLowerCase()
-            .includes(filters.query.toLowerCase());
-        }
-
-        return true;
-      } catch (error) {
-        console.error("Error parsing episode ID:", error);
-        return false;
-      }
-    });
-  }, [
-    screenshots,
-    filters.season,
-    filters.episode,
-    filters.query,
-    rankedMoments,
-  ]);
-
+function HomePageContent({
+  screenshots,
+  allScreenshots,
+  rankedMoments,
+  filters,
+  paginationData,
+}: HomePageProps): React.ReactElement {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="text-sm text-muted-foreground">
-          Showing {filteredScreenshots.length} of {screenshots.length}{" "}
+          Showing {screenshots.length} of {paginationData.totalItems}{" "}
           screenshots
+          {paginationData.totalPages > 1 && (
+            <span>
+              {" "}
+              • Page {paginationData.currentPage} of {paginationData.totalPages}
+            </span>
+          )}
         </div>
       </div>
 
       <ScreenshotGrid
-        screenshots={filteredScreenshots}
+        screenshots={screenshots}
+        allScreenshots={allScreenshots}
         rankedMoments={
           !filters.season && !filters.episode && !filters.query
             ? rankedMoments
             : undefined
         }
+        filters={filters}
+        paginationData={paginationData}
       />
 
       <div className="mt-8">
-        <FrameStrip
-          screenshots={filteredScreenshots.slice(0, 100)}
-          frameWidth={192}
-        />
+        <FrameStrip screenshots={screenshots.slice(0, 50)} frameWidth={192} />
       </div>
     </div>
   );
 }
 
-export function HomePage({
-  screenshots,
-  rankedMoments,
-  initialSearchParams,
-}: HomePageProps): React.ReactElement {
+export function HomePage(props: HomePageProps): React.ReactElement {
   return (
     <HomePageErrorBoundary>
       <Suspense
@@ -177,11 +136,7 @@ export function HomePage({
           </div>
         }
       >
-        <SearchWrapper
-          screenshots={screenshots}
-          rankedMoments={rankedMoments}
-          initialSearchParams={initialSearchParams}
-        />
+        <HomePageContent {...props} />
       </Suspense>
     </HomePageErrorBoundary>
   );

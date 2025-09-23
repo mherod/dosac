@@ -270,6 +270,20 @@ export default async function CharacterProfile({
     )
   ).filter((frame: Screenshot | null): frame is Screenshot => frame !== null);
 
+  // Create pagination data for profile display (single page for highlights)
+  const paginationData = {
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: screenshots.length,
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+
+  const filters = {
+    query: "",
+    page: 1,
+  };
+
   return (
     <main className="container max-w-7xl py-6 lg:py-12">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
@@ -321,7 +335,12 @@ export default async function CharacterProfile({
                   Highlights
                 </h2>
                 <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
-                  <ScreenshotGrid screenshots={screenshots} />
+                  <ScreenshotGrid
+                    screenshots={screenshots}
+                    allScreenshots={screenshots}
+                    filters={filters}
+                    paginationData={paginationData}
+                  />
                 </div>
               </section>
             )}

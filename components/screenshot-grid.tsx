@@ -5,7 +5,7 @@ import React from "react";
 import { FrameCard } from "@/components/frame-card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { useSpeculationRules } from "@/lib/speculation-rules";
 import type { Screenshot } from "@/lib/types";
@@ -23,15 +23,30 @@ import {
  * Props for the ScreenshotGrid component
  */
 interface ScreenshotGridProps {
-  /** Array of screenshots to display in the grid */
+  /** Array of screenshots to display in the grid (current page) */
   screenshots: Screenshot[];
+  /** All screenshots for client-side operations */
+  allScreenshots: Screenshot[];
   /** Optional array of ranked moments to display */
   rankedMoments?: Screenshot[];
+  /** Current filters applied */
+  filters: {
+    season?: number;
+    episode?: number;
+    query: string;
+    page: number;
+  };
+  /** Pagination information */
+  paginationData: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
   /** Whether multiple screenshots can be selected (defaults to false) */
   multiselect?: boolean;
 }
-
-const ITEMS_PER_PAGE = 36;
 
 /**
  * Grid component for displaying and managing screenshots with pagination
@@ -44,22 +59,19 @@ const ITEMS_PER_PAGE = 36;
 function ScreenshotGridInner({
   screenshots,
   rankedMoments,
+  filters,
+  paginationData,
   multiselect = false,
 }: ScreenshotGridProps): React.ReactElement {
-  const searchParams = useSearchParams();
   const pathname = usePathname();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartId, setDragStartId] = React.useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const currentPage = Number(searchParams.get("page")) || 1;
-  const totalScreenshots = screenshots.length;
-  const totalPages = Math.ceil(totalScreenshots / ITEMS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalScreenshots);
-  const currentScreenshots = screenshots.slice(startIndex, endIndex);
+  // Use server-prepared data directly
+  const currentScreenshots = screenshots;
+  const { currentPage, totalPages } = paginationData;
 
   const getScreenshotUrl = useCallback(
     (id: string) => {
@@ -131,26 +143,25 @@ function ScreenshotGridInner({
     eagerness: "moderate",
   });
 
-  const createQueryString = React.useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value === "1") {
-        params.delete(name);
-      } else {
-        params.set(name, value);
-      }
-      return params.toString();
-    },
-    [searchParams],
-  );
-
   const getPageUrl = React.useCallback(
     (newPage: number) => {
       const validPage = Math.min(Math.max(1, newPage), totalPages);
-      const queryString = createQueryString("page", validPage.toString());
+      const params = new URLSearchParams();
+
+      // Preserve current filters
+      if (filters.season) params.set("season", filters.season.toString());
+      if (filters.episode) params.set("episode", filters.episode.toString());
+      if (filters.query) params.set("q", filters.query);
+
+      // Add page parameter (only if not page 1)
+      if (validPage > 1) {
+        params.set("page", validPage.toString());
+      }
+
+      const queryString = params.toString();
       return queryString ? `${pathname}?${queryString}` : pathname;
     },
-    [pathname, totalPages, createQueryString],
+    [pathname, totalPages, filters],
   );
 
   const safeSetSelectedIds = React.useCallback((newIds: Set<string>) => {

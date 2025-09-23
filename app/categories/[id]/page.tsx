@@ -52,10 +52,29 @@ export default async function CategoryPage({
     category.filter(frame.speech),
   );
 
+  // Create pagination data for category display (single page for now)
+  const paginationData = {
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: categoryFrames.length,
+    hasNextPage: false,
+    hasPrevPage: false,
+  };
+
+  const filters = {
+    query: "",
+    page: 1,
+  };
+
   return (
     <main className="flex-1 bg-[#f3f2f1]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <ScreenshotGrid screenshots={categoryFrames} />
+        <ScreenshotGrid
+          screenshots={categoryFrames}
+          allScreenshots={allFrames}
+          filters={filters}
+          paginationData={paginationData}
+        />
       </div>
     </main>
   );

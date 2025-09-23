@@ -106,7 +106,19 @@ async function EpisodePageContent({
               </p>
             </CardHeader>
             <CardContent>
-              <ScreenshotGrid screenshots={episodeFrames} multiselect={true} />
+              <ScreenshotGrid
+                screenshots={episodeFrames}
+                allScreenshots={episodeFrames}
+                filters={{ query: "", page: 1 }}
+                paginationData={{
+                  currentPage: 1,
+                  totalPages: 1,
+                  totalItems: episodeFrames.length,
+                  hasNextPage: false,
+                  hasPrevPage: false,
+                }}
+                multiselect={true}
+              />
             </CardContent>
           </Card>
         </div>

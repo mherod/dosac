@@ -79,7 +79,19 @@ export function EpisodeFramesCard({
         </Link>
       </div>
       <div className="relative">
-        <ScreenshotGrid screenshots={frames.slice(0, 6)} multiselect={true} />
+        <ScreenshotGrid
+          screenshots={frames.slice(0, 6)}
+          allScreenshots={frames}
+          filters={{ query: "", page: 1 }}
+          paginationData={{
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: frames.slice(0, 6).length,
+            hasNextPage: false,
+            hasPrevPage: false,
+          }}
+          multiselect={true}
+        />
       </div>
     </Card>
   );

@@ -65,6 +65,15 @@ async function SeriesContent(): Promise<React.ReactElement> {
                   <div className="aspect-video rounded-lg">
                     <ScreenshotGrid
                       screenshots={[frames[0]]}
+                      allScreenshots={frames}
+                      filters={{ query: "", page: 1 }}
+                      paginationData={{
+                        currentPage: 1,
+                        totalPages: 1,
+                        totalItems: 1,
+                        hasNextPage: false,
+                        hasPrevPage: false,
+                      }}
                       multiselect={false}
                     />
                   </div>
@@ -75,6 +84,15 @@ async function SeriesContent(): Promise<React.ReactElement> {
             {/* Grid of additional frames */}
             <ScreenshotGrid
               screenshots={frames.slice(1, 7)}
+              allScreenshots={frames}
+              filters={{ query: "", page: 1 }}
+              paginationData={{
+                currentPage: 1,
+                totalPages: 1,
+                totalItems: frames.slice(1, 7).length,
+                hasNextPage: false,
+                hasPrevPage: false,
+              }}
               multiselect={true}
             />
           </div>
