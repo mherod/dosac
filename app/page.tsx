@@ -2,6 +2,7 @@ import { HomePage } from "@/components/home-page";
 import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
+import { redirect } from "next/navigation";
 
 // Enable ISR with 1 hour revalidation
 export const revalidate = 3600; // Revalidate every hour
@@ -67,6 +68,25 @@ export default async function Home({
   const totalItems = filteredScreenshots.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   const validPage = Math.min(Math.max(1, currentPage), totalPages || 1);
+
+  // Redirect if the requested page doesn't match the valid page
+  if (currentPage !== validPage) {
+    const params = new URLSearchParams();
+
+    // Preserve current filters
+    if (season) params.set("season", season.toString());
+    if (episode) params.set("episode", episode.toString());
+    if (query) params.set("q", query);
+
+    // Add page parameter only if not page 1
+    if (validPage > 1) {
+      params.set("page", validPage.toString());
+    }
+
+    const queryString = params.toString();
+    const redirectUrl = queryString ? `/?${queryString}` : "/";
+    redirect(redirectUrl);
+  }
 
   const startIndex = (validPage - 1) * ITEMS_PER_PAGE;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
