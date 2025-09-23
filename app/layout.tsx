@@ -3,7 +3,6 @@ import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
-import { WebVitalsReporter } from "@/components/web-vitals";
 import { SITE_NAME } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
@@ -14,16 +13,6 @@ import { Suspense } from "react";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  display: "swap", // Optimize font loading with FOUT strategy
-  preload: true, // Preload font files
-  fallback: [
-    "system-ui",
-    "-apple-system",
-    "BlinkMacSystemFont",
-    "Segoe UI",
-    "Roboto",
-    "sans-serif",
-  ],
 });
 
 const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -94,7 +83,6 @@ export default function RootLayout({
           <Footer />
           <Toaster />
         </ThemeProvider>
-        <WebVitalsReporter />
         <Analytics />
       </body>
     </html>
