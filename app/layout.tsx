@@ -2,6 +2,7 @@ import "./globals.css";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { ResourceHints } from "@/components/resource-hints";
+import { ServiceWorkerRegistration } from "@/components/service-worker";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { WebVitalsReporter } from "@/components/web-vitals";
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
       { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
@@ -98,6 +99,7 @@ export default function RootLayout({
           <Footer />
           <Toaster />
         </ThemeProvider>
+        <ServiceWorkerRegistration />
         <WebVitalsReporter />
         <Analytics />
       </body>
