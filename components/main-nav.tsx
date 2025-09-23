@@ -29,7 +29,6 @@ const FilterUpdatesSchema = z.object({
 });
 
 type Filters = z.infer<typeof FiltersSchema>;
-type QueryUpdates = Record<string, string | null>;
 
 /**
  * Content component of the main navigation
@@ -40,21 +39,6 @@ function MainNavContent(): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
-  const createQueryString = useCallback(
-    (updates: QueryUpdates) => {
-      const params = new URLSearchParams(searchParams);
-      for (const [key, value] of Object.entries(updates)) {
-        if (value === null) {
-          params.delete(key);
-        } else {
-          params.set(key, value);
-        }
-      }
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   // Read filters from URL and path
   const filters = useMemo((): Filters => {
@@ -107,44 +91,48 @@ function MainNavContent(): React.ReactElement {
       if (!result.success) return;
 
       const trimmedQuery = filters.query.trim();
-      if (trimmedQuery) {
-        const queryUpdates = {
-          season:
-            result.data.season?.toString() ??
-            filters.season?.toString() ??
-            null,
-          episode:
-            result.data.episode?.toString() ??
-            filters.episode?.toString() ??
-            null,
-          q: trimmedQuery,
-          page: null,
-        };
 
-        router.push(`/?${createQueryString(queryUpdates)}`, { scroll: false });
+      // If we have a search query or we're on the search page, update search params
+      if (trimmedQuery || pathname === "/search") {
+        const searchParams = new URLSearchParams({
+          ...(trimmedQuery && { q: trimmedQuery }),
+          ...(result.data.season?.toString() && {
+            season: result.data.season.toString(),
+          }),
+          ...(result.data.episode?.toString() && {
+            episode: result.data.episode.toString(),
+          }),
+        });
+
+        const targetPath =
+          trimmedQuery || pathname === "/search" ? "/search" : "/";
+        router.push(`${targetPath}?${searchParams.toString()}`, {
+          scroll: false,
+        });
       }
     },
-    [createQueryString, router, filters],
+    [router, filters, pathname],
   );
 
-  // Handle query changes
+  // Handle query changes - redirect to search page
   const handleQueryChange = useCallback(
     (query: string) => {
       const trimmedQuery = z.string().trim().parse(query);
-      const queryUpdates: QueryUpdates = {
-        q: trimmedQuery || null,
-        season: trimmedQuery ? (filters.season?.toString() ?? null) : null,
-        episode: trimmedQuery ? (filters.episode?.toString() ?? null) : null,
-        page: null,
-      };
 
-      const queryString = createQueryString(queryUpdates);
-      const targetPath = trimmedQuery ? "/" : pathname;
-      router.push(targetPath + (queryString ? `?${queryString}` : ""), {
-        scroll: false,
-      });
+      if (trimmedQuery) {
+        // Redirect to search page with query
+        const searchParams = new URLSearchParams({
+          q: trimmedQuery,
+          ...(filters.season && { season: filters.season.toString() }),
+          ...(filters.episode && { episode: filters.episode.toString() }),
+        });
+        router.push(`/search?${searchParams.toString()}`);
+      } else if (pathname === "/search") {
+        // If on search page and query is cleared, go back to home
+        router.push("/");
+      }
     },
-    [createQueryString, router, filters.season, filters.episode, pathname],
+    [router, filters.season, filters.episode, pathname],
   );
 
   return (
