@@ -79,11 +79,7 @@ export default function RootLayout({
           <Suspense>
             <MainNav />
           </Suspense>
-          <main className="min- min-h-screen">
-            <div className="container mx-auto max-w-7xl px-4 md:px-6">
-              {children}
-            </div>
-          </main>
+          <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster />
         </ThemeProvider>

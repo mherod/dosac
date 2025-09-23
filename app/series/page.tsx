@@ -3,6 +3,9 @@ import { formatPageTitle } from "@/lib/constants";
 import type { Metadata } from "next";
 import type React from "react";
 
+// Force static rendering for series list page
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: formatPageTitle("Series"),
   description: "Browse all series of The Thick of It",

@@ -4,7 +4,10 @@ import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import { redirect } from "next/navigation";
 
-// Enable ISR with 1 hour revalidation
+// Force static rendering for homepage
+export const dynamic = "force-static";
+
+// Enable ISR with 1 hour revalidation for fallback pages
 export const revalidate = 3600; // Revalidate every hour
 
 /**
@@ -106,12 +109,14 @@ export default async function Home({
   const filters = { season, episode, query, page: validPage };
 
   return (
-    <HomePage
-      screenshots={pageScreenshots}
-      allScreenshots={allScreenshots}
-      rankedMoments={rankedMoments}
-      filters={filters}
-      paginationData={paginationData}
-    />
+    <div className="container mx-auto max-w-7xl px-4 md:px-6">
+      <HomePage
+        screenshots={pageScreenshots}
+        allScreenshots={allScreenshots}
+        rankedMoments={rankedMoments}
+        filters={filters}
+        paginationData={paginationData}
+      />
+    </div>
   );
 }
