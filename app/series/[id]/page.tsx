@@ -8,10 +8,6 @@ import { notFound } from "next/navigation";
 // noinspection JSUnusedGlobalSymbols
 export const experimental_ppr = true;
 
-// Route segment config for optimal caching
-export const runtime = "nodejs";
-export const preferredRegion = "auto";
-
 /**
  * Generates static params for all series pages at build time
  * Creates paths for each series in the show
