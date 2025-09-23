@@ -1,6 +1,6 @@
 import { HomePage } from "@/components/home-page";
 import { parseEpisodeId } from "@/lib/frames";
-import { getCachedFrameIndex } from "@/lib/frames-cache";
+import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import { redirect } from "next/navigation";
 
@@ -30,7 +30,7 @@ type Props = {
 export default async function Home({
   searchParams,
 }: Props): Promise<React.ReactElement> {
-  const allScreenshots = await getCachedFrameIndex();
+  const allScreenshots = await getFrameIndex();
   const resolvedParams = await searchParams;
 
   // Parse search parameters

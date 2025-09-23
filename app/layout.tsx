@@ -1,8 +1,6 @@
 import "./globals.css";
 import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
-import { ResourceHints } from "@/components/resource-hints";
-import { ServiceWorkerRegistration } from "@/components/service-worker";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { WebVitalsReporter } from "@/components/web-vitals";
@@ -79,9 +77,6 @@ export default function RootLayout({
 }): React.ReactElement {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <ResourceHints />
-      </head>
       <body
         className={`${inter.variable} font-sans antialiased`}
         suppressHydrationWarning
@@ -99,7 +94,6 @@ export default function RootLayout({
           <Footer />
           <Toaster />
         </ThemeProvider>
-        <ServiceWorkerRegistration />
         <WebVitalsReporter />
         <Analytics />
       </body>
