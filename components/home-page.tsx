@@ -52,6 +52,7 @@ interface HomePageProps {
     season?: string;
     episode?: string;
     q?: string;
+    page?: string;
   };
 }
 

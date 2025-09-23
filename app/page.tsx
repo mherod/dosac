@@ -43,6 +43,8 @@ export default async function Home({
         ? resolvedParams.episode
         : undefined,
     q: typeof resolvedParams.q === "string" ? resolvedParams.q : undefined,
+    page:
+      typeof resolvedParams.page === "string" ? resolvedParams.page : undefined,
   };
 
   return (
