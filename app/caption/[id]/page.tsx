@@ -23,14 +23,17 @@ export const dynamic = "force-static";
 export const revalidate = 3600; // Revalidate every hour
 
 /**
- * Generates static parameters for all frame pages at build time
- * This enables static generation for better performance and SEO
+ * Generates static parameters for the most important frame pages at build time
+ * Limited to 600 pages for faster builds, with dynamic fallback for remaining pages
  */
 export async function generateStaticParams(): Promise<Array<{ id: string }>> {
   try {
     const { getFrameIndex } = await import("@/lib/frames.server");
     const frames = await getFrameIndex();
-    return frames.map((frame) => ({
+
+    // Limit to 600 most important frames for static generation
+    // Sort by episode order and take first 600 for better coverage
+    return frames.slice(0, 600).map((frame) => ({
       id: frame.id,
     }));
   } catch {

@@ -25,6 +25,9 @@ import { notFound } from "next/navigation";
 // Enable PPR for this route
 export const experimental_ppr = true;
 
+// Enable dynamic params for non-static profiles
+export const dynamicParams = true;
+
 /**
  * Generates static params for all character profile pages at build time
  * @returns An array of objects containing character IDs for static generation

@@ -9,17 +9,22 @@ import { DualCaptionEditor } from "./dual-caption-editor";
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;
 
+// Revalidate every hour for non-static pages
+export const revalidate = 3600;
+
 /**
- * Generates static params for consecutive frame pairs at build time
- * Creates paths for comparing adjacent frames in the sequence
+ * Generates static params for the most important frame pairs at build time
+ * Limited to 600 pairs for faster builds, with dynamic fallback for remaining combinations
  * @returns Array of objects containing frame ID pairs for static generation
  */
 export async function generateStaticParams(): Promise<{ ids: string[] }[]> {
   const frames = await getFrameIndex();
   const params = [];
 
-  // Generate pairs of consecutive frames
-  for (let i = 0; i < frames.length - 1; i++) {
+  // Limit to 600 most important consecutive frame pairs
+  const maxPairs = Math.min(600, frames.length - 1);
+
+  for (let i = 0; i < maxPairs; i++) {
     const frame1 = frames[i];
     const frame2 = frames[i + 1];
 
