@@ -1,7 +1,7 @@
 "use server";
 
 import { parseEpisodeId } from "@/lib/frames";
-import { getFrameIndex } from "@/lib/frames.server";
+import { getCachedFrameIndex } from "@/lib/frames-cache";
 import type { Screenshot } from "@/lib/types";
 
 export interface SearchFilters {
@@ -25,7 +25,7 @@ export interface SearchResult {
 export async function searchScreenshots(
   filters: SearchFilters,
 ): Promise<SearchResult> {
-  const allScreenshots = await getFrameIndex();
+  const allScreenshots = await getCachedFrameIndex();
   const { season, episode, query, page = 1 } = filters;
 
   // Apply filtering logic
@@ -76,7 +76,7 @@ export async function searchScreenshots(
 export async function getEpisodeScreenshots(
   episodeId: string,
 ): Promise<Screenshot[]> {
-  const allScreenshots = await getFrameIndex();
+  const allScreenshots = await getCachedFrameIndex();
   return allScreenshots.filter(
     (screenshot) => screenshot.episode === episodeId,
   );
@@ -88,7 +88,7 @@ export async function getEpisodeScreenshots(
 export async function getCharacterScreenshots(
   character: string,
 ): Promise<Screenshot[]> {
-  const allScreenshots = await getFrameIndex();
+  const allScreenshots = await getCachedFrameIndex();
   return allScreenshots.filter((screenshot) =>
     screenshot.speech.toLowerCase().includes(character.toLowerCase()),
   );
