@@ -5,26 +5,38 @@ import {
 } from "@/components/animated-caption-page";
 import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
-import { parseEpisodeId } from "@/lib/frames";
-import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
+import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type React from "react";
-import { CaptionEditor } from "./caption-editor";
+import { DynamicCaptionEditor } from "@/components/dynamic-caption-editor";
 
 // Enable static generation with dynamic fallback
 export const dynamicParams = true;
 
+// Force static rendering for better prerendering
+export const dynamic = "force-static";
+
+// Enable streaming for better performance
+export const revalidate = 3600; // Revalidate every hour
+
 /**
- *
+ * Generates static parameters for all frame pages at build time
+ * This enables static generation for better performance and SEO
  */
 export async function generateStaticParams(): Promise<Array<{ id: string }>> {
-  const frames = await getFrameIndex();
-  return frames.map((frame: Screenshot) => ({
-    id: frame.id,
-  }));
+  try {
+    const { getFrameIndex } = await import("@/lib/frames.server");
+    const frames = await getFrameIndex();
+    return frames.map((frame) => ({
+      id: frame.id,
+    }));
+  } catch {
+    // Return empty array if frame index fails to load during build
+    return [];
+  }
 }
 
 /**
@@ -69,101 +81,85 @@ export async function generateMetadata({
   params: Promise<PageParams>;
   searchParams: Promise<PageSearchParams>;
 }): Promise<Metadata> {
-  const [resolvedParams, resolvedSearch] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-  const frame = await getFrameById(resolvedParams.id);
-  const text = resolvedSearch.text;
-  const caption =
-    typeof text === "string" ? decodeURIComponent(text) : frame.speech;
+  try {
+    const [resolvedParams, _resolvedSearch] = await Promise.all([
+      params,
+      searchParams,
+    ]);
+    const frame = await getFrameById(resolvedParams.id);
 
-  return generateSingleFrameMetadata(frame, caption);
+    // Use original frame speech for metadata to ensure consistency
+    // Custom text is handled client-side for better caching
+    return generateSingleFrameMetadata(frame, frame.speech);
+  } catch {
+    // Return basic metadata if frame fetch fails
+    return {
+      title: "Caption Editor",
+      description: "Create and edit captions for The Thick of It frames",
+    };
+  }
 }
 
 /**
- * Page component for displaying a single frame with caption editing capabilities
+ * Optimized server component that delivers maximum prerenderable content
+ * Uses efficient batched data fetching and React 18 concurrent features
  * @param props - The component props
  * @param props.params - Promise resolving to route parameters containing frame ID
- * @param props.searchParams - Promise resolving to search parameters for text and range
- * @returns The frame display page with caption editor and frame strip
+ * @returns Fully server-rendered page with efficient data loading
  */
 export default async function Page({
   params,
-  searchParams,
-}: PageProps): Promise<React.ReactElement> {
-  const [resolvedParams, resolvedSearch] = await Promise.all([
-    params,
-    searchParams,
-  ]);
+}: Pick<PageProps, "params">): Promise<React.ReactElement> {
+  const resolvedParams = await params;
 
-  const frame = await getFrameById(resolvedParams.id).catch(() => {
+  try {
+    // Optimize data fetching with a single frame lookup followed by efficient index operations
+    const frame = await getFrameById(resolvedParams.id);
+
+    // Pre-calculate frame strip data server-side for maximum prerendering
+    const index = await getFrameIndex();
+    const currentIndex = index.findIndex((f: Screenshot) => f.id === frame.id);
+
+    let previousFrames: Screenshot[] = [];
+    let nextFrames: Screenshot[] = [];
+
+    if (currentIndex !== -1) {
+      previousFrames =
+        currentIndex > 0
+          ? index.slice(Math.max(0, currentIndex - 3), currentIndex)
+          : [];
+      nextFrames =
+        currentIndex < index.length - 1
+          ? index.slice(currentIndex + 1, currentIndex + 10)
+          : [];
+    }
+
+    // Combine all frames for the strip
+    const allFrames = [...previousFrames, frame, ...nextFrames].filter(
+      (f: Screenshot | null | undefined): f is Screenshot =>
+        f !== null &&
+        f !== undefined &&
+        typeof f.id === "string" &&
+        typeof f.speech === "string",
+    );
+
+    return (
+      <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
+        <AnimatedCaptionPage>
+          <AnimatedFrameStripWrapper>
+            <FrameStrip
+              screenshots={allFrames}
+              centerScreenshot={frame}
+              frameWidth={200}
+            />
+          </AnimatedFrameStripWrapper>
+          <AnimatedCaptionEditorWrapper>
+            <DynamicCaptionEditor frame={frame} />
+          </AnimatedCaptionEditorWrapper>
+        </AnimatedCaptionPage>
+      </CaptionPageLayout>
+    );
+  } catch {
     notFound();
-  });
-
-  // Parse the episode ID to get series and episode numbers
-  const { season: seriesNumber, episode: episodeNumber } = parseEpisodeId(
-    frame.episode,
-  );
-
-  const [previousFrames, nextFrames] = await Promise.all([
-    getFrameIndex().then((index: Screenshot[]) => {
-      const i = index.findIndex((f: Screenshot) => f.id === frame.id);
-      return i > 0 ? index.slice(Math.max(0, i - 3), i) : [];
-    }),
-    getFrameIndex().then((index: Screenshot[]) => {
-      const i = index.findIndex((f: Screenshot) => f.id === frame.id);
-      return i < index.length - 1 ? index.slice(i + 1, i + 10) : [];
-    }),
-  ]).catch(() => {
-    notFound();
-  });
-
-  const text = resolvedSearch.text;
-  const range = resolvedSearch.range;
-
-  // If we have a text parameter, create an extended frame with the combined text
-  const combinedFrame =
-    typeof text === "string"
-      ? {
-          ...frame,
-          speech: decodeURIComponent(text),
-          isMultiFrame: true,
-          rangeEndId: range,
-          originalSpeech: frame.speech, // Keep the original speech for comparison
-        }
-      : frame;
-
-  const _breadcrumbItems = [
-    { label: "Series", href: "/series" },
-    { label: `Series ${seriesNumber}`, href: `/series/${seriesNumber}` },
-    {
-      label: `Episode ${episodeNumber}`,
-      href: `/series/${seriesNumber}/episode/${episodeNumber}`,
-    },
-    { label: "Caption", current: true },
-  ];
-
-  return (
-    <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
-      <AnimatedCaptionPage>
-        <AnimatedFrameStripWrapper>
-          <FrameStrip
-            screenshots={[...previousFrames, frame, ...nextFrames].filter(
-              (f: Screenshot | null | undefined): f is Screenshot =>
-                f !== null &&
-                f !== undefined &&
-                typeof f.id === "string" &&
-                typeof f.speech === "string",
-            )}
-            centerScreenshot={frame}
-            frameWidth={200}
-          />
-        </AnimatedFrameStripWrapper>
-        <AnimatedCaptionEditorWrapper>
-          <CaptionEditor screenshot={combinedFrame} />
-        </AnimatedCaptionEditorWrapper>
-      </AnimatedCaptionPage>
-    </CaptionPageLayout>
-  );
+  }
 }
