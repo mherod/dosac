@@ -1,0 +1,29 @@
+{
+  "id": "pet-asbos",
+  "name": "Anti-Social Behaviour Orders for Pets",
+  "shortName": "Pet ASBOs",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "brainstorming",
+  "type": "justice",
+  "description": "Extension of Anti-Social Behaviour Order framework to include domestic animals. Developed during ministerial transport policy session.",
+  "keyFeatures": [
+    "Behavioural orders for problematic pets",
+    "Owner responsibility enforcement",
+    "Community safety enhancement",
+    "Rapid policy development initiative"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": ["s01e01/16-27.960"],
+  "outcome": {
+    "implemented": true,
+    "year": 2014,
+    "actualPolicy": "Anti-Social Behaviour, Crime and Policing Act 2014",
+    "description": "The department's innovative approach to animal-related anti-social behaviour was incorporated into the 2014 Act, introducing Community Protection Notices applicable to pet owners.",
+    "impact": "Enhanced local authority powers to address animal-related disturbances and enforce responsible pet ownership",
+    "notes": "This department's early conceptual work on pet behavioural orders contributed to modernised community protection frameworks"
+  }
+}

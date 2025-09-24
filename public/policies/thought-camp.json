@@ -1,0 +1,21 @@
+{
+  "id": "thought-camp",
+  "name": "Strategic Policy Development Retreat (Thought Camp)",
+  "shortName": "Thought Camp",
+  "department": "DoSAC",
+  "minister": "Peter Mannion",
+  "status": "proposed",
+  "type": "social",
+  "description": "Intensive policy development retreat programme. Isolation-based strategic renewal initiative for departmental leadership and policy formulation.",
+  "keyFeatures": [
+    "Isolated strategic planning sessions",
+    "Intensive policy development workshops",
+    "Leadership renewal programme",
+    "Forward planning through tactical retreat"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": ["s04e03/00-00-36.520", "s04e03/00-01-12.080"]
+}

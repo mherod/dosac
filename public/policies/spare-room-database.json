@@ -1,0 +1,29 @@
+{
+  "id": "spare-room-database",
+  "name": "National Spare Room Database",
+  "shortName": "Spare Room Database",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "brainstorming",
+  "type": "housing",
+  "description": "National registry of available spare rooms for optimised housing allocation. Proposed during emergency policy development session in ministerial vehicle.",
+  "keyFeatures": [
+    "National database of spare bedrooms",
+    "Centralised room allocation system",
+    "Housing optimisation initiative",
+    "Improvised during policy crisis"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": ["s01e01/16-03.440"],
+  "outcome": {
+    "implemented": true,
+    "year": 2012,
+    "actualPolicy": "Housing Benefit Reform Act",
+    "description": "Following extensive departmental consultation, the Housing Benefit Reform Act was implemented in 2012, introducing measures to optimise social housing allocation through spare room assessment.",
+    "impact": "Successfully improved housing stock efficiency across 660,000 properties",
+    "notes": "This department's pioneering work on spare room utilisation directly informed the final policy framework"
+  }
+}

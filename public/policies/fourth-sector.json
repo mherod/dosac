@@ -1,0 +1,76 @@
+{
+  "id": "fourth-sector",
+  "name": "Fourth Sector Initiative",
+  "shortName": "Fourth Sector",
+  "department": "DoSAC",
+  "minister": "Nicola Murray",
+  "status": "launched",
+  "type": "social",
+  "description": "A people power initiative empowering ordinary citizens to become community leaders and pathfinders",
+  "keyFeatures": [
+    "Empowering ordinary people",
+    "Fourth Sector Pathfinders programme",
+    "Real people leading community change",
+    "People power movement"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "consultation": {
+    "publicConsultation": {
+      "opened": "15 March 2009",
+      "closed": "15 June 2009",
+      "responses": 3247,
+      "summary": "Strong public support for community empowerment initiatives with concerns about implementation clarity"
+    },
+    "stakeholders": [
+      "National Council for Voluntary Organisations",
+      "Federation of Small Businesses",
+      "Local Government Association",
+      "Trades Union Congress",
+      "British Chambers of Commerce"
+    ],
+    "expertGroups": [
+      "Centre for Social Justice",
+      "Institute for Government",
+      "Policy Exchange",
+      "Resolution Foundation"
+    ],
+    "focusGroups": {
+      "conducted": 12,
+      "participants": 186,
+      "keyFindings": [
+        "Clear demand for grassroots leadership opportunities",
+        "Concerns about funding mechanisms",
+        "Need for clearer pathfinder selection criteria",
+        "Strong interest from community organisations"
+      ]
+    },
+    "impactAssessment": {
+      "conducted": true,
+      "economicImpact": "Estimated £45 million annual cost with projected £120 million in community value generation",
+      "socialImpact": "Potential to engage 50,000 community leaders nationwide within first three years"
+    }
+  },
+  "frameMentions": [
+    "s03e04/02-44.720",
+    "s03e04/02-52.160",
+    "s03e04/05-30.440",
+    "s03e04/06-09.640",
+    "s03e04/06-49.360",
+    "s03e04/09-39.920",
+    "s03e05/04-50.240",
+    "s03e06/02-39.400",
+    "s03e06/04-04.520",
+    "s03e06/15-31.480",
+    "s03e06/20-19.200",
+    "s03e06/21-12.040",
+    "s03e06/21-25.080",
+    "s03e06/24-52.240",
+    "s03e06/26-18.920",
+    "s03e06/26-37.360",
+    "s04e01/00-05:22.880",
+    "s04e01/00-05:24.680"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "snooper-force",
+  "name": "Community Surveillance Initiative (Snooper Force)",
+  "shortName": "Snooper Force",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "axed",
+  "type": "justice",
+  "description": "Uniformed community surveillance programme designed to enhance neighbourhood security through citizen observation networks.",
+  "keyFeatures": [
+    "Uniformed community surveillance officers",
+    "Neighbourhood watch enhancement",
+    "Citizen reporting framework",
+    "Rapid deployment capability"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["The Snooper Force"],
+  "frameMentions": [
+    "s01e01/09-17.960",
+    "s01e01/09-48.600",
+    "s01e01/11-01.120",
+    "s01e01/13-01.760",
+    "s01e01/13-28.000",
+    "s01e01/13-54.800",
+    "s01e01/20-46.480",
+    "s01e01/23-08.440",
+    "s01e01/24-12.320"
+  ]
+}

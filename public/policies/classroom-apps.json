@@ -1,0 +1,30 @@
+{
+  "id": "classroom-apps",
+  "name": "Student Application Design Programme",
+  "shortName": "Classroom Apps",
+  "department": "DoSAC",
+  "minister": "Peter Mannion",
+  "status": "proposed",
+  "type": "education",
+  "description": "Educational technology initiative enabling students to design game applications for classroom use. Part of the broader Silicon Playgrounds digital education framework.",
+  "keyFeatures": [
+    "Student-designed educational applications",
+    "Game-based learning integration",
+    "Classroom technology enhancement",
+    "Digital skills development"
+  ],
+  "digitalDividend": {
+    "enabled": true,
+    "description": "Application revenues contribute to educational funding"
+  },
+  "nicknames": [],
+  "frameMentions": ["s04e01/00-14:13.400"],
+  "outcome": {
+    "implemented": true,
+    "year": 2012,
+    "actualPolicy": "National Educational App Design Initiative",
+    "description": "Following departmental pilot programmes, the Educational App Design Initiative was launched nationwide, enabling students to develop educational software.",
+    "impact": "Over 10,000 student-designed applications deployed across UK schools",
+    "notes": "This department's pioneering work in educational technology directly shaped national curriculum digital skills requirements"
+  }
+}

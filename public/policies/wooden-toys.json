@@ -1,0 +1,28 @@
+{
+  "id": "wooden-toys",
+  "name": "Child Safety and Toy Materials Standards Initiative",
+  "shortName": "Wooden Toys Initiative",
+  "department": "DoSAC",
+  "minister": "Nicola Murray",
+  "status": "proposed",
+  "type": "health",
+  "description": "Comprehensive child safety programme promoting traditional wooden toys whilst addressing plastic toy carcinogen concerns. Mass de-carcinogenicide of children's play materials.",
+  "keyFeatures": [
+    "Promotion of simple wooden toys",
+    "Plastic toy safety assessment",
+    "Mass de-carcinogenicide programme",
+    "Traditional craftsmanship support"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["The wooden toys thing"],
+  "frameMentions": [
+    "s03e02/12-09.440",
+    "s03e02/16-16.080",
+    "s03e02/16-29.080",
+    "s03e02/16-54.240",
+    "s03e02/17-03.640",
+    "s03e02/28-34.560"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "quiet-batpeople",
+  "name": "Quiet Batpeople",
+  "shortName": "Quiet Batpeople",
+  "department": "DoSAC",
+  "minister": "Fergus Williams",
+  "status": "proposed",
+  "type": "social",
+  "description": "An initiative celebrating everyday superheroes in communities",
+  "keyFeatures": [
+    "Recognising everyday superheroes",
+    "Community heroes programme",
+    "Citizen recognition scheme"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": [
+    "s04e02/00-05-04.040",
+    "s04e02/00-05-21.400",
+    "s04e02/00-08-39.400",
+    "s04e02/00-08-45.120",
+    "s04e02/00-08-48.120",
+    "s04e02/00-14-47.800",
+    "s04e04/00-00:02.320",
+    "s04e06/00-00:12.720",
+    "s04e06/00-09:22.480"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "plastic-bags",
+  "name": "Plastic Bag Policy",
+  "shortName": "Plastic Bags",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "brainstorming",
+  "type": "environmental",
+  "description": "Early DoSAC environmental policy proposal exploring mandatory plastic bag carrying as part of waste reduction strategy. Developed during ministerial car journey brainstorming session.",
+  "keyFeatures": [
+    "Mandatory plastic bag carrying",
+    "Universal bag distribution",
+    "Environmental impact assessment",
+    "Improvised during policy crisis meeting"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": ["s01e01/16-35.920"],
+  "outcome": {
+    "implemented": true,
+    "year": 2015,
+    "actualPolicy": "Single-Use Carrier Bag Charge Regulations",
+    "description": "The department's preliminary environmental impact assessment led to the implementation of carrier bag charging regulations in October 2015, subsequently enhanced to 10p minimum in 2021.",
+    "impact": "Achieved 98% reduction in single-use bag distribution across major retail partners",
+    "currentCharge": "10p minimum charge per carrier bag",
+    "notes": "This department's foundational policy development work established the framework for successful plastic reduction initiatives"
+  }
+}

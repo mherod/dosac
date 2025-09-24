@@ -33,7 +33,11 @@ export function CategoryNav({
               {CATEGORIES.map((category: { id: string; title: string }) => (
                 <Link
                   key={category.id}
-                  href={`/categories/${category.id}`}
+                  href={
+                    category.id === "policy-unit"
+                      ? "/policies"
+                      : `/categories/${category.id}`
+                  }
                   className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
                   suppressHydrationWarning
                 >

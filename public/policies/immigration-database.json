@@ -1,0 +1,26 @@
+{
+  "id": "immigration-database",
+  "name": "National Immigration Records Management System",
+  "shortName": "Immigration Database",
+  "department": "DoSAC",
+  "minister": "Nicola Murray",
+  "status": "suspended",
+  "type": "justice",
+  "description": "Centralised immigration data management system for tracking and processing immigration statistics and records across government departments.",
+  "keyFeatures": [
+    "Centralised immigration tracking",
+    "Cross-departmental data sharing",
+    "Real-time statistical analysis",
+    "Secure record management"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": [],
+  "frameMentions": ["s03e02/03-38.360", "s03e02/05-05.880"],
+  "systemFailure": {
+    "date": "2009",
+    "description": "Temporary system outage resulted in data accessibility issues during critical reporting period",
+    "resolution": "Full data recovery achieved through departmental backup protocols"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "id": "silicon-playgrounds",
+  "name": "Silicon Playgrounds",
+  "shortName": "Silicon Playgrounds",
+  "department": "DoSAC",
+  "minister": "Peter Mannion",
+  "status": "axed",
+  "type": "education",
+  "description": "A digital education initiative providing computer access and training to disadvantaged youth",
+  "keyFeatures": [
+    "Digital education centres in deprived areas",
+    "Computer training for young entrepreneurs",
+    "Digital dividend for higher education fees",
+    "Foster new generation of entrepreneurs"
+  ],
+  "digitalDividend": {
+    "enabled": true,
+    "description": "Profits stored as digital dividend towards higher education fees"
+  },
+  "nicknames": ["Mannion's Workhouse Web"],
+  "consultation": {
+    "publicConsultation": {
+      "opened": "1 September 2011",
+      "closed": "30 November 2011",
+      "responses": 892,
+      "summary": "Mixed responses with education sector broadly supportive but concerns raised about digital divide"
+    },
+    "stakeholders": [
+      "Department for Education",
+      "British Educational Suppliers Association",
+      "National Association of Head Teachers",
+      "Microsoft UK",
+      "Google UK",
+      "Tech UK"
+    ],
+    "expertGroups": [
+      "Education Technology Association",
+      "Digital Skills Council",
+      "Future of Work Commission"
+    ],
+    "focusGroups": {
+      "conducted": 8,
+      "participants": 124,
+      "keyFindings": [
+        "Teachers require significant training support",
+        "Infrastructure concerns in deprived areas",
+        "Strong student enthusiasm for programme"
+      ]
+    },
+    "impactAssessment": {
+      "conducted": true,
+      "economicImpact": "£200 million initial investment with projected £500 million return through digital skills development",
+      "socialImpact": "Estimated reach of 250,000 disadvantaged young people in first phase"
+    }
+  },
+  "frameMentions": [
+    "s04e01/00-01:04.000",
+    "s04e01/00-02:25.200",
+    "s04e01/00-03:10.600",
+    "s04e01/00-04:10.200",
+    "s04e01/00-05:14.920",
+    "s04e01/00-07:06.560",
+    "s04e01/00-12:27.440",
+    "s04e01/00-14:40.480",
+    "s04e01/00-17:18.120",
+    "s04e01/00-18:21.120",
+    "s04e01/00-18:51.360",
+    "s04e01/00-19:09.200",
+    "s04e01/00-20:53.800",
+    "s04e01/00-21:12.480",
+    "s04e01/00-24:07.160",
+    "s04e01/00-25:47.880",
+    "s04e01/00-26:45.480",
+    "s04e01/00-27:37.840"
+  ]
+}
