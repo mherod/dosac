@@ -1,0 +1,26 @@
+{
+  "id": "back-on-track",
+  "name": "Back On Track",
+  "shortName": "Back On Track",
+  "department": "Opposition",
+  "minister": "Opposition Leader",
+  "status": "proposed",
+  "type": "social",
+  "description": "Opposition community rehabilitation programme remarkably similar to DoSAC's Unify Initiative. Launched at high-profile event.",
+  "keyFeatures": [
+    "Community rehabilitation programmes",
+    "Social integration support",
+    "Local resource sharing",
+    "Youth opportunity schemes",
+    "Cross-community partnerships"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["Back On Track"],
+  "announcement": {
+    "location": "Opposition event",
+    "circumstances": "Launched at what was described as a 'chimps' tea party'"
+  },
+  "frameMentions": ["s03e06/05-44.960", "s03e06/06-13.640"]
+}

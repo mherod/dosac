@@ -6,17 +6,24 @@
   "minister": "Hugh Abbot",
   "status": "axed",
   "type": "justice",
-  "description": "Uniformed community surveillance programme designed to enhance neighbourhood security through citizen observation networks.",
+  "description": "Anti-fraud inspection unit featuring uniformed officers to combat benefit fraud. Part of the Anti-Benefit Fraud Executive (ABFE) initiative.",
   "keyFeatures": [
-    "Uniformed community surveillance officers",
-    "Neighbourhood watch enhancement",
-    "Citizen reporting framework",
+    "Uniformed benefit fraud inspection officers",
+    "Anti-Benefit Fraud Executive (ABFE)",
+    "Benefit fraud crackdown programme",
+    "Also referred to as 'Scrounger Squad'",
     "Rapid deployment capability"
   ],
   "digitalDividend": {
     "enabled": false
   },
-  "nicknames": ["The Snooper Force"],
+  "nicknames": ["The Snooper Force", "Scrounger Squad", "Snooper Squad"],
+  "announcement": {
+    "location": "Wiltshire school",
+    "date": "2005",
+    "circumstances": "Announced at press conference, then denied, then re-announced at school visit",
+    "mediaResponse": "Initially ignored by press due to boring presentation"
+  },
   "frameMentions": [
     "s01e01/09-17.960",
     "s01e01/09-48.600",

@@ -1,0 +1,22 @@
+{
+  "id": "unify-initiative",
+  "name": "Unify Initiative",
+  "shortName": "Unify",
+  "department": "DoSAC",
+  "minister": "Nicola Murray",
+  "status": "suspended",
+  "type": "social",
+  "description": "Community cohesion programme designed to bring together diverse communities through shared activities and resources. Suspended after similarities discovered with opposition policy.",
+  "keyFeatures": [
+    "Community integration programmes",
+    "Cross-cultural exchange initiatives",
+    "Shared community resource centres",
+    "Local partnership schemes",
+    "Youth engagement activities"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["Unify Policy", "Unify"],
+  "frameMentions": ["s03e06/05-51.080", "s03e06/06-13.640"]
+}

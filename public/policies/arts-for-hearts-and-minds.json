@@ -1,0 +1,22 @@
+{
+  "id": "arts-for-hearts-and-minds",
+  "name": "Arts For Hearts And Minds",
+  "shortName": "Arts For Hearts And Minds",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "proposed",
+  "type": "education",
+  "description": "Arts education initiative aimed at improving mental health and wellbeing through increased access to arts programmes in schools and communities.",
+  "keyFeatures": [
+    "Arts education expansion in schools",
+    "Community arts programme funding",
+    "Mental health support through creative activities",
+    "Partnership with local arts organisations",
+    "Teacher training in arts therapy techniques"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["Arts For Hearts And Minds"],
+  "frameMentions": ["s01e02/09-03.480", "s01e02/09-07.600", "s01e02/09-09.000"]
+}

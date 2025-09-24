@@ -1,0 +1,25 @@
+{
+  "id": "scambusters",
+  "name": "Scambusters Initiative",
+  "shortName": "Scambusters",
+  "department": "DoSAC",
+  "minister": "Hugh Abbot",
+  "status": "axed",
+  "type": "justice",
+  "description": "Anti-fraud enforcement initiative targeting benefit fraud and scam operations. Rapidly terminated following policy review.",
+  "keyFeatures": [
+    "Anti-fraud enforcement operations",
+    "Benefit fraud investigation unit",
+    "Rapid response team formation",
+    "Cross-departmental fraud prevention"
+  ],
+  "digitalDividend": {
+    "enabled": false
+  },
+  "nicknames": ["Scambusters"],
+  "announcement": {
+    "date": "2005",
+    "circumstances": "Mentioned briefly during policy review before immediate cancellation"
+  },
+  "frameMentions": ["s01e01/11-05.120"]
+}
