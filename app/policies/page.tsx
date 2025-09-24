@@ -7,8 +7,32 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Policy Unit - DoSAC",
-  description: "Official policy documentation and strategic initiatives",
+  title: "Policy Unit - Department of Social Affairs and Citizenship",
+  description:
+    "Official repository of departmental policy initiatives, strategic programmes, and legislative frameworks. Browse current government work, policy development, and historical records.",
+  keywords: [
+    "DoSAC",
+    "government policy",
+    "policy unit",
+    "legislation",
+    "strategic initiatives",
+    "departmental programmes",
+    "policy development",
+    "public consultation",
+  ],
+  openGraph: {
+    title: "Policy Unit - DoSAC",
+    description:
+      "Official repository of departmental policy initiatives and strategic programmes",
+    type: "website",
+    siteName: "Department of Social Affairs and Citizenship",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Policy Unit - DoSAC",
+    description:
+      "Official repository of departmental policy initiatives and strategic programmes",
+  },
 };
 
 export default async function PoliciesPage() {

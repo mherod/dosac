@@ -34,12 +34,62 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!policy) {
     return {
       title: "Policy Not Found - DoSAC",
+      description: "The requested policy documentation could not be found.",
     };
   }
 
+  const statusText =
+    policy.status === "active"
+      ? "Active Policy"
+      : policy.status === "launched"
+        ? "Launched Policy"
+        : policy.status === "proposed"
+          ? "Proposed Policy"
+          : policy.status === "axed"
+            ? "Discontinued Policy"
+            : policy.status === "suspended"
+              ? "Suspended Policy"
+              : "Policy Document";
+
+  const keywords = [
+    policy.name,
+    policy.shortName,
+    ...policy.nicknames,
+    "DoSAC",
+    policy.type,
+    "government policy",
+    policy.minister,
+    statusText,
+  ];
+
+  if (policy.outcome?.actualPolicy) {
+    keywords.push(policy.outcome.actualPolicy);
+  }
+
   return {
-    title: `${policy.name} - DoSAC Policy Unit`,
-    description: policy.description,
+    title: `${policy.name} - Department of Social Affairs and Citizenship`,
+    description:
+      `${policy.description} ${statusText} under ${policy.minister}. ${policy.outcome ? `Implemented as ${policy.outcome.actualPolicy} in ${policy.outcome.year}.` : ""}`.trim(),
+    keywords: keywords.filter(Boolean),
+    openGraph: {
+      title: `${policy.name} - DoSAC Policy Unit`,
+      description: policy.description,
+      type: "article",
+      siteName: "Department of Social Affairs and Citizenship",
+      publishedTime: policy.outcome?.year
+        ? `${policy.outcome.year}-01-01`
+        : undefined,
+      authors: [policy.minister],
+      tags: [policy.type, ...policy.nicknames],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${policy.name} - DoSAC`,
+      description: `${statusText}: ${policy.description.slice(0, 150)}${policy.description.length > 150 ? "..." : ""}`,
+    },
+    alternates: {
+      canonical: `/policies/${policyId}`,
+    },
   };
 }
 
