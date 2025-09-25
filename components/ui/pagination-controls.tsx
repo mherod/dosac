@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import type React from "react";
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -12,42 +14,51 @@ interface PaginationControlsProps {
 export function PaginationControls({
   currentPage,
   totalPages,
-}: PaginationControlsProps) {
+}: PaginationControlsProps): React.ReactElement {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
 
-  const setPage = (page: number) => {
+  const buildPageUrl = (page: number): string => {
     const params = new URLSearchParams(searchParams);
     if (page === 1) {
       params.delete("page");
     } else {
       params.set("page", page.toString());
     }
-    router.replace(`${pathname}?${params.toString()}`);
+    const queryString = params.toString();
+    return queryString ? `${pathname}?${queryString}` : pathname;
   };
+
+  const prevPage = Math.max(1, currentPage - 1);
+  const nextPage = Math.min(totalPages, currentPage + 1);
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setPage(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
+      {currentPage === 1 ? (
+        <Button variant="outline" size="icon" disabled>
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+      ) : (
+        <Button variant="outline" size="icon" asChild>
+          <Link href={buildPageUrl(prevPage)}>
+            <ChevronLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+      )}
       <span className="text-sm">
         Page {currentPage} of {totalPages}
       </span>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      {currentPage === totalPages ? (
+        <Button variant="outline" size="icon" disabled>
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      ) : (
+        <Button variant="outline" size="icon" asChild>
+          <Link href={buildPageUrl(nextPage)}>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }

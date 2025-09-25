@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type React from "react";
 import { forwardRef } from "react";
 
@@ -115,8 +114,6 @@ export function SeriesSelect({
   className = "",
   isSearchMode = false,
 }: SeriesSelectProps): React.ReactElement {
-  const router = useRouter();
-
   /**
    * Handles changes to the series selection
    * @param value - The new series value
@@ -130,11 +127,8 @@ export function SeriesSelect({
         season: newSeason,
         episode: newSeason ? episode : undefined,
       });
-    } else {
-      // In navigation mode, update the selection and navigate
-      const href = newSeason ? `/series/${newSeason}` : "/series";
-      router.push(href);
     }
+    // In navigation mode, the Link components handle navigation
   };
 
   /**
@@ -150,13 +144,8 @@ export function SeriesSelect({
         season,
         episode: newEpisode,
       });
-    } else if (season) {
-      // In navigation mode, update the selection and navigate
-      const href = newEpisode
-        ? `/series/${season}/episode/${newEpisode}`
-        : `/series/${season}`;
-      router.push(href);
     }
+    // In navigation mode, the Link components handle navigation
   };
 
   return (
