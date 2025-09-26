@@ -4,11 +4,13 @@ import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import { redirect } from "next/navigation";
 
-// Force static rendering for homepage
-export const dynamic = "force-static";
+// Configure page for optimal performance
+// Pages will be dynamically rendered on first request then cached with ISR
+// This provides the best balance between performance and functionality
 
-// Enable ISR with 1 hour revalidation for fallback pages
-export const revalidate = 3600; // Revalidate every hour
+// Enable ISR with 1 hour revalidation for all pages
+// This means once a page is requested, it will be cached for 1 hour
+export const revalidate = 3600;
 
 /**
  * Interface for page component props
