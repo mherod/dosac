@@ -75,7 +75,7 @@ async function generateFrameIndex(): Promise<void> {
   const indexPath = path.join(process.cwd(), "public", "frame-index.json");
   fs.writeFileSync(indexPath, JSON.stringify(frames, null, 2));
 
-  console.log(`\nFrame index generated successfully!`);
+  console.log("\nFrame index generated successfully!");
   console.log(`Total frames: ${frames.length}`);
   console.log(`Index file: ${indexPath}`);
   console.log(

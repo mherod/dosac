@@ -37,11 +37,13 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = (params.q || "").trim().toLowerCase();
-  const seasonFilter = params.season ? parseInt(params.season, 10) : undefined;
-  const episodeFilter = params.episode
-    ? parseInt(params.episode, 10)
+  const seasonFilter = params.season
+    ? Number.parseInt(params.season, 10)
     : undefined;
-  const page = parseInt(params.page || "1", 10);
+  const episodeFilter = params.episode
+    ? Number.parseInt(params.episode, 10)
+    : undefined;
+  const page = Number.parseInt(params.page || "1", 10);
   const resultsPerPage = 24;
 
   // Get all frames
@@ -58,14 +60,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       // Extract season/episode numbers from frame.episode (e.g., "s01e01")
       const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
-      const frameSeason =
-        episodeMatch && episodeMatch[1]
-          ? parseInt(episodeMatch[1], 10)
-          : undefined;
-      const frameEpisode =
-        episodeMatch && episodeMatch[2]
-          ? parseInt(episodeMatch[2], 10)
-          : undefined;
+      const frameSeason = episodeMatch?.[1]
+        ? Number.parseInt(episodeMatch[1], 10)
+        : undefined;
+      const frameEpisode = episodeMatch?.[2]
+        ? Number.parseInt(episodeMatch[2], 10)
+        : undefined;
 
       // Season/episode filters
       const seasonMatch = !seasonFilter || frameSeason === seasonFilter;
@@ -79,14 +79,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     results = allFrames.filter((frame) => {
       // Extract season/episode numbers from frame.episode (e.g., "s01e01")
       const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
-      const frameSeason =
-        episodeMatch && episodeMatch[1]
-          ? parseInt(episodeMatch[1], 10)
-          : undefined;
-      const frameEpisode =
-        episodeMatch && episodeMatch[2]
-          ? parseInt(episodeMatch[2], 10)
-          : undefined;
+      const frameSeason = episodeMatch?.[1]
+        ? Number.parseInt(episodeMatch[1], 10)
+        : undefined;
+      const frameEpisode = episodeMatch?.[2]
+        ? Number.parseInt(episodeMatch[2], 10)
+        : undefined;
 
       const seasonMatch = !seasonFilter || frameSeason === seasonFilter;
       const episodeFilterMatch =
@@ -156,14 +154,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               {paginatedResults.map((frame) => {
                 // Extract season and episode numbers for display
                 const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
-                const frameSeason =
-                  episodeMatch && episodeMatch[1]
-                    ? parseInt(episodeMatch[1], 10)
-                    : 1;
-                const frameEpisode =
-                  episodeMatch && episodeMatch[2]
-                    ? parseInt(episodeMatch[2], 10)
-                    : 1;
+                const frameSeason = episodeMatch?.[1]
+                  ? Number.parseInt(episodeMatch[1], 10)
+                  : 1;
+                const frameEpisode = episodeMatch?.[2]
+                  ? Number.parseInt(episodeMatch[2], 10)
+                  : 1;
 
                 return (
                   <SearchResultCard

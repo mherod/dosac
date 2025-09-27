@@ -89,11 +89,11 @@ async function analyzeAppearances() {
       console.log(`- Total appearances: ${char.totalAppearances}`);
       console.log(`- Episodes: ${Object.keys(char.episodes).length}`);
       console.log("- Episode distribution:");
-      Object.entries(char.episodes)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .forEach(([episode, count]) => {
-          console.log(`  ${episode}: ${count} appearances`);
-        });
+      for (const [episode, count] of Object.entries(char.episodes).sort(
+        ([a], [b]) => a.localeCompare(b),
+      )) {
+        console.log(`  ${episode}: ${count} appearances`);
+      }
     });
 }
 

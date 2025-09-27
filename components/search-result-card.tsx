@@ -29,11 +29,11 @@ function highlightText(text: string, query: string): React.ReactElement {
     <>
       {parts.map((part, i) =>
         part.toLowerCase() === query.toLowerCase() ? (
-          <mark key={i} className="bg-yellow-200 font-semibold">
+          <mark key={`${part}-${i}`} className="bg-yellow-200 font-semibold">
             {part}
           </mark>
         ) : (
-          <span key={i}>{part}</span>
+          <span key={`${part}-${i}`}>{part}</span>
         ),
       )}
     </>
@@ -46,7 +46,7 @@ function highlightText(text: string, query: string): React.ReactElement {
 export function SearchResultCard({ frame, query }: SearchResultCardProps) {
   const text = frame.text || "";
   const truncatedText =
-    text.length > 150 ? text.substring(0, 150) + "..." : text;
+    text.length > 150 ? `${text.substring(0, 150)}...` : text;
 
   return (
     <Link

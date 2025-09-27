@@ -18,7 +18,7 @@ interface ErrorProps {
  * @param props.reset - Function to reset the error boundary
  * @returns Error page with retry option
  */
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: ErrorProps): React.ReactElement {
@@ -60,6 +60,7 @@ export default function Error({
         )}
 
         <button
+          type="button"
           onClick={reset}
           className="inline-flex items-center gap-2 rounded-lg bg-[#1d70b8] px-6 py-3 text-base font-medium text-white transition-colors hover:bg-[#1d70b8]/90 focus:outline-none focus:ring-2 focus:ring-[#1d70b8] focus:ring-offset-2"
         >

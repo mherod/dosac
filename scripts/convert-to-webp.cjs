@@ -1,23 +1,23 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("node:fs");
+const path = require("node:path");
+const { execSync } = require("child_process");
 
-const FRAMES_DIR = path.join(__dirname, '../public/frames');
-const BACKUP_DIR = path.join(__dirname, '../backup-jpegs');
+const FRAMES_DIR = path.join(__dirname, "../public/frames");
+const BACKUP_DIR = path.join(__dirname, "../backup-jpegs");
 
 // WebP quality setting (0-100, higher = better quality but larger file)
 const WEBP_QUALITY = 85;
 
 function checkDependencies() {
   try {
-    execSync('which cwebp', { stdio: 'ignore' });
-    console.log('✓ cwebp found');
+    execSync("which cwebp", { stdio: "ignore" });
+    console.log("✓ cwebp found");
   } catch (error) {
-    console.error('❌ cwebp not found. Please install WebP tools:');
-    console.error('  macOS: brew install webp');
-    console.error('  Ubuntu: sudo apt install webp');
+    console.error("❌ cwebp not found. Please install WebP tools:");
+    console.error("  macOS: brew install webp");
+    console.error("  Ubuntu: sudo apt install webp");
     process.exit(1);
   }
 }
@@ -38,11 +38,11 @@ function getFileSize(filePath) {
 }
 
 function formatBytes(bytes) {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return "0 B";
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 function convertJpegToWebP(jpegPath, webpPath, backupPath) {
@@ -52,7 +52,7 @@ function convertJpegToWebP(jpegPath, webpPath, backupPath) {
 
     // Convert to WebP
     execSync(`cwebp -q ${WEBP_QUALITY} "${jpegPath}" -o "${webpPath}"`, {
-      stdio: 'ignore'
+      stdio: "ignore",
     });
 
     // Remove original JPEG
@@ -74,13 +74,16 @@ function processDirectory(dirPath, stats) {
 
     if (stat.isDirectory()) {
       // Skip .DS_Store and other hidden directories
-      if (item.startsWith('.')) continue;
+      if (item.startsWith(".")) continue;
 
       processDirectory(fullPath, stats);
-    } else if (item.endsWith('.jpg') || item.endsWith('.jpeg')) {
+    } else if (item.endsWith(".jpg") || item.endsWith(".jpeg")) {
       const originalSize = getFileSize(fullPath);
-      const webpPath = fullPath.replace(/\.jpe?g$/i, '.webp');
-      const backupPath = path.join(BACKUP_DIR, path.relative(FRAMES_DIR, fullPath));
+      const webpPath = fullPath.replace(/\.jpe?g$/i, ".webp");
+      const backupPath = path.join(
+        BACKUP_DIR,
+        path.relative(FRAMES_DIR, fullPath),
+      );
 
       // Ensure backup directory structure exists
       const backupDir = path.dirname(backupPath);
@@ -100,7 +103,9 @@ function processDirectory(dirPath, stats) {
         stats.newSize += newSize;
         stats.totalSavings += savings;
 
-        console.log(`  ✓ ${formatBytes(originalSize)} → ${formatBytes(newSize)} (${percentage}% smaller)`);
+        console.log(
+          `  ✓ ${formatBytes(originalSize)} → ${formatBytes(newSize)} (${percentage}% smaller)`,
+        );
       } else {
         stats.failedConversions++;
       }
@@ -109,7 +114,7 @@ function processDirectory(dirPath, stats) {
 }
 
 function main() {
-  console.log('🖼️  Converting JPEG frames to WebP...\n');
+  console.log("🖼️  Converting JPEG frames to WebP...\n");
 
   checkDependencies();
   createBackupDir();
@@ -119,7 +124,7 @@ function main() {
     failedConversions: 0,
     originalSize: 0,
     newSize: 0,
-    totalSavings: 0
+    totalSavings: 0,
   };
 
   const startTime = Date.now();
@@ -134,22 +139,26 @@ function main() {
   const endTime = Date.now();
   const duration = ((endTime - startTime) / 1000).toFixed(1);
 
-  console.log('\n📊 Conversion Summary:');
+  console.log("\n📊 Conversion Summary:");
   console.log(`  Files converted: ${stats.filesConverted}`);
   console.log(`  Failed conversions: ${stats.failedConversions}`);
   console.log(`  Original size: ${formatBytes(stats.originalSize)}`);
   console.log(`  New size: ${formatBytes(stats.newSize)}`);
-  console.log(`  Total savings: ${formatBytes(stats.totalSavings)} (${((stats.totalSavings / stats.originalSize) * 100).toFixed(1)}%)`);
+  console.log(
+    `  Total savings: ${formatBytes(stats.totalSavings)} (${((stats.totalSavings / stats.originalSize) * 100).toFixed(1)}%)`,
+  );
   console.log(`  Time taken: ${duration}s`);
   console.log(`\n💾 Original JPEGs backed up to: ${BACKUP_DIR}`);
 
   if (stats.failedConversions > 0) {
-    console.log(`\n⚠️  ${stats.failedConversions} files failed to convert. Check the error messages above.`);
+    console.log(
+      `\n⚠️  ${stats.failedConversions} files failed to convert. Check the error messages above.`,
+    );
   }
 }
 
 // Handle command line arguments
-if (process.argv.includes('--help') || process.argv.includes('-h')) {
+if (process.argv.includes("--help") || process.argv.includes("-h")) {
   console.log(`
 WebP Conversion Script for The Thick of It Quotes
 
@@ -166,21 +175,21 @@ Original files are backed up to ../backup-jpegs/ before conversion.
   process.exit(0);
 }
 
-if (process.argv.includes('--dry-run')) {
-  console.log('🔍 DRY RUN MODE - No files will be converted\n');
+if (process.argv.includes("--dry-run")) {
+  console.log("🔍 DRY RUN MODE - No files will be converted\n");
   // TODO: Implement dry run functionality
   process.exit(0);
 }
 
 // Override quality if specified
-const qualityIndex = process.argv.indexOf('--quality');
+const qualityIndex = process.argv.indexOf("--quality");
 if (qualityIndex !== -1 && process.argv[qualityIndex + 1]) {
-  const quality = parseInt(process.argv[qualityIndex + 1]);
+  const quality = Number.parseInt(process.argv[qualityIndex + 1]);
   if (quality >= 0 && quality <= 100) {
     WEBP_QUALITY = quality;
     console.log(`🎛️  Using WebP quality: ${quality}`);
   } else {
-    console.error('❌ Quality must be between 0 and 100');
+    console.error("❌ Quality must be between 0 and 100");
     process.exit(1);
   }
 }

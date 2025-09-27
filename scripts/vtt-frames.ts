@@ -28,14 +28,14 @@ function timestampToSeconds(timestamp: string): number {
       Number.parseFloat(minutes) * 60 +
       Number.parseFloat(seconds)
     );
-  } else if (parts.length === 2) {
+  }
+  if (parts.length === 2) {
     // MM:SS.mmm format
     const [minutes, seconds] = parts;
     return Number.parseFloat(minutes) * 60 + Number.parseFloat(seconds);
-  } else {
-    console.error(`Invalid timestamp format: ${timestamp}`);
-    return 0;
   }
+  console.error(`Invalid timestamp format: ${timestamp}`);
+  return 0;
 }
 
 function ensureDirectoryExists(dirPath: string) {

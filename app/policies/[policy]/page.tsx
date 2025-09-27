@@ -163,8 +163,8 @@ export default async function PolicyPage({ params }: Props) {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {policy.keyFeatures.map((feature, index) => (
-                    <li key={index} className="flex items-start">
+                  {policy.keyFeatures.map((feature) => (
+                    <li key={feature} className="flex items-start">
                       <span className="mr-2 text-[#1d70b8]">•</span>
                       <span className="text-gray-700">{feature}</span>
                     </li>
@@ -217,8 +217,8 @@ export default async function PolicyPage({ params }: Props) {
                         </h4>
                         <ul className="space-y-1 text-sm text-gray-600">
                           {policy.consultation.stakeholders.map(
-                            (stakeholder, i) => (
-                              <li key={i}>• {stakeholder}</li>
+                            (stakeholder) => (
+                              <li key={stakeholder}>• {stakeholder}</li>
                             ),
                           )}
                         </ul>
@@ -244,8 +244,8 @@ export default async function PolicyPage({ params }: Props) {
                             <p className="font-medium">Key findings:</p>
                             <ul className="mt-1 space-y-1">
                               {policy.consultation.focusGroups.keyFindings.map(
-                                (finding, i) => (
-                                  <li key={i}>• {finding}</li>
+                                (finding) => (
+                                  <li key={finding}>• {finding}</li>
                                 ),
                               )}
                             </ul>
@@ -458,7 +458,7 @@ export default async function PolicyPage({ params }: Props) {
                     </span>{" "}
                     references
                   </p>
-                  {policy.outcome && policy.outcome.year && (
+                  {policy.outcome?.year && (
                     <p className="text-gray-600">
                       Implementation Year:{" "}
                       <span className="font-semibold">

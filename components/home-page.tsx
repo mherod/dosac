@@ -3,7 +3,8 @@
 import { FrameStrip } from "@/components/frame-strip";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import type { Frame } from "@/lib/frames";
-import React, { Suspense, Component } from "react";
+import type React from "react";
+import { Suspense, Component } from "react";
 
 // Error boundary component for better error handling
 class HomePageErrorBoundary extends Component<
@@ -121,15 +122,12 @@ export function HomePage(props: HomePageProps): React.ReactElement {
               <div className="animate-pulse">
                 <div className="mx-auto mb-4 h-4 w-1/4 rounded bg-gray-200" />
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => {
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Skeleton placeholders
-                    return (
-                      <div
-                        key={`skeleton-${i}`}
-                        className="aspect-video rounded bg-gray-200"
-                      />
-                    );
-                  })}
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div
+                      key={`skeleton-${i}`}
+                      className="aspect-video rounded bg-gray-200"
+                    />
+                  ))}
                 </div>
               </div>
             </div>

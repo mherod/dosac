@@ -64,7 +64,8 @@ export function processTextWithLinks(
   }
 
   if (!Array.isArray(parts)) {
-    parts = [parts];
+    const partsArray = [parts];
+    return processTextWithLinks(partsArray, linkClassName);
   }
 
   const renderLink = (href: string, text: string, key: number): ReactNode => (
