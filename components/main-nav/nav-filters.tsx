@@ -4,7 +4,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { FEATURED_CHARACTERS } from "@/lib/profiles";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ProfileImageBadge } from "../profile-image-badge";
 import { SearchBar } from "./search-bar";
@@ -55,6 +55,7 @@ export function NavFilters({
   const [localQuery, setLocalQuery] = useState(filters.query);
   const debouncedQuery = useDebounce(localQuery, 300);
   const queryString = useSearchParams();
+  const pathname = usePathname();
 
   // Only consider it search mode if there's actual search text
   const isSearchMode = filters.query.trim() !== "";
@@ -67,8 +68,12 @@ export function NavFilters({
   useEffect(() => {
     const query = queryString.get("q") || "";
     setLocalQuery(query);
-    onQueryChange(query);
-  }, [onQueryChange, queryString]);
+    // Only call onQueryChange if we're actually on the search page
+    // This prevents unwanted redirects when navigating to other pages
+    if (query && pathname === "/search") {
+      onQueryChange(query);
+    }
+  }, [onQueryChange, queryString, pathname]);
 
   const handleSearchChange = (value: string): void => {
     setLocalQuery(value);
