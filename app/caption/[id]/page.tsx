@@ -7,6 +7,7 @@ import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
+import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -146,21 +147,29 @@ export default async function Page({
         typeof f.speech === "string",
     );
 
+    const structuredData = generateMemeStructuredData(frame, frame.speech);
+
     return (
-      <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
-        <AnimatedCaptionPage>
-          <AnimatedFrameStripWrapper>
-            <FrameStrip
-              screenshots={allFrames}
-              centerScreenshot={frame}
-              frameWidth={200}
-            />
-          </AnimatedFrameStripWrapper>
-          <AnimatedCaptionEditorWrapper>
-            <DynamicCaptionEditor frame={frame} />
-          </AnimatedCaptionEditorWrapper>
-        </AnimatedCaptionPage>
-      </CaptionPageLayout>
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
+          <AnimatedCaptionPage>
+            <AnimatedFrameStripWrapper>
+              <FrameStrip
+                screenshots={allFrames}
+                centerScreenshot={frame}
+                frameWidth={200}
+              />
+            </AnimatedFrameStripWrapper>
+            <AnimatedCaptionEditorWrapper>
+              <DynamicCaptionEditor frame={frame} />
+            </AnimatedCaptionEditorWrapper>
+          </AnimatedCaptionPage>
+        </CaptionPageLayout>
+      </>
     );
   } catch {
     notFound();

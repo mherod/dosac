@@ -42,11 +42,46 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
+  const title = `Series ${series.number} - The Thick of It`;
+  const description = series.shortSummary
+    .map((part) => (typeof part === "string" ? part : part.text))
+    .join("");
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const pageUrl = new URL(`/series/${series.number}`, baseUrl);
+
   return {
     title: formatPageTitle(`Series ${series.number}`),
-    description: series.shortSummary
-      .map((part) => (typeof part === "string" ? part : part.text))
-      .join(""),
+    description: `${description} Browse all episodes and create memes from Series ${series.number} of The Thick of It.`,
+    openGraph: {
+      title,
+      description: `${description} Create memes from Series ${series.number} episodes.`,
+      url: pageUrl.toString(),
+      type: "website",
+      siteName: "DOSAC.UK",
+      locale: "en_GB",
+      images: [
+        {
+          url: `${baseUrl}/og-series-${series.number}.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `Series ${series.number} - The Thick of It`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: `${description} Create memes from Series ${series.number} episodes.`,
+      images: [`${baseUrl}/og-series-${series.number}.jpg`],
+    },
+    alternates: {
+      canonical: pageUrl.toString(),
+    },
+    other: {
+      "og:image:width": "1200",
+      "og:image:height": "630",
+    },
   };
 }
 

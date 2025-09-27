@@ -3,6 +3,10 @@ import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { PWAStatus } from "@/components/pwa-status";
+import { PWAInit } from "@/components/pwa-init";
+import { PWAUpdateNotification } from "@/components/pwa-update-notification";
 import { SITE_NAME } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
@@ -23,7 +27,23 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
     default: SITE_NAME,
   },
-  description: "Create and share memes from The Thick of It",
+  description:
+    "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
+  keywords: [
+    "The Thick of It",
+    "memes",
+    "political satire",
+    "comedy",
+    "TV show",
+    "quotes",
+    "Malcolm Tucker",
+    "British comedy",
+    "Armando Iannucci",
+    "Peter Capaldi",
+  ],
+  authors: [{ name: "DOSAC.UK" }],
+  creator: "DOSAC.UK",
+  publisher: "DOSAC.UK",
   metadataBase: urlObject,
   icons: {
     icon: [
@@ -40,16 +60,47 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     locale: "en_GB",
+    title: "The Thick of It Memes & Quotes",
+    description:
+      "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
+    images: [
+      {
+        url: `${urlObject.origin}/og-homepage.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "The Thick of It Memes - Create and share memes from the iconic TV show",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: "The Thick of It Memes & Quotes",
+    description:
+      "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
+    images: [`${urlObject.origin}/og-homepage.jpg`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "3zDxylAILVG4stRVm15vY1iA9viFumha9D-SlU1jq50",
   },
   other: {
     "og:locale": "en_GB",
     "og:site_name": SITE_NAME,
     "og:logo": `${urlObject.origin}/logo.svg`,
     "format-detection": "telephone=no",
-    "google-site-verification": "3zDxylAILVG4stRVm15vY1iA9viFumha9D-SlU1jq50",
+    "theme-color": "#ffffff",
+    "msapplication-TileColor": "#ffffff",
+    "msapplication-config": "/browserconfig.xml",
   },
 };
 
@@ -82,6 +133,10 @@ export default function RootLayout({
           <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster />
+          <PWAInstallPrompt />
+          <PWAStatus />
+          <PWAUpdateNotification />
+          <PWAInit />
         </ThemeProvider>
         <Analytics />
       </body>

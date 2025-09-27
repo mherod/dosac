@@ -26,9 +26,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
   if (!category) return {};
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const pageUrl = new URL(`/categories/${category.id}`, baseUrl);
+
   return {
     title: formatPageTitle(category.title),
-    description: category.description,
+    description: `${category.description} Browse and create memes from The Thick of It quotes in this category.`,
+    openGraph: {
+      title: `${category.title} - The Thick of It Memes`,
+      description: `${category.description} Create memes from The Thick of It quotes in this category.`,
+      url: pageUrl.toString(),
+      type: "website",
+      siteName: "DOSAC.UK",
+      locale: "en_GB",
+      images: [
+        {
+          url: `${baseUrl}/og-category-${category.id}.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `${category.title} - The Thick of It Memes`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.title} - The Thick of It Memes`,
+      description: `${category.description} Create memes from The Thick of It quotes in this category.`,
+      images: [`${baseUrl}/og-category-${category.id}.jpg`],
+    },
+    alternates: {
+      canonical: pageUrl.toString(),
+    },
+    other: {
+      "og:image:width": "1200",
+      "og:image:height": "630",
+    },
   };
 }
 

@@ -6,6 +6,7 @@ import {
   getSeriesEpisodes,
   getSeriesInfo,
 } from "@/lib/series-info";
+import { generateEpisodeStructuredData } from "@/lib/structured-data";
 import type { Metadata } from "next";
 
 /**
@@ -49,7 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
   if (!series) return {};
 
-  const title = episode?.title || `Episode ${resolvedParams.episodeId}`;
+  const episodeTitle = episode?.title || `Episode ${resolvedParams.episodeId}`;
+  const fullTitle = `${episodeTitle} | Series ${series.number}`;
 
   const description = episode?.shortSummary
     ? episode.shortSummary
@@ -59,9 +61,46 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         .map((part) => (typeof part === "string" ? part : part.text))
         .join("");
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const pageUrl = new URL(
+    `/series/${series.number}/episode/${resolvedParams.episodeId}`,
+    baseUrl,
+  );
+
   return {
-    title: formatPageTitle(`${title} | Series ${series.number}`),
-    description,
+    title: formatPageTitle(fullTitle),
+    description: `${description} Browse memes and quotes from ${episodeTitle} of The Thick of It. Create your own captions from iconic moments.`,
+    openGraph: {
+      title: fullTitle,
+      description: `${description} Create memes from ${episodeTitle} of The Thick of It.`,
+      url: pageUrl.toString(),
+      type: "website",
+      siteName: "DOSAC.UK",
+      locale: "en_GB",
+      images: [
+        {
+          url: `${baseUrl}/og-episode-s${series.number}e${resolvedParams.episodeId}.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `${episodeTitle} - Series ${series.number} - The Thick of It`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fullTitle,
+      description: `${description} Create memes from ${episodeTitle} of The Thick of It.`,
+      images: [
+        `${baseUrl}/og-episode-s${series.number}e${resolvedParams.episodeId}.jpg`,
+      ],
+    },
+    alternates: {
+      canonical: pageUrl.toString(),
+    },
+    other: {
+      "og:image:width": "1200",
+      "og:image:height": "630",
+    },
   };
 }
 
@@ -72,6 +111,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * @param props.params - Promise resolving to route parameters containing series and episode IDs
  * @returns The episode page with details and frame grid
  */
-export default function Page(props: Props): React.ReactElement {
-  return <EpisodePage {...props} />;
+export default async function Page(props: Props): Promise<React.ReactElement> {
+  const resolvedParams = await props.params;
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            generateEpisodeStructuredData(
+              Number.parseInt(resolvedParams.id, 10),
+              Number.parseInt(resolvedParams.episodeId, 10),
+            ),
+          ),
+        }}
+      />
+      <EpisodePage {...props} />
+    </>
+  );
 }

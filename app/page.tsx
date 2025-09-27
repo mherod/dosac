@@ -3,6 +3,8 @@ import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { generateWebsiteStructuredData } from "@/lib/structured-data";
 
 // Configure page for optimal performance
 // Pages will be dynamically rendered on first request then cached with ISR
@@ -11,6 +13,89 @@ import { redirect } from "next/navigation";
 // Enable ISR with 1 hour revalidation for all pages
 // This means once a page is requested, it will be cached for 1 hour
 export const revalidate = 3600;
+
+/**
+ * Generates dynamic metadata for the homepage based on search parameters
+ * @param props - The page props
+ * @param props.searchParams - Promise resolving to search parameters
+ * @returns Promise resolving to the page metadata
+ */
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
+  const resolvedParams = await searchParams;
+  const season = resolvedParams.season
+    ? Number(resolvedParams.season)
+    : undefined;
+  const episode = resolvedParams.episode
+    ? Number(resolvedParams.episode)
+    : undefined;
+  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : "";
+  const page = Number(resolvedParams.page) || 1;
+
+  // Base metadata
+  let title = "The Thick of It Memes & Quotes";
+  let description =
+    "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.";
+
+  // Dynamic title and description based on filters
+  if (season && episode) {
+    title = `Series ${season}, Episode ${episode} - The Thick of It Memes`;
+    description = `Browse memes and quotes from Series ${season}, Episode ${episode} of The Thick of It. Create your own captions from iconic moments.`;
+  } else if (season) {
+    title = `Series ${season} - The Thick of It Memes`;
+    description = `Browse all memes and quotes from Series ${season} of The Thick of It. Create your own captions from iconic moments.`;
+  } else if (query) {
+    title = `"${query}" - The Thick of It Memes`;
+    description = `Find memes and quotes containing "${query}" from The Thick of It. Create your own captions from these iconic moments.`;
+  } else if (page > 1) {
+    title = `Page ${page} - The Thick of It Memes`;
+    description = `Browse page ${page} of The Thick of It memes and quotes. Create your own captions from iconic moments.`;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const currentUrl = new URL("/", baseUrl);
+
+  // Add search parameters to URL for canonical link
+  if (season) currentUrl.searchParams.set("season", season.toString());
+  if (episode) currentUrl.searchParams.set("episode", episode.toString());
+  if (query) currentUrl.searchParams.set("q", query);
+  if (page > 1) currentUrl.searchParams.set("page", page.toString());
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: currentUrl.toString(),
+      type: "website",
+      siteName: "DOSAC.UK",
+      locale: "en_GB",
+      images: [
+        {
+          url: `${baseUrl}/og-homepage.jpg`,
+          width: 1200,
+          height: 630,
+          alt: "The Thick of It Memes - Create and share memes from the iconic TV show",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${baseUrl}/og-homepage.jpg`],
+    },
+    alternates: {
+      canonical: currentUrl.toString(),
+    },
+    other: {
+      "og:image:width": "1200",
+      "og:image:height": "630",
+    },
+  };
+}
 
 /**
  * Interface for page component props
@@ -110,15 +195,23 @@ export default async function Home({
 
   const filters = { season, episode, query, page: validPage };
 
+  const structuredData = generateWebsiteStructuredData();
+
   return (
-    <div className="container mx-auto max-w-7xl px-4 md:px-6">
-      <HomePage
-        screenshots={pageScreenshots}
-        allScreenshots={allScreenshots}
-        rankedMoments={rankedMoments}
-        filters={filters}
-        paginationData={paginationData}
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-    </div>
+      <div className="container mx-auto max-w-7xl px-4 md:px-6">
+        <HomePage
+          screenshots={pageScreenshots}
+          allScreenshots={allScreenshots}
+          rankedMoments={rankedMoments}
+          filters={filters}
+          paginationData={paginationData}
+        />
+      </div>
+    </>
   );
 }

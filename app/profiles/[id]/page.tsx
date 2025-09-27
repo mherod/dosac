@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { formatPageTitle } from "@/lib/constants";
 import { getFrameById } from "@/lib/frames.server";
 import {
   type Character,
@@ -17,7 +18,9 @@ import {
   departmentLabels,
   roleLabels,
 } from "@/lib/profiles";
+import { generateCharacterStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -36,6 +39,78 @@ export async function generateStaticParams(): Promise<{ id: string }[]> {
   return Object.keys(characters).map((id: string) => ({
     id,
   }));
+}
+
+/**
+ * Generates metadata for the character profile page
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing character ID
+ * @returns Metadata object with title and description
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const character = characters[id];
+
+  if (!character) {
+    return {
+      title: "Character Not Found",
+      description: "The requested character profile could not be found.",
+    };
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const pageUrl = new URL(`/profiles/${id}`, baseUrl);
+  const primaryRole = character.role[0]
+    ? roleLabels[character.role[0] as Role]
+    : "Character";
+  const primaryDepartment = character.department[0]
+    ? departmentLabels[character.department[0] as Department]
+    : "";
+
+  return {
+    title: formatPageTitle(character.name),
+    description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It. View highlights and create memes featuring ${character.name}.`,
+    openGraph: {
+      title: `${character.name} - The Thick of It Character Profile`,
+      description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It.`,
+      url: pageUrl.toString(),
+      type: "profile",
+      siteName: "DOSAC.UK",
+      locale: "en_GB",
+      images: [
+        {
+          url:
+            typeof character.image === "string"
+              ? character.image
+              : `${baseUrl}/og-character-${id}.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `${character.name} - The Thick of It Character`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${character.name} - The Thick of It Character Profile`,
+      description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It.`,
+      images: [
+        typeof character.image === "string"
+          ? character.image
+          : `${baseUrl}/og-character-${id}.jpg`,
+      ],
+    },
+    alternates: {
+      canonical: pageUrl.toString(),
+    },
+    other: {
+      "og:image:width": "1200",
+      "og:image:height": "630",
+    },
+  };
 }
 
 function ContentsList({ name: _name }: { name: string }): React.ReactElement {
@@ -287,113 +362,121 @@ export default async function CharacterProfile({
     page: 1,
   };
 
+  const structuredData = generateCharacterStructuredData(id);
+
   return (
-    <main className="container max-w-7xl py-6 lg:py-12">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
-        <aside className="order-2 lg:order-1 lg:col-span-1">
-          {character.image && (
-            <div className="sticky top-8 mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg">
-              <Image
-                src={character.image}
-                alt={character.name}
-                className="h-full w-full object-cover object-top"
-                priority
-                sizes="(max-width: 1024px) 100vw, 25vw"
-              />
-            </div>
-          )}
-          <ContentsList name={character.name} />
-          <PersonalInfo character={character} />
-        </aside>
-
-        <div className="order-1 lg:order-2 lg:col-span-3">
-          <header className="mb-12">
-            <div className="space-y-6">
-              <div>
-                <h1 className="mb-4 text-3xl font-bold text-slate-900 lg:text-4xl">
-                  {character.name}
-                </h1>
-                <p className="text-lg leading-relaxed text-slate-600 lg:text-xl">
-                  {character.description}
-                </p>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <main className="container max-w-7xl py-6 lg:py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
+          <aside className="order-2 lg:order-1 lg:col-span-1">
+            {character.image && (
+              <div className="sticky top-8 mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg">
+                <Image
+                  src={character.image}
+                  alt={character.name}
+                  className="h-full w-full object-cover object-top"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 25vw"
+                />
               </div>
-              <div className="flex flex-wrap gap-2">
-                {character.role.map((role: string) => (
-                  <Badge
-                    key={role}
-                    variant="secondary"
-                    className="bg-slate-100 px-3 py-1 text-sm font-medium lg:text-base"
-                  >
-                    {roleLabels[role as Role]}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </header>
+            )}
+            <ContentsList name={character.name} />
+            <PersonalInfo character={character} />
+          </aside>
 
-          <div className="space-y-12">
-            {screenshots.length > 0 && (
-              <section id="highlights" className="space-y-6">
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Highlights
-                </h2>
-                <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
-                  <ScreenshotGrid
-                    screenshots={screenshots}
-                    allScreenshots={screenshots}
-                    filters={filters}
-                    paginationData={paginationData}
-                  />
+          <div className="order-1 lg:order-2 lg:col-span-3">
+            <header className="mb-12">
+              <div className="space-y-6">
+                <div>
+                  <h1 className="mb-4 text-3xl font-bold text-slate-900 lg:text-4xl">
+                    {character.name}
+                  </h1>
+                  <p className="text-lg leading-relaxed text-slate-600 lg:text-xl">
+                    {character.description}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {character.role.map((role: string) => (
+                    <Badge
+                      key={role}
+                      variant="secondary"
+                      className="bg-slate-100 px-3 py-1 text-sm font-medium lg:text-base"
+                    >
+                      {roleLabels[role as Role]}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </header>
+
+            <div className="space-y-12">
+              {screenshots.length > 0 && (
+                <section id="highlights" className="space-y-6">
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    Highlights
+                  </h2>
+                  <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
+                    <ScreenshotGrid
+                      screenshots={screenshots}
+                      allScreenshots={screenshots}
+                      filters={filters}
+                      paginationData={paginationData}
+                    />
+                  </div>
+                </section>
+              )}
+
+              <section id="roles" className="space-y-4">
+                <h2 className="text-2xl font-bold text-slate-900">Roles</h2>
+                <div className="space-y-4">
+                  {character.department.map((dept: string) => (
+                    <div key={dept} className="space-y-3">
+                      <h3 className="text-xl font-semibold text-slate-800">
+                        {departmentLabels[dept as Department]}
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {character.role.map((role: string) => (
+                          <Badge
+                            key={role}
+                            variant="secondary"
+                            className="px-3 py-0.5"
+                          >
+                            {roleLabels[role as Role]}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
-            )}
 
-            <section id="roles" className="space-y-4">
-              <h2 className="text-2xl font-bold text-slate-900">Roles</h2>
-              <div className="space-y-4">
-                {character.department.map((dept: string) => (
-                  <div key={dept} className="space-y-3">
-                    <h3 className="text-xl font-semibold text-slate-800">
-                      {departmentLabels[dept as Department]}
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {character.role.map((role: string) => (
-                        <Badge
-                          key={role}
-                          variant="secondary"
-                          className="px-3 py-0.5"
-                        >
-                          {roleLabels[role as Role]}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <CollapsibleSection
-              id="details"
-              title="Details"
-              items={character.details}
-            />
-
-            {character.personal?.background?.career && (
               <CollapsibleSection
-                id="career"
-                title="Career History"
-                items={character.personal.background.career}
+                id="details"
+                title="Details"
+                items={character.details}
               />
-            )}
+
+              {character.personal?.background?.career && (
+                <CollapsibleSection
+                  id="career"
+                  title="Career History"
+                  items={character.personal.background.career}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {character.relatedProfiles && character.relatedProfiles.length > 0 && (
-        <div className="mt-12 border-t border-slate-200 pt-8">
-          <RelatedProfiles relatedProfiles={character.relatedProfiles} />
-        </div>
-      )}
-    </main>
+        {character.relatedProfiles && character.relatedProfiles.length > 0 && (
+          <div className="mt-12 border-t border-slate-200 pt-8">
+            <RelatedProfiles relatedProfiles={character.relatedProfiles} />
+          </div>
+        )}
+      </main>
+    </>
   );
 }
