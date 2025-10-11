@@ -142,6 +142,24 @@ const nextConfig = {
       },
     ];
   },
+  // Webpack configuration to ignore dynamic file pattern warnings
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Ignore dynamic require warnings for server-side file system operations
+      config.ignoreWarnings = [
+        ...(config.ignoreWarnings || []),
+        {
+          module: /frames\.server\.ts/,
+          message: /.*file pattern.*/,
+        },
+        {
+          module: /actions\.ts/,
+          message: /.*file pattern.*/,
+        },
+      ];
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

@@ -3,6 +3,7 @@ import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   searchParams,
@@ -29,9 +30,9 @@ interface SearchPageProps {
 }
 
 /**
- * Server-side search page with results
+ * Inner component that handles search logic and dynamic data access
  */
-export default async function SearchPage({ searchParams }: SearchPageProps) {
+async function SearchPageContent({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = (params.q || "").trim().toLowerCase();
   const seasonFilter = params.season
@@ -226,5 +227,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         ) : null}
       </div>
     </div>
+  );
+}
+
+/**
+ * Search page component wrapped in Suspense boundary
+ */
+export default function SearchPage({ searchParams }: SearchPageProps) {
+  return (
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <SearchPageContent searchParams={searchParams} />
+    </Suspense>
   );
 }

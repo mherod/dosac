@@ -5,6 +5,7 @@ import type { Screenshot } from "@/lib/types";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { generateWebsiteStructuredData } from "@/lib/structured-data";
+import { Suspense } from "react";
 
 /**
  * Generates dynamic metadata for the homepage based on search parameters
@@ -100,15 +101,14 @@ type Props = {
 };
 
 /**
- * Home page component that displays a grid of screenshots and ranked moments
- * Supports filtering by series, episode, and search query
+ * Inner component that handles dynamic data access (searchParams)
  * @param props - The component props
  * @param props.searchParams - Promise resolving to search parameters for filtering content
- * @returns The home page with filtered screenshot grid and ranked moments
+ * @returns The home page content with filtered screenshot grid and ranked moments
  */
-export default async function Home({
+async function HomeContent({
   searchParams,
-}: Props): Promise<React.ReactElement> {
+}: Pick<Props, "searchParams">): Promise<React.ReactElement> {
   const allScreenshots = await getFrameIndex();
   const resolvedParams = await searchParams;
 
@@ -205,5 +205,20 @@ export default async function Home({
         />
       </div>
     </>
+  );
+}
+
+/**
+ * Home page component that wraps content in Suspense boundary
+ * Supports filtering by series, episode, and search query
+ * @param props - The component props
+ * @param props.searchParams - Promise resolving to search parameters for filtering content
+ * @returns The home page wrapped in Suspense boundary
+ */
+export default function Home({ searchParams }: Props): React.ReactElement {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent searchParams={searchParams} />
+    </Suspense>
   );
 }

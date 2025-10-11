@@ -1,4 +1,6 @@
 import { ImageResponse } from "@vercel/og";
+import { unstable_cacheLife } from "next/cache";
+import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 
 /**
@@ -54,129 +56,160 @@ function getTextShadow(width: number = 1): string {
  * })
  * ```
  */
-export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
-  try {
-    const { searchParams } = new URL(req.url);
-    const caption = searchParams.get("caption") || "No caption provided";
-    const imageUrlString = searchParams.get("imageUrl") || "";
-    const requestedFontSize = Number.parseInt(
-      searchParams.get("fontSize") || "24",
-    );
-    const fontFamily = searchParams.get("fontFamily") || "Arial";
+/**
+ * Generates the OG image with caching support
+ */
+async function generateOGImage({
+  caption,
+  imageUrlString,
+  fontSize,
+  fontFamily,
+  outlineWidth,
+}: {
+  caption: string;
+  imageUrlString: string;
+  fontSize: number;
+  fontFamily: string;
+  outlineWidth: string;
+}): Promise<ImageResponse> {
+  "use cache";
+  unstable_cacheLife("dynamic");
 
-    // Handle both absolute and relative image URLs
-    const imageUrl = imageUrlString.startsWith("http")
-      ? new URL(imageUrlString)
-      : new URL(
-          `https://dosac.herod.dev${imageUrlString.startsWith("/") ? "" : "/"}${imageUrlString}`,
-        );
+  // Handle both absolute and relative image URLs
+  const imageUrl = imageUrlString.startsWith("http")
+    ? new URL(imageUrlString)
+    : new URL(
+        `https://dosac.uk${imageUrlString.startsWith("/") ? "" : "/"}${imageUrlString}`,
+      );
 
-    // Calculate dynamic font size based on image height and line count
-    const IMAGE_HEIGHT = 630; // Fixed OG image height
-    const lines = caption.split("\n").length;
-    const heightBasedSize = Math.floor((IMAGE_HEIGHT * 0.27) / lines); // 27% of height divided by lines (reduced from 30%)
-    const fontSize = Math.max(20, heightBasedSize, requestedFontSize); // Minimum 20px or 27% of height/lines
+  // Calculate dynamic font size based on image height and line count
+  const IMAGE_HEIGHT = 630; // Fixed OG image height
+  const lines = caption.split("\n").length;
+  const heightBasedSize = Math.floor((IMAGE_HEIGHT * 0.27) / lines); // 27% of height divided by lines (reduced from 30%)
+  const calculatedFontSize = Math.max(20, heightBasedSize, fontSize); // Minimum 20px or 27% of height/lines
 
-    // Calculate outline width based on font size (4% of font size, minimum 2px)
-    const calculatedOutlineWidth = Math.max(2, Math.floor(fontSize * 0.04));
-    const finalOutlineWidth = Math.max(
-      calculatedOutlineWidth,
-      Number.parseInt(searchParams.get("outlineWidth") || "1"),
-    );
+  // Calculate outline width based on font size (4% of font size, minimum 2px)
+  const calculatedOutlineWidth = Math.max(
+    2,
+    Math.floor(calculatedFontSize * 0.04),
+  );
+  const finalOutlineWidth = Math.max(
+    calculatedOutlineWidth,
+    Number.parseInt(outlineWidth),
+  );
 
-    // Fetch image
-    const imageResponse = await fetch(imageUrl.toString());
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
-    }
+  // Fetch image
+  const imageResponse = await fetch(imageUrl.toString());
+  if (!imageResponse.ok) {
+    throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+  }
 
-    // Convert image to base64
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${Buffer.from(imageBuffer).toString("base64")}`;
+  // Convert image to base64
+  const imageBuffer = await imageResponse.arrayBuffer();
+  const base64Image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${Buffer.from(imageBuffer).toString("base64")}`;
 
-    const response = new ImageResponse(
-      (
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "black",
+          position: "relative",
+        }}
+      >
+        {/* Background Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={base64Image}
+          alt={caption}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+
+        {/* Caption Container */}
         <div
           style={{
-            height: "100%",
-            width: "100%",
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "black",
-            position: "relative",
+            paddingBottom: "4%",
           }}
         >
-          {/* Background Image */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={base64Image}
-            alt={caption}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-
-          {/* Caption Container */}
+          {/* Caption Text */}
           <div
             style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
-              paddingBottom: "4%",
+              fontSize: `${calculatedFontSize}px`,
+              fontWeight: 500,
+              color: "#ffffff",
+              textShadow: getTextShadow(finalOutlineWidth),
+              textAlign: "center",
+              maxWidth: "90%",
+              margin: "0 auto",
+              wordWrap: "break-word",
+              lineHeight: 1.2,
+              fontFamily,
             }}
           >
-            {/* Caption Text */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                fontSize: `${fontSize}px`,
-                fontWeight: 500,
-                color: "#ffffff",
-                textShadow: getTextShadow(finalOutlineWidth),
-                textAlign: "center",
-                maxWidth: "90%",
-                margin: "0 auto",
-                wordWrap: "break-word",
-                lineHeight: 1.2,
-                fontFamily,
-              }}
-            >
-              {caption.split("\n").map((line: string, i: number) => (
-                <span
-                  key={`line-${i}-${line.slice(0, 10)}`}
-                  style={{ margin: 0 }}
-                >
-                  {line}
-                </span>
-              ))}
-            </div>
+            {caption.split("\n").map((line: string, i: number) => (
+              <span
+                key={`line-${i}-${line.slice(0, 10)}`}
+                style={{ margin: 0 }}
+              >
+                {line}
+              </span>
+            ))}
           </div>
         </div>
-      ),
-      {
-        width: 1200,
-        height: 630,
-        headers: {
-          "content-type": "image/png",
-          "cache-control": "public, immutable, no-transform, max-age=31536000",
-        },
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+      headers: {
+        "content-type": "image/png",
+        "cache-control": "public, immutable, no-transform, max-age=31536000",
       },
-    );
+    },
+  );
+}
 
-    return response;
+export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
+  // Force route to be dynamic by accessing headers
+  await headers();
+
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const caption = searchParams.get("caption") || "No caption provided";
+    const imageUrlString = searchParams.get("imageUrl") || "";
+    const fontSize = Number.parseInt(searchParams.get("fontSize") || "24");
+    const fontFamily = searchParams.get("fontFamily") || "Arial";
+    const outlineWidth = searchParams.get("outlineWidth") || "1";
+
+    return await generateOGImage({
+      caption,
+      imageUrlString,
+      fontSize,
+      fontFamily,
+      outlineWidth,
+    });
   } catch (e) {
     console.error(e);
     return new Response(

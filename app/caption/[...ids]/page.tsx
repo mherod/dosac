@@ -1,7 +1,6 @@
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
-import { unstable_cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -121,19 +120,16 @@ export async function generateMetadata({
 }
 
 /**
- * Page component for comparing and editing multiple frames with captions
+ * Inner component that handles dynamic data access (params, searchParams)
  * @param props - The component props
  * @param props.params - Promise resolving to route parameters containing frame IDs
  * @param props.searchParams - Promise resolving to search parameters for additional frames and text
- * @returns The frame comparison page with dual caption editor
+ * @returns The frame comparison page content with dual caption editor
  */
-export default async function Page({
+async function PageContent({
   params,
   searchParams,
 }: PageProps): Promise<React.ReactElement> {
-  "use cache";
-  unstable_cacheLife("static");
-
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
@@ -174,9 +170,26 @@ export default async function Page({
       episodeId={frames[0].episode}
       pageTitle="Multi-Frame Caption"
     >
-      <Suspense>
-        <DualCaptionEditor frames={frames} />
-      </Suspense>
+      <DualCaptionEditor frames={frames} />
     </CaptionPageLayout>
+  );
+}
+
+/**
+ * Page component for comparing and editing multiple frames with captions
+ * Wraps dynamic content in Suspense boundary for Next.js 16 cacheComponents
+ * @param props - The component props
+ * @param props.params - Promise resolving to route parameters containing frame IDs
+ * @param props.searchParams - Promise resolving to search parameters for additional frames and text
+ * @returns The frame comparison page wrapped in Suspense boundary
+ */
+export default function Page({
+  params,
+  searchParams,
+}: PageProps): React.ReactElement {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent params={params} searchParams={searchParams} />
+    </Suspense>
   );
 }
