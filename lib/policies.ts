@@ -84,6 +84,7 @@ export const PolicySchema = z.object({
   digitalDividend: DigitalDividendSchema,
   nicknames: z.array(z.string()),
   frameMentions: z.array(z.string()),
+  captionPage: z.string().optional(),
   consultation: ConsultationSchema.optional(),
   outcome: OutcomeSchema.optional(),
   systemFailure: SystemFailureSchema.optional(),

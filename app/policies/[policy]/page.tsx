@@ -12,6 +12,8 @@ import {
   AlertCircle,
   MessageSquare,
 } from "lucide-react";
+import { getFrameById } from "@/lib/frames.server";
+import Image from "next/image";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
@@ -99,6 +101,13 @@ export default async function PolicyPage({ params }: Props) {
 
   if (!policy) {
     notFound();
+  }
+
+  // Load caption frame if available
+  let captionFrame = null;
+  if (policy.captionPage) {
+    const frameId = policy.captionPage.replace("/caption/", "");
+    captionFrame = await getFrameById(frameId);
   }
 
   return (
@@ -465,6 +474,26 @@ export default async function PolicyPage({ params }: Props) {
                         {policy.outcome.year}
                       </span>
                     </p>
+                  )}
+                  {policy.captionPage && captionFrame && (
+                    <div className="border-t border-gray-200 pt-3">
+                      <Link href={policy.captionPage} className="group block">
+                        <div className="relative overflow-hidden rounded-md border border-gray-200 transition-all hover:border-[#1d70b8] hover:shadow-md">
+                          <Image
+                            src={captionFrame.imageUrl}
+                            alt={captionFrame.speech || "Policy scene"}
+                            width={300}
+                            height={169}
+                            className="w-full object-cover"
+                          />
+                          <div className="bg-white/95 p-2 text-xs">
+                            <p className="line-clamp-2 text-gray-600">
+                              "{captionFrame.speech}"
+                            </p>
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
                   )}
                 </div>
               </CardContent>
