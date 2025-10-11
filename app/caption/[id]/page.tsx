@@ -15,15 +15,6 @@ import { notFound } from "next/navigation";
 import type React from "react";
 import { DynamicCaptionEditor } from "@/components/dynamic-caption-editor";
 
-// Enable static generation with dynamic fallback
-export const dynamicParams = true;
-
-// Force static rendering for better prerendering
-export const dynamic = "force-static";
-
-// Enable streaming for better performance
-export const revalidate = 3600; // Revalidate every hour
-
 /**
  * Generates static parameters for the most important frame pages at build time
  * Limited to 600 pages for faster builds, with dynamic fallback for remaining pages

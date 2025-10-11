@@ -6,14 +6,6 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { generateWebsiteStructuredData } from "@/lib/structured-data";
 
-// Configure page for optimal performance
-// Pages will be dynamically rendered on first request then cached with ISR
-// This provides the best balance between performance and functionality
-
-// Enable ISR with 1 hour revalidation for all pages
-// This means once a page is requested, it will be cached for 1 hour
-export const revalidate = 3600;
-
 /**
  * Generates dynamic metadata for the homepage based on search parameters
  * @param props - The page props

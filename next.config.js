@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    // DO NOT IGNORE ERRORS IN BUILD
-    ignoreDuringBuilds: false,
-  },
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
@@ -34,8 +30,8 @@ const nextConfig = {
     },
     // Enable optimistic updates
     optimisticClientCache: true,
-    // Enable Partial Prerendering (PPR)
-    ppr: "incremental",
+    // Enable Cache Components (consolidates PPR, Dynamic IO, and use cache)
+    cacheComponents: true,
   },
   // Headers for better SEO and performance
   async headers() {

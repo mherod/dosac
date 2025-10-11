@@ -1,7 +1,5 @@
 import { getFrameById } from "@/lib/frames.server";
 
-export const dynamic = "force-dynamic";
-
 /**
  * API route handler for fetching a specific frame by ID
  *

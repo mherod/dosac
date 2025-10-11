@@ -3,9 +3,6 @@ import { PolicyCard } from "@/components/policy-card";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-export const dynamic = "force-static";
-export const revalidate = 3600;
-
 export const metadata: Metadata = {
   title: "Policy Unit - Department of Social Affairs and Citizenship",
   description:

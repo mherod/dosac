@@ -6,12 +6,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { DualCaptionEditor } from "./dual-caption-editor";
 
-// Enable static generation with dynamic fallback
-export const dynamicParams = true;
-
-// Revalidate every hour for non-static pages
-export const revalidate = 3600;
-
 /**
  * Generates static params for the most important frame pairs at build time
  * Limited to 600 pairs for faster builds, with dynamic fallback for remaining combinations

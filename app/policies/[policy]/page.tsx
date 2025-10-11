@@ -15,9 +15,6 @@ import {
 import { getFrameById } from "@/lib/frames.server";
 import Image from "next/image";
 
-export const dynamic = "force-static";
-export const revalidate = 3600;
-
 type Props = {
   params: Promise<{ policy: string }>;
 };

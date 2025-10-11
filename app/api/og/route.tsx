@@ -1,8 +1,6 @@
 import { ImageResponse } from "@vercel/og";
 import type { NextRequest } from "next/server";
 
-export const runtime = "edge";
-
 /**
  * Generates CSS text-shadow value for text outline effect
  * @param width - Width of the outline in pixels
