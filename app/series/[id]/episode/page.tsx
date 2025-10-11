@@ -5,7 +5,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 /**
- * Generates static params for all episode pages at build time
+ * Generates static parameters for all episode list pages at build time
+ * Creates paths for each series to enable ISR for episode list pages
+ * @returns Array of objects containing series IDs for static path generation
  */
 export async function generateStaticParams(): Promise<{ id: string }[]> {
   const allSeries = getAllSeries();

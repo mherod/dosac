@@ -1,6 +1,6 @@
-import * as fs from "node:fs/promises";
-import * as fastGlob from "fast-glob";
-import * as sharp from "sharp";
+import fs from "node:fs/promises";
+import fastGlob from "fast-glob";
+import sharp from "sharp";
 
 const MAX_WIDTH = 500;
 
@@ -25,7 +25,7 @@ async function resizeImages() {
       }
 
       // Resize the image and overwrite the original
-      await image
+      const buffer = await image
         .resize(MAX_WIDTH, null, {
           fit: "inside",
           withoutEnlargement: true,
@@ -34,8 +34,9 @@ async function resizeImages() {
           quality: 85,
           mozjpeg: true,
         })
-        .toBuffer()
-        .then((buffer: Buffer) => fs.writeFile(imagePath, buffer));
+        .toBuffer();
+
+      await fs.writeFile(imagePath, buffer);
 
       console.log(
         `Resized ${imagePath} from ${metadata.width}px to ${MAX_WIDTH}px`,
