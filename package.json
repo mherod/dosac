@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Face detection and clustering for The Thick of It quotes and scenes",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
