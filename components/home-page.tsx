@@ -1,73 +1,66 @@
-"use client";
-
 import { FrameStrip } from "@/components/frame-strip";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import type { Frame } from "@/lib/frames";
 import type React from "react";
-import { Suspense, Component } from "react";
 
-// Error boundary component for better error handling
-class HomePageErrorBoundary extends Component<
-  { children: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(): { hasError: boolean } {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error("HomePage error:", error, errorInfo);
-  }
-
-  render(): React.ReactNode {
-    if (this.state.hasError) {
-      return (
-        <div
-          className="container mx-auto px-4 py-8"
-          role="alert"
-          aria-live="polite"
-        >
-          <h2 className="mb-4 text-xl font-semibold">Something went wrong</h2>
-          <p className="text-muted-foreground">
-            There was an error loading the page. Please try refreshing.
-          </p>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
+/**
+ * Pagination data interface for navigation controls
+ */
 interface PaginationData {
+  /** Current page number */
   currentPage: number;
+  /** Total number of pages */
   totalPages: number;
+  /** Total number of items across all pages */
   totalItems: number;
+  /** Whether there is a next page */
   hasNextPage: boolean;
+  /** Whether there is a previous page */
   hasPrevPage: boolean;
 }
 
+/**
+ * Active filters interface
+ */
 interface Filters {
+  /** Selected season number */
   season?: number;
+  /** Selected episode number */
   episode?: number;
+  /** Search query string */
   query: string;
+  /** Current page number */
   page: number;
 }
 
+/**
+ * Props for the HomePage component
+ */
 interface HomePageProps {
+  /** Array of screenshots to display on current page */
   screenshots: Frame[];
+  /** Complete array of all screenshots for filtering */
   allScreenshots: Frame[];
+  /** Array of ranked/featured moments to highlight */
   rankedMoments: Frame[];
+  /** Current filter state */
   filters: Filters;
+  /** Pagination metadata */
   paginationData: PaginationData;
 }
 
-function HomePageContent({
+/**
+ * Server component for the home page layout and content
+ * Displays screenshot grid with pagination, stats, and frame strip
+ * @param props - The component props
+ * @param props.screenshots - Screenshots to display on current page
+ * @param props.allScreenshots - All screenshots for client-side operations
+ * @param props.rankedMoments - Featured moments to highlight (shown when no filters active)
+ * @param props.filters - Active filter state
+ * @param props.paginationData - Pagination metadata and controls
+ * @returns The complete home page content with grid and controls
+ */
+export function HomePage({
   screenshots,
   allScreenshots,
   rankedMoments,
@@ -105,37 +98,5 @@ function HomePageContent({
         <FrameStrip screenshots={screenshots.slice(0, 50)} frameWidth={192} />
       </div>
     </div>
-  );
-}
-
-export function HomePage(props: HomePageProps): React.ReactElement {
-  return (
-    <HomePageErrorBoundary>
-      <Suspense
-        fallback={
-          <div
-            className="container mx-auto px-4 py-8"
-            aria-live="polite"
-            aria-label="Loading content"
-          >
-            <div className="text-center">
-              <div className="animate-pulse">
-                <div className="mx-auto mb-4 h-4 w-1/4 rounded bg-gray-200" />
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div
-                      key={`skeleton-${i}`}
-                      className="aspect-video rounded bg-gray-200"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      >
-        <HomePageContent {...props} />
-      </Suspense>
-    </HomePageErrorBoundary>
   );
 }

@@ -1,4 +1,5 @@
 import { HomePage } from "@/components/home-page";
+import { HomePageSkeleton } from "@/components/home-page-skeleton";
 import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
@@ -215,23 +216,7 @@ export default function Home({ searchParams }: Props): React.ReactElement {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <Suspense
-          fallback={
-            <div className="container mx-auto px-4 py-8">
-              <div className="mb-8">
-                <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div
-                    key={`skeleton-${i}`}
-                    className="aspect-video animate-pulse rounded bg-gray-200"
-                  />
-                ))}
-              </div>
-            </div>
-          }
-        >
+        <Suspense fallback={<HomePageSkeleton />}>
           <HomeContent searchParams={searchParams} />
         </Suspense>
       </div>
