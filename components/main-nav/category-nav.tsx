@@ -45,9 +45,8 @@ export function CategoryNav({
             </div>
           </div>
           <div className="flex items-center">
-            <div className="text-xs text-white/60" suppressHydrationWarning>
-              Last updated: {new Date().toLocaleDateString("en-GB")} | System
-              ID: DQARS-2024
+            <div className="text-xs text-white/60">
+              Last updated: 11/10/2025 | System ID: DQARS-2024
             </div>
           </div>
         </div>
