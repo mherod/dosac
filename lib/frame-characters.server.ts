@@ -2,7 +2,7 @@ import "server-only";
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { cacheLife } from "next/cache";
+import { unstable_cacheLife } from "next/cache";
 
 /**
  * Interface for character information in a frame
@@ -57,7 +57,7 @@ export async function getCharactersForFrame(
   frameId: string,
 ): Promise<CharacterInFrame[] | null> {
   "use cache";
-  cacheLife("stable");
+  unstable_cacheLife("stable");
 
   const data = loadFrameCharactersData();
   const frameData = data[frameId];
@@ -85,7 +85,7 @@ export async function getFramesWithCharacter(
   characterName: string,
 ): Promise<string[]> {
   "use cache";
-  cacheLife("stable");
+  unstable_cacheLife("stable");
 
   const data = loadFrameCharactersData();
   return Object.keys(data).filter((frameId) =>
@@ -99,7 +99,7 @@ export async function getFramesWithCharacter(
  */
 export async function getCharacterStats(): Promise<Record<string, number>> {
   "use cache";
-  cacheLife("stable");
+  unstable_cacheLife("stable");
 
   const data = loadFrameCharactersData();
   const stats: Record<string, number> = {};

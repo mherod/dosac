@@ -12,4 +12,28 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 
-pnpm lint-staged
+echo "🏗️ Running pre-commit validations..."
+
+# Detect package manager
+if command -v pnpm >/dev/null 2>&1; then
+    PKG_MANAGER="pnpm"
+    PKG_EXEC="pnpm exec"
+    echo "📦 Using pnpm"
+elif command -v npm >/dev/null 2>&1; then
+    PKG_MANAGER="npm"
+    PKG_EXEC="npx"
+    echo "📦 Using npm"
+else
+    echo "❌ No package manager found (pnpm or npm required)"
+    exit 1
+fi
+
+# Run lint-staged first (format and lint staged files)
+echo "✨ Formatting and linting staged files..."
+$PKG_MANAGER run lint-staged || exit 1
+
+# Run type checking on entire project
+echo "📝 Type checking..."
+$PKG_EXEC tsc --noEmit || exit 1
+
+echo "✅ Pre-commit validations passed!"

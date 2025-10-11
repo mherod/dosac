@@ -2,7 +2,7 @@ import "server-only";
 
 import fs from "node:fs";
 import path from "node:path";
-import { cacheLife } from "next/cache";
+import { unstable_cacheLife } from "next/cache";
 import { InvalidFrameIdError } from "./frames";
 import type { Frame, ParsedFrameId } from "./frames";
 
@@ -44,7 +44,7 @@ export function validateFrameId(id: string): ParsedFrameId {
  */
 export async function getFrameById(id: string): Promise<Frame> {
   "use cache";
-  cacheLife("static");
+  unstable_cacheLife("static");
 
   const { season, timestamp } = validateFrameId(id);
 
@@ -99,7 +99,7 @@ export async function getFrameById(id: string): Promise<Frame> {
  */
 export async function getFrameIndex(): Promise<Frame[]> {
   "use cache";
-  cacheLife("stable");
+  unstable_cacheLife("stable");
 
   // Return cached index if available
   if (cachedFrameIndex) {

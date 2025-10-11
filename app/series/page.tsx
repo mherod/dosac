@@ -1,6 +1,6 @@
 import { AllSeriesPage } from "@/components/all-series-page";
 import { formatPageTitle } from "@/lib/constants";
-import { cacheLife } from "next/cache";
+import { unstable_cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import type React from "react";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  */
 export default async function SeriesPage(): Promise<React.ReactElement> {
   "use cache";
-  cacheLife("static");
+  unstable_cacheLife("static");
 
   return <AllSeriesPage />;
 }

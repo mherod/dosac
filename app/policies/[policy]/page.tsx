@@ -2,7 +2,7 @@ import { getServerPolicy, getServerPolicies } from "@/lib/policies.server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPolicyStatusColour } from "@/lib/policies";
-import { cacheLife } from "next/cache";
+import { unstable_cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -95,7 +95,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PolicyPage({ params }: Props) {
   "use cache";
-  cacheLife("static");
+  unstable_cacheLife("static");
 
   const { policy: policyId } = await params;
   const policy = await getServerPolicy(policyId);

@@ -1,6 +1,6 @@
 import { getServerPolicies } from "@/lib/policies.server";
 import { PolicyCard } from "@/components/policy-card";
-import { cacheLife } from "next/cache";
+import { unstable_cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 
 export default async function PoliciesPage() {
   "use cache";
-  cacheLife("static");
+  unstable_cacheLife("static");
 
   const policies = await getServerPolicies();
 

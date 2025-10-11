@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "lint:strict": "eslint .",
+    "lint-staged": "lint-staged",
     "biome:check": "biome check .",
     "biome:format": "biome format --write .",
     "biome:lint": "biome lint --write .",
