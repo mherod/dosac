@@ -54,6 +54,7 @@
     "@tanstack/react-virtual": "^3.13.11",
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
     "@tensorflow/tfjs-node": "^4.22.0",
+    "@unpic/placeholder": "^0.1.2",
     "@vercel/analytics": "^1.5.0",
     "@vercel/og": "^0.6.8",
     "@vladmandic/face-api": "^1.7.15",

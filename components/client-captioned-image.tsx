@@ -32,6 +32,8 @@ export interface CaptionedImageProps {
   autoToggle?: boolean;
   /** Whether to use relaxed line break rules */
   relaxedLineBreaks?: boolean;
+  /** Data URL to use as blur placeholder while image loads */
+  blurDataURL?: string;
 }
 
 /**
@@ -63,6 +65,7 @@ export function ClientCaptionedImage({
   maintainAspectRatio = false,
   autoToggle = false,
   relaxedLineBreaks = false,
+  blurDataURL,
 }: CaptionedImageProps): React.ReactElement | null {
   const containerRef = useRef<HTMLDivElement>(null);
   const { width } = useImageBounds(containerRef);
@@ -131,6 +134,8 @@ export function ClientCaptionedImage({
             className="pointer-events-none object-cover"
             sizes="(max-width: 1200px) 100vw, 1200px"
             priority={priority}
+            placeholder={blurDataURL ? "blur" : "empty"}
+            blurDataURL={blurDataURL}
             unoptimized
           />
         </motion.div>

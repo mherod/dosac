@@ -2,6 +2,7 @@
 
 import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
+import { getCharacterBlurPlaceholder } from "@/lib/character-colors";
 import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Check, Clapperboard, Clock } from "lucide-react";
@@ -189,6 +190,7 @@ export function FrameCard({
             caption={screenshot.speech}
             priority={priority}
             maintainAspectRatio={true}
+            blurDataURL={getCharacterBlurPlaceholder(screenshot.character)}
           />
 
           {/* Info chips positioned at the top */}
