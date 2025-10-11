@@ -1,5 +1,8 @@
+import "server-only";
+
 import fs from "node:fs";
 import path from "node:path";
+import { cacheLife } from "next/cache";
 import { InvalidFrameIdError } from "./frames";
 import type { Frame, ParsedFrameId } from "./frames";
 
@@ -40,6 +43,9 @@ export function validateFrameId(id: string): ParsedFrameId {
  * @throws InvalidFrameIdError if the frame doesn't exist or ID is invalid
  */
 export async function getFrameById(id: string): Promise<Frame> {
+  "use cache";
+  cacheLife("static");
+
   const { season, timestamp } = validateFrameId(id);
 
   // Try the new format first (all dashes)
@@ -92,6 +98,9 @@ export async function getFrameById(id: string): Promise<Frame> {
  * @returns Promise resolving to array of all frame data
  */
 export async function getFrameIndex(): Promise<Frame[]> {
+  "use cache";
+  cacheLife("stable");
+
   // Return cached index if available
   if (cachedFrameIndex) {
     return cachedFrameIndex;

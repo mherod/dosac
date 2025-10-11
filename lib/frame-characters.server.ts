@@ -1,5 +1,8 @@
+import "server-only";
+
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { cacheLife } from "next/cache";
 
 /**
  * Interface for character information in a frame
@@ -50,9 +53,12 @@ function loadFrameCharactersData(): FrameCharactersData {
  * @param frameId - The frame ID (e.g., "s03e01-08-24.000")
  * @returns Array of characters with confidence scores
  */
-export function getCharactersForFrame(
+export async function getCharactersForFrame(
   frameId: string,
-): CharacterInFrame[] | null {
+): Promise<CharacterInFrame[] | null> {
+  "use cache";
+  cacheLife("stable");
+
   const data = loadFrameCharactersData();
   const frameData = data[frameId];
 
@@ -75,7 +81,12 @@ export function getCharactersForFrame(
  * @param characterName - The name of the character
  * @returns Array of frame IDs
  */
-export function getFramesWithCharacter(characterName: string): string[] {
+export async function getFramesWithCharacter(
+  characterName: string,
+): Promise<string[]> {
+  "use cache";
+  cacheLife("stable");
+
   const data = loadFrameCharactersData();
   return Object.keys(data).filter((frameId) =>
     data[frameId]?.characters.includes(characterName),
@@ -86,7 +97,10 @@ export function getFramesWithCharacter(characterName: string): string[] {
  * Gets statistics about character appearances
  * @returns Record of character names to appearance counts
  */
-export function getCharacterStats(): Record<string, number> {
+export async function getCharacterStats(): Promise<Record<string, number>> {
+  "use cache";
+  cacheLife("stable");
+
   const data = loadFrameCharactersData();
   const stats: Record<string, number> = {};
 

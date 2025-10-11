@@ -2,11 +2,15 @@ import "server-only";
 
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { cacheLife } from "next/cache";
 import { PolicySchema, type Policy } from "./policies";
 
 const POLICIES_DIR = path.join(process.cwd(), "public", "policies");
 
 export async function getServerPolicies(): Promise<Policy[]> {
+  "use cache";
+  cacheLife("static");
+
   try {
     const indexPath = path.join(POLICIES_DIR, "index.json");
     const indexContent = await fs.readFile(indexPath, "utf-8");
@@ -34,6 +38,9 @@ export async function getServerPolicies(): Promise<Policy[]> {
 }
 
 export async function getServerPolicy(id: string): Promise<Policy | null> {
+  "use cache";
+  cacheLife("static");
+
   try {
     const policyPath = path.join(POLICIES_DIR, `${id}.json`);
     const content = await fs.readFile(policyPath, "utf-8");
@@ -46,11 +53,17 @@ export async function getServerPolicy(id: string): Promise<Policy | null> {
 }
 
 export async function getPoliciesByStatus(status: string): Promise<Policy[]> {
+  "use cache";
+  cacheLife("static");
+
   const policies = await getServerPolicies();
   return policies.filter((p) => p.status === status);
 }
 
 export async function getPoliciesByType(type: string): Promise<Policy[]> {
+  "use cache";
+  cacheLife("static");
+
   const policies = await getServerPolicies();
   return policies.filter((p) => p.type === type);
 }
@@ -58,6 +71,9 @@ export async function getPoliciesByType(type: string): Promise<Policy[]> {
 export async function getPoliciesByMinister(
   minister: string,
 ): Promise<Policy[]> {
+  "use cache";
+  cacheLife("static");
+
   const policies = await getServerPolicies();
   return policies.filter((p) =>
     p.minister.toLowerCase().includes(minister.toLowerCase()),
@@ -65,6 +81,9 @@ export async function getPoliciesByMinister(
 }
 
 export async function searchPolicies(query: string): Promise<Policy[]> {
+  "use cache";
+  cacheLife("static");
+
   const policies = await getServerPolicies();
   const lowerQuery = query.toLowerCase();
 

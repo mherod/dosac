@@ -10,6 +10,7 @@ import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { getCharactersForFrame } from "@/lib/frame-characters.server";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
+import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type React from "react";
@@ -106,6 +107,9 @@ export async function generateMetadata({
 export default async function Page({
   params,
 }: Pick<PageProps, "params">): Promise<React.ReactElement> {
+  "use cache";
+  cacheLife("static");
+
   const resolvedParams = await params;
 
   try {
@@ -113,7 +117,7 @@ export default async function Page({
     const frame = await getFrameById(resolvedParams.id);
 
     // Load character information for this frame
-    const characters = getCharactersForFrame(frame.id);
+    const characters = await getCharactersForFrame(frame.id);
 
     // Pre-calculate frame strip data server-side for maximum prerendering
     const index = await getFrameIndex();

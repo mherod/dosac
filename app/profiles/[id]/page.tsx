@@ -20,6 +20,7 @@ import {
 } from "@/lib/profiles";
 import { generateCharacterStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
+import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -318,6 +319,9 @@ export default async function CharacterProfile({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<React.ReactElement> {
+  "use cache";
+  cacheLife("static");
+
   const { id } = await params;
   const character = characters[id];
 

@@ -1,6 +1,7 @@
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { generateMultiFrameMetadata } from "@/lib/metadata";
+import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -130,6 +131,9 @@ export default async function Page({
   params,
   searchParams,
 }: PageProps): Promise<React.ReactElement> {
+  "use cache";
+  cacheLife("static");
+
   const [resolvedParams, resolvedSearch] = await Promise.all([
     params,
     searchParams,
