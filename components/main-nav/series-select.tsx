@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import type React from "react";
-import { forwardRef } from "react";
 
 /**
  * Props for the SeriesSelect component
@@ -27,57 +26,6 @@ interface SeriesSelectProps {
   /** When true, uses filter callbacks instead of navigation */
   isSearchMode?: boolean;
 }
-
-/**
- * Props for the SelectOption component
- * @interface SelectOptionProps
- */
-interface SelectOptionProps {
-  /** Value to be passed to the select component on selection */
-  value: string;
-  /** Optional URL for linking the option to a route */
-  href?: string;
-  /** Content to display within the option */
-  children: React.ReactNode;
-  /** Additional CSS classes to apply to the option */
-  className?: string;
-}
-
-/**
- * Renders a select option that can optionally be wrapped in a link
- * @component
- * @param props - Component props
- * @param props.value - Value for the select option
- * @param props.href - Optional href for linking the option
- * @param props.children - Content to display in the option
- * @param props.className - Additional CSS classes
- * @param ref - Forwarded ref for the select item
- * @returns A select option component, optionally wrapped in a link
- */
-const SelectOption = forwardRef<
-  React.ComponentRef<typeof SelectItem>,
-  SelectOptionProps
->(
-  (
-    { value, href, children, className }: SelectOptionProps,
-    ref: React.ForwardedRef<React.ComponentRef<typeof SelectItem>>,
-  ): React.ReactElement => {
-    if (href) {
-      return (
-        <SelectItem ref={ref} value={value} className={className}>
-          {children}
-        </SelectItem>
-      );
-    }
-
-    return (
-      <SelectItem ref={ref} value={value} className={className}>
-        {children}
-      </SelectItem>
-    );
-  },
-);
-SelectOption.displayName = "SelectOption";
 
 /**
  * A dual select component for choosing series and episode numbers
@@ -160,27 +108,26 @@ export function SeriesSelect({
         <SelectContent>
           {isSearchMode ? (
             <>
-              <SelectOption value="all">All Series</SelectOption>
+              <SelectItem value="all">All Series</SelectItem>
               {[1, 2, 3, 4].map((s: number) => (
-                <SelectOption key={s} value={s.toString()}>
+                <SelectItem key={s} value={s.toString()}>
                   Series {s}
-                </SelectOption>
+                </SelectItem>
               ))}
             </>
           ) : (
             <>
-              <Link href="/series" scroll={false} className="block w-full">
-                <SelectOption value="all">All Series</SelectOption>
-              </Link>
-              {[1, 2, 3, 4].map((s: number) => (
-                <Link
-                  key={s}
-                  href={`/series/${s}`}
-                  scroll={false}
-                  className="block w-full"
-                >
-                  <SelectOption value={s.toString()}>Series {s}</SelectOption>
+              <SelectItem value="all" asChild>
+                <Link href="/series" scroll={false}>
+                  All Series
                 </Link>
+              </SelectItem>
+              {[1, 2, 3, 4].map((s: number) => (
+                <SelectItem key={s} value={s.toString()} asChild>
+                  <Link href={`/series/${s}`} scroll={false}>
+                    Series {s}
+                  </Link>
+                </SelectItem>
               ))}
             </>
           )}
@@ -198,35 +145,34 @@ export function SeriesSelect({
         <SelectContent>
           {isSearchMode ? (
             <>
-              <SelectOption value="all">All Episodes</SelectOption>
+              <SelectItem value="all">All Episodes</SelectItem>
               {season &&
                 [1, 2, 3].map((ep: number) => (
-                  <SelectOption key={ep} value={ep.toString()}>
+                  <SelectItem key={ep} value={ep.toString()}>
                     Episode {ep}
-                  </SelectOption>
+                  </SelectItem>
                 ))}
             </>
           ) : (
             <>
-              <Link
-                href={season ? `/series/${season}` : "/series"}
-                scroll={false}
-                className="block w-full"
-              >
-                <SelectOption value="all">All Episodes</SelectOption>
-              </Link>
+              <SelectItem value="all" asChild>
+                <Link
+                  href={season ? `/series/${season}` : "/series"}
+                  scroll={false}
+                >
+                  All Episodes
+                </Link>
+              </SelectItem>
               {season &&
                 [1, 2, 3].map((ep: number) => (
-                  <Link
-                    key={ep}
-                    href={`/series/${season}/episode/${ep}`}
-                    scroll={false}
-                    className="block w-full"
-                  >
-                    <SelectOption value={ep.toString()}>
+                  <SelectItem key={ep} value={ep.toString()} asChild>
+                    <Link
+                      href={`/series/${season}/episode/${ep}`}
+                      scroll={false}
+                    >
                       Episode {ep}
-                    </SelectOption>
-                  </Link>
+                    </Link>
+                  </SelectItem>
                 ))}
             </>
           )}
