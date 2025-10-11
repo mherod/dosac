@@ -13,6 +13,7 @@ import nicola from "@/public/characters/nicola2.jpg";
 import ollie from "@/public/characters/ollie.png";
 import peter from "@/public/characters/peter.jpg";
 import phil_smith from "@/public/characters/phil_smith.jpg";
+import robyn from "@/public/characters/robyn.jpg";
 import steve from "@/public/characters/steve.jpg";
 import stewart from "@/public/characters/stewart.png";
 import terri from "@/public/characters/terri.webp";
@@ -2001,6 +2002,7 @@ export const characters: Record<string, Character> = {
     fullName: "Robyn Murdoch",
     description:
       "Senior Press Officer at DoSAC (Civil Service), relegated to secretarial duties",
+    image: robyn,
     department: [DEPARTMENTS.DOSAC],
     role: [ROLES.CIVIL_SERVANT],
     personal: {
