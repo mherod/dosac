@@ -9,7 +9,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { CACHE_DIRS, PRIMARY_CACHE_DIR } from "./config";
+import { CACHE_DIRS, CACHE_FILE_PATTERN, PRIMARY_CACHE_DIR } from "./config";
 import type { AttributeConfidence, FaceAttributes } from "./face-attributes";
 import { generateFaceEmbedding } from "./face-embedding";
 
@@ -253,7 +253,7 @@ export function searchCache(
 }
 
 // Helper function to calculate cosine similarity
-function cosineSimilarity(a: number[], b: number[]): number {
+export function cosineSimilarity(a: number[], b: number[]): number {
   const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
   const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
   const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));

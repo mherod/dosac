@@ -3,6 +3,9 @@ import path from "node:path";
 import { InvalidFrameIdError } from "./frames";
 import type { Frame, ParsedFrameId } from "./frames";
 
+// Cache the frame index in memory
+let cachedFrameIndex: Frame[] | null = null;
+
 /**
  * Validates and parses a frame ID into its components
  * @param id - The frame ID to validate (format: s01e01-00-00-00.000)
@@ -89,6 +92,11 @@ export async function getFrameById(id: string): Promise<Frame> {
  * @returns Promise resolving to array of all frame data
  */
 export async function getFrameIndex(): Promise<Frame[]> {
+  // Return cached index if available
+  if (cachedFrameIndex) {
+    return cachedFrameIndex;
+  }
+
   const indexPath = path.join(process.cwd(), "public", "frame-index.json");
 
   // Try to use prebuilt index first
@@ -97,6 +105,7 @@ export async function getFrameIndex(): Promise<Frame[]> {
       const indexContent = fs.readFileSync(indexPath, "utf-8");
       const frames: Frame[] = JSON.parse(indexContent);
       console.log(`Loaded ${frames.length} frames from prebuilt index`);
+      cachedFrameIndex = frames;
       return frames;
     } catch (error) {
       console.error(
@@ -139,5 +148,6 @@ export async function getFrameIndex(): Promise<Frame[]> {
     }
   }
 
+  cachedFrameIndex = frames;
   return frames;
 }

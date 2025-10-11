@@ -21,12 +21,19 @@ interface Screenshot {
   character: string;
 }
 
+interface CharacterInFrame {
+  name: string;
+  confidence: number;
+}
+
 interface CaptionEditorProps {
   screenshot: Screenshot;
+  characters?: CharacterInFrame[] | null;
 }
 
 export function CaptionEditor({
   screenshot,
+  characters,
 }: CaptionEditorProps): React.ReactElement {
   const imageRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
@@ -130,7 +137,9 @@ export function CaptionEditor({
                   Character
                 </p>
                 <p className="text-sm font-medium">
-                  {screenshot.character || "Unknown"}
+                  {characters && characters.length > 0
+                    ? characters.map((c) => c.name).join(", ")
+                    : screenshot.character || "Unknown"}
                 </p>
               </div>
               <div className="flex items-center justify-between">

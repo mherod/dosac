@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Frame Characters Data Structure",
+  "description": "Maps video frames to detected characters with metadata",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Schema version"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "totalFrames": {
+          "type": "number"
+        },
+        "totalCharacters": {
+          "type": "number"
+        },
+        "clusterThreshold": {
+          "type": "number",
+          "description": "Similarity threshold used for clustering"
+        }
+      }
+    },
+    "characters": {
+      "type": "object",
+      "description": "Character definitions from clustering",
+      "patternProperties": {
+        "^cluster-[0-9]+$": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Cluster ID"
+            },
+            "name": {
+              "type": "string",
+              "description": "Character name (e.g., 'Malcolm Tucker')"
+            },
+            "appearances": {
+              "type": "number",
+              "description": "Total number of frame appearances"
+            },
+            "episodes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^s[0-9]{2}e[0-9]{2}$"
+              },
+              "description": "Episodes where character appears"
+            },
+            "avgConfidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Average cluster similarity confidence"
+            }
+          },
+          "required": ["id", "name", "appearances", "episodes", "avgConfidence"]
+        }
+      }
+    },
+    "frames": {
+      "type": "object",
+      "description": "Frame-to-character mappings",
+      "patternProperties": {
+        "^s[0-9]{2}e[0-9]{2}-[0-9]{2}-[0-9]{2}\\.[0-9]{3}$": {
+          "type": "object",
+          "properties": {
+            "frameId": {
+              "type": "string",
+              "description": "Frame identifier (e.g., 's01e01-00-03.120')"
+            },
+            "imagePath": {
+              "type": "string",
+              "description": "Relative path to frame image"
+            },
+            "characters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Character name"
+                  },
+                  "clusterId": {
+                    "type": "string",
+                    "pattern": "^cluster-[0-9]+$"
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "bbox": {
+                    "type": "object",
+                    "description": "Face bounding box",
+                    "properties": {
+                      "x": { "type": "number" },
+                      "y": { "type": "number" },
+                      "width": { "type": "number" },
+                      "height": { "type": "number" }
+                    }
+                  }
+                },
+                "required": ["name", "clusterId", "confidence"]
+              }
+            },
+            "faceCount": {
+              "type": "number",
+              "description": "Total number of faces detected"
+            }
+          },
+          "required": ["frameId", "characters", "faceCount"]
+        }
+      }
+    }
+  },
+  "required": ["metadata", "characters", "frames"]
+}

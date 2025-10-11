@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generatedAt": "2025-10-11T14:30:00.000Z",
+    "totalFrames": 7226,
+    "totalCharacters": 9,
+    "clusterThreshold": 0.75
+  },
+  "characters": {
+    "cluster-1": {
+      "id": "cluster-1",
+      "name": "Malcolm Tucker",
+      "appearances": 2717,
+      "episodes": [
+        "s01e01",
+        "s01e02",
+        "s01e03",
+        "s02e01",
+        "s02e02",
+        "s02e03",
+        "s03e01",
+        "s03e02",
+        "s03e03",
+        "s03e04"
+      ],
+      "avgConfidence": 0.97
+    },
+    "cluster-2": {
+      "id": "cluster-2",
+      "name": "Nicola Murray",
+      "appearances": 1598,
+      "episodes": [
+        "s01e01",
+        "s01e02",
+        "s01e03",
+        "s02e01",
+        "s02e02",
+        "s02e03",
+        "s03e01",
+        "s03e02",
+        "s03e03",
+        "s03e04"
+      ],
+      "avgConfidence": 0.95
+    },
+    "cluster-3": {
+      "id": "cluster-3",
+      "name": "Unknown Character 3",
+      "appearances": 1108,
+      "episodes": [
+        "s01e01",
+        "s01e02",
+        "s01e03",
+        "s02e01",
+        "s02e02",
+        "s02e03",
+        "s03e01",
+        "s03e02",
+        "s03e03",
+        "s03e04"
+      ],
+      "avgConfidence": 0.96
+    }
+  },
+  "frames": {
+    "s03e01-08-24.000": {
+      "frameId": "s03e01-08-24.000",
+      "imagePath": "/frames/s03e01/08-24.000/frame-blank.webp",
+      "characters": [
+        {
+          "name": "Malcolm Tucker",
+          "clusterId": "cluster-1",
+          "confidence": 0.98,
+          "bbox": {
+            "x": 290.3,
+            "y": 25.3,
+            "width": 126.9,
+            "height": 171.9
+          }
+        }
+      ],
+      "faceCount": 1
+    },
+    "s03e03-13-52.040": {
+      "frameId": "s03e03-13-52.040",
+      "imagePath": "/frames/s03e03/13-52.040/frame-blank2.webp",
+      "characters": [
+        {
+          "name": "Unknown Character 3",
+          "clusterId": "cluster-3",
+          "confidence": 0.97,
+          "bbox": {
+            "x": 162.1,
+            "y": 41.6,
+            "width": 42.8,
+            "height": 49.1
+          }
+        },
+        {
+          "name": "Malcolm Tucker",
+          "clusterId": "cluster-1",
+          "confidence": 0.93,
+          "bbox": {
+            "x": 208.0,
+            "y": 59.1,
+            "width": 37.0,
+            "height": 51.3
+          }
+        },
+        {
+          "name": "Nicola Murray",
+          "clusterId": "cluster-2",
+          "confidence": 0.76,
+          "bbox": {
+            "x": 376.5,
+            "y": 30.4,
+            "width": 24.6,
+            "height": 51.9
+          }
+        }
+      ],
+      "faceCount": 3
+    },
+    "s01e01-00-03.120": {
+      "frameId": "s01e01-00-03.120",
+      "imagePath": "/frames/s01e01/00-03.120/frame-blank.webp",
+      "characters": [
+        {
+          "name": "Malcolm Tucker",
+          "clusterId": "cluster-1",
+          "confidence": 0.94
+        },
+        {
+          "name": "Unknown Character 3",
+          "clusterId": "cluster-3",
+          "confidence": 0.89
+        }
+      ],
+      "faceCount": 2
+    }
+  }
+}

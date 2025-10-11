@@ -1,131 +1,108 @@
-import { loadModels } from "./model-loader";
-import * as tf from "./tensorflow-setup";
+import "server-only";
+
+import { readFileSync } from "node:fs";
+import { Canvas, ImageData } from "@napi-rs/canvas";
+import sharp from "sharp";
+import { faceapi, loadModels } from "./model-loader";
 
 export interface FacePrediction {
   topLeft: [number, number];
   bottomRight: [number, number];
   probability: number;
+  descriptor?: number[];
+  age?: number;
+  gender?: string;
+  genderProbability?: number;
 }
 
 /**
- *
+ * Face detector using face-api.js
  */
 export class FaceDetector {
-  private blazefaceModel: tf.GraphModel | null = null;
-  private mobileNet: tf.GraphModel | null = null;
+  private initialized = false;
 
   async initialize() {
-    if (!this.blazefaceModel || !this.mobileNet) {
-      const models = await loadModels();
-      this.blazefaceModel = models.blazefaceModel;
-      this.mobileNet = models.mobileNet;
+    if (!this.initialized) {
+      await loadModels();
+      this.initialized = true;
     }
   }
 
-  async detect(image: tf.Tensor3D): Promise<FacePrediction[]> {
-    if (!this.blazefaceModel) {
+  async detect(imagePath: string): Promise<FacePrediction[]> {
+    if (!this.initialized) {
       throw new Error("Face detector not initialized");
     }
 
-    const predictions = (await this.blazefaceModel.predict(
-      tf.expandDims(image, 0),
-    )) as tf.Tensor2D;
+    try {
+      // Load and decode image using sharp
+      const imageBuffer = readFileSync(imagePath);
+      const { data, info } = await sharp(imageBuffer)
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
 
-    const faces = await this.processPredictions(predictions);
-    predictions.dispose();
+      // Create canvas and put image data
+      const canvas = new Canvas(info.width, info.height);
+      const ctx = canvas.getContext("2d");
+      const imageData = new ImageData(
+        new Uint8ClampedArray(data),
+        info.width,
+        info.height,
+      );
+      ctx.putImageData(imageData, 0, 0);
 
-    return faces;
+      // Detect faces with landmarks, descriptors, and age/gender
+      const detections = await faceapi
+        .detectAllFaces(canvas as any)
+        .withFaceLandmarks()
+        .withFaceDescriptors()
+        .withAgeAndGender();
+
+      return detections.map((detection) => {
+        const box = detection.detection.box;
+        return {
+          topLeft: [box.x, box.y] as [number, number],
+          bottomRight: [box.x + box.width, box.y + box.height] as [
+            number,
+            number,
+          ],
+          probability: detection.detection.score,
+          descriptor: Array.from(detection.descriptor),
+          age: detection.age,
+          gender: detection.gender,
+          genderProbability: detection.genderProbability,
+        };
+      });
+    } catch (error) {
+      console.error(`Error detecting faces in ${imagePath}:`, error);
+      return [];
+    }
   }
 
   async generateEmbedding(
-    image: tf.Tensor3D,
-    face: FacePrediction,
+    imagePath: string,
+    faceIndex: number = 0,
   ): Promise<number[]> {
-    if (!this.mobileNet) {
-      throw new Error("MobileNet not initialized");
+    if (!this.initialized) {
+      throw new Error("Face detector not initialized");
     }
 
-    // Extract and preprocess face region
-    const faceRegion = this.extractFaceRegion(image, face);
-    const preprocessed = this.preprocessForMobileNet(faceRegion);
-    faceRegion.dispose();
+    try {
+      const detections = await this.detect(imagePath);
+      if (detections.length === 0 || !detections[faceIndex]) {
+        throw new Error("No face detected");
+      }
 
-    // Generate embedding
-    const embedding = this.mobileNet.predict(preprocessed) as tf.Tensor2D;
-    preprocessed.dispose();
+      const descriptor = detections[faceIndex].descriptor;
+      if (!descriptor) {
+        throw new Error("No descriptor generated");
+      }
 
-    const embeddingData = await embedding.data();
-    embedding.dispose();
-
-    return Array.from(embeddingData);
-  }
-
-  private async processPredictions(
-    predictions: tf.Tensor2D,
-  ): Promise<FacePrediction[]> {
-    const [boxes, scores] = tf.tidy(() => {
-      const [boxes, scores] = tf.unstack(predictions, 2);
-      const nms = tf.image.nonMaxSuppression(
-        boxes as tf.Tensor2D,
-        scores as tf.Tensor1D,
-        100, // maxOutputSize
-        0.3, // iouThreshold
-        0.75, // scoreThreshold
+      return descriptor;
+    } catch (error) {
+      throw new Error(
+        `Failed to generate embedding: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
-      return [
-        tf.gather(boxes, nms).arraySync() as number[][],
-        tf.gather(scores, nms).arraySync() as number[],
-      ];
-    });
-
-    return boxes.map((box, i) => ({
-      topLeft: [box[0], box[1]] as [number, number],
-      bottomRight: [box[2], box[3]] as [number, number],
-      probability: scores[i],
-    }));
-  }
-
-  private extractFaceRegion(
-    image: tf.Tensor3D,
-    face: FacePrediction,
-  ): tf.Tensor3D {
-    return tf.tidy(() => {
-      const [startY, startX] = face.topLeft;
-      const [endY, endX] = face.bottomRight;
-      const height = endY - startY;
-      const width = endX - startX;
-
-      // Add padding
-      const padding = Math.min(width, height) * 0.2;
-      const paddedStartX = Math.max(0, startX - padding);
-      const paddedStartY = Math.max(0, startY - padding);
-      const paddedWidth = Math.min(
-        image.shape[1] - paddedStartX,
-        width + padding * 2,
-      );
-      const paddedHeight = Math.min(
-        image.shape[0] - paddedStartY,
-        height + padding * 2,
-      );
-
-      return tf.slice(
-        image,
-        [Math.round(paddedStartY), Math.round(paddedStartX), 0],
-        [Math.round(paddedHeight), Math.round(paddedWidth), 3],
-      );
-    });
-  }
-
-  private preprocessForMobileNet(image: tf.Tensor3D): tf.Tensor4D {
-    return tf.tidy(() => {
-      // Resize to MobileNet input size
-      const resized = tf.image.resizeBilinear(image, [224, 224]);
-
-      // Normalize to [-1, 1]
-      const normalized = tf.sub(tf.div(resized, 127.5), 1);
-
-      // Add batch dimension
-      return tf.expandDims(normalized, 0);
-    });
+    }
   }
 }

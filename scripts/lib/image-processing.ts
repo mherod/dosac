@@ -1,3 +1,5 @@
+// import "server-only"; // Removed for standalone script execution
+
 import "server-only";
 
 import * as sharp from "sharp";

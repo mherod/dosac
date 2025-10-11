@@ -7,6 +7,7 @@ import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { getFrameById, getFrameIndex } from "@/lib/frames.server";
+import { getCharactersForFrame } from "@/lib/frame-characters.server";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
 import type { Metadata } from "next";
@@ -120,6 +121,9 @@ export default async function Page({
     // Optimize data fetching with a single frame lookup followed by efficient index operations
     const frame = await getFrameById(resolvedParams.id);
 
+    // Load character information for this frame
+    const characters = getCharactersForFrame(frame.id);
+
     // Pre-calculate frame strip data server-side for maximum prerendering
     const index = await getFrameIndex();
     const currentIndex = index.findIndex((f: Screenshot) => f.id === frame.id);
@@ -165,7 +169,7 @@ export default async function Page({
               />
             </AnimatedFrameStripWrapper>
             <AnimatedCaptionEditorWrapper>
-              <DynamicCaptionEditor frame={frame} />
+              <DynamicCaptionEditor frame={frame} characters={characters} />
             </AnimatedCaptionEditorWrapper>
           </AnimatedCaptionPage>
         </CaptionPageLayout>
