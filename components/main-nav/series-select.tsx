@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type React from "react";
 
 /**
@@ -62,6 +62,8 @@ export function SeriesSelect({
   className = "",
   isSearchMode = false,
 }: SeriesSelectProps): React.ReactElement {
+  const router = useRouter();
+
   /**
    * Handles changes to the series selection
    * @param value - The new series value
@@ -75,8 +77,14 @@ export function SeriesSelect({
         season: newSeason,
         episode: newSeason ? episode : undefined,
       });
+    } else {
+      // In navigation mode, navigate to the appropriate route
+      if (value === "all") {
+        router.push("/series");
+      } else {
+        router.push(`/series/${value}`);
+      }
     }
-    // In navigation mode, the Link components handle navigation
   };
 
   /**
@@ -92,8 +100,14 @@ export function SeriesSelect({
         season,
         episode: newEpisode,
       });
+    } else {
+      // In navigation mode, navigate to the appropriate route
+      if (value === "all") {
+        router.push(season ? `/series/${season}` : "/series");
+      } else {
+        router.push(`/series/${season}/episode/${value}`);
+      }
     }
-    // In navigation mode, the Link components handle navigation
   };
 
   return (
@@ -106,31 +120,12 @@ export function SeriesSelect({
           <SelectValue placeholder="All Series" />
         </SelectTrigger>
         <SelectContent>
-          {isSearchMode ? (
-            <>
-              <SelectItem value="all">All Series</SelectItem>
-              {[1, 2, 3, 4].map((s: number) => (
-                <SelectItem key={s} value={s.toString()}>
-                  Series {s}
-                </SelectItem>
-              ))}
-            </>
-          ) : (
-            <>
-              <SelectItem value="all" asChild>
-                <Link href="/series" scroll={false}>
-                  All Series
-                </Link>
-              </SelectItem>
-              {[1, 2, 3, 4].map((s: number) => (
-                <SelectItem key={s} value={s.toString()} asChild>
-                  <Link href={`/series/${s}`} scroll={false}>
-                    Series {s}
-                  </Link>
-                </SelectItem>
-              ))}
-            </>
-          )}
+          <SelectItem value="all">All Series</SelectItem>
+          {[1, 2, 3, 4].map((s: number) => (
+            <SelectItem key={s} value={s.toString()}>
+              Series {s}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
@@ -143,39 +138,13 @@ export function SeriesSelect({
           <SelectValue placeholder="All Episodes" />
         </SelectTrigger>
         <SelectContent>
-          {isSearchMode ? (
-            <>
-              <SelectItem value="all">All Episodes</SelectItem>
-              {season &&
-                [1, 2, 3].map((ep: number) => (
-                  <SelectItem key={ep} value={ep.toString()}>
-                    Episode {ep}
-                  </SelectItem>
-                ))}
-            </>
-          ) : (
-            <>
-              <SelectItem value="all" asChild>
-                <Link
-                  href={season ? `/series/${season}` : "/series"}
-                  scroll={false}
-                >
-                  All Episodes
-                </Link>
+          <SelectItem value="all">All Episodes</SelectItem>
+          {season &&
+            [1, 2, 3].map((ep: number) => (
+              <SelectItem key={ep} value={ep.toString()}>
+                Episode {ep}
               </SelectItem>
-              {season &&
-                [1, 2, 3].map((ep: number) => (
-                  <SelectItem key={ep} value={ep.toString()} asChild>
-                    <Link
-                      href={`/series/${season}/episode/${ep}`}
-                      scroll={false}
-                    >
-                      Episode {ep}
-                    </Link>
-                  </SelectItem>
-                ))}
-            </>
-          )}
+            ))}
         </SelectContent>
       </Select>
     </div>
