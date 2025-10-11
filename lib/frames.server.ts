@@ -8,6 +8,7 @@ import type { Frame, ParsedFrameId } from "./frames";
 
 // Cache the frame index in memory
 let cachedFrameIndex: Frame[] | null = null;
+let hasLoggedIndexLoad = false;
 
 /**
  * Validates and parses a frame ID into its components
@@ -94,19 +95,9 @@ export async function getFrameById(id: string): Promise<Frame> {
 }
 
 /**
- * Retrieves all frames from the prebuilt index file
- * Falls back to filesystem scanning if index doesn't exist
- * @returns Promise resolving to array of all frame data
+ * Internal function to load frames from disk (called once and cached)
  */
-export async function getFrameIndex(): Promise<Frame[]> {
-  "use cache";
-  unstable_cacheLife("stable");
-
-  // Return cached index if available
-  if (cachedFrameIndex) {
-    return cachedFrameIndex;
-  }
-
+function loadFrameIndexFromDisk(): Frame[] {
   const indexPath = path.join(process.cwd(), "public", "frame-index.json");
 
   // Try to use prebuilt index first
@@ -114,8 +105,13 @@ export async function getFrameIndex(): Promise<Frame[]> {
     try {
       const indexContent = fs.readFileSync(indexPath, "utf-8");
       const frames: Frame[] = JSON.parse(indexContent);
-      console.log(`Loaded ${frames.length} frames from prebuilt index`);
-      cachedFrameIndex = frames;
+
+      // Only log once per worker process to reduce build noise
+      if (!hasLoggedIndexLoad) {
+        console.log(`Loaded ${frames.length} frames from prebuilt index`);
+        hasLoggedIndexLoad = true;
+      }
+
       return frames;
     } catch (error) {
       console.error(
@@ -143,21 +139,55 @@ export async function getFrameIndex(): Promise<Frame[]> {
     const timestamps = fs.readdirSync(seasonDir);
 
     for (const timestamp of timestamps) {
-      if (!fs.statSync(path.join(seasonDir, timestamp)).isDirectory()) continue;
+      const timestampDir = path.join(seasonDir, timestamp);
+      if (!fs.statSync(timestampDir).isDirectory()) continue;
 
       // Normalize timestamp to URL-safe format (replace colons with dashes)
       const urlSafeTimestamp = timestamp.replace(/:/g, "-");
       const id = `${season}-${urlSafeTimestamp}`;
 
       try {
-        const frame = await getFrameById(id);
-        frames.push(frame);
+        // Read speech directly from filesystem
+        const speechPath = path.join(timestampDir, "speech.txt");
+        if (!fs.existsSync(speechPath)) continue;
+
+        const speech = fs.readFileSync(speechPath, "utf-8").trim();
+
+        frames.push({
+          id,
+          imageUrl: `/frames/${season}/${urlSafeTimestamp}/frame-blank.webp`,
+          image2Url: `/frames/${season}/${urlSafeTimestamp}/frame-blank2.webp`,
+          timestamp: urlSafeTimestamp,
+          subtitle: speech,
+          speech,
+          episode: season,
+          character: "",
+        });
       } catch (error) {
         console.error(`Error loading frame ${id}:`, error);
       }
     }
   }
 
-  cachedFrameIndex = frames;
   return frames;
+}
+
+/**
+ * Retrieves all frames from the prebuilt index file
+ * Falls back to filesystem scanning if index doesn't exist
+ * Uses singleton pattern to ensure only one load per worker process
+ * @returns Promise resolving to array of all frame data
+ */
+export async function getFrameIndex(): Promise<Frame[]> {
+  "use cache";
+  unstable_cacheLife("stable");
+
+  // Return cached index if available (singleton pattern)
+  if (cachedFrameIndex) {
+    return cachedFrameIndex;
+  }
+
+  // Load from disk and cache
+  cachedFrameIndex = loadFrameIndexFromDisk();
+  return cachedFrameIndex;
 }
