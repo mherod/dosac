@@ -1,5 +1,3 @@
-"use client";
-
 import crown from "@/public/crown.png";
 import Image from "next/image";
 import Link from "next/link";

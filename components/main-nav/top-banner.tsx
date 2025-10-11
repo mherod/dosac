@@ -1,5 +1,3 @@
-"use client";
-
 import { HelpCircle, Lock } from "lucide-react";
 import type React from "react";
 

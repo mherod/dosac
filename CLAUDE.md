@@ -14,18 +14,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Tech Stack
 
 - **Package manager**: pnpm (use pnpm, not npm/yarn)
+- **Node.js**: >= 18.0.0 required
 - **Runtime**: Next.js 16.0.0-canary.1 + React 19.3 canary with experimental features:
   - `cacheComponents` - Enables composable caching with "use cache"
   - `cacheLife` - Cache revalidation policies
-  - `serverActions` - Server actions support
+  - `serverActions` - Server actions support (2mb body size limit)
   - `optimisticClientCache` - Client-side optimistic updates
   - PPR (`ppr: 'incremental'`) - Partial Prerendering for mixed static/dynamic
 - **Styling**: TailwindCSS with tailwind-merge utility (cn function) from lib/utils
-- **UI Components**: Radix UI primitives
-- **ML/AI**: TensorFlow.js (@tensorflow/tfjs-node) with MediaPipe face mesh
+- **UI Components**: Radix UI primitives (shadcn/ui)
+- **ML/AI**: TensorFlow.js (@tensorflow/tfjs-node) with MediaPipe face mesh, face-api.js with SSD MobileNet v1 and FaceNet
 - **Build**: ESLint 9 + Biome + Prettier, strict mode (lint errors fail build)
   - Production builds use webpack (`pnpm build` runs `next build --webpack`)
   - Dev server uses Turbopack (`pnpm dev` runs `next dev --turbo`)
+  - Static page generation timeout: 300 seconds (5 minutes)
 - **Code Style**: 2-space indentation, 80 char line width, double quotes, trailing commas, semicolons always
 
 ## Application Architecture
@@ -92,6 +94,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Imports**: Prefer destructured React imports, use Next.js navigation over router.push
 - **Event handlers**: Don't pass to client component props
 - **Components**: Use `React.ReactElement` return types for components
+- **Route params**: Always async in route handlers - type as `Promise<{ paramName: string }>` and await before use
+- **App Router**: Required (Pages Router not supported)
 
 ## Face Recognition & Character Tagging
 
@@ -297,12 +301,41 @@ export default function Page({ searchParams }: Props) {
 - "use cache" is incompatible with `searchParams`/`params` access
 - API routes must use `await headers()` to force dynamic rendering
 
+## Data Files Structure
+
+**Subtitle Files** (two VTT formats maintained):
+
+- **Base format** (`s##e##.vtt`):
+  - More verbose with ~1800 lines per episode
+  - Splits overlapping dialogue into separate timestamp blocks
+  - Uses additional line breaks for readability
+
+- **Named format** (`s##e##-names.vtt`):
+  - More compact with ~1700 lines per episode
+  - Includes speaker labels (e.g., "MALCOLM:", "HUGH:")
+  - Groups related dialogue under single timestamps
+  - Combines overlapping dialogue under speaker labels
+
+Both formats must use WebVTT standard formatting, maintain identical timestamps, preserve all dialogue content, and start with "WEBVTT" header.
+
+**Frame Extraction** (`/public/frames/{episodeId}/`):
+
+Each timestamp has its own directory named by timestamp (e.g., "05-31-360" for "05:31.360") containing:
+
+- `frame-blank.webp` - Original frame at exact timestamp
+- `frame-blank2.webp` - Frame captured 1 second after timestamp
+- `speech.txt` - Plain text of the subtitles
+
+Frames are extracted using ffmpeg at exact timestamps, captured at 500px width, and cached permanently.
+
 ## Important Notes
 
 - **Face Recognition Caching**: Pipeline uses caching in `scripts/lib/face-cache.ts` - clear cache if results look stale
 - **Image Processing**: Uses sharp and canvas for OG/processing
 - **Base64 Routes**: `/t/[caption]` and `/share/[base64]` handle base64 payloads with size limits via `bodySizeLimit` in serverActions
-- **Path Aliasing**: Use relative imports (no tsconfig paths configured beyond defaults)
+- **Path Aliasing**: Use `@/*` path alias configured in tsconfig.json (maps to project root)
 - **UI Components**: Relaxed rules for `components/ui/**/*` (shadcn/ui components allow `any` types)
 - **Webpack vs Turbopack**: Production builds use webpack to avoid file pattern warnings; dev uses Turbopack for speed
 - **Frame Index**: Loaded once per worker process using singleton pattern; ~12K frames cached in memory
+- **Git Workflow**: Conventional commits required, pre-commit hooks must not be skipped, max commit message length 100 chars
+- **Security Headers**: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, and Referrer-Policy configured in next.config.js
