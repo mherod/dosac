@@ -3,7 +3,6 @@ import { Footer } from "@/components/footer";
 import { MainNav } from "@/components/main-nav";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
-import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 import { PWAStatus } from "@/components/pwa-status";
 import { PWAInit } from "@/components/pwa-init";
 import { PWAUpdateNotification } from "@/components/pwa-update-notification";
@@ -133,7 +132,6 @@ export default function RootLayout({
           <main className="min-h-screen">{children}</main>
           <Footer />
           <Toaster />
-          <PWAInstallPrompt />
           <PWAStatus />
           <PWAUpdateNotification />
           <PWAInit />
