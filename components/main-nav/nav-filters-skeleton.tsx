@@ -13,11 +13,11 @@ export function NavFiltersSkeleton(): React.ReactElement {
           <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
             {/* Series select skeleton */}
             <div className="min-w-0 flex-shrink-0">
-              <div className="flex gap-2">
+              <div className="flex items-center gap-3">
                 {/* Season dropdown skeleton */}
-                <div className="h-9 w-32 animate-pulse rounded-md bg-white/10" />
+                <div className="h-9 w-[100px] animate-pulse rounded-md bg-white/10" />
                 {/* Episode dropdown skeleton */}
-                <div className="h-9 w-32 animate-pulse rounded-md bg-white/10" />
+                <div className="h-9 w-[120px] animate-pulse rounded-md bg-white/10" />
               </div>
             </div>
             {/* Search bar skeleton */}
@@ -31,7 +31,7 @@ export function NavFiltersSkeleton(): React.ReactElement {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-10 w-10 animate-pulse rounded-full border-2 border-[#1d70b8] bg-white/10"
+                  className="h-12 w-12 animate-pulse rounded-full border-2 border-[#1d70b8] bg-white/10"
                   style={{
                     animationDelay: `${i * 100}ms`,
                   }}
