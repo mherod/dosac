@@ -187,6 +187,25 @@ async function HomeContent({
 
   const filters = { season, episode, query, page: validPage };
 
+  return (
+    <HomePage
+      screenshots={pageScreenshots}
+      allScreenshots={allScreenshots}
+      rankedMoments={rankedMoments}
+      filters={filters}
+      paginationData={paginationData}
+    />
+  );
+}
+
+/**
+ * Home page component with static shell and dynamic content
+ * Supports filtering by series, episode, and search query
+ * @param props - The component props
+ * @param props.searchParams - Promise resolving to search parameters for filtering content
+ * @returns The home page with static shell and Suspense boundary for dynamic content
+ */
+export default function Home({ searchParams }: Props): React.ReactElement {
   const structuredData = generateWebsiteStructuredData();
 
   return (
@@ -196,29 +215,26 @@ async function HomeContent({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="container mx-auto max-w-7xl px-4 md:px-6">
-        <HomePage
-          screenshots={pageScreenshots}
-          allScreenshots={allScreenshots}
-          rankedMoments={rankedMoments}
-          filters={filters}
-          paginationData={paginationData}
-        />
+        <Suspense
+          fallback={
+            <div className="container mx-auto px-4 py-8">
+              <div className="mb-8">
+                <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <div
+                    key={`skeleton-${i}`}
+                    className="aspect-video animate-pulse rounded bg-gray-200"
+                  />
+                ))}
+              </div>
+            </div>
+          }
+        >
+          <HomeContent searchParams={searchParams} />
+        </Suspense>
       </div>
     </>
-  );
-}
-
-/**
- * Home page component that wraps content in Suspense boundary
- * Supports filtering by series, episode, and search query
- * @param props - The component props
- * @param props.searchParams - Promise resolving to search parameters for filtering content
- * @returns The home page wrapped in Suspense boundary
- */
-export default function Home({ searchParams }: Props): React.ReactElement {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <HomeContent searchParams={searchParams} />
-    </Suspense>
   );
 }

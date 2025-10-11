@@ -119,124 +119,143 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
   );
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
-      <div className="space-y-6">
-        {/* Search header */}
-        <div className="border-b border-gray-300 pb-4">
-          <h1 className="text-2xl font-bold text-gray-900">Search Results</h1>
-          {query && (
-            <p className="mt-2 text-gray-600">
-              Found {totalResults} result{totalResults !== 1 ? "s" : ""} for "
-              {query}"{seasonFilter && ` in Series ${seasonFilter}`}
-              {episodeFilter && ` Episode ${episodeFilter}`}
-            </p>
-          )}
-          {!query && (seasonFilter || episodeFilter) && (
-            <p className="mt-2 text-gray-600">
-              Showing all results
-              {seasonFilter && ` from Series ${seasonFilter}`}
-              {episodeFilter && ` Episode ${episodeFilter}`}
-            </p>
-          )}
-          {!query && !seasonFilter && !episodeFilter && (
-            <p className="mt-2 text-gray-600">
-              Enter a search term or select filters to begin
-            </p>
-          )}
-        </div>
+    <>
+      {/* Search results description */}
+      {query && (
+        <p className="text-gray-600">
+          Found {totalResults} result{totalResults !== 1 ? "s" : ""} for "
+          {query}"{seasonFilter && ` in Series ${seasonFilter}`}
+          {episodeFilter && ` Episode ${episodeFilter}`}
+        </p>
+      )}
+      {!query && (seasonFilter || episodeFilter) && (
+        <p className="text-gray-600">
+          Showing all results
+          {seasonFilter && ` from Series ${seasonFilter}`}
+          {episodeFilter && ` Episode ${episodeFilter}`}
+        </p>
+      )}
+      {!query && !seasonFilter && !episodeFilter && (
+        <p className="text-gray-600">
+          Enter a search term or select filters to begin
+        </p>
+      )}
 
-        {/* Results grid */}
-        {paginatedResults.length > 0 ? (
-          <>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {paginatedResults.map((frame) => {
-                // Extract season and episode numbers for display
-                const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
-                const frameSeason = episodeMatch?.[1]
-                  ? Number.parseInt(episodeMatch[1], 10)
-                  : 1;
-                const frameEpisode = episodeMatch?.[2]
-                  ? Number.parseInt(episodeMatch[2], 10)
-                  : 1;
+      {/* Results grid */}
+      {paginatedResults.length > 0 ? (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {paginatedResults.map((frame) => {
+              // Extract season and episode numbers for display
+              const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
+              const frameSeason = episodeMatch?.[1]
+                ? Number.parseInt(episodeMatch[1], 10)
+                : 1;
+              const frameEpisode = episodeMatch?.[2]
+                ? Number.parseInt(episodeMatch[2], 10)
+                : 1;
 
-                return (
-                  <SearchResultCard
-                    key={frame.id}
-                    frame={
-                      {
-                        ...frame,
-                        text: frame.speech || frame.subtitle || "",
-                        season: frameSeason,
-                        episode: frameEpisode,
-                        speaker: frame.character,
-                      } as any
-                    }
-                    query={query}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center space-x-2 pt-6">
-                {page > 1 && (
-                  <Link
-                    href={`/search?${new URLSearchParams({
-                      ...(query && { q: query }),
-                      ...(seasonFilter && { season: seasonFilter.toString() }),
-                      ...(episodeFilter && {
-                        episode: episodeFilter.toString(),
-                      }),
-                      page: (page - 1).toString(),
-                    }).toString()}`}
-                    className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                  >
-                    Previous
-                  </Link>
-                )}
-
-                <span className="px-4 text-sm text-gray-600">
-                  Page {page} of {totalPages}
-                </span>
-
-                {page < totalPages && (
-                  <Link
-                    href={`/search?${new URLSearchParams({
-                      ...(query && { q: query }),
-                      ...(seasonFilter && { season: seasonFilter.toString() }),
-                      ...(episodeFilter && {
-                        episode: episodeFilter.toString(),
-                      }),
-                      page: (page + 1).toString(),
-                    }).toString()}`}
-                    className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                  >
-                    Next
-                  </Link>
-                )}
-              </div>
-            )}
-          </>
-        ) : query || seasonFilter || episodeFilter ? (
-          <div className="py-12 text-center">
-            <p className="text-gray-600">
-              No results found. Try adjusting your search terms or filters.
-            </p>
+              return (
+                <SearchResultCard
+                  key={frame.id}
+                  frame={
+                    {
+                      ...frame,
+                      text: frame.speech || frame.subtitle || "",
+                      season: frameSeason,
+                      episode: frameEpisode,
+                      speaker: frame.character,
+                    } as any
+                  }
+                  query={query}
+                />
+              );
+            })}
           </div>
-        ) : null}
-      </div>
-    </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center space-x-2 pt-6">
+              {page > 1 && (
+                <Link
+                  href={`/search?${new URLSearchParams({
+                    ...(query && { q: query }),
+                    ...(seasonFilter && { season: seasonFilter.toString() }),
+                    ...(episodeFilter && {
+                      episode: episodeFilter.toString(),
+                    }),
+                    page: (page - 1).toString(),
+                  }).toString()}`}
+                  className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                >
+                  Previous
+                </Link>
+              )}
+
+              <span className="px-4 text-sm text-gray-600">
+                Page {page} of {totalPages}
+              </span>
+
+              {page < totalPages && (
+                <Link
+                  href={`/search?${new URLSearchParams({
+                    ...(query && { q: query }),
+                    ...(seasonFilter && { season: seasonFilter.toString() }),
+                    ...(episodeFilter && {
+                      episode: episodeFilter.toString(),
+                    }),
+                    page: (page + 1).toString(),
+                  }).toString()}`}
+                  className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                >
+                  Next
+                </Link>
+              )}
+            </div>
+          )}
+        </>
+      ) : query || seasonFilter || episodeFilter ? (
+        <div className="py-12 text-center">
+          <p className="text-gray-600">
+            No results found. Try adjusting your search terms or filters.
+          </p>
+        </div>
+      ) : null}
+    </>
   );
 }
 
 /**
- * Search page component wrapped in Suspense boundary
+ * Search page component with static shell and dynamic results
  */
 export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
-    <Suspense fallback={<div>Loading search results...</div>}>
-      <SearchPageContent searchParams={searchParams} />
-    </Suspense>
+    <div className="container mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
+      <div className="space-y-6">
+        {/* Static page header */}
+        <div className="border-b border-gray-300 pb-4">
+          <h1 className="text-2xl font-bold text-gray-900">Search Results</h1>
+        </div>
+
+        {/* Dynamic search content */}
+        <Suspense
+          fallback={
+            <div className="space-y-4">
+              <div className="h-6 w-64 animate-pulse rounded bg-gray-200" />
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={`skeleton-${i}`}
+                    className="h-48 animate-pulse rounded bg-gray-200"
+                  />
+                ))}
+              </div>
+            </div>
+          }
+        >
+          <SearchPageContent searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </div>
   );
 }

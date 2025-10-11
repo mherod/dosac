@@ -4,7 +4,6 @@ import { formatPageTitle } from "@/lib/constants";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 /**
  * Interface for page component props
@@ -75,12 +74,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Inner component that handles dynamic data access (params)
+ * Page component for displaying frames filtered by a specific category
+ * Fully static page generated at build time using generateStaticParams
  * @param props - The component props
  * @param props.params - Promise resolving to route parameters containing category ID
- * @returns The category page content with filtered screenshot grid
+ * @returns The category page with filtered screenshot grid
  */
-async function CategoryPageContent({
+export default async function CategoryPage({
   params,
 }: Props): Promise<React.ReactElement> {
   const resolvedParams = await params;
@@ -119,20 +119,5 @@ async function CategoryPageContent({
         />
       </div>
     </main>
-  );
-}
-
-/**
- * Page component for displaying frames filtered by a specific category
- * Wraps dynamic content in Suspense boundary for Next.js 16 cacheComponents
- * @param props - The component props
- * @param props.params - Promise resolving to route parameters containing category ID
- * @returns The category page wrapped in Suspense boundary
- */
-export default function CategoryPage({ params }: Props): React.ReactElement {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CategoryPageContent params={params} />
-    </Suspense>
   );
 }
