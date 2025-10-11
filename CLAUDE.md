@@ -14,11 +14,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Tech Stack
 
 - **Package manager**: pnpm (use pnpm, not npm/yarn)
-- **Runtime**: Next.js 16 canary + React 19 canary with experimental features (serverActions, optimisticClientCache, PPR incremental)
+- **Runtime**: Next.js 16.0.0-canary.1 + React 19.3 canary with experimental features:
+  - `cacheComponents` - Enables composable caching with "use cache"
+  - `cacheLife` - Cache revalidation policies
+  - `serverActions` - Server actions support
+  - `optimisticClientCache` - Client-side optimistic updates
+  - PPR (`ppr: 'incremental'`) - Partial Prerendering for mixed static/dynamic
 - **Styling**: TailwindCSS with tailwind-merge utility (cn function) from lib/utils
 - **UI Components**: Radix UI primitives
 - **ML/AI**: TensorFlow.js (@tensorflow/tfjs-node) with MediaPipe face mesh
 - **Build**: ESLint 9 + Biome + Prettier, strict mode (lint errors fail build)
+  - Production builds use webpack (`pnpm build` runs `next build --webpack`)
+  - Dev server uses Turbopack (`pnpm dev` runs `next dev --turbo`)
 - **Code Style**: 2-space indentation, 80 char line width, double quotes, trailing commas, semicolons always
 
 ## Application Architecture
@@ -184,6 +191,112 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Frame index: Cached in memory (one-time 12K frame load per server process)
 - Character data: Cached in memory (loaded once per server process)
 
+## Next.js 16 Caching & Performance
+
+**Composable Caching with "use cache"**:
+
+The app uses Next.js 16's new `unstable_cacheLife` API for fine-grained caching control:
+
+```typescript
+export async function getFrameById(id: string): Promise<Frame> {
+  "use cache";
+  unstable_cacheLife("static"); // Cache forever (immutable data)
+  // ... fetch frame data
+}
+
+export async function getFrameIndex(): Promise<Frame[]> {
+  "use cache";
+  unstable_cacheLife("stable"); // Cache with long expiration
+  // ... load index
+}
+```
+
+**Cache Lifetime Policies**:
+
+- `"static"` - Immutable data (1 week default, 30 days stale-while-revalidate)
+- `"stable"` - Rarely changing data (2 hours default, 30 days stale-while-revalidate)
+- `"dynamic"` - Frequently changing data (no default caching)
+
+**Memory Optimization**:
+
+The frame index (~12K frames) uses a singleton pattern to prevent memory issues:
+
+```typescript
+// lib/frames.server.ts
+let cachedFrameIndex: Frame[] | null = null;
+
+function loadFrameIndexFromDisk(): Frame[] {
+  // Loads once per worker process
+  if (fs.existsSync(indexPath)) {
+    return JSON.parse(fs.readFileSync(indexPath, "utf-8"));
+  }
+  // ... fallback filesystem scan
+}
+
+export async function getFrameIndex(): Promise<Frame[]> {
+  "use cache";
+  unstable_cacheLife("stable");
+
+  if (cachedFrameIndex) {
+    return cachedFrameIndex; // Reuse cached version
+  }
+
+  cachedFrameIndex = loadFrameIndexFromDisk();
+  return cachedFrameIndex;
+}
+```
+
+This ensures the index is only loaded once per worker process, preventing heap limit errors during builds.
+
+**SSR & Suspense Patterns**:
+
+The app uses strategic Suspense boundaries to maximize server-side rendering:
+
+1. **Fully Static Routes** (no Suspense needed):
+   - `/categories/[id]` - Uses `generateStaticParams()`, entirely prerendered
+   - `/profiles/[id]`, `/policies/[policy]`, `/series/[id]` - Static with params
+
+2. **Partial Prerendering** (static shell + dynamic content):
+   - `/` (homepage) - Static container/layout, dynamic content in Suspense
+   - `/search` - Static header/container, dynamic results in Suspense
+   - `/caption/[...ids]` - Static layout, dynamic editor in Suspense
+
+**Suspense Best Practices**:
+
+```typescript
+// ❌ Bad: Wraps entire page including static content
+export default function Page({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+// ✅ Good: Static shell rendered immediately, only dynamic content suspended
+export default function Page({ searchParams }: Props) {
+  return (
+    <div className="container">
+      {/* Static content renders immediately */}
+      <header>...</header>
+
+      {/* Only dynamic content in Suspense */}
+      <Suspense fallback={<SkeletonGrid />}>
+        <DynamicContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+**Key Rules**:
+
+- Pages accessing `searchParams` or `params` must be wrapped in Suspense (Next.js 16 requirement with `cacheComponents`)
+- Move Suspense boundaries as close to dynamic data as possible
+- Render static shells (containers, headers, navigation) outside Suspense
+- "use cache" is incompatible with `searchParams`/`params` access
+- API routes must use `await headers()` to force dynamic rendering
+
 ## Important Notes
 
 - **Face Recognition Caching**: Pipeline uses caching in `scripts/lib/face-cache.ts` - clear cache if results look stale
@@ -191,3 +304,5 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Base64 Routes**: `/t/[caption]` and `/share/[base64]` handle base64 payloads with size limits via `bodySizeLimit` in serverActions
 - **Path Aliasing**: Use relative imports (no tsconfig paths configured beyond defaults)
 - **UI Components**: Relaxed rules for `components/ui/**/*` (shadcn/ui components allow `any` types)
+- **Webpack vs Turbopack**: Production builds use webpack to avoid file pattern warnings; dev uses Turbopack for speed
+- **Frame Index**: Loaded once per worker process using singleton pattern; ~12K frames cached in memory
