@@ -2,7 +2,8 @@ import type React from "react";
 import { Suspense } from "react";
 import { CategoryNav } from "./main-nav/category-nav";
 import { CivilServiceHeader } from "./main-nav/civil-service-header";
-import { NavFiltersClient } from "./main-nav/nav-filters-client";
+import { NavFilters } from "./main-nav/nav-filters";
+import { NavFiltersSkeleton } from "./main-nav/nav-filters-skeleton";
 import { TopBanner } from "./main-nav/top-banner";
 
 /**
@@ -16,8 +17,8 @@ export function MainNav(): React.ReactElement {
       <div className="mx-auto max-w-7xl">
         <TopBanner />
         <CivilServiceHeader />
-        <Suspense>
-          <NavFiltersClient />
+        <Suspense fallback={<NavFiltersSkeleton />}>
+          <NavFilters />
         </Suspense>
         <CategoryNav />
       </div>
