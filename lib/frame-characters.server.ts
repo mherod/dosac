@@ -78,7 +78,7 @@ export function getCharactersForFrame(
 export function getFramesWithCharacter(characterName: string): string[] {
   const data = loadFrameCharactersData();
   return Object.keys(data).filter((frameId) =>
-    data[frameId].characters.includes(characterName),
+    data[frameId]?.characters.includes(characterName),
   );
 }
 
