@@ -78,6 +78,7 @@ export async function getFrameById(id: string): Promise<Frame> {
   }
 
   const speechPath = path.join(framePath, "speech.txt");
+  // webpackIgnore: Runtime file read, not bundled
   const speech = fs.readFileSync(speechPath, "utf-8").trim();
 
   return {
