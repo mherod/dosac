@@ -328,6 +328,46 @@ Each timestamp has its own directory named by timestamp (e.g., "05-31-360" for "
 
 Frames are extracted using ffmpeg at exact timestamps, captured at 500px width, and cached permanently.
 
+## Adding Character Profile Highlights
+
+**Process for adding memorable captions to character profiles:**
+
+1. **Find the frame ID** by searching for the quote text:
+
+   ```bash
+   grep -i "quote text" public/frame-index.json
+   ```
+
+2. **Verify the frame exists** and get the complete frame ID (format: `s##e##-##-##.###`):
+
+   ```bash
+   grep "s##e##-##-##.###" public/frame-index.json
+   ```
+
+3. **Add to character profile** in `lib/profiles.ts`:
+   - Locate the character's profile object
+   - Add or update the `frameHighlights` array
+   - Include the frame ID with a descriptive comment
+
+   ```typescript
+   frameHighlights: [
+     "s03e04-07-20.600", // "I like the plasmic nature of your data modelling! Nice!"
+   ],
+   ```
+
+4. **Position in profile structure**:
+   - Place `frameHighlights` before `relatedProfiles` if both exist
+   - Add as new property if character has no existing highlights
+
+**Result**: The caption will appear in the character's "Highlights" section with:
+
+- Visual frame display with caption overlay
+- Episode and timestamp metadata chips
+- Click-to-edit functionality
+- Responsive grid layout
+
+**Note**: Frame IDs must exist in the frame index and have corresponding image files in `/public/frames/`.
+
 ## Important Notes
 
 - **Face Recognition Caching**: Pipeline uses caching in `scripts/lib/face-cache.ts` - clear cache if results look stale

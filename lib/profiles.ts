@@ -193,8 +193,14 @@ export const characters: Record<string, Character> = {
     ],
     party: PARTIES.LABOUR,
     frameHighlights: [
+      "s01e01-01-01.360", // "He's absolutely useless! He is! He's useless! He's as useless as a marzipan dildo."
+      "s02e01-10-12.480", // "How much fucking shit is there on the menu, and what fucking flavour is it?!"
+      "s02e02-04-45.520", // "Come the fuck in or fuck the fuck off."
+      "s02e03-21-16.400", // "you massive, gay SHITE!"
+      "s03e01-00-15.400", // "He's so dense that light bends around him."
       "s03e01-06-39.680", // "Malcolm Tucker, Malcolm Tucker, Malcolm Tucker. Malcolm."
       "s03e01-07-17.120", // "Malcolm Tucker. The real deal. Hello."
+      "s03e05-03-35.120", // "Is this my new anal beads?"
       "s03e06-17-45.240", // "There's a huge difference between me saying to you..."
       "s03e07-13-48.360", // "I'll tell you a home truth, Malcolm Tucker..."
       "s02e03-03-08.840", // "Mr Malcolm Tucker turning it all the way up to 11 in the lobby."
@@ -540,6 +546,8 @@ export const characters: Record<string, Character> = {
     frameHighlights: [
       "s03e04-21-05.880", // "Ah Stewart, what flavour of nut-brown piss are you gonna pour into my ear?"
       "s03e08-23-09.360", // "The Fucker?! And here you thought he was just a myth created to frighten naughty MPs into eating their truffles and swan."
+      "s04e01-00-21-27.000", // "I'm bored of this. I'm going for a Twix."
+      "s04e03-00-03-35.040", // "When it's at your house? Peter!"
     ],
     party: PARTIES.CONSERVATIVE,
     relatedProfiles: [
@@ -653,6 +661,9 @@ export const characters: Record<string, Character> = {
       "Mother resides in a care home as of the Specials",
       "Enjoys wine tasting and gardening in her spare time",
     ],
+    frameHighlights: [
+      "s04e03-00-17-38.080", // "Two hundred years ago, they wouldn't have let him milk a cow."
+    ],
     relatedProfiles: [
       {
         id: "robyn",
@@ -727,12 +738,17 @@ export const characters: Record<string, Character> = {
       "Survived multiple potential career-ending scandals",
     ],
     frameHighlights: [
+      "s01e01-16-42.960", // "You've fucking cracked! Are you mad?"
       "s01e01-21-45.280", // "I'm not quite sure what level of reality I'm supposed to be operating on"
       "s01e02-00-39.120", // "I work, I eat, I shower..."
       "s01e03-00-43.880", // "I'm the fucking daddy!"
+      "s01e03-13-27.280", // "This is madness. I just own a flat, I haven't raped somebody."
       "s01e03-14-52.800", // "They should just clone ministers..."
+      "s01e03-15-09.640", // "like that fucking brushed-aluminium Dan Miller cyberprick!"
+      "s01e01-28-47.480", // "Smiling. Inappropriate smiling. And smirking. Smiling and smirking."
       "s02e01-08-21.800", // "Robyn, all events are regional..."
       "s02e03-11-21.840", // "I'm gonna tell the PM straight up, this bill is a load of old bollocks!"
+      "s02e03-15-47.480", // "Just one expert? Only one? Not two experts? Less than three but not two?"
       "s01e01-17-21.720", // "We trick them. We trick them. Tinselly thing and they come along and then we say..."
     ],
     party: PARTIES.LABOUR,
@@ -816,6 +832,7 @@ export const characters: Record<string, Character> = {
     frameHighlights: [
       "s01e01-17-46.960", // "And we've probably got ten million we can throw at it."
       "s01e01-17-50.760", // "That's good, that, because it sounds like a lot, doesn't it?"
+      "s03e01-22-05.480", // "What does it say, Terri!?"
     ],
     relatedProfiles: [
       {
@@ -925,6 +942,7 @@ export const characters: Record<string, Character> = {
       "Becomes key figure in Opposition communications strategy",
     ],
     frameHighlights: [
+      "s01e01-15-55.000", // "Return of capital punishment."
       "s03e02-04-25.320", // "You can't just overwrite minutes! You specifically can't do it, 'cause you can't unlock a PDF file."
     ],
     party: PARTIES.LABOUR,
@@ -1476,6 +1494,10 @@ export const characters: Record<string, Character> = {
       "Prefers Emma Messinger's competence over Phil Smith's traditional style",
       "Key figure in Conservative Party's communication strategy",
     ],
+    frameHighlights: [
+      "s03e04-07-20.600", // "I like the plasmic nature of your data modelling! Nice!"
+      "s04e03-00-03-31.640", // "When is a party not a party?"
+    ],
     relatedProfiles: [
       { id: "peter", relationship: "Minister he attempts to modernise" },
       { id: "emma", relationship: "Favoured Special Adviser" },
@@ -1683,6 +1705,10 @@ export const characters: Record<string, Character> = {
       "Long-standing loyalty to Peter Mannion despite differences",
       "Maintains childlike enthusiasm despite political pressures",
       "Collection of mint condition action figures reflects personal priorities",
+    ],
+    frameHighlights: [
+      "s04e05-00-02-22.080", // "Wider? That's mental! We want to shut it down."
+      "s04e05-00-16-07.840", // "Exactly. He was a male nurse. That's not just mad, that's mental."
     ],
     party: PARTIES.CONSERVATIVE,
   },
