@@ -4,7 +4,8 @@ import cliff from "@/public/characters/cliff.png";
 import dan from "@/public/characters/danmiller.webp";
 import emma from "@/public/characters/emma.jpg";
 import glenn from "@/public/characters/glenn.jpg";
-import hugh from "@/public/characters/hugh.png";
+import helen from "@/public/characters/helen-flag.png";
+import hugh from "@/public/characters/hugh-flag.png";
 import jamie from "@/public/characters/jamie.png";
 import julius from "@/public/characters/julius.jpg";
 import malcolm from "@/public/characters/malcom-flag.png";
@@ -1724,6 +1725,7 @@ export const characters: Record<string, Character> = {
     shortName: "Helen",
     fullName: "Helen Hatley",
     description: "Special Adviser to Nicola Murray, former Opposition adviser",
+    image: helen,
     occupation: "Special Adviser to Nicola Murray MP",
     department: [DEPARTMENTS.OPPOSITION],
     role: [ROLES.SPECIAL_ADVISOR],
