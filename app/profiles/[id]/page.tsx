@@ -370,15 +370,16 @@ export default async function CharacterProfile({
       />
       <main className="container max-w-7xl py-6 lg:py-12">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
-          <aside className="order-2 lg:order-1 lg:col-span-1">
+          <aside className="order-1 lg:col-span-1">
             {character.image && (
-              <div className="sticky top-8 mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg">
+              <div className="mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg md:aspect-auto md:max-h-96 md:w-auto lg:sticky lg:top-8 lg:aspect-[3/4] lg:max-h-none">
                 <Image
                   src={character.image}
                   alt={character.name}
                   className="h-full w-full object-cover object-top"
                   priority
-                  sizes="(max-width: 1024px) 100vw, 25vw"
+                  fetchPriority="high"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 384px, 25vw"
                 />
               </div>
             )}
@@ -386,7 +387,7 @@ export default async function CharacterProfile({
             <PersonalInfo character={character} />
           </aside>
 
-          <div className="order-1 lg:order-2 lg:col-span-3">
+          <div className="order-2 lg:col-span-3">
             <header className="mb-12">
               <div className="space-y-6">
                 <div>
