@@ -107,7 +107,7 @@ function ProfileImageContent({
           fill
           className="object-cover object-top transition-transform hover:scale-105"
           sizes={sizesConfig[size || "md"]}
-          priority
+          priority={size === "lg"}
         />
       </div>
     );
