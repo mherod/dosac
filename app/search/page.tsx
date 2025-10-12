@@ -51,10 +51,18 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
   let results: Screenshot[] = [];
 
   if (query) {
+    // Split query into words for better fuzzy matching
+    const queryWords = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0);
+
     results = allFrames.filter((frame) => {
       // Text search - check both speech and subtitle
       const searchText = (frame.speech || frame.subtitle || "").toLowerCase();
-      const textMatch = searchText.includes(query);
+
+      // Check if all query words are present (fuzzy AND matching)
+      const textMatch = queryWords.every((word) => searchText.includes(word));
 
       // Extract season/episode numbers from frame.episode (e.g., "s01e01")
       const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
@@ -94,17 +102,42 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 
   // Sort by relevance (frames with query in beginning of text first)
   if (query) {
+    const queryWords = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0);
+
     results.sort((a, b) => {
-      const aText = a.speech || a.subtitle || "";
-      const bText = b.speech || b.subtitle || "";
+      const aText = (a.speech || a.subtitle || "").toLowerCase();
+      const bText = (b.speech || b.subtitle || "").toLowerCase();
 
-      const aStartsWith = aText.toLowerCase().startsWith(query);
-      const bStartsWith = bText.toLowerCase().startsWith(query);
+      // Priority 1: Exact phrase match
+      const aExactMatch = aText.includes(query);
+      const bExactMatch = bText.includes(query);
+      if (aExactMatch && !bExactMatch) return -1;
+      if (!aExactMatch && bExactMatch) return 1;
 
+      // Priority 2: Starts with first query word
+      const aStartsWith = queryWords.some((word) => aText.startsWith(word));
+      const bStartsWith = queryWords.some((word) => bText.startsWith(word));
       if (aStartsWith && !bStartsWith) return -1;
       if (!aStartsWith && bStartsWith) return 1;
 
-      // Secondary sort by text length (shorter = more relevant)
+      // Priority 3: Words in order
+      let aIndex = 0;
+      let bIndex = 0;
+      for (const word of queryWords) {
+        const aPos = aText.indexOf(word, aIndex);
+        const bPos = bText.indexOf(word, bIndex);
+        if (aPos >= 0) aIndex = aPos + word.length;
+        if (bPos >= 0) bIndex = bPos + word.length;
+      }
+      const aInOrder = aIndex > 0;
+      const bInOrder = bIndex > 0;
+      if (aInOrder && !bInOrder) return -1;
+      if (!aInOrder && bInOrder) return 1;
+
+      // Priority 4: Shorter text = more relevant
       return aText.length - bText.length;
     });
   }

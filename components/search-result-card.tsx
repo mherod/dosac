@@ -1,5 +1,5 @@
-import { CaptionedImage } from "@/components/captioned-image";
 import type { Screenshot } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
 
 interface ExtendedFrame extends Omit<Screenshot, "episode"> {
@@ -53,8 +53,17 @@ export function SearchResultCard({ frame, query }: SearchResultCardProps) {
       href={`/caption/${frame.id}`}
       className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
     >
-      <div className="aspect-video overflow-hidden bg-gray-100">
-        <CaptionedImage imageUrl={frame.imageUrl} caption="" />
+      <div className="relative aspect-video overflow-hidden bg-gray-100">
+        {frame.imageUrl && (
+          <Image
+            src={frame.imageUrl}
+            alt={text || "Screenshot"}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            unoptimized
+          />
+        )}
       </div>
 
       <div className="p-4">
