@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { FeaturedCharacters } from "./featured-characters";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
 
@@ -32,9 +31,15 @@ type Filters = z.infer<typeof FiltersSchema>;
 /**
  * Client component that handles search parameters, routing, and filter state
  * Includes series selection and search bar with debounced input
+ * @param props - Component props
+ * @param props.children - Server-rendered content (e.g., FeaturedCharacters)
  * @returns The navigation filters with interactive controls
  */
-export function NavFilters(): React.ReactElement {
+export function NavFilters({
+  children,
+}: {
+  children?: React.ReactNode;
+}): React.ReactElement {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -175,7 +180,7 @@ export function NavFilters(): React.ReactElement {
               />
             </div>
           </div>
-          <FeaturedCharacters />
+          {children}
         </div>
       </div>
     </div>
