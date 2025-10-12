@@ -5,7 +5,7 @@ import dan from "@/public/characters/danmiller.webp";
 import emma from "@/public/characters/emma.jpg";
 import glenn from "@/public/characters/glenn.jpg";
 import hugh from "@/public/characters/hugh.png";
-import jamie from "@/public/characters/jamie2.jpg";
+import jamie from "@/public/characters/jamie.png";
 import julius from "@/public/characters/julius.jpg";
 import malcolm from "@/public/characters/malcom4.jpg";
 import mary from "@/public/characters/mary.png";
