@@ -2,7 +2,6 @@ import { characters } from "@/lib/profiles";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import type React from "react";
-import { Suspense } from "react";
 
 type CharacterId = keyof typeof characters;
 
@@ -131,20 +130,5 @@ function ProfileImageContent({
 export function ProfileImageBadge(
   props: ProfileImageBadgeProps,
 ): React.ReactElement | null {
-  const character = characters[props.characterId];
-  if (!character) return null;
-
-  return (
-    <Suspense
-      fallback={
-        <InitialsPlaceholder
-          character={character}
-          size={props.size || "md"}
-          className={props.className}
-        />
-      }
-    >
-      <ProfileImageContent {...props} />
-    </Suspense>
-  );
+  return <ProfileImageContent {...props} />;
 }
