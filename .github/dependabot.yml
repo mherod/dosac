@@ -1,0 +1,74 @@
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    groups:
+      # Next.js and React core
+      nextjs:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      # TensorFlow and ML libraries
+      tensorflow:
+        patterns:
+          - "@tensorflow/*"
+          - "face-api.js"
+          - "@mediapipe/*"
+      # Radix UI components
+      radix:
+        patterns:
+          - "@radix-ui/*"
+      # Development tools
+      dev-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "prettier"
+          - "typescript"
+          - "ts-jest"
+          - "jest"
+          - "@biomejs/*"
+      # Build and bundling tools
+      build-tools:
+        patterns:
+          - "webpack"
+          - "turbopack"
+          - "@next/bundle-analyzer"
+      # UI utilities
+      ui-utilities:
+        patterns:
+          - "tailwindcss"
+          - "tailwind-merge"
+          - "clsx"
+          - "class-variance-authority"
+      # Image processing
+      image-processing:
+        patterns:
+          - "sharp"
+          - "canvas"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+    labels:
+      - "dependencies"
+
+  # GitHub Actions (if added in the future)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "github-actions"
