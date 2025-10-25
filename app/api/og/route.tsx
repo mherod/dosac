@@ -1,5 +1,5 @@
 import { ImageResponse } from "@vercel/og";
-import { unstable_cacheLife } from "next/cache";
+import { cacheLife } from "next/cache";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
 
@@ -73,7 +73,7 @@ async function generateOGImage({
   outlineWidth: string;
 }): Promise<ImageResponse> {
   "use cache";
-  unstable_cacheLife("dynamic");
+  cacheLife("dynamic");
 
   // Handle both absolute and relative image URLs
   const imageUrl = imageUrlString.startsWith("http")

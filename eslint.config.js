@@ -1,25 +1,18 @@
 import js from "@eslint/js";
+import globals from "globals";
 import nextPlugin from "@next/eslint-plugin-next";
-import { FlatCompat } from "@eslint/eslintrc";
-import path from "path";
-import { fileURLToPath } from "url";
 import jsdoc from "eslint-plugin-jsdoc";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import promisePlugin from "eslint-plugin-promise";
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 
 // Standard ESM import now works with the fixed package v1.2.0
 import customReactPlugin from "@mherod/eslint-plugin-custom/react";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
 const config = [
+  // Global ignores
   {
     ignores: [
       "node_modules/**",
@@ -27,12 +20,15 @@ const config = [
       "out/**",
       "build/**",
       "next-env.d.ts",
-      "scripts/**/*.cjs",
+      "scripts/**",
+      "public/sw.js",
     ],
   },
-  {
-    ignores: ["out/**/*", ".next/**/*"],
-  },
+
+  // Base JavaScript config
+  js.configs.recommended,
+
+  // UI components - relaxed rules
   {
     files: ["components/ui/**/*.{ts,tsx}", "components/ui/chart.tsx"],
     rules: {
@@ -41,42 +37,43 @@ const config = [
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
-  ...compat.extends(
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime",
-    "plugin:react-hooks/recommended",
-    "plugin:promise/recommended",
-  ),
-  ...compat.config({
-    root: true,
-    extends: [
-      "next/core-web-vitals",
-      "plugin:@typescript-eslint/recommended",
-      "plugin:react/recommended",
-      "plugin:react/jsx-runtime",
-      "plugin:react-hooks/recommended",
-      "plugin:promise/recommended",
-    ],
-    parser: "@typescript-eslint/parser",
-    parserOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      ecmaFeatures: {
-        jsx: true,
+
+  // Test files - Jest globals
+  {
+    files: ["**/*.test.{ts,tsx}", "**/__tests__/**/*.{ts,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
       },
     },
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-  }),
+  },
+
+  // Main config for all files
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2021,
+        ...globals.serviceworker,
+        React: "readonly",
+        JSX: "readonly",
+        NotificationPermission: "readonly",
+        NotificationOptions: "readonly",
+      },
+    },
     plugins: {
-      next: nextPlugin,
+      "@typescript-eslint": tseslint,
+      "@next/next": nextPlugin,
       jsdoc: jsdoc,
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
@@ -84,6 +81,23 @@ const config = [
       "@mherod/react": customReactPlugin,
     },
     rules: {
+      // Next.js recommended rules
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+
+      // TypeScript recommended rules
+      ...tseslint.configs.recommended.rules,
+
+      // React recommended rules
+      ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs["jsx-runtime"].rules,
+
+      // React Hooks rules
+      ...reactHooksPlugin.configs.recommended.rules,
+
+      // Promise rules
+      ...promisePlugin.configs.recommended.rules,
+
       // Stricter TypeScript rules for explicit types
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -142,11 +156,14 @@ const config = [
           allowTaggedTemplates: false,
         },
       ],
+
+      // React rules
       "react/no-unescaped-entities": "off",
       "react/react-in-jsx-scope": "off",
       "react/jsx-uses-react": "off",
       "react/prop-types": "off",
-      ...nextPlugin.configs["recommended"].rules,
+
+      // JSDoc rules
       "jsdoc/require-jsdoc": [
         "warn",
         {

@@ -28,6 +28,29 @@ const nextConfig = {
     // Use timestamp to ensure unique builds
     return `build-${Date.now()}`;
   },
+  // Enable Cache Components (consolidates PPR, Dynamic IO, and use cache)
+  cacheComponents: true,
+  // Custom cache lifetime profiles
+  cacheLife: {
+    // For very static content like frame data and policies
+    static: {
+      stale: 86400, // 1 day client cache
+      revalidate: 3600, // 1 hour server refresh
+      expire: 604800, // 1 week max
+    },
+    // For character data and frame index (very stable)
+    stable: {
+      stale: 172800, // 2 days client cache
+      revalidate: 7200, // 2 hours server refresh
+      expire: 2592000, // 30 days max
+    },
+    // For frequently changing content
+    dynamic: {
+      stale: 0, // Always check freshness
+      revalidate: 300, // 5 minutes server refresh
+      expire: 3600, // 1 hour max
+    },
+  },
   // Enable experimental features
   experimental: {
     // Enable server actions
@@ -36,29 +59,6 @@ const nextConfig = {
     },
     // Enable optimistic updates
     optimisticClientCache: true,
-    // Enable Cache Components (consolidates PPR, Dynamic IO, and use cache)
-    cacheComponents: true,
-    // Custom cache lifetime profiles
-    cacheLife: {
-      // For very static content like frame data and policies
-      static: {
-        stale: 86400, // 1 day client cache
-        revalidate: 3600, // 1 hour server refresh
-        expire: 604800, // 1 week max
-      },
-      // For character data and frame index (very stable)
-      stable: {
-        stale: 172800, // 2 days client cache
-        revalidate: 7200, // 2 hours server refresh
-        expire: 2592000, // 30 days max
-      },
-      // For frequently changing content
-      dynamic: {
-        stale: 0, // Always check freshness
-        revalidate: 300, // 5 minutes server refresh
-        expire: 3600, // 1 hour max
-      },
-    },
   },
   // Headers for better SEO and performance
   async headers() {

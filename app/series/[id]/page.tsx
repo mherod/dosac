@@ -4,10 +4,6 @@ import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-// Enable PPR for this route
-// noinspection JSUnusedGlobalSymbols
-export const experimental_ppr = true;
-
 /**
  * Generates static params for all series pages at build time
  * Creates paths for each series in the show

@@ -10,7 +10,7 @@ import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { getCharactersForFrame } from "@/lib/frame-characters.server";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
-import { unstable_cacheLife } from "next/cache";
+import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type React from "react";
@@ -108,7 +108,7 @@ export default async function Page({
   params,
 }: Pick<PageProps, "params">): Promise<React.ReactElement> {
   "use cache";
-  unstable_cacheLife("static");
+  cacheLife("static");
 
   const resolvedParams = await params;
 
