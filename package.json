@@ -71,8 +71,8 @@
     "next": "16.0.1-canary.2",
     "next-themes": "^0.3.0",
     "p-limit": "^7.1.1",
-    "react": "19.3.0-canary-408b38ef-20251023",
-    "react-dom": "19.3.0-canary-408b38ef-20251023",
+    "react": "19.3.0-canary-6160773f-20251023",
+    "react-dom": "19.3.0-canary-6160773f-20251023",
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
@@ -96,8 +96,8 @@
     "@types/jest": "^29.5.14",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.19.1",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@types/sharp": "^0.32.0",
     "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
@@ -127,8 +127,8 @@
   "pnpm": {
     "overrides": {
       "next": "16.0.1-canary.2",
-      "react": "19.3.0-canary-408b38ef-20251023",
-      "react-dom": "19.3.0-canary-408b38ef-20251023"
+      "react": "19.3.0-canary-6160773f-20251023",
+      "react-dom": "19.3.0-canary-6160773f-20251023"
     },
     "onlyBuiltDependencies": [
       "@biomejs/biome",
