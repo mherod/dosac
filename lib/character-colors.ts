@@ -40,6 +40,6 @@ export function generateColorBlurDataURL(color: string): string {
  */
 export function getCharacterBlurPlaceholder(character: string): string {
   const color =
-    CHARACTER_COLORS[character] || CHARACTER_COLORS["Unknown"] || "#34495e"; // Fallback slate grey
+    CHARACTER_COLORS[character] || CHARACTER_COLORS.Unknown || "#34495e"; // Fallback slate grey
   return generateColorBlurDataURL(color);
 }

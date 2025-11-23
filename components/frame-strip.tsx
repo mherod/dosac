@@ -1,13 +1,13 @@
 "use client";
 
-import { CaptionedImage } from "@/components/captioned-image";
-import type { Screenshot } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type React from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { CaptionedImage } from "@/components/captioned-image";
+import type { Screenshot } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the FrameStrip component

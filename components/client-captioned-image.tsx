@@ -1,9 +1,9 @@
 "use client";
 
-import { useImageBounds } from "@/hooks/useImageBounds";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useImageBounds } from "@/hooks/useImageBounds";
 import { CaptionText } from "./caption-text";
 
 /**

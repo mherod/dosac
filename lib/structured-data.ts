@@ -1,6 +1,6 @@
-import type { Screenshot } from "./types";
-import { getSeriesInfo } from "./series-info";
 import { characters } from "./profiles";
+import { getSeriesInfo } from "./series-info";
+import type { Screenshot } from "./types";
 
 /**
  * Generates structured data for a TV show episode

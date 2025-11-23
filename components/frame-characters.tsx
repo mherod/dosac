@@ -1,5 +1,5 @@
-import type { CharacterInFrame } from "@/lib/frame-characters.server";
 import { Users } from "lucide-react";
+import type { CharacterInFrame } from "@/lib/frame-characters.server";
 
 /**
  * Props for the FrameCharacters component

@@ -1,8 +1,8 @@
-import { getAllSeries, getSeriesEpisodes } from "@/lib/series-info";
-import { CATEGORIES } from "@/lib/categories";
-import { characters } from "@/lib/profiles";
-import { getFrameIndex } from "@/lib/frames.server";
 import type { MetadataRoute } from "next";
+import { CATEGORIES } from "@/lib/categories";
+import { getFrameIndex } from "@/lib/frames.server";
+import { characters } from "@/lib/profiles";
+import { getAllSeries, getSeriesEpisodes } from "@/lib/series-info";
 
 /**
  * Generates a dynamic sitemap for the application

@@ -1,7 +1,7 @@
-import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { cn } from "@/lib/utils";
 import type React from "react";
 import type { ReactNode } from "react";
+import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { cn } from "@/lib/utils";
 
 interface PageLayoutProps {
   /** The main content to render inside the container */

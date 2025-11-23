@@ -36,7 +36,7 @@ function extractEpisode(path: string): string {
 function getSpeechForFrame(framePath: string): string {
   try {
     // Extract timestamp directory from path
-    const match = framePath.match(/(s\d+e\d+)\/([^\/]+)\/frame-blank/);
+    const match = framePath.match(/(s\d+e\d+)\/([^/]+)\/frame-blank/);
     if (!match) return "";
 
     const [, episode, timestamp] = match;
@@ -90,7 +90,7 @@ function displayCluster(
   cluster.sampleImages.slice(0, 3).forEach((img, idx) => {
     const speech = getSpeechForFrame(img.path);
     const episode = extractEpisode(img.path);
-    const timestamp = img.path.match(/\/([^\/]+)\/frame-blank/)?.[1] || "";
+    const timestamp = img.path.match(/\/([^/]+)\/frame-blank/)?.[1] || "";
 
     console.log(`${idx + 1}. ${episode} @ ${timestamp}`);
     console.log(`   Path: ${img.path}`);

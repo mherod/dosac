@@ -1,9 +1,9 @@
-import { SearchResultCard } from "@/components/search-result-card";
-import { getFrameIndex } from "@/lib/frames.server";
-import type { Screenshot } from "@/lib/types";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { SearchResultCard } from "@/components/search-result-card";
+import { getFrameIndex } from "@/lib/frames.server";
+import type { Screenshot } from "@/lib/types";
 
 export async function generateMetadata({
   searchParams,

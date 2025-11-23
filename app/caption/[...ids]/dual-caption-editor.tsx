@@ -1,5 +1,7 @@
 "use client";
 
+import * as htmlToImage from "html-to-image";
+import { useRef, useState } from "react";
 import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
 import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
 import { FrameGrid } from "@/components/frame-grid";
@@ -10,8 +12,6 @@ import { useCaptionState } from "@/lib/hooks/use-caption-state";
 import { handleShare } from "@/lib/share";
 import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import * as htmlToImage from "html-to-image";
-import { useRef, useState } from "react";
 
 interface MultiCaptionEditorProps {
   frames: Screenshot[];

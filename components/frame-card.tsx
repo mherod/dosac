@@ -1,12 +1,12 @@
 "use client";
 
+import { Check, Clapperboard, Clock } from "lucide-react";
+import type React from "react";
 import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
 import { getCharacterBlurPlaceholder } from "@/lib/character-colors";
 import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Check, Clapperboard, Clock } from "lucide-react";
-import type React from "react";
 
 /**
  * Formats an episode ID string from "s01e02" format to "S1 E2" format
@@ -17,7 +17,7 @@ function formatEpisodeString(episodeId: string | null | undefined): string {
   if (!episodeId) return "";
   const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
   if (!match || !match[1] || !match[2]) return episodeId;
-  return `S${Number.parseInt(match[1])} E${Number.parseInt(match[2])}`;
+  return `S${Number.parseInt(match[1], 10)} E${Number.parseInt(match[2], 10)}`;
 }
 
 /**
@@ -30,8 +30,8 @@ function formatTimestamp(timestamp: string): string {
   const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
   if (!match || !match[1] || !match[2]) return timestamp;
 
-  const minutes = Number.parseInt(match[1]);
-  const seconds = Number.parseInt(match[2]);
+  const minutes = Number.parseInt(match[1], 10);
+  const seconds = Number.parseInt(match[2], 10);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 

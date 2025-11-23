@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+import type React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -13,16 +16,13 @@ import {
 } from "@/components/ui/card";
 import {
   type Character,
-  type Department,
-  type Role,
   charactersByDepartment,
   charactersByRole,
+  type Department,
   departmentLabels,
+  type Role,
   roleLabels,
 } from "@/lib/profiles";
-import Image from "next/image";
-import Link from "next/link";
-import type React from "react";
 
 /**
  * Props for the CharacterCard component

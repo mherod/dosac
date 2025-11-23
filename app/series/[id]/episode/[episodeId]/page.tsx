@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { EpisodePage } from "@/components/episode-page";
 import { formatPageTitle } from "@/lib/constants";
 import { getEpisodeInfo } from "@/lib/episode-info";
@@ -7,7 +8,6 @@ import {
   getSeriesInfo,
 } from "@/lib/series-info";
 import { generateEpisodeStructuredData } from "@/lib/structured-data";
-import type { Metadata } from "next";
 
 /**
  * Generates static params for all episode pages at build time

@@ -1,7 +1,7 @@
-import { CATEGORIES } from "@/lib/categories";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type React from "react";
+import { CATEGORIES } from "@/lib/categories";
+import { cn } from "@/lib/utils";
 
 export function CategoryNav({
   className,

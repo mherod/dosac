@@ -3,8 +3,8 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import { cacheLife } from "next/cache";
-import { InvalidFrameIdError } from "./frames";
 import type { Frame, ParsedFrameId } from "./frames";
+import { InvalidFrameIdError } from "./frames";
 
 // Cache the frame index in memory
 let cachedFrameIndex: Frame[] | null = null;

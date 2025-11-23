@@ -12,8 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   type CastMember,
-  type WriterCredit,
   getEpisodeInfo,
+  type WriterCredit,
 } from "@/lib/episode-info";
 import type { Frame } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";

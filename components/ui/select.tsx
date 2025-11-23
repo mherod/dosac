@@ -1,7 +1,6 @@
-import React, { forwardRef, isValidElement, cloneElement } from "react";
-
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
+import React, { cloneElement, forwardRef, isValidElement } from "react";
 
 import { cn } from "@/lib/utils";
 

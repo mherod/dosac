@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { WifiOff, Download } from "lucide-react";
+import { Download, WifiOff } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /**
  * PWA Status Component

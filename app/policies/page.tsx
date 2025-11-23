@@ -1,8 +1,8 @@
-import { getServerPolicies } from "@/lib/policies.server";
-import { PolicyCard } from "@/components/policy-card";
-import { cacheLife } from "next/cache";
 import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { PolicyCard } from "@/components/policy-card";
+import { getServerPolicies } from "@/lib/policies.server";
 
 export const metadata: Metadata = {
   title: "Policy Unit - Department of Social Affairs and Citizenship",

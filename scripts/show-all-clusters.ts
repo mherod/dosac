@@ -8,7 +8,7 @@ import { analyzeFaceClusters } from "./lib/face-cache";
  */
 
 function getSpeechForFrame(framePath: string): string {
-  const match = framePath.match(/(s\d+e\d+)\/([^\/]+)\/frame-blank/);
+  const match = framePath.match(/(s\d+e\d+)\/([^/]+)\/frame-blank/);
   if (!match) return "";
 
   const [, episode, timestamp] = match;

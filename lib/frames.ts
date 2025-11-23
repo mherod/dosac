@@ -56,8 +56,8 @@ export function parseEpisodeId(
     throw new InvalidFrameIdError(`Invalid episode ID format: ${episodeId}`);
   }
   return {
-    season: Number.parseInt(match[1]),
-    episode: Number.parseInt(match[2]),
+    season: Number.parseInt(match[1], 10),
+    episode: Number.parseInt(match[2], 10),
   };
 }
 

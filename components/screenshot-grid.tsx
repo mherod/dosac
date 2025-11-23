@@ -1,23 +1,20 @@
 "use client";
 
-import React from "react";
-
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { FrameCard } from "@/components/frame-card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { usePathname } from "next/navigation";
-
 import { useSpeculationRules } from "@/lib/speculation-rules";
 import type { Screenshot } from "@/lib/types";
-import Link from "next/link";
-import {
-  Suspense,
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-} from "react";
 
 /**
  * Props for the ScreenshotGrid component

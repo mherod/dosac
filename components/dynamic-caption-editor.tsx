@@ -1,9 +1,9 @@
 "use client";
 
-import { CaptionEditor } from "@/app/caption/[id]/caption-editor";
-import type { Screenshot } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useMemo } from "react";
+import { CaptionEditor } from "@/app/caption/[id]/caption-editor";
+import type { Screenshot } from "@/lib/types";
 
 interface CharacterInFrame {
   name: string;

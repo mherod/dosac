@@ -1,8 +1,8 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { NextResponse } from "next/server";
 import type { Frame } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
-import { NextResponse } from "next/server";
 
 /**
  * Represents a ranked moment from the show with its metadata

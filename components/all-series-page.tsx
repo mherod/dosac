@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Suspense } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -6,8 +8,6 @@ import { getFrameIndex } from "@/lib/frames.server";
 import { getBaseBreadcrumbs } from "@/lib/navigation";
 import { type SeriesInfo, seriesInfo } from "@/lib/series-info";
 import { processTextWithLinks } from "@/lib/utils";
-import Link from "next/link";
-import { Suspense } from "react";
 
 /**
  * Content component for the series page

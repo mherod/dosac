@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Download, Smartphone, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Download, Smartphone } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -59,7 +59,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
     // Check if user has dismissed the prompt before
     const dismissed = localStorage.getItem("pwa-install-dismissed");
     if (dismissed) {
-      const dismissedTime = parseInt(dismissed, 10);
+      const dismissedTime = Number.parseInt(dismissed, 10);
       const daysSinceDismissed =
         (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
 

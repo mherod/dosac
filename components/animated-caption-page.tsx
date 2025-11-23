@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useLayoutEffect, useState } from "react";
 import type React from "react";
+import { useLayoutEffect, useState } from "react";
 
 // Accessibility-aware animation hook
 function useReducedMotion(): boolean {

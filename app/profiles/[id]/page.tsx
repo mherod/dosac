@@ -1,3 +1,8 @@
+import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ProfileImageBadge } from "@/components/profile-image-badge";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import {
@@ -12,19 +17,14 @@ import { getFrameById } from "@/lib/frames.server";
 import {
   type Character,
   type CharacterId,
-  type Department,
-  type Role,
   characters,
+  type Department,
   departmentLabels,
+  type Role,
   roleLabels,
 } from "@/lib/profiles";
 import { generateCharacterStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
-import { cacheLife } from "next/cache";
-import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 /**
  * Generates static params for all character profile pages at build time

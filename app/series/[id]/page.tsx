@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { SeriesPage } from "@/components/series-page";
 import { formatPageTitle } from "@/lib/constants";
 import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 /**
  * Generates static params for all series pages at build time

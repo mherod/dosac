@@ -1,17 +1,17 @@
 import "./globals.css";
-import { Footer } from "@/components/footer";
-import { MainNav } from "@/components/main-nav";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toast";
-import { PWAStatus } from "@/components/pwa-status";
-import { PWAInit } from "@/components/pwa-init";
-import { PWAUpdateNotification } from "@/components/pwa-update-notification";
-import { SITE_NAME } from "@/lib/constants";
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type React from "react";
 import { Suspense } from "react";
+import { Footer } from "@/components/footer";
+import { MainNav } from "@/components/main-nav";
+import { PWAInit } from "@/components/pwa-init";
+import { PWAStatus } from "@/components/pwa-status";
+import { PWAUpdateNotification } from "@/components/pwa-update-notification";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toast";
+import { SITE_NAME } from "@/lib/constants";
 
 const inter = Inter({
   subsets: ["latin"],

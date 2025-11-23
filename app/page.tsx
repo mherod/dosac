@@ -1,12 +1,12 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { HomePage } from "@/components/home-page";
 import { HomePageSkeleton } from "@/components/home-page-skeleton";
 import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
-import type { Screenshot } from "@/lib/types";
-import { redirect } from "next/navigation";
-import type { Metadata } from "next";
 import { generateWebsiteStructuredData } from "@/lib/structured-data";
-import { Suspense } from "react";
+import type { Screenshot } from "@/lib/types";
 
 /**
  * Generates dynamic metadata for the homepage based on search parameters

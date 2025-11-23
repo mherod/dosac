@@ -1,20 +1,20 @@
+import type { Metadata } from "next";
+import { cacheLife } from "next/cache";
+import { notFound } from "next/navigation";
+import type React from "react";
 import {
   AnimatedCaptionEditorWrapper,
   AnimatedCaptionPage,
   AnimatedFrameStripWrapper,
 } from "@/components/animated-caption-page";
+import { DynamicCaptionEditor } from "@/components/dynamic-caption-editor";
 import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
-import { generateSingleFrameMetadata } from "@/lib/metadata";
-import { getFrameById, getFrameIndex } from "@/lib/frames.server";
 import { getCharactersForFrame } from "@/lib/frame-characters.server";
+import { getFrameById, getFrameIndex } from "@/lib/frames.server";
+import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
-import { cacheLife } from "next/cache";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import type React from "react";
-import { DynamicCaptionEditor } from "@/components/dynamic-caption-editor";
 
 /**
  * Generates static parameters for the most important frame pages at build time

@@ -1,6 +1,5 @@
 "use client";
 
-import { useDebounce } from "@/hooks/use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import {
@@ -11,6 +10,7 @@ import {
   useState,
 } from "react";
 import { z } from "zod";
+import { useDebounce } from "@/hooks/use-debounce";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
 

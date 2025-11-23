@@ -1,3 +1,7 @@
+import { ArrowRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type React from "react";
 import { EpisodeFramesCard } from "@/components/episode-frames-card";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Badge } from "@/components/ui/badge";
@@ -9,10 +13,6 @@ import { getEpisodeListBreadcrumbs } from "@/lib/navigation";
 import { characters } from "@/lib/profiles";
 import { getSeriesEpisodes, getSeriesInfo } from "@/lib/series-info";
 import { processTextWithLinks } from "@/lib/utils";
-import { ArrowRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import type React from "react";
 
 /**
  * Interface for EpisodesPage component props

@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useLayoutEffect, useState } from "react";
 import type React from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 interface AnimatedRouteTransitionProps {
   children: React.ReactNode;

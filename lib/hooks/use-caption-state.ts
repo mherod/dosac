@@ -1,5 +1,5 @@
-import { CAPTION_DEFAULTS } from "@/lib/config/caption";
 import { useState } from "react";
+import { CAPTION_DEFAULTS } from "@/lib/config/caption";
 
 /**
  * Configuration options for initialising caption state

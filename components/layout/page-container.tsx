@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import type React from "react";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface PageContainerProps {
   /** The content to render inside the container */

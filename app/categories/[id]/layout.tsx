@@ -1,8 +1,8 @@
-import { CATEGORIES } from "@/lib/categories";
-import { getFrameIndex } from "@/lib/frames.server";
 import { FileText } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { PropsWithChildren } from "react";
+import { CATEGORIES } from "@/lib/categories";
+import { getFrameIndex } from "@/lib/frames.server";
 
 function CategoryHeader({
   title,

@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type React from "react";
+import { Suspense } from "react";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -7,10 +11,6 @@ import { getSeriesBreadcrumbs } from "@/lib/navigation";
 import { getSeriesInfo } from "@/lib/series-info";
 import type { Screenshot } from "@/lib/types";
 import { processTextWithLinks } from "@/lib/utils";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import type React from "react";
-import { Suspense } from "react";
 
 /**
  * Interface for SeriesPage component props

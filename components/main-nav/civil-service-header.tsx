@@ -1,7 +1,7 @@
-import crown from "@/public/crown.png";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
+import crown from "@/public/crown.png";
 import { UserMenu } from "./user-menu";
 
 export function CivilServiceHeader(): React.ReactElement {

@@ -1,6 +1,6 @@
-import { FEATURED_CHARACTERS } from "@/lib/profiles";
 import Link from "next/link";
 import type React from "react";
+import { FEATURED_CHARACTERS } from "@/lib/profiles";
 import { ProfileImageBadge } from "../profile-image-badge";
 
 /**

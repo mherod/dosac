@@ -1,6 +1,6 @@
-import type { Screenshot } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import type { Screenshot } from "@/lib/types";
 
 interface ExtendedFrame extends Omit<Screenshot, "episode"> {
   text: string;

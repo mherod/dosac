@@ -1,3 +1,4 @@
+import type { StaticImageData } from "next/image";
 import ben from "@/public/characters/ben.png";
 import cal from "@/public/characters/cal.jpg";
 import cliff from "@/public/characters/cliff.png";
@@ -18,7 +19,6 @@ import robyn from "@/public/characters/robyn-flag.png";
 import steve from "@/public/characters/steve.jpg";
 import stewart from "@/public/characters/stewart.png";
 import terri from "@/public/characters/terri.webp";
-import type { StaticImageData } from "next/image";
 
 /** Department constants for character affiliations */
 export const DEPARTMENTS = {

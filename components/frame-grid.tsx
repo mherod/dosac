@@ -1,8 +1,8 @@
 "use client";
 
-import type { Screenshot } from "@/lib/types";
 import Image from "next/image";
 import { useRef } from "react";
+import type { Screenshot } from "@/lib/types";
 import { CaptionText } from "./caption-text";
 
 interface FrameGridProps {

@@ -1,5 +1,5 @@
-import { getFrameIndex } from "@/lib/frames.server";
 import { type NextRequest, NextResponse } from "next/server";
+import { getFrameIndex } from "@/lib/frames.server";
 
 /**
  * Route handler for finding frames by caption text

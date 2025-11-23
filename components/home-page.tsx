@@ -1,7 +1,7 @@
+import type React from "react";
 import { FrameStrip } from "@/components/frame-strip";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import type { Frame } from "@/lib/frames";
-import type React from "react";
 
 /**
  * Pagination data interface for navigation controls

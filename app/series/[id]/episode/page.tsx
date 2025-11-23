@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { EpisodesPage } from "@/components/episodes-page";
 import { formatPageTitle } from "@/lib/constants";
 import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 /**
  * Generates static parameters for all episode list pages at build time

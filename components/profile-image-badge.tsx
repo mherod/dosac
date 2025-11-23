@@ -1,7 +1,7 @@
-import { characters } from "@/lib/profiles";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
 import type React from "react";
+import { characters } from "@/lib/profiles";
+import { cn } from "@/lib/utils";
 
 type CharacterId = keyof typeof characters;
 

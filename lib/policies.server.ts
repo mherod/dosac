@@ -3,7 +3,7 @@ import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { cacheLife } from "next/cache";
-import { PolicySchema, type Policy } from "./policies";
+import { type Policy, PolicySchema } from "./policies";
 
 const POLICIES_DIR = path.join(process.cwd(), "public", "policies");
 
