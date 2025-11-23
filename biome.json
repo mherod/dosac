@@ -11,6 +11,7 @@
       "!**/dist/**/*",
       "!**/build/**/*",
       "!**/public/**/*",
+      "!**/scripts/**/*",
       "!**/*.config.js",
       "!**/*.config.ts",
       "!**/*.config.cjs",
