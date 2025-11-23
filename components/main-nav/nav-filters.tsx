@@ -136,10 +136,10 @@ export function NavFilters({
           ...(filters.season && { season: filters.season.toString() }),
           ...(filters.episode && { episode: filters.episode.toString() }),
         });
-        router.push(`/search?${searchParams.toString()}`);
+        router.push(`/search?${searchParams.toString()}`, { scroll: false });
       } else if (pathname === "/search") {
         // If on search page and query is cleared, go back to home
-        router.push("/");
+        router.push("/", { scroll: false });
       }
     },
     [router, filters.season, filters.episode, pathname],

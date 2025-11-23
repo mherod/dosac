@@ -80,9 +80,9 @@ export function SeriesSelect({
     } else {
       // In navigation mode, navigate to the appropriate route
       if (value === "all") {
-        router.push("/series");
+        router.push("/series", { scroll: false });
       } else {
-        router.push(`/series/${value}`);
+        router.push(`/series/${value}`, { scroll: false });
       }
     }
   };
@@ -103,9 +103,11 @@ export function SeriesSelect({
     } else {
       // In navigation mode, navigate to the appropriate route
       if (value === "all") {
-        router.push(season ? `/series/${season}` : "/series");
+        router.push(season ? `/series/${season}` : "/series", {
+          scroll: false,
+        });
       } else {
-        router.push(`/series/${season}/episode/${value}`);
+        router.push(`/series/${season}/episode/${value}`, { scroll: false });
       }
     }
   };

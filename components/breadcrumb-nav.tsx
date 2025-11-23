@@ -48,7 +48,11 @@ export function BreadcrumbNav({
             )}
             <li>
               {item.href && !item.current ? (
-                <Link href={item.href} className="hover:underline">
+                <Link
+                  href={item.href}
+                  className="hover:underline"
+                  prefetch={null}
+                >
                   {item.label}
                 </Link>
               ) : (

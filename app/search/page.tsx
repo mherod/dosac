@@ -220,6 +220,8 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
                     page: (page - 1).toString(),
                   }).toString()}`}
                   className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                  prefetch={true}
+                  scroll={false}
                 >
                   Previous
                 </Link>
@@ -240,6 +242,8 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
                     page: (page + 1).toString(),
                   }).toString()}`}
                   className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+                  prefetch={true}
+                  scroll={false}
                 >
                   Next
                 </Link>

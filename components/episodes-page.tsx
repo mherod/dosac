@@ -127,6 +127,7 @@ export async function EpisodesPage({
                     <Link
                       href={`/series/${series.number}/episode/${episodeNumber}`}
                       className="inline-block transition-colors group-hover:text-blue-600"
+                      prefetch={true}
                     >
                       <h2 className="text-2xl font-semibold text-slate-900">
                         {info?.title || `Episode ${episodeNumber}`}

@@ -69,7 +69,7 @@ export function processTextWithLinks(
   }
 
   const renderLink = (href: string, text: string, key: number): ReactNode => (
-    <Link key={key} href={href} className={linkClassName}>
+    <Link key={key} href={href} className={linkClassName} prefetch={null}>
       {text}
     </Link>
   );

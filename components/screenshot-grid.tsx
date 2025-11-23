@@ -233,7 +233,6 @@ function ScreenshotGridInner({
                 key={`ranked-moment-${screenshot.id}-${index}`}
                 href={getScreenshotUrl(screenshot.id)}
                 prefetch={true}
-                rel="prerender"
                 scroll={false}
                 suppressHydrationWarning
               >
@@ -280,7 +279,6 @@ function ScreenshotGridInner({
                 key={`screenshot-${screenshot.id}-${index}`}
                 href={getScreenshotUrl(screenshot.id)}
                 prefetch={true}
-                rel="prerender"
                 scroll={false}
                 suppressHydrationWarning
               >

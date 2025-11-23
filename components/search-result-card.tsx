@@ -52,6 +52,8 @@ export function SearchResultCard({ frame, query }: SearchResultCardProps) {
     <Link
       href={`/caption/${frame.id}`}
       className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+      prefetch={true}
+      scroll={false}
     >
       <div className="relative aspect-video overflow-hidden bg-gray-100">
         {frame.imageUrl && (

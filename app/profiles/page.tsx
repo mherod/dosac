@@ -63,7 +63,7 @@ function CharacterCard({
   const primaryRole: Role | undefined = Array.isArray(role) ? role[0] : role;
 
   return (
-    <Link href={`/profiles/${id}`} className="block h-full">
+    <Link href={`/profiles/${id}`} className="block h-full" prefetch={true}>
       <Card className="group h-full cursor-pointer transition-colors hover:bg-accent">
         <CardHeader>
           {image && (

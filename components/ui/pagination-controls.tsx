@@ -40,7 +40,7 @@ export function PaginationControls({
         </Button>
       ) : (
         <Button variant="outline" size="icon" asChild>
-          <Link href={buildPageUrl(prevPage)}>
+          <Link href={buildPageUrl(prevPage)} prefetch={true} scroll={false}>
             <ChevronLeft className="h-4 w-4" />
           </Link>
         </Button>
@@ -54,7 +54,7 @@ export function PaginationControls({
         </Button>
       ) : (
         <Button variant="outline" size="icon" asChild>
-          <Link href={buildPageUrl(nextPage)}>
+          <Link href={buildPageUrl(nextPage)} prefetch={true} scroll={false}>
             <ChevronRight className="h-4 w-4" />
           </Link>
         </Button>
