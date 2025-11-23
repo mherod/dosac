@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type React from "react";
 
 interface AnimatedRouteTransitionProps {
@@ -47,8 +47,9 @@ export function CrossfadeImage({
   const [isLoaded, setIsLoaded] = useState(false);
   const [prevSrc, setPrevSrc] = useState(src);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (src !== prevSrc) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsLoaded(false);
       setPrevSrc(src);
     }

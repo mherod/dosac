@@ -8,7 +8,7 @@ import { useCaptionState } from "@/lib/hooks/use-caption-state";
 import { handleShare } from "@/lib/share";
 import * as htmlToImage from "html-to-image";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 interface Screenshot {
   id: string;
@@ -57,9 +57,10 @@ export function CaptionEditor({
   } = useCaptionState();
 
   // Update caption when URL text parameter changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     const urlText = searchParams?.get("text");
     if (urlText) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCaption(decodeURIComponent(urlText));
     } else {
       setCaption(screenshot.speech);

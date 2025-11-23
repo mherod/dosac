@@ -15,7 +15,7 @@ Guidance for Claude Code (claude.ai/code) when working with this repository.
 
 - **Package manager**: pnpm (not npm/yarn)
 - **Node.js**: >= 18.0.0 required
-- **Runtime**: Next.js 16.0.1-canary.2 + React 19.3.0-canary-408b38ef-20251023 with experimental features:
+- **Runtime**: Next.js 16.0.2-canary.33 + React 19.3.0-canary-40b4a5bf-20251120 with experimental features:
   - `cacheComponents` - Enables composable caching with "use cache"
   - `cacheLife` - Cache revalidation policies
   - `serverActions` - Server actions support (2mb body size limit)

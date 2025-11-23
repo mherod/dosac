@@ -1,17 +1,18 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import type React from "react";
 
 // Accessibility-aware animation hook
 function useReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window === "undefined") return;
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (event: MediaQueryListEvent) => {
@@ -33,7 +34,8 @@ export function AnimatedCaptionPage({ children }: AnimatedCaptionPageProps) {
   const [isVisible, setIsVisible] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true);
   }, []);
 

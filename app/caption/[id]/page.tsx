@@ -104,6 +104,44 @@ export async function generateMetadata({
  * @param props.params - Promise resolving to route parameters containing frame ID
  * @returns Fully server-rendered page with efficient data loading
  */
+/**
+ * Server component that renders the caption page content
+ */
+async function CaptionPageContent({
+  frame,
+  characters,
+  allFrames,
+}: {
+  frame: Screenshot;
+  characters: Array<{ name: string; confidence: number }>;
+  allFrames: Screenshot[];
+}): Promise<React.ReactElement> {
+  const structuredData = generateMemeStructuredData(frame, frame.speech);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
+        <AnimatedCaptionPage>
+          <AnimatedFrameStripWrapper>
+            <FrameStrip
+              screenshots={allFrames}
+              centerScreenshot={frame}
+              frameWidth={200}
+            />
+          </AnimatedFrameStripWrapper>
+          <AnimatedCaptionEditorWrapper>
+            <DynamicCaptionEditor frame={frame} characters={characters} />
+          </AnimatedCaptionEditorWrapper>
+        </AnimatedCaptionPage>
+      </CaptionPageLayout>
+    </>
+  );
+}
+
 export default async function Page({
   params,
 }: Pick<PageProps, "params">): Promise<React.ReactElement> {
@@ -112,12 +150,16 @@ export default async function Page({
 
   const resolvedParams = await params;
 
+  let frame: Screenshot;
+  let characters: Array<{ name: string; confidence: number }>;
+  let allFrames: Screenshot[];
+
   try {
     // Optimize data fetching with a single frame lookup followed by efficient index operations
-    const frame = await getFrameById(resolvedParams.id);
+    frame = await getFrameById(resolvedParams.id);
 
     // Load character information for this frame
-    const characters = await getCharactersForFrame(frame.id);
+    characters = (await getCharactersForFrame(frame.id)) ?? [];
 
     // Pre-calculate frame strip data server-side for maximum prerendering
     const index = await getFrameIndex();
@@ -138,39 +180,22 @@ export default async function Page({
     }
 
     // Combine all frames for the strip
-    const allFrames = [...previousFrames, frame, ...nextFrames].filter(
+    allFrames = [...previousFrames, frame, ...nextFrames].filter(
       (f: Screenshot | null | undefined): f is Screenshot =>
         f !== null &&
         f !== undefined &&
         typeof f.id === "string" &&
         typeof f.speech === "string",
     );
-
-    const structuredData = generateMemeStructuredData(frame, frame.speech);
-
-    return (
-      <>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-        <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
-          <AnimatedCaptionPage>
-            <AnimatedFrameStripWrapper>
-              <FrameStrip
-                screenshots={allFrames}
-                centerScreenshot={frame}
-                frameWidth={200}
-              />
-            </AnimatedFrameStripWrapper>
-            <AnimatedCaptionEditorWrapper>
-              <DynamicCaptionEditor frame={frame} characters={characters} />
-            </AnimatedCaptionEditorWrapper>
-          </AnimatedCaptionPage>
-        </CaptionPageLayout>
-      </>
-    );
   } catch {
     notFound();
   }
+
+  return (
+    <CaptionPageContent
+      frame={frame}
+      characters={characters}
+      allFrames={allFrames}
+    />
+  );
 }

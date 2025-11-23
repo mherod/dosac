@@ -3,7 +3,13 @@
 import { useDebounce } from "@/hooks/use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { z } from "zod";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
@@ -150,8 +156,9 @@ export function NavFilters({
     handleQueryChange(debouncedQuery);
   }, [debouncedQuery, handleQueryChange]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const query = searchParams.get("q") || "";
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalQuery(query);
   }, [searchParams]);
 

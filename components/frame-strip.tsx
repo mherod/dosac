@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type React from "react";
 
 /**
@@ -43,6 +43,7 @@ export function FrameStrip({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartId, setDragStartId] = useState<string | null>(null);
   const [lastSelectedId, setLastSelectedId] = useState<string | null>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
   const stripRef = useRef<HTMLDivElement>(null);
   const [framesParent] = useAutoAnimate<HTMLDivElement>({
     duration: 150,
@@ -94,15 +95,32 @@ export function FrameStrip({
     }
   }, [centerScreenshot, frameWidth, screenshots]);
 
+  // Update container width when ref is available
+  useLayoutEffect(() => {
+    if (stripRef.current) {
+      setContainerWidth(stripRef.current.clientWidth);
+    }
+  }, []);
+
+  // Update container width on resize
+  useEffect(() => {
+    const handleResize = (): void => {
+      if (stripRef.current) {
+        setContainerWidth(stripRef.current.clientWidth);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Now place conditional return AFTER all Hooks
   if (!screenshots?.length) {
     return null;
   }
 
   // Calculate visible frames based on container width
-  const visibleFrames = Math.floor(
-    (stripRef.current?.clientWidth || 0) / frameWidth,
-  );
+  const visibleFrames = Math.floor(containerWidth / frameWidth);
 
   const handleFrameClick = (id: string, e: React.MouseEvent): void => {
     let newSelectedIds = new Set(selectedIds);
