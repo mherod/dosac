@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { SearchResultCard } from "@/components/search-result-card";
 import type { ExtendedFrame } from "@/components/search-result-card";
+import { SearchResultCard } from "@/components/search-result-card";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 

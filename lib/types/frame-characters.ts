@@ -162,24 +162,24 @@ export class FrameCharacterUtils {
   ): Map<string, Map<string, number>> {
     const coAppearances = new Map<string, Map<string, number>>();
 
-    Object.values(data.frames).forEach((frame) => {
+    for (const frame of Object.values(data.frames)) {
       const characters = frame.characters.map((c) => c.name);
 
-      characters.forEach((char1) => {
+      for (const char1 of characters) {
         if (!coAppearances.has(char1)) {
           coAppearances.set(char1, new Map());
         }
 
-        characters.forEach((char2) => {
+        for (const char2 of characters) {
           if (char1 !== char2) {
             const char1Map = coAppearances.get(char1);
             if (char1Map) {
               char1Map.set(char2, (char1Map.get(char2) || 0) + 1);
             }
           }
-        });
-      });
-    });
+        }
+      }
+    }
 
     return coAppearances;
   }

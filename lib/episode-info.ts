@@ -944,10 +944,10 @@ export function getDirectors(): string[] {
  */
 export function getAllWriters(): WriterCredit[] {
   const writersMap = new Map<string, WriterCredit>();
-  episodeInfo.forEach((ep: EpisodeInfo) => {
-    ep.writers.forEach((writer: WriterCredit) => {
+  for (const ep of episodeInfo) {
+    for (const writer of ep.writers) {
       writersMap.set(writer.name, writer);
-    });
-  });
+    }
+  }
   return Array.from(writersMap.values());
 }
