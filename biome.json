@@ -35,25 +35,29 @@
       "recommended": true,
       "style": {
         "noInferrableTypes": "off",
-        "noParameterAssign": "warn",
-        "useNodejsImportProtocol": "warn",
-        "useNumberNamespace": "warn",
-        "useTemplate": "warn",
-        "noNonNullAssertion": "warn"
+        "noParameterAssign": "error",
+        "useNodejsImportProtocol": "error",
+        "useNumberNamespace": "error",
+        "useTemplate": "error",
+        "noNonNullAssertion": "error"
       },
       "suspicious": {
         "noArrayIndexKey": "warn",
-        "noExplicitAny": "warn",
-        "noImplicitAnyLet": "warn"
+        "noExplicitAny": "error",
+        "noImplicitAnyLet": "error"
       },
       "complexity": {
         "noForEach": "warn"
       },
       "a11y": {
-        "noLabelWithoutControl": "warn"
+        "noLabelWithoutControl": "error"
       },
       "security": {
         "noDangerouslySetInnerHtml": "warn"
+      },
+      "correctness": {
+        "useParseIntRadix": "error",
+        "noUnusedVariables": "error"
       }
     }
   },

@@ -111,9 +111,17 @@ const config = [
           ignoreRestSiblings: true,
         },
       ],
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": [
+        "warn",
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowDirectConstAssertionInArrowFunctions: true,
+        },
+      ],
+      "@typescript-eslint/explicit-module-boundary-types": "warn",
       "@typescript-eslint/typedef": [
         "error",
         {
@@ -135,13 +143,13 @@ const config = [
       "promise/param-names": "error",
       "promise/catch-or-return": "error",
       "promise/no-native": "off",
-      "promise/no-nesting": "warn",
-      "promise/no-promise-in-callback": "warn",
-      "promise/no-callback-in-promise": "warn",
+      "promise/no-nesting": "error",
+      "promise/no-promise-in-callback": "error",
+      "promise/no-callback-in-promise": "error",
       "promise/avoid-new": "off",
       "promise/no-new-statics": "error",
-      "promise/no-return-in-finally": "warn",
-      "promise/valid-params": "warn",
+      "promise/no-return-in-finally": "error",
+      "promise/valid-params": "error",
       "promise/prefer-await-to-then": "warn",
       "promise/prefer-await-to-callbacks": "warn",
 
@@ -165,7 +173,7 @@ const config = [
 
       // JSDoc rules
       "jsdoc/require-jsdoc": [
-        "warn",
+        "error",
         {
           publicOnly: true,
           require: {
@@ -191,7 +199,7 @@ const config = [
         },
       ],
       "jsdoc/require-param": [
-        "warn",
+        "error",
         {
           exemptedBy: ["type"],
           checkRestProperty: false,
@@ -201,7 +209,7 @@ const config = [
         },
       ],
       "jsdoc/require-returns": [
-        "warn",
+        "error",
         {
           exemptedBy: ["type"],
           checkGetters: false,
@@ -210,20 +218,20 @@ const config = [
         },
       ],
       "jsdoc/require-param-type": "off",
-      "jsdoc/require-param-description": "warn",
+      "jsdoc/require-param-description": "error",
       "jsdoc/require-returns-type": "off",
-      "jsdoc/require-returns-description": "warn",
-      "jsdoc/valid-types": "warn",
+      "jsdoc/require-returns-description": "error",
+      "jsdoc/valid-types": "error",
       "jsdoc/check-types": "off",
       "jsdoc/no-undefined-types": "off",
 
       // Custom React rules from @mherod/eslint-plugin-custom
-      "@mherod/react/no-dynamic-tailwind-classes": "warn",
+      "@mherod/react/no-dynamic-tailwind-classes": "error",
       "@mherod/react/no-event-handlers-to-client-props": "error",
-      "@mherod/react/no-unstable-math-random": "warn",
+      "@mherod/react/no-unstable-math-random": "error",
       "@mherod/react/no-use-state-in-async-component": "error",
-      "@mherod/react/prefer-link-over-router-push": "warn",
-      "@mherod/react/prefer-next-navigation": "warn",
+      "@mherod/react/prefer-link-over-router-push": "error",
+      "@mherod/react/prefer-next-navigation": "error",
       "@mherod/react/prefer-react-destructured-imports": "off", // Too noisy
       "@mherod/react/prevent-environment-poisoning": "error",
       "@mherod/react/enforce-server-client-separation": "error",
