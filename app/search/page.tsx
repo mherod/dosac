@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { SearchResultCard } from "@/components/search-result-card";
+import type { ExtendedFrame } from "@/components/search-result-card";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
 
@@ -188,18 +189,18 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
                 ? Number.parseInt(episodeMatch[2], 10)
                 : 1;
 
+              const extendedFrame: ExtendedFrame = {
+                ...frame,
+                text: frame.speech || frame.subtitle || "",
+                season: frameSeason,
+                episode: frameEpisode,
+                speaker: frame.character,
+              };
+
               return (
                 <SearchResultCard
                   key={frame.id}
-                  frame={
-                    {
-                      ...frame,
-                      text: frame.speech || frame.subtitle || "",
-                      season: frameSeason,
-                      episode: frameEpisode,
-                      speaker: frame.character,
-                    } as any
-                  }
+                  frame={extendedFrame}
                   query={query}
                 />
               );

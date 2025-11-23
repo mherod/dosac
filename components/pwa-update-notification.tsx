@@ -56,6 +56,7 @@ export function PWAUpdateNotification(): React.ReactElement | null {
             </div>
           </div>
           <button
+            type="button"
             onClick={handleDismiss}
             className="text-blue-400 transition-colors hover:text-blue-600"
             aria-label="Dismiss update notification"

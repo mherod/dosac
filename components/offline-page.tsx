@@ -27,6 +27,7 @@ export function OfflinePage(): React.ReactElement {
 
         <div className="space-y-3">
           <button
+            type="button"
             onClick={() => window.location.reload()}
             className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
           >

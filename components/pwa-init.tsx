@@ -7,7 +7,7 @@ import { registerServiceWorker } from "@/lib/pwa";
  * PWA Initialization Component
  * Registers the service worker and sets up PWA functionality
  */
-export function PWAInit(): React.ReactElement {
+export function PWAInit(): React.ReactElement | null {
   useEffect(() => {
     const initializePWA = async () => {
       try {
@@ -87,5 +87,5 @@ export function PWAInit(): React.ReactElement {
   }, []);
 
   // This component doesn't render anything
-  return <></>;
+  return null;
 }

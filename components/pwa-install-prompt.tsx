@@ -29,7 +29,11 @@ export function PWAInstallPrompt(): React.ReactElement | null {
       const isStandalone = window.matchMedia(
         "(display-mode: standalone)",
       ).matches;
-      const isInApp = (window.navigator as any).standalone === true;
+      // iOS Safari specific property
+      const isInApp =
+        "standalone" in window.navigator &&
+        (window.navigator as Navigator & { standalone?: boolean })
+          .standalone === true;
       setIsInstalled(isStandalone || isInApp);
     };
 

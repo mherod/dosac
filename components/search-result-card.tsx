@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Screenshot } from "@/lib/types";
 
-interface ExtendedFrame extends Omit<Screenshot, "episode"> {
+export interface ExtendedFrame extends Omit<Screenshot, "episode"> {
   text: string;
   season: number;
   episode: number;

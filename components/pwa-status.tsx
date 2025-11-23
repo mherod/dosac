@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
  * PWA Status Component
  * Shows connection status and PWA installation status
  */
-export function PWAStatus(): React.ReactElement {
+export function PWAStatus(): React.ReactElement | null {
   const [isOnline, setIsOnline] = useState(true);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -23,7 +23,11 @@ export function PWAStatus(): React.ReactElement {
       const standalone = window.matchMedia(
         "(display-mode: standalone)",
       ).matches;
-      const inApp = (window.navigator as any).standalone === true;
+      // iOS Safari specific property
+      const inApp =
+        "standalone" in window.navigator &&
+        (window.navigator as Navigator & { standalone?: boolean })
+          .standalone === true;
       setIsStandalone(standalone || inApp);
       setIsInstalled(standalone || inApp);
     };
@@ -52,7 +56,7 @@ export function PWAStatus(): React.ReactElement {
 
   // Don't show anything if everything is normal
   if (isOnline && !isInstalled) {
-    return <></>;
+    return null;
   }
 
   return (

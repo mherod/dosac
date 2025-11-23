@@ -172,8 +172,10 @@ export class FrameCharacterUtils {
 
         characters.forEach((char2) => {
           if (char1 !== char2) {
-            const char1Map = coAppearances.get(char1)!;
-            char1Map.set(char2, (char1Map.get(char2) || 0) + 1);
+            const char1Map = coAppearances.get(char1);
+            if (char1Map) {
+              char1Map.set(char2, (char1Map.get(char2) || 0) + 1);
+            }
           }
         });
       });
