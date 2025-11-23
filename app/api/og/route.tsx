@@ -95,7 +95,7 @@ async function generateOGImage({
   );
   const finalOutlineWidth = Math.max(
     calculatedOutlineWidth,
-    Number.parseInt(outlineWidth),
+    Number.parseInt(outlineWidth, 10),
   );
 
   // Fetch image
@@ -199,7 +199,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
     const searchParams = req.nextUrl.searchParams;
     const caption = searchParams.get("caption") || "No caption provided";
     const imageUrlString = searchParams.get("imageUrl") || "";
-    const fontSize = Number.parseInt(searchParams.get("fontSize") || "24");
+    const fontSize = Number.parseInt(searchParams.get("fontSize") || "24", 10);
     const fontFamily = searchParams.get("fontFamily") || "Arial";
     const outlineWidth = searchParams.get("outlineWidth") || "1";
 
