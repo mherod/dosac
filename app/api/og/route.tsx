@@ -2,27 +2,7 @@ import { ImageResponse } from "@vercel/og";
 import { cacheLife } from "next/cache";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
-
-/**
- * Generates CSS text-shadow value for text outline effect
- * @param width - Width of the outline in pixels
- * @returns CSS text-shadow property value string
- *
- * @example
- * ```ts
- * getTextShadow(2) // returns "2px 2px 0 #000, 2px -2px 0 #000, ..."
- * ```
- */
-function getTextShadow(width: number = 1): string {
-  const shadows = [];
-  for (let x = -width; x <= width; x++) {
-    for (let y = -width; y <= width; y++) {
-      if (x === 0 && y === 0) continue;
-      shadows.push(`${x}px ${y}px 0 #000`);
-    }
-  }
-  return shadows.join(", ");
-}
+import { generateTextShadow } from "@/lib/utils";
 
 /**
  * API route handler for generating OpenGraph images with captions
@@ -159,7 +139,7 @@ async function generateOGImage({
               fontSize: `${calculatedFontSize}px`,
               fontWeight: 500,
               color: "#ffffff",
-              textShadow: getTextShadow(finalOutlineWidth),
+              textShadow: generateTextShadow(finalOutlineWidth, 0),
               textAlign: "center",
               maxWidth: "90%",
               margin: "0 auto",

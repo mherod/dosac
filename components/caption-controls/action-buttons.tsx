@@ -2,6 +2,7 @@
 
 import { Download, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the ActionButtons component
@@ -29,7 +30,7 @@ export function ActionButtons({
   className = "",
 }: ActionButtonsProps): React.ReactElement {
   return (
-    <div className={`flex gap-2 ${className}`}>
+    <div className={cn("flex gap-2", className)}>
       <Button
         className="flex-1 shadow-sm transition-all hover:shadow-md"
         onClick={onDownload}

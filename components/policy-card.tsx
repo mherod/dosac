@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type React from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -9,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import type { Policy } from "@/lib/policies";
 import { getPolicyStatusColour } from "@/lib/policies";
+import { cn } from "@/lib/utils";
 
-export function PolicyCard({ policy }: { policy: Policy }) {
+export function PolicyCard({ policy }: { policy: Policy }): React.ReactElement {
   return (
     <Link href={`/policies/${policy.id}`}>
       <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg">
@@ -32,7 +34,7 @@ export function PolicyCard({ policy }: { policy: Policy }) {
           <div className="flex items-center justify-between">
             <Badge
               variant="outline"
-              className={`capitalize ${getPolicyStatusColour(policy.status)}`}
+              className={cn("capitalize", getPolicyStatusColour(policy.status))}
             >
               {policy.status}
             </Badge>

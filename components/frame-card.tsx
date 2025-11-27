@@ -5,35 +5,9 @@ import type React from "react";
 import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
 import { getCharacterBlurPlaceholder } from "@/lib/character-colors";
+import { formatEpisodeId, formatTimestamp } from "@/lib/utils";
 import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-/**
- * Formats an episode ID string from "s01e02" format to "S1 E2" format
- * @param episodeId - The episode ID string to format
- * @returns The formatted episode string
- */
-function formatEpisodeString(episodeId: string | null | undefined): string {
-  if (!episodeId) return "";
-  const match = episodeId.match(/^s(\d{2})e(\d{2})$/i);
-  if (!match || !match[1] || !match[2]) return episodeId;
-  return `S${Number.parseInt(match[1], 10)} E${Number.parseInt(match[2], 10)}`;
-}
-
-/**
- * Formats a timestamp string from "00-03.120" format to "0:03" format
- * @param timestamp - The timestamp string to format
- * @returns The formatted timestamp string
- */
-function formatTimestamp(timestamp: string): string {
-  // Format from "00-03.120" to "0:03"
-  const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
-  if (!match || !match[1] || !match[2]) return timestamp;
-
-  const minutes = Number.parseInt(match[1], 10);
-  const seconds = Number.parseInt(match[2], 10);
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-}
 
 /**
  * Props for the FrameCard component
@@ -201,7 +175,7 @@ export function FrameCard({
             <div className="flex items-center space-x-1 rounded-full bg-background/70 px-1.5 py-0.5 shadow-sm backdrop-blur-[2px] transition-all duration-300 group-hover:bg-background/90 group-hover:backdrop-blur-sm sm:px-2">
               <Clapperboard className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
               <span className="font-medium">
-                {formatEpisodeString(screenshot.episode)}
+                {formatEpisodeId(screenshot.episode)}
               </span>
             </div>
             <div className="flex items-center space-x-1 rounded-full bg-background/70 px-1.5 py-0.5 shadow-sm backdrop-blur-[2px] transition-all duration-300 group-hover:bg-background/90 group-hover:backdrop-blur-sm sm:px-2">

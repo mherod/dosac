@@ -7,8 +7,10 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
+import { withQuery } from "ufo";
 import { z } from "zod";
 import { useDebounce } from "@/hooks/use-debounce";
 import { SearchBar } from "./search-bar";
@@ -104,7 +106,10 @@ export function NavFilters({
 
       // If we have a search query or we're on the search page, update search params
       if (trimmedQuery || pathname === "/search") {
-        const searchParams = new URLSearchParams({
+        const targetPath =
+          trimmedQuery || pathname === "/search" ? "/search" : "/";
+
+        const query: Record<string, string | undefined> = {
           ...(trimmedQuery && { q: trimmedQuery }),
           ...(result.data.season?.toString() && {
             season: result.data.season.toString(),
@@ -112,11 +117,9 @@ export function NavFilters({
           ...(result.data.episode?.toString() && {
             episode: result.data.episode.toString(),
           }),
-        });
+        };
 
-        const targetPath =
-          trimmedQuery || pathname === "/search" ? "/search" : "/";
-        router.push(`${targetPath}?${searchParams.toString()}`, {
+        router.push(withQuery(targetPath, query), {
           scroll: false,
         });
       }
@@ -139,7 +142,7 @@ export function NavFilters({
         );
 
         // Redirect to search page with query
-        const newSearchParams = new URLSearchParams({
+        const queryParams: Record<string, string | undefined> = {
           q: trimmedQuery,
           ...(currentSeason.success &&
             currentSeason.data && {
@@ -149,8 +152,8 @@ export function NavFilters({
             currentEpisode.data && {
               episode: currentEpisode.data.toString(),
             }),
-        });
-        router.push(`/search?${newSearchParams.toString()}`, { scroll: false });
+        };
+        router.push(withQuery("/search", queryParams), { scroll: false });
       } else if (pathname === "/search") {
         // If on search page and query is cleared, go back to home
         router.push("/", { scroll: false });
@@ -161,6 +164,7 @@ export function NavFilters({
 
   const [localQuery, setLocalQuery] = useState(filters.query);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const lastSyncedQueryRef = useRef<string>(filters.query);
   const debouncedQuery = useDebounce(localQuery, 300);
 
   // Only consider it search mode if there's actual search text
@@ -173,10 +177,17 @@ export function NavFilters({
     }
   }, [debouncedQuery, handleQueryChange, isSubmitting]);
 
+  // Sync URL searchParams to local input state when URL changes externally
+  // This is necessary for browser back/forward navigation and external URL changes
+  // Note: This pattern is acceptable for syncing URL params to controlled inputs in Next.js
   useLayoutEffect(() => {
     const query = searchParams.get("q") || "";
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLocalQuery(query);
+    // Only update if URL changed externally (different from last synced value)
+    if (lastSyncedQueryRef.current !== query) {
+      lastSyncedQueryRef.current = query;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLocalQuery(query);
+    }
     setIsSubmitting(false);
   }, [searchParams]);
 
@@ -204,7 +215,7 @@ export function NavFilters({
       );
 
       // Immediately navigate to search page
-      const newSearchParams = new URLSearchParams({
+      const queryParams: Record<string, string | undefined> = {
         q: trimmedQuery,
         ...(currentSeason.success &&
           currentSeason.data && {
@@ -214,8 +225,8 @@ export function NavFilters({
           currentEpisode.data && {
             episode: currentEpisode.data.toString(),
           }),
-      });
-      router.push(`/search?${newSearchParams.toString()}`, { scroll: false });
+      };
+      router.push(withQuery("/search", queryParams), { scroll: false });
     },
     [router, searchParams],
   );

@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the SeriesSelect component
@@ -113,7 +114,7 @@ export function SeriesSelect({
   };
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={cn("flex items-center gap-3", className)}>
       <Select
         value={season?.toString() ?? "all"}
         onValueChange={handleSeriesChange}

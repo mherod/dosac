@@ -1,5 +1,6 @@
 import { Users } from "lucide-react";
 import type { CharacterInFrame } from "@/lib/frame-characters.server";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for the FrameCharacters component
@@ -28,7 +29,10 @@ export function FrameCharacters({
 
   return (
     <div
-      className={`flex flex-wrap items-center gap-2 rounded-lg bg-secondary/50 p-3 ${className}`}
+      className={cn(
+        "flex flex-wrap items-center gap-2 rounded-lg bg-secondary/50 p-3",
+        className,
+      )}
     >
       <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
         <Users className="h-4 w-4" />

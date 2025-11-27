@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useEffect, useLayoutEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface AnimatedRouteTransitionProps {
   children: React.ReactNode;
@@ -61,7 +62,7 @@ export function CrossfadeImage({
   };
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={cn("relative", className)}>
       <AnimatePresence mode="wait">
         <motion.img
           key={src}

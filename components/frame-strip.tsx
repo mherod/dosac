@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { withQuery } from "ufo";
 import { CaptionedImage } from "@/components/captioned-image";
 import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -180,12 +181,13 @@ export function FrameStrip({
 
     const [first, second, ...rest] = frames;
     const basePath = second ? `${first}/${second}` : first;
-    const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
-    const textParam = combinedText
-      ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
-      : "";
 
-    router.push(`/caption/${basePath}${compareIds}${textParam}`, {
+    const query: Record<string, string | undefined> = {
+      ...(rest.length > 0 && { compare: rest.join(",") }),
+      ...(combinedText && { text: combinedText }),
+    };
+
+    router.push(withQuery(`/caption/${basePath}`, query), {
       scroll: false,
     });
   };

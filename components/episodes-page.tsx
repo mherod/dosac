@@ -2,9 +2,10 @@ import { ArrowRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
-import { format } from "date-fns";
+import { formatEpisodeAirDate } from "@/lib/utils/date-formatting";
 import { groupBy, sortBy } from "lodash-es";
 import { EpisodeFramesCard } from "@/components/episode-frames-card";
+import { EpisodeMetadataBadge } from "@/components/episode-metadata-badge";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -136,20 +137,16 @@ export async function EpisodesPage({
                         {processTextWithLinks(info.shortSummary)}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 text-sm text-slate-600">
+                    <div className="flex items-center gap-4 text-sm">
                       {info?.airDate && (
-                        <div className="flex items-center gap-1">
-                          <CalendarIcon className="h-4 w-4" />
-                          <span>
-                            {format(new Date(info.airDate), "d MMMM yyyy")}
-                          </span>
-                        </div>
+                        <EpisodeMetadataBadge icon={CalendarIcon}>
+                          {formatEpisodeAirDate(info.airDate)}
+                        </EpisodeMetadataBadge>
                       )}
                       {info?.runtime && (
-                        <div className="flex items-center gap-1">
-                          <ClockIcon className="h-4 w-4" />
-                          <span>{info.runtime} minutes</span>
-                        </div>
+                        <EpisodeMetadataBadge icon={ClockIcon}>
+                          {info.runtime} minutes
+                        </EpisodeMetadataBadge>
                       )}
                     </div>
                   </div>

@@ -11,6 +11,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { withQuery } from "ufo";
 import { FrameCard } from "@/components/frame-card";
 import { Button } from "@/components/ui/button";
 import { useSpeculationRules } from "@/lib/speculation-rules";
@@ -107,12 +108,13 @@ function ScreenshotGridInner({
       // Use path for first two IDs and compare query param for additional IDs
       const [first, second, ...rest] = frames.map((f: Screenshot) => f.id);
       const basePath = second ? `${first}/${second}` : first;
-      const compareIds = rest.length > 0 ? `?compare=${rest.join(",")}` : "";
-      const textParam = combinedText
-        ? `${compareIds ? "&" : "?"}text=${encodeURIComponent(combinedText)}`
-        : "";
 
-      return `/caption/${basePath}${compareIds}${textParam}`;
+      const query: Record<string, string | undefined> = {
+        ...(rest.length > 0 && { compare: rest.join(",") }),
+        ...(combinedText && { text: combinedText }),
+      };
+
+      return withQuery(`/caption/${basePath}`, query);
     },
     [currentScreenshots, multiselect, selectedIds],
   );
@@ -143,20 +145,17 @@ function ScreenshotGridInner({
   const getPageUrl = React.useCallback(
     (newPage: number) => {
       const validPage = Math.min(Math.max(1, newPage), totalPages);
-      const params = new URLSearchParams();
 
       // Preserve current filters
-      if (filters.season) params.set("season", filters.season.toString());
-      if (filters.episode) params.set("episode", filters.episode.toString());
-      if (filters.query) params.set("q", filters.query);
+      const query: Record<string, string | undefined> = {
+        ...(filters.season && { season: filters.season.toString() }),
+        ...(filters.episode && { episode: filters.episode.toString() }),
+        ...(filters.query && { q: filters.query }),
+        // Add page parameter (only if not page 1)
+        ...(validPage > 1 && { page: validPage.toString() }),
+      };
 
-      // Add page parameter (only if not page 1)
-      if (validPage > 1) {
-        params.set("page", validPage.toString());
-      }
-
-      const queryString = params.toString();
-      return queryString ? `${pathname}?${queryString}` : pathname;
+      return withQuery(pathname, query);
     },
     [pathname, totalPages, filters],
   );

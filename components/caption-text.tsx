@@ -1,5 +1,7 @@
 "use client";
 
+import { cn, generateTextShadow } from "@/lib/utils";
+
 /**
  * Props for the CaptionText component
  */
@@ -18,34 +20,6 @@ interface CaptionTextProps {
   className?: string;
   /** Size of the drop shadow in pixels (0 to disable) */
   shadowSize?: number;
-}
-
-/**
- * Generates CSS text-shadow value for caption outline and drop shadow effects
- * @param outlineWidth - Width of the text outline in pixels
- * @param shadowSize - Size of the drop shadow in pixels
- * @returns CSS text-shadow property value string
- */
-function getTextShadow(
-  outlineWidth: number = 1,
-  shadowSize: number = 0,
-): string {
-  const shadows = [];
-
-  // Add outline effect
-  for (let x = -outlineWidth; x <= outlineWidth; x++) {
-    for (let y = -outlineWidth; y <= outlineWidth; y++) {
-      if (x === 0 && y === 0) continue;
-      shadows.push(`${x}px ${y}px 0 #000`);
-    }
-  }
-
-  // Add gaussian-like shadow if enabled
-  if (shadowSize > 0) {
-    shadows.push(`0 ${shadowSize}px ${shadowSize * 2}px rgba(0,0,0,0.7)`);
-  }
-
-  return shadows.join(", ");
 }
 
 /**
@@ -95,11 +69,11 @@ export function CaptionText({
 
   return (
     <div
-      className={`w-full whitespace-pre-wrap break-words ${className}`}
+      className={cn("w-full whitespace-pre-wrap break-words", className)}
       style={{
         fontSize: `${fontSize}px`,
         color: "#ffffff",
-        textShadow: getTextShadow(outlineWidth, shadowSize),
+        textShadow: generateTextShadow(outlineWidth, shadowSize),
         textAlign: "center",
         maxWidth: "90%",
         wordWrap: "break-word",

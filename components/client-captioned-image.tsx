@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
+import { cn } from "@/lib/utils";
 import { CaptionText } from "./caption-text";
 
 /**
@@ -101,7 +102,10 @@ export function ClientCaptionedImage({
 
   return (
     <div
-      className={`relative min-h-12 select-none ${maintainAspectRatio ? "aspect-video" : "h-full w-fit"}`}
+      className={cn(
+        "relative min-h-12 select-none",
+        maintainAspectRatio ? "aspect-video" : "h-full w-fit",
+      )}
       ref={containerRef}
       onDoubleClick={handleDoubleClick}
       style={{ cursor: image2Url ? "pointer" : "default" }}
@@ -144,7 +148,6 @@ export function ClientCaptionedImage({
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"
           style={{ paddingBottom: "4%" }}
-          aria-label={`Caption: ${caption}`}
         >
           <CaptionText
             caption={caption}
