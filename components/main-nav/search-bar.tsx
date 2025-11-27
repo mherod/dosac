@@ -1,5 +1,6 @@
 "use client";
 
+import type { KeyboardEvent } from "react";
 import { TextInput } from "@/components/ui/text-input";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +12,8 @@ interface SearchBarProps {
   value: string;
   /** Callback when search input changes */
   onChange: (value: string) => void;
+  /** Callback when search is submitted (Enter key or form submit) */
+  onSubmit?: (value: string) => void;
   /** Additional CSS classes */
   className?: string;
 }
@@ -20,29 +23,46 @@ interface SearchBarProps {
  * @param props - The component props
  * @param props.value - Current search input value
  * @param props.onChange - Callback when search input changes
+ * @param props.onSubmit - Callback when search is submitted
  * @param props.className - Additional CSS classes
  * @returns A styled search input component
  */
 export function SearchBar({
   value,
   onChange,
+  onSubmit,
   className,
 }: SearchBarProps): React.ReactElement {
-  return (
-    <TextInput
-      type="search"
-      placeholder="Search ministerial quotes..."
-      value={value}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-        onChange(e.target.value)
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter" || e.keyCode === 13) {
+      e.preventDefault();
+      e.stopPropagation();
+      const input = e.target as HTMLInputElement;
+      const currentValue = input.value.trim();
+      if (currentValue && onSubmit) {
+        onSubmit(currentValue);
       }
-      className={cn(
-        "px-3 py-1.5 text-sm",
-        "rounded border border-white/20 bg-transparent",
-        "text-white placeholder:text-white/60",
-        "focus:border-white/40 focus:ring-[#1d70b8]",
-        className,
-      )}
-    />
+    }
+  };
+
+  return (
+    <div className="w-full">
+      <TextInput
+        type="search"
+        placeholder="Search ministerial quotes..."
+        value={value}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChange(e.target.value)
+        }
+        onKeyDown={handleKeyDown}
+        className={cn(
+          "px-3 py-1.5 text-sm",
+          "rounded border border-white/20 bg-transparent",
+          "text-white placeholder:text-white/60",
+          "focus:border-white/40 focus:ring-[#1d70b8]",
+          className,
+        )}
+      />
+    </div>
   );
 }

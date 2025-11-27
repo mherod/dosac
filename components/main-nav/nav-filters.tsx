@@ -130,41 +130,95 @@ export function NavFilters({
       const trimmedQuery = z.string().trim().parse(query);
 
       if (trimmedQuery) {
+        // Get current filter values from URL to avoid stale closures
+        const currentSeason = NumberParamSchema.safeParse(
+          searchParams.get("season"),
+        );
+        const currentEpisode = NumberParamSchema.safeParse(
+          searchParams.get("episode"),
+        );
+
         // Redirect to search page with query
-        const searchParams = new URLSearchParams({
+        const newSearchParams = new URLSearchParams({
           q: trimmedQuery,
-          ...(filters.season && { season: filters.season.toString() }),
-          ...(filters.episode && { episode: filters.episode.toString() }),
+          ...(currentSeason.success &&
+            currentSeason.data && {
+              season: currentSeason.data.toString(),
+            }),
+          ...(currentEpisode.success &&
+            currentEpisode.data && {
+              episode: currentEpisode.data.toString(),
+            }),
         });
-        router.push(`/search?${searchParams.toString()}`, { scroll: false });
+        router.push(`/search?${newSearchParams.toString()}`, { scroll: false });
       } else if (pathname === "/search") {
         // If on search page and query is cleared, go back to home
         router.push("/", { scroll: false });
       }
     },
-    [router, filters.season, filters.episode, pathname],
+    [router, searchParams, pathname],
   );
 
   const [localQuery, setLocalQuery] = useState(filters.query);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const debouncedQuery = useDebounce(localQuery, 300);
 
   // Only consider it search mode if there's actual search text
   const isSearchMode = filters.query.trim() !== "";
 
-  // Update parent when debounced query changes
+  // Update parent when debounced query changes (but not if we just submitted)
   useEffect(() => {
-    handleQueryChange(debouncedQuery);
-  }, [debouncedQuery, handleQueryChange]);
+    if (!isSubmitting && debouncedQuery.trim()) {
+      handleQueryChange(debouncedQuery);
+    }
+  }, [debouncedQuery, handleQueryChange, isSubmitting]);
 
   useLayoutEffect(() => {
     const query = searchParams.get("q") || "";
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLocalQuery(query);
+    setIsSubmitting(false);
   }, [searchParams]);
 
   const handleSearchChange = (value: string): void => {
     setLocalQuery(value);
+    setIsSubmitting(false);
   };
+
+  const handleSearchSubmit = useCallback(
+    (query: string) => {
+      const trimmedQuery = query.trim();
+      if (!trimmedQuery) return;
+
+      // Mark as submitting to prevent debounced effect from interfering
+      setIsSubmitting(true);
+      // Update local state immediately
+      setLocalQuery(trimmedQuery);
+
+      // Get current filter values from URL to avoid stale closures
+      const currentSeason = NumberParamSchema.safeParse(
+        searchParams.get("season"),
+      );
+      const currentEpisode = NumberParamSchema.safeParse(
+        searchParams.get("episode"),
+      );
+
+      // Immediately navigate to search page
+      const newSearchParams = new URLSearchParams({
+        q: trimmedQuery,
+        ...(currentSeason.success &&
+          currentSeason.data && {
+            season: currentSeason.data.toString(),
+          }),
+        ...(currentEpisode.success &&
+          currentEpisode.data && {
+            episode: currentEpisode.data.toString(),
+          }),
+      });
+      router.push(`/search?${newSearchParams.toString()}`, { scroll: false });
+    },
+    [router, searchParams],
+  );
 
   return (
     <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
@@ -183,6 +237,7 @@ export function NavFilters({
               <SearchBar
                 value={localQuery}
                 onChange={handleSearchChange}
+                onSubmit={handleSearchSubmit}
                 className="sm:w-64"
               />
             </div>
