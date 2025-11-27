@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { groupBy } from "lodash-es";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -18,14 +19,19 @@ async function SeriesContent(): Promise<React.ReactElement> {
   // Get all frames
   const allFrames = await getFrameIndex();
 
-  // Group frames by series
-  const seriesFrames = new Map<number, typeof allFrames>();
-  for (const frame of allFrames) {
+  // Group frames by series using lodash groupBy
+  const framesBySeason = groupBy(allFrames, (frame) => {
     const { season } = parseEpisodeId(frame.episode);
-    if (!seriesFrames.has(season)) {
-      seriesFrames.set(season, []);
+    return season;
+  });
+
+  // Convert to Map for consistent API
+  const seriesFrames = new Map<number, typeof allFrames>();
+  for (const [seasonStr, frames] of Object.entries(framesBySeason)) {
+    const season = Number.parseInt(seasonStr, 10);
+    if (!Number.isNaN(season)) {
+      seriesFrames.set(season, frames);
     }
-    seriesFrames.get(season)?.push(frame);
   }
 
   return (

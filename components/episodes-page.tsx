@@ -2,6 +2,8 @@ import { ArrowRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
+import { format } from "date-fns";
+import { groupBy, sortBy } from "lodash-es";
 import { EpisodeFramesCard } from "@/components/episode-frames-card";
 import { PageLayout } from "@/components/layout/page-layout";
 import { Badge } from "@/components/ui/badge";
@@ -44,29 +46,25 @@ export async function EpisodesPage({
   // Get all frames
   const allFrames = await getFrameIndex();
 
-  // Group frames by episode
-  const episodeFrames: Map<string, typeof allFrames> = new Map();
-  for (const frame of allFrames) {
+  // Filter frames for this series and group by episode using lodash
+  const seriesFrames = allFrames.filter((frame: Frame) => {
     const { season } = parseEpisodeId(frame.episode);
-    if (season === series.number) {
-      if (!episodeFrames.has(frame.episode)) {
-        episodeFrames.set(frame.episode, []);
-      }
-      episodeFrames.get(frame.episode)?.push(frame);
-    }
-  }
+    return season === series.number;
+  });
 
-  // Convert to array and sort by episode number
-  const episodesWithFrames = Array.from(episodeFrames.entries())
-    .map(([episodeId, frames]: [string, Frame[]]) => {
-      const { episode } = parseEpisodeId(episodeId);
-      const episodeInfo = getEpisodeInfo(series.number, episode);
-      return { episodeNumber: episode, frames, info: episodeInfo };
-    })
-    .sort(
-      (a: { episodeNumber: number }, b: { episodeNumber: number }) =>
-        a.episodeNumber - b.episodeNumber,
-    );
+  const framesByEpisode = groupBy(seriesFrames, (frame) => frame.episode);
+
+  // Convert to array and sort by episode number using lodash sortBy
+  const episodesWithFrames = sortBy(
+    Object.entries(framesByEpisode).map(
+      ([episodeId, frames]: [string, Frame[]]) => {
+        const { episode } = parseEpisodeId(episodeId);
+        const episodeInfo = getEpisodeInfo(series.number, episode);
+        return { episodeNumber: episode, frames, info: episodeInfo };
+      },
+    ),
+    "episodeNumber",
+  );
 
   const breadcrumbs = getEpisodeListBreadcrumbs(series.number, true);
 
@@ -143,14 +141,7 @@ export async function EpisodesPage({
                         <div className="flex items-center gap-1">
                           <CalendarIcon className="h-4 w-4" />
                           <span>
-                            {new Date(info.airDate).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "numeric",
-                                month: "long",
-                                year: "numeric",
-                              },
-                            )}
+                            {format(new Date(info.airDate), "d MMMM yyyy")}
                           </span>
                         </div>
                       )}

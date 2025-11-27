@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { compact } from "lodash-es";
 import type { ExtendedFrame } from "@/components/search-result-card";
 import { SearchResultCard } from "@/components/search-result-card";
 import { getFrameIndex } from "@/lib/frames.server";
 import type { Screenshot } from "@/lib/types";
+import { fuzzyMatch } from "@/lib/utils";
 
 export async function generateMetadata({
   searchParams,
@@ -53,17 +55,17 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 
   if (query) {
     // Split query into words for better fuzzy matching
-    const queryWords = query
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((word) => word.length > 0);
+    // Use compact to remove empty strings from split
+    const queryWords = compact(query.toLowerCase().split(/\s+/));
 
     results = allFrames.filter((frame) => {
       // Text search - check both speech and subtitle
       const searchText = (frame.speech || frame.subtitle || "").toLowerCase();
 
       // Check if all query words are present (fuzzy AND matching)
-      const textMatch = queryWords.every((word) => searchText.includes(word));
+      const textMatch = queryWords.every((word) =>
+        fuzzyMatch(word, searchText),
+      );
 
       // Extract season/episode numbers from frame.episode (e.g., "s01e01")
       const episodeMatch = frame.episode.match(/s(\d+)e(\d+)/);
@@ -103,10 +105,8 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 
   // Sort by relevance (frames with query in beginning of text first)
   if (query) {
-    const queryWords = query
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((word) => word.length > 0);
+    // Use compact to remove empty strings from split
+    const queryWords = compact(query.toLowerCase().split(/\s+/));
 
     results.sort((a, b) => {
       const aText = (a.speech || a.subtitle || "").toLowerCase();

@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { compact, memoize } from "lodash-es";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
@@ -196,4 +197,143 @@ export async function getProfileImage(
 
   // No image available
   return undefined;
+}
+
+/**
+ * Calculates the Levenshtein distance between two strings
+ * Memoized for performance since it's a pure function called frequently
+ * @param a - First string
+ * @param b - Second string
+ * @returns The edit distance between the strings
+ */
+const levenshteinDistance = memoize(
+  (a: string, b: string): number => {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+
+    // Create matrix with known dimensions
+    const rows = b.length + 1;
+    const cols = a.length + 1;
+    const matrix: number[][] = Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, () => 0),
+    );
+
+    // Initialize first row and column
+    for (let i = 0; i <= b.length; i++) {
+      const row = matrix[i];
+      if (row) {
+        row[0] = i;
+      }
+    }
+    for (let j = 0; j <= a.length; j++) {
+      const row = matrix[0];
+      if (row) {
+        row[j] = j;
+      }
+    }
+
+    // Fill the matrix
+    for (let i = 1; i <= b.length; i++) {
+      const row = matrix[i];
+      const prevRow = matrix[i - 1];
+      if (!row || !prevRow) {
+        continue;
+      }
+
+      for (let j = 1; j <= a.length; j++) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+          const prevValue = prevRow[j - 1];
+          if (prevValue !== undefined) {
+            row[j] = prevValue;
+          }
+        } else {
+          const substitution = prevRow[j - 1];
+          const insertion = row[j - 1];
+          const deletion = prevRow[j];
+          const values: number[] = [];
+          if (substitution !== undefined) {
+            values.push(substitution + 1);
+          }
+          if (insertion !== undefined) {
+            values.push(insertion + 1);
+          }
+          if (deletion !== undefined) {
+            values.push(deletion + 1);
+          }
+          if (values.length > 0) {
+            row[j] = Math.min(...values);
+          }
+        }
+      }
+    }
+
+    const result = matrix[b.length]?.[a.length];
+    return result ?? a.length;
+  },
+  (a: string, b: string) => `${a}:${b}`,
+);
+
+/**
+ * Checks if a query word fuzzy matches any word in the text
+ * @param queryWord - The word to search for
+ * @param text - The text to search in
+ * @param maxDistance - Maximum allowed edit distance (default: auto-calculated)
+ * @returns True if a fuzzy match is found
+ */
+export function fuzzyMatch(queryWord: string, text: string): boolean {
+  // Fast path: exact substring match
+  if (text.includes(queryWord)) {
+    return true;
+  }
+
+  // Split text into words for word-level matching
+  // Use compact to remove empty strings from split
+  const textWords = compact(text.toLowerCase().split(/\s+/));
+  const queryLower = queryWord.toLowerCase();
+
+  // Calculate max allowed distance based on word length
+  // For short words (<=4 chars), allow 1 edit
+  // For medium words (5-7 chars), allow 2 edits
+  // For longer words, allow up to 3 edits or 20% of length
+  const maxDistance =
+    queryLower.length <= 4
+      ? 1
+      : queryLower.length <= 7
+        ? 2
+        : Math.max(2, Math.floor(queryLower.length * 0.2));
+
+  // Check each word in the text
+  for (const word of textWords) {
+    // Skip very short words that can't match
+    if (word.length < queryLower.length - maxDistance) {
+      continue;
+    }
+
+    // Check if query is a substring of word (handles partial matches)
+    if (word.includes(queryLower) || queryLower.includes(word)) {
+      return true;
+    }
+
+    // Calculate edit distance
+    const distance = levenshteinDistance(queryLower, word);
+
+    // If distance is within threshold, it's a match
+    if (distance <= maxDistance) {
+      return true;
+    }
+
+    // Also check if query matches a substring of word with fuzzy matching
+    // This handles cases like "malcom" matching "malcolm"
+    if (word.length >= queryLower.length) {
+      for (let i = 0; i <= word.length - queryLower.length; i++) {
+        const substring = word.slice(i, i + queryLower.length);
+        const substringDistance = levenshteinDistance(queryLower, substring);
+        if (substringDistance <= maxDistance) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }

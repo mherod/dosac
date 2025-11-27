@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
 import { Suspense } from "react";
+import { groupBy, sortBy } from "lodash-es";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -39,29 +40,25 @@ async function SeriesPageContent({
   // Get all frames
   const allFrames = await getFrameIndex();
 
-  // Group frames by episode
-  const episodeFrames = new Map<string, typeof allFrames>();
-  for (const frame of allFrames) {
+  // Filter frames for this series and group by episode using lodash
+  const seriesFrames = allFrames.filter((frame: Screenshot) => {
     const { season } = parseEpisodeId(frame.episode);
-    if (season === series.number) {
-      if (!episodeFrames.has(frame.episode)) {
-        episodeFrames.set(frame.episode, []);
-      }
-      episodeFrames.get(frame.episode)?.push(frame);
-    }
-  }
+    return season === series.number;
+  });
 
-  // Convert to array and sort by episode number
+  const framesByEpisode = groupBy(seriesFrames, (frame) => frame.episode);
+
+  // Convert to array and sort by episode number using lodash sortBy
   const episodes: Array<{ episodeNumber: number; frames: Screenshot[] }> =
-    Array.from(episodeFrames.entries())
-      .map(([episodeId, frames]: [string, Screenshot[]]) => {
-        const { episode } = parseEpisodeId(episodeId);
-        return { episodeNumber: episode, frames };
-      })
-      .sort(
-        (a: { episodeNumber: number }, b: { episodeNumber: number }) =>
-          a.episodeNumber - b.episodeNumber,
-      );
+    sortBy(
+      Object.entries(framesByEpisode).map(
+        ([episodeId, frames]: [string, Screenshot[]]) => {
+          const { episode } = parseEpisodeId(episodeId);
+          return { episodeNumber: episode, frames };
+        },
+      ),
+      "episodeNumber",
+    );
 
   const breadcrumbs = getSeriesBreadcrumbs(series.number, true);
 

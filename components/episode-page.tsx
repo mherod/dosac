@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
 import { Suspense } from "react";
+import { format } from "date-fns";
 
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
@@ -71,13 +72,7 @@ async function EpisodePageContent({
         {episode?.airDate && (
           <div className="flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-blue-600">
             <CalendarIcon className="h-4 w-4 opacity-70" />
-            <span>
-              {new Date(episode.airDate).toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
+            <span>{format(new Date(episode.airDate), "d MMMM yyyy")}</span>
           </div>
         )}
         {episode?.runtime && (
