@@ -181,6 +181,7 @@ Guidance for Claude Code (claude.ai/code) when working with this repository.
    - Re-run `tag-all-frames`
 
 4. **Server-Side Usage**:
+
    ```typescript
    import { getCharactersForFrame } from "@/lib/frame-characters.server";
    const characters = getCharactersForFrame("s03e01-08-24.000");
@@ -367,6 +368,103 @@ Frames extracted using ffmpeg at exact timestamps, 500px width, cached permanent
 - Responsive grid layout
 
 **Note**: Frame IDs must exist in frame index with corresponding images in `/public/frames/`.
+
+## Development Process & Workflows
+
+### Upgrading Next.js and React Canary Versions
+
+**Critical**: Always upgrade Next.js and React together to ensure compatibility. Never upgrade them separately.
+
+**Process**:
+
+1. **Check latest canary versions**:
+
+   ```bash
+   pnpm view next@canary version
+   pnpm view react@canary version
+   ```
+
+2. **Upgrade packages together**:
+
+   ```bash
+   pnpm up next@canary react@canary react-dom@canary
+   ```
+
+3. **Update pnpm overrides** in `package.json`:
+   - Update `pnpm.overrides.next` to match new Next.js version
+   - Update `pnpm.overrides.react` and `pnpm.overrides["react-dom"]` to match new React version
+   - Example: After upgrading to `16.1.1-canary.13` and `19.3.0-canary-65eec428-20251218`:
+
+     ```json
+     "pnpm": {
+       "overrides": {
+         "next": "16.1.1-canary.13",
+         "react": "19.3.0-canary-65eec428-20251218",
+         "react-dom": "19.3.0-canary-65eec428-20251218"
+       }
+     }
+     ```
+
+4. **Update all documentation files** that reference versions:
+   - `CLAUDE.md` (line 18: Runtime version)
+   - `AGENTS.md` (line 17: Runtime version)
+   - `.junie/guidelines.md` (line 38: Runtime version)
+
+5. **Run full quality checks** (see Quality Assurance section below)
+
+6. **Commit with conventional commit message**:
+
+   ```bash
+   git commit -m "chore: upgrade Next.js to <version> and React to <version>"
+   ```
+
+**Why pnpm overrides are needed**: Canary versions often have peer dependency mismatches. The overrides ensure all packages use the same React version, preventing "unmet peer dependency" warnings during install.
+
+### Quality Assurance Checks
+
+**Before pushing or merging to main**, run all quality checks in order:
+
+1. **Lint check**:
+
+   ```bash
+   pnpm lint
+   ```
+
+   - Exit code 0 = pass (warnings are non-blocking)
+   - Warnings for missing return types (`@typescript-eslint/explicit-function-return-type`) are acceptable but should be addressed over time
+   - Errors must be fixed before proceeding
+
+2. **Build check** (includes TypeScript typecheck):
+
+   ```bash
+   pnpm build
+   ```
+
+   - Runs `next build --webpack` in production mode
+   - TypeScript checking runs automatically as part of build
+   - Build must complete successfully with exit code 0
+   - No separate `tsc` command needed—Next.js build handles typechecking
+
+3. **Tests**:
+
+   ```bash
+   pnpm test
+   ```
+
+   - Runs Jest test suite
+   - All tests must pass (exit code 0)
+   - Test location: `__tests__/**/*.test.ts` or `.test.tsx`
+
+**Note**: The build process (`pnpm build`) automatically runs TypeScript checking, so a separate typecheck step is not required. The build will fail if there are TypeScript errors.
+
+**QA Checklist**:
+
+- [ ] `pnpm lint` passes (0 errors)
+- [ ] `pnpm build` completes successfully
+- [ ] `pnpm test` passes (all tests green)
+- [ ] No deprecation warnings related to upgrades
+
+**If checks fail**: Fix issues immediately. Do not skip failing checks, disable lint rules, or comment out broken tests. If a fix is too large, create an actionable TODO and document the issue.
 
 ## Important Notes
 
