@@ -35,7 +35,7 @@ This document captures practical, project-specific knowledge to accelerate setup
 ## Tech Stack
 
 - **Package manager**: pnpm (use pnpm, not npm/yarn)
-- **Runtime**: Next.js 15 canary + React 19 RC with experimental features (serverActions, optimisticClientCache, PPR incremental)
+- **Runtime**: Next.js 16.1.1-canary.13 + React 19.3.0-canary-65eec428-20251218 with experimental features (serverActions, optimisticClientCache, PPR incremental)
 - **Styling**: TailwindCSS with tailwind-merge utility (cn function) from lib/utils
 - **UI Components**: Radix UI primitives
 - **ML/AI**: TensorFlow.js (@tensorflow/tfjs-node) with MediaPipe face mesh
