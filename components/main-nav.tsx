@@ -14,7 +14,7 @@ import { TopBanner } from "./main-nav/top-banner";
  */
 export function MainNav(): React.ReactElement {
   return (
-    <header className="bg-[#0b0c0c] text-white">
+    <header className="bg-[#0b0c0c] text-white" role="banner">
       <div className="mx-auto max-w-7xl">
         <TopBanner />
         <CivilServiceHeader />

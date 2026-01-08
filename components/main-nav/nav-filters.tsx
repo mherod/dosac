@@ -233,9 +233,9 @@ export function NavFilters({
 
   return (
     <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center">
-          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
+      <div className="mx-auto max-w-7xl px-4 sm:px-5 md:px-6 lg:px-8">
+        <div className="flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center sm:gap-5 md:gap-6 md:py-5">
+          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-4 md:gap-5">
             <div className="min-w-0 flex-shrink-0">
               <SeriesSelect
                 season={filters.season}
@@ -249,7 +249,7 @@ export function NavFilters({
                 value={localQuery}
                 onChange={handleSearchChange}
                 onSubmit={handleSearchSubmit}
-                className="sm:w-64"
+                className="sm:w-64 md:w-72"
               />
             </div>
           </div>

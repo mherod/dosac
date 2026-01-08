@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { withQuery } from "ufo";
 import { HomePage } from "@/components/home-page";
 import { HomePageSkeleton } from "@/components/home-page-skeleton";
 import { parseEpisodeId } from "@/lib/frames";
@@ -48,13 +49,17 @@ export async function generateMetadata({
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
-  const currentUrl = new URL("/", baseUrl);
+  const basePath = "/";
 
-  // Add search parameters to URL for canonical link
-  if (season) currentUrl.searchParams.set("season", season.toString());
-  if (episode) currentUrl.searchParams.set("episode", episode.toString());
-  if (query) currentUrl.searchParams.set("q", query);
-  if (page > 1) currentUrl.searchParams.set("page", page.toString());
+  // Build query parameters using withQuery
+  const queryParams: Record<string, string | undefined> = {
+    ...(season && { season: season.toString() }),
+    ...(episode && { episode: episode.toString() }),
+    ...(query && { q: query }),
+    ...(page > 1 && { page: page.toString() }),
+  };
+
+  const currentUrl = new URL(withQuery(basePath, queryParams), baseUrl);
 
   return {
     title,
@@ -154,20 +159,15 @@ async function HomeContent({
 
   // Redirect if the requested page doesn't match the valid page
   if (currentPage !== validPage) {
-    const params = new URLSearchParams();
+    // Build query parameters using withQuery
+    const queryParams: Record<string, string | undefined> = {
+      ...(season && { season: season.toString() }),
+      ...(episode && { episode: episode.toString() }),
+      ...(query && { q: query }),
+      ...(validPage > 1 && { page: validPage.toString() }),
+    };
 
-    // Preserve current filters
-    if (season) params.set("season", season.toString());
-    if (episode) params.set("episode", episode.toString());
-    if (query) params.set("q", query);
-
-    // Add page parameter only if not page 1
-    if (validPage > 1) {
-      params.set("page", validPage.toString());
-    }
-
-    const queryString = params.toString();
-    const redirectUrl = queryString ? `/?${queryString}` : "/";
+    const redirectUrl = withQuery("/", queryParams);
     redirect(redirectUrl);
   }
 
@@ -215,7 +215,7 @@ export default function Home({ searchParams }: Props): React.ReactElement {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <div className="container mx-auto max-w-7xl px-4 md:px-6">
+      <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
         <Suspense fallback={<HomePageSkeleton />}>
           <HomeContent searchParams={searchParams} />
         </Suspense>

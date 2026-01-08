@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { compact } from "lodash-es";
+import { withQuery } from "ufo";
 import type { ExtendedFrame } from "@/components/search-result-card";
 import { SearchResultCard } from "@/components/search-result-card";
 import { getFrameIndex } from "@/lib/frames.server";
@@ -212,14 +213,14 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
             <div className="flex items-center justify-center space-x-2 pt-6">
               {page > 1 && (
                 <Link
-                  href={`/search?${new URLSearchParams({
+                  href={withQuery("/search", {
                     ...(query && { q: query }),
                     ...(seasonFilter && { season: seasonFilter.toString() }),
                     ...(episodeFilter && {
                       episode: episodeFilter.toString(),
                     }),
                     page: (page - 1).toString(),
-                  }).toString()}`}
+                  })}
                   className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
                   prefetch={true}
                   scroll={false}
@@ -234,14 +235,14 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 
               {page < totalPages && (
                 <Link
-                  href={`/search?${new URLSearchParams({
+                  href={withQuery("/search", {
                     ...(query && { q: query }),
                     ...(seasonFilter && { season: seasonFilter.toString() }),
                     ...(episodeFilter && {
                       episode: episodeFilter.toString(),
                     }),
                     page: (page + 1).toString(),
-                  }).toString()}`}
+                  })}
                   className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
                   prefetch={true}
                   scroll={false}

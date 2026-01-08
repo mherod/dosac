@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { orderBy } from "lodash-es";
 
 interface SearchResult {
   episodeId: string;
@@ -114,14 +115,11 @@ async function generateSearchIndex() {
       }
     }
 
-    // Sort results by episode and timestamp
-    const sortedResults = Array.from(mergedResults.values()).sort(
-      (a: any, b: any) => {
-        if (a.episodeId !== b.episodeId) {
-          return a.episodeId.localeCompare(b.episodeId);
-        }
-        return a.startTime - b.startTime;
-      },
+    // Sort results by episode and timestamp using orderBy
+    const sortedResults = orderBy(
+      Array.from(mergedResults.values()),
+      ["episodeId", "startTime"],
+      ["asc", "asc"],
     );
 
     // Write the search index to a JSON file

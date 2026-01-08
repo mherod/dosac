@@ -8,17 +8,28 @@ import { Card } from "@/components/ui/card";
  */
 export function HomePageSkeleton(): React.ReactElement {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div
+      className="container mx-auto px-4 py-8"
+      aria-busy="true"
+      aria-label="Loading content"
+    >
       {/* Stats text skeleton */}
       <div className="mb-8">
-        <div className="h-5 w-64 animate-pulse rounded bg-muted/50" />
+        <div
+          className="h-5 w-64 animate-pulse rounded bg-muted/50"
+          aria-hidden="true"
+        />
       </div>
 
       {/* Grid skeleton */}
-      <div className="space-y-2 sm:space-y-4">
+      <div
+        className="space-y-2 sm:space-y-4"
+        role="list"
+        aria-label="Loading frames"
+      >
         <div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3">
           {Array.from({ length: 36 }).map((_, i) => (
-            <div key={`skeleton-${i}`}>
+            <div key={`skeleton-${i}`} role="listitem" aria-hidden="true">
               <Card className="relative overflow-hidden bg-black/5 shadow-[0_10px_50px_rgba(0,0,0,0.25)] dark:bg-white/5 dark:shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
                 <div className="relative overflow-hidden rounded-lg">
                   {/* Image placeholder with correct aspect ratio */}
@@ -39,7 +50,7 @@ export function HomePageSkeleton(): React.ReactElement {
       </div>
 
       {/* Frame strip skeleton at the bottom */}
-      <div className="mt-8">
+      <div className="mt-8" aria-hidden="true">
         <div className="relative h-32 w-full overflow-hidden rounded-lg bg-muted/30">
           <div className="absolute inset-0 animate-pulse" />
         </div>

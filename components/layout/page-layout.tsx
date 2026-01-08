@@ -33,12 +33,12 @@ export function PageLayout({
   className,
 }: PageLayoutProps): React.ReactElement {
   return (
-    <div className={cn("space-y-6", className)}>
-      <div className="space-y-4">
+    <div className={cn("space-y-4 md:space-y-5 lg:space-y-6", className)}>
+      <div className="space-y-3 md:space-y-4">
         <BreadcrumbNav items={breadcrumbs} />
         {headerContent}
       </div>
-      <div className="py-2 md:py-4">{children}</div>
+      <div className="py-3 md:py-4 lg:py-5">{children}</div>
     </div>
   );
 }

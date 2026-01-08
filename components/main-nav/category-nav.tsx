@@ -11,7 +11,8 @@ export function CategoryNav({
   containerClassName?: string;
 }): React.ReactElement {
   return (
-    <div
+    <nav
+      aria-label="Category navigation"
       className={cn(
         "relative left-[50%] right-[50%] ml-[-50vw] mr-[-50vw] w-[100vw] border-t border-[#1d70b8] bg-[#1d70b8] py-1",
         containerClassName,
@@ -27,7 +28,7 @@ export function CategoryNav({
             >
               Ministerial Database
             </Link>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4" role="list">
               {CATEGORIES.map((category: { id: string; title: string }) => (
                 <Link
                   key={category.id}
@@ -45,12 +46,12 @@ export function CategoryNav({
             </div>
           </div>
           <div className="flex items-center">
-            <div className="text-xs text-white/60">
+            <div className="text-xs text-white/60" aria-live="polite">
               Last updated: 11/10/2025 | System ID: DQARS-2024
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
