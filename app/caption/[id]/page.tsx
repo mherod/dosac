@@ -155,14 +155,17 @@ export default async function Page({
   let allFrames: Screenshot[];
 
   try {
-    // Optimize data fetching with a single frame lookup followed by efficient index operations
-    frame = await getFrameById(resolvedParams.id);
+    // Parallelize data fetching to avoid waterfall - all requests run simultaneously
+    const [frameData, charactersData, index] = await Promise.all([
+      getFrameById(resolvedParams.id),
+      getCharactersForFrame(resolvedParams.id),
+      getFrameIndex(),
+    ]);
 
-    // Load character information for this frame
-    characters = (await getCharactersForFrame(frame.id)) ?? [];
+    frame = frameData;
+    characters = charactersData ?? [];
 
     // Pre-calculate frame strip data server-side for maximum prerendering
-    const index = await getFrameIndex();
     const currentIndex = index.findIndex((f: Screenshot) => f.id === frame.id);
 
     let previousFrames: Screenshot[] = [];

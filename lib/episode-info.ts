@@ -1,3 +1,4 @@
+import { sortBy } from "lodash-es";
 import type { characters } from "./profiles";
 
 export type WriterRole = "writer" | "additional material" | "story";
@@ -923,11 +924,10 @@ export function getEpisodeInfo(
  * @returns An array of episode information sorted by episode number
  */
 export function getSeriesEpisodes(seriesNumber: number): EpisodeInfo[] {
-  return episodeInfo
-    .filter((ep: EpisodeInfo) => ep.seriesNumber === seriesNumber)
-    .sort(
-      (a: EpisodeInfo, b: EpisodeInfo) => a.episodeNumber - b.episodeNumber,
-    );
+  return sortBy(
+    episodeInfo.filter((ep: EpisodeInfo) => ep.seriesNumber === seriesNumber),
+    "episodeNumber",
+  );
 }
 
 /**

@@ -1,4 +1,5 @@
 import * as tf from "@tensorflow/tfjs";
+import { uniq } from "lodash-es";
 import { loadModels } from "./face-embedding";
 import type { FacePrediction } from "./face-embedding";
 
@@ -176,7 +177,7 @@ export class FaceNet {
     negatives: tf.Tensor2D;
   }> {
     return tf.tidy(() => {
-      const uniqueLabels = Array.from(new Set(labels));
+      const uniqueLabels = uniq(labels);
       const _numClasses = uniqueLabels.length;
 
       // Create label mapping
