@@ -15,7 +15,7 @@ Guidance for Claude Code (claude.ai/code) when working with this repository.
 
 - **Package manager**: pnpm (not npm/yarn)
 - **Node.js**: >= 18.0.0 required
-- **Runtime**: Next.js 16.1.1-canary.13 + React 19.3.0-canary-65eec428-20251218 with experimental features:
+- **Runtime**: Next.js 16.1.1-canary.17 + React 19.3.0-canary-d6cae440-20260106 with experimental features:
   - `cacheComponents` - Enables composable caching with "use cache"
   - `cacheLife` - Cache revalidation policies
   - `serverActions` - Server actions support (2mb body size limit)
@@ -393,14 +393,14 @@ Frames extracted using ffmpeg at exact timestamps, 500px width, cached permanent
 3. **Update pnpm overrides** in `package.json`:
    - Update `pnpm.overrides.next` to match new Next.js version
    - Update `pnpm.overrides.react` and `pnpm.overrides["react-dom"]` to match new React version
-   - Example: After upgrading to `16.1.1-canary.13` and `19.3.0-canary-65eec428-20251218`:
+   - Example: After upgrading to `16.1.1-canary.17` and `19.3.0-canary-d6cae440-20260106`:
 
      ```json
      "pnpm": {
        "overrides": {
-         "next": "16.1.1-canary.13",
-         "react": "19.3.0-canary-65eec428-20251218",
-         "react-dom": "19.3.0-canary-65eec428-20251218"
+         "next": "16.1.1-canary.17",
+         "react": "19.3.0-canary-d6cae440-20260106",
+         "react-dom": "19.3.0-canary-d6cae440-20260106"
        }
      }
      ```
