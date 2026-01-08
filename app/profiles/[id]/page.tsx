@@ -368,11 +368,11 @@ export default async function CharacterProfile({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="container max-w-7xl py-6 lg:py-12">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-12">
+      <main className="container max-w-7xl px-4 py-5 md:px-6 md:py-7 lg:px-8 lg:py-10">
+        <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-4 lg:gap-10 xl:gap-12">
           <aside className="order-1 lg:col-span-1">
             {character.image && (
-              <div className="mb-8 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg md:aspect-auto md:max-h-96 md:w-auto lg:sticky lg:top-8 lg:aspect-[3/4] lg:max-h-none">
+              <div className="mb-6 aspect-[3/4] overflow-hidden rounded-xl border border-slate-200 shadow-lg md:mb-8 md:aspect-auto md:max-h-96 md:w-auto lg:sticky lg:top-8 lg:mb-8 lg:aspect-[3/4] lg:max-h-none">
                 <Image
                   src={character.image}
                   alt={character.name}
@@ -388,22 +388,22 @@ export default async function CharacterProfile({
           </aside>
 
           <div className="order-2 lg:col-span-3">
-            <header className="mb-12">
-              <div className="space-y-6">
+            <header className="mb-8 md:mb-10 lg:mb-12">
+              <div className="space-y-4 md:space-y-5 lg:space-y-6">
                 <div>
-                  <h1 className="mb-4 text-3xl font-bold text-slate-900 lg:text-4xl">
+                  <h1 className="mb-3 text-2xl font-bold text-slate-900 md:mb-4 md:text-3xl lg:text-4xl">
                     {character.name}
                   </h1>
-                  <p className="text-lg leading-relaxed text-slate-600 lg:text-xl">
+                  <p className="text-base leading-relaxed text-slate-600 md:text-lg lg:text-xl">
                     {character.description}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {character.role.map((role: string) => (
                     <Badge
                       key={role}
                       variant="secondary"
-                      className="bg-slate-100 px-3 py-1 text-sm font-medium lg:text-base"
+                      className="bg-slate-100 px-3 py-1 text-sm font-medium md:text-base"
                     >
                       {roleLabels[role as Role]}
                     </Badge>

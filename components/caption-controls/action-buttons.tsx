@@ -30,20 +30,27 @@ export function ActionButtons({
   className = "",
 }: ActionButtonsProps): React.ReactElement {
   return (
-    <div className={cn("flex gap-2", className)}>
+    <div
+      className={cn("flex gap-2", className)}
+      role="group"
+      aria-label="Caption actions"
+    >
       <Button
         className="flex-1 shadow-sm transition-all hover:shadow-md"
         onClick={onDownload}
+        aria-label="Download caption image"
       >
-        <Download className="mr-2 h-4 w-4" />
+        <Download className="mr-2 h-4 w-4" aria-hidden="true" />
         Download
       </Button>
       <Button
         className="shadow-sm transition-all hover:shadow-md"
         onClick={onShare}
         variant="outline"
+        aria-label="Share caption"
       >
-        <Share2 className="h-4 w-4" />
+        <Share2 className="h-4 w-4" aria-hidden="true" />
+        <span className="sr-only">Share</span>
       </Button>
     </div>
   );

@@ -7,7 +7,11 @@ import type React from "react";
  */
 export function NavFiltersSkeleton(): React.ReactElement {
   return (
-    <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
+    <div
+      className="border-t border-[#ffffff1f] bg-[#0b0c0c]"
+      aria-busy="true"
+      aria-label="Loading navigation filters"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center">
           <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
@@ -15,19 +19,28 @@ export function NavFiltersSkeleton(): React.ReactElement {
             <div className="min-w-0 flex-shrink-0">
               <div className="flex items-center gap-3">
                 {/* Season dropdown skeleton */}
-                <div className="h-9 w-[100px] animate-pulse rounded-md bg-white/10" />
+                <div
+                  className="h-9 w-[100px] animate-pulse rounded-md bg-white/10"
+                  aria-hidden="true"
+                />
                 {/* Episode dropdown skeleton */}
-                <div className="h-9 w-[120px] animate-pulse rounded-md bg-white/10" />
+                <div
+                  className="h-9 w-[120px] animate-pulse rounded-md bg-white/10"
+                  aria-hidden="true"
+                />
               </div>
             </div>
             {/* Search bar skeleton */}
             <div className="min-w-0 flex-1 sm:flex-none">
-              <div className="h-9 w-full animate-pulse rounded-md bg-white/10 sm:w-64" />
+              <div
+                className="h-9 w-full animate-pulse rounded-md bg-white/10 sm:w-64"
+                aria-hidden="true"
+              />
             </div>
           </div>
           {/* Character badges skeleton */}
           <div className="flex items-center">
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-2" aria-hidden="true">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}

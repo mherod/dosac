@@ -115,9 +115,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }): React.ReactElement {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className="max-md:overflow-x-hidden"
+    >
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className={`${inter.variable} font-sans antialiased max-md:overflow-x-hidden`}
         suppressHydrationWarning
       >
         <ThemeProvider
@@ -126,10 +130,18 @@ export default function RootLayout({
           forcedTheme="light"
           disableTransitionOnChange
         >
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:p-4 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Skip to main content
+          </a>
           <Suspense>
             <MainNav />
           </Suspense>
-          <main className="min-h-screen">{children}</main>
+          <main id="main-content" className="min-h-dvh" tabIndex={-1}>
+            {children}
+          </main>
           <Footer />
           <Toaster />
           <PWAStatus />

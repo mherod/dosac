@@ -120,8 +120,12 @@ export function FrameCard({
     onTouchEnd?.();
   };
 
+  const episodeLabel = formatEpisodeId(screenshot.episode);
+  const timestampLabel = formatTimestamp(screenshot.timestamp);
+  const cardLabel = `${screenshot.speech || "Frame"} from ${episodeLabel} at ${timestampLabel}`;
+
   return (
-    <div
+    <article
       suppressHydrationWarning
       data-frame-card
       className={cn(
@@ -143,6 +147,8 @@ export function FrameCard({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       tabIndex={onSelect ? 0 : -1}
+      aria-label={cardLabel}
+      aria-selected={onSelect ? isSelected : undefined}
     >
       <Card className="relative overflow-hidden bg-black/5 shadow-[0_10px_50px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_20px_80px_rgba(0,0,0,0.3)] dark:bg-white/5 dark:shadow-[0_10px_50px_rgba(0,0,0,0.5)] dark:hover:shadow-[0_20px_80px_rgba(0,0,0,0.6)]">
         <div className="relative overflow-hidden rounded-lg">
@@ -191,6 +197,10 @@ export function FrameCard({
             <button
               type="button"
               onClick={handleSelectClick}
+              aria-label={
+                isSelected ? `Deselect ${cardLabel}` : `Select ${cardLabel}`
+              }
+              aria-pressed={isSelected}
               className={cn(
                 "absolute right-2 top-2 rounded-full p-1.5 transition-all",
                 isSelected
@@ -198,11 +208,14 @@ export function FrameCard({
                   : "bg-background/80 opacity-0 backdrop-blur-sm group-hover:opacity-100",
               )}
             >
-              <Check className="h-4 w-4" />
+              <Check className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">
+                {isSelected ? "Selected" : "Not selected"}
+              </span>
             </button>
           )}
         </div>
       </Card>
-    </div>
+    </article>
   );
 }

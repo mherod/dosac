@@ -47,7 +47,11 @@ export function SearchBar({
 
   return (
     <div className="w-full">
+      <label htmlFor="search-input" className="sr-only">
+        Search ministerial quotes
+      </label>
       <TextInput
+        id="search-input"
         type="search"
         placeholder="Search ministerial quotes..."
         value={value}
@@ -55,6 +59,7 @@ export function SearchBar({
           onChange(e.target.value)
         }
         onKeyDown={handleKeyDown}
+        aria-label="Search ministerial quotes"
         className={cn(
           "px-3 py-1.5 text-sm",
           "rounded border border-white/20 bg-transparent",

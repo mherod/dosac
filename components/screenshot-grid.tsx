@@ -220,119 +220,135 @@ function ScreenshotGridInner({
   }, [handleDragEnd]);
 
   return (
-    <div className="space-y-4 sm:space-y-8">
+    <div className="space-y-4 md:space-y-6 lg:space-y-8">
       {rankedMoments && rankedMoments.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3">
-          {rankedMoments.map((screenshot: Screenshot, index: number) => (
-            <div key={screenshot.id} className="relative">
-              <Link
-                key={`ranked-moment-${screenshot.id}-${index}`}
-                href={getScreenshotUrl(screenshot.id)}
-                prefetch={true}
-                scroll={false}
-                suppressHydrationWarning
-              >
-                <FrameCard
-                  screenshot={screenshot}
-                  priority={true}
-                  isSelected={selectedIds.has(screenshot.id)}
-                  onSelect={(e) => {
-                    if (
-                      "ctrlKey" in e &&
-                      (e.ctrlKey || e.metaKey || e.shiftKey)
-                    ) {
-                      safeSetSelectedIds(new Set([screenshot.id]));
-                    }
-                  }}
-                  onDragStart={() => {
-                    handleDragStart(screenshot.id);
-                  }}
-                  onDragMove={() => {
-                    handleDragMove(screenshot.id);
-                  }}
-                  onTouchStart={() => {
-                    handleDragStart(screenshot.id);
-                  }}
-                  onTouchMove={() => {
-                    handleDragMove(screenshot.id);
-                  }}
-                  onTouchEnd={handleDragEnd}
-                />
-              </Link>
-            </div>
-          ))}
-        </div>
+        <section aria-label="Featured moments">
+          <h2 className="sr-only">Featured moments</h2>
+          <div className="grid grid-cols-1 gap-3 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 md:gap-5 lg:grid-cols-3 lg:gap-6">
+            {rankedMoments.map((screenshot: Screenshot, index: number) => (
+              <div key={screenshot.id} className="relative">
+                <Link
+                  key={`ranked-moment-${screenshot.id}-${index}`}
+                  href={getScreenshotUrl(screenshot.id)}
+                  prefetch={true}
+                  scroll={false}
+                  suppressHydrationWarning
+                >
+                  <FrameCard
+                    screenshot={screenshot}
+                    priority={true}
+                    isSelected={selectedIds.has(screenshot.id)}
+                    onSelect={(e) => {
+                      if (
+                        "ctrlKey" in e &&
+                        (e.ctrlKey || e.metaKey || e.shiftKey)
+                      ) {
+                        safeSetSelectedIds(new Set([screenshot.id]));
+                      }
+                    }}
+                    onDragStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onDragMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                    onTouchStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onTouchMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                    onTouchEnd={handleDragEnd}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
-      <div className="space-y-2 sm:space-y-4">
-        <div
-          ref={gridRef}
-          className="grid grid-cols-1 gap-2 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 lg:grid-cols-3"
-        >
-          {currentScreenshots.map((screenshot: Screenshot, index: number) => (
-            <div key={screenshot.id}>
-              <Link
-                key={`screenshot-${screenshot.id}-${index}`}
-                href={getScreenshotUrl(screenshot.id)}
-                prefetch={true}
-                scroll={false}
-                suppressHydrationWarning
-              >
-                <FrameCard
-                  screenshot={screenshot}
-                  priority={index < 6}
-                  isSelected={selectedIds.has(screenshot.id)}
-                  onSelect={(e) => {
-                    if (
-                      "ctrlKey" in e &&
-                      (e.ctrlKey || e.metaKey || e.shiftKey)
-                    ) {
-                      safeSetSelectedIds(new Set([screenshot.id]));
-                    }
-                  }}
-                  onDragStart={() => {
-                    handleDragStart(screenshot.id);
-                  }}
-                  onDragMove={() => {
-                    handleDragMove(screenshot.id);
-                  }}
-                  onTouchStart={() => {
-                    handleDragStart(screenshot.id);
-                  }}
-                  onTouchMove={() => {
-                    handleDragMove(screenshot.id);
-                  }}
-                  onTouchEnd={handleDragEnd}
-                />
-              </Link>
-            </div>
-          ))}
+      <section aria-label="Screenshots">
+        <h2 className="sr-only">Screenshots</h2>
+        <div className="space-y-3 md:space-y-4">
+          <div
+            ref={gridRef}
+            className="grid grid-cols-1 gap-3 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 md:gap-5 lg:grid-cols-3 lg:gap-6"
+            role="list"
+            aria-label="Screenshot grid"
+          >
+            {currentScreenshots.map((screenshot: Screenshot, index: number) => (
+              <div key={screenshot.id}>
+                <Link
+                  key={`screenshot-${screenshot.id}-${index}`}
+                  href={getScreenshotUrl(screenshot.id)}
+                  prefetch={true}
+                  scroll={false}
+                  suppressHydrationWarning
+                >
+                  <FrameCard
+                    screenshot={screenshot}
+                    priority={index < 6}
+                    isSelected={selectedIds.has(screenshot.id)}
+                    onSelect={(e) => {
+                      if (
+                        "ctrlKey" in e &&
+                        (e.ctrlKey || e.metaKey || e.shiftKey)
+                      ) {
+                        safeSetSelectedIds(new Set([screenshot.id]));
+                      }
+                    }}
+                    onDragStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onDragMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                    onTouchStart={() => {
+                      handleDragStart(screenshot.id);
+                    }}
+                    onTouchMove={() => {
+                      handleDragMove(screenshot.id);
+                    }}
+                    onTouchEnd={handleDragEnd}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
+        <nav
+          aria-label="Pagination"
+          className="flex items-center justify-center gap-3 md:gap-4"
+        >
           <Button
             variant="outline"
             size="icon"
             asChild
             disabled={currentPage === 1}
+            aria-label="Go to previous page"
+            aria-disabled={currentPage === 1}
           >
             {currentPage === 1 ? (
               <span>
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">Previous page</span>
               </span>
             ) : (
               <Link
                 href={getPageUrl(currentPage - 1)}
                 scroll={false}
                 prefetch={true}
+                aria-label={`Go to page ${currentPage - 1}`}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">Previous page</span>
               </Link>
             )}
           </Button>
-          <span className="text-sm">
+          <span className="text-sm md:text-base" aria-current="page">
             Page {currentPage} of {totalPages}
           </span>
           <Button
@@ -340,22 +356,27 @@ function ScreenshotGridInner({
             size="icon"
             asChild
             disabled={currentPage === totalPages}
+            aria-label="Go to next page"
+            aria-disabled={currentPage === totalPages}
           >
             {currentPage === totalPages ? (
               <span>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">Next page</span>
               </span>
             ) : (
               <Link
                 href={getPageUrl(currentPage + 1)}
                 scroll={false}
                 prefetch={true}
+                aria-label={`Go to page ${currentPage + 1}`}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only">Next page</span>
               </Link>
             )}
           </Button>
-        </div>
+        </nav>
       )}
     </div>
   );
