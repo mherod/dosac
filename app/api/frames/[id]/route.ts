@@ -1,4 +1,5 @@
 import { getFrameById } from "@/lib/frames.server";
+import { apiRateLimit } from "@/lib/rate-limit";
 
 /**
  * API route handler for fetching a specific frame by ID
@@ -25,9 +26,14 @@ import { getFrameById } from "@/lib/frames.server";
  * ```
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
+  const { limited } = apiRateLimit(request);
+  if (limited) {
+    return Response.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   try {
     const { id } = await params;
     const frame = await getFrameById(id);

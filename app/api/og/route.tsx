@@ -2,6 +2,7 @@ import { ImageResponse } from "@vercel/og";
 import { cacheLife } from "next/cache";
 import { headers } from "next/headers";
 import type { NextRequest } from "next/server";
+import { apiRateLimit } from "@/lib/rate-limit";
 import { generateTextShadow } from "@/lib/utils";
 
 /**
@@ -89,77 +90,72 @@ async function generateOGImage({
   const base64Image = `data:${imageResponse.headers.get("content-type") || "image/jpeg"};base64,${Buffer.from(imageBuffer).toString("base64")}`;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "black",
+        position: "relative",
+      }}
+    >
+      {/* Background Image */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={base64Image}
+        alt={caption}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+
+      {/* Caption Container */}
       <div
         style={{
-          height: "100%",
-          width: "100%",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "black",
-          position: "relative",
+          paddingBottom: "4%",
         }}
       >
-        {/* Background Image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={base64Image}
-          alt={caption}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
-
-        {/* Caption Container */}
+        {/* Caption Text */}
         <div
           style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
-            paddingBottom: "4%",
+            fontSize: `${calculatedFontSize}px`,
+            fontWeight: 500,
+            color: "#ffffff",
+            textShadow: generateTextShadow(finalOutlineWidth, 0),
+            textAlign: "center",
+            maxWidth: "90%",
+            margin: "0 auto",
+            wordWrap: "break-word",
+            lineHeight: 1.2,
+            fontFamily,
           }}
         >
-          {/* Caption Text */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              fontSize: `${calculatedFontSize}px`,
-              fontWeight: 500,
-              color: "#ffffff",
-              textShadow: generateTextShadow(finalOutlineWidth, 0),
-              textAlign: "center",
-              maxWidth: "90%",
-              margin: "0 auto",
-              wordWrap: "break-word",
-              lineHeight: 1.2,
-              fontFamily,
-            }}
-          >
-            {caption.split("\n").map((line: string, i: number) => (
-              <span
-                key={`line-${i}-${line.slice(0, 10)}`}
-                style={{ margin: 0 }}
-              >
-                {line}
-              </span>
-            ))}
-          </div>
+          {caption.split("\n").map((line: string, i: number) => (
+            <span key={`line-${i}-${line.slice(0, 10)}`} style={{ margin: 0 }}>
+              {line}
+            </span>
+          ))}
         </div>
       </div>
-    ),
+    </div>,
     {
       width: 1200,
       height: 630,
@@ -172,6 +168,11 @@ async function generateOGImage({
 }
 
 export async function GET(req: NextRequest): Promise<ImageResponse | Response> {
+  const { limited } = apiRateLimit(req);
+  if (limited) {
+    return new Response("Too many requests", { status: 429 });
+  }
+
   // Force route to be dynamic by accessing headers
   await headers();
 

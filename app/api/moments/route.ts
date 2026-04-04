@@ -3,6 +3,7 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import type { Frame } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
+import { apiRateLimit } from "@/lib/rate-limit";
 
 /**
  * Represents a ranked moment from the show with its metadata
@@ -89,7 +90,12 @@ function timestampToSeconds(timestamp: string): number {
  * )
  * ```
  */
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse | Response> {
+  const { limited } = apiRateLimit(request);
+  if (limited) {
+    return Response.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   try {
     // Read the ranked moments from frame-rank.json
     const filePath = path.join(process.cwd(), "public", "frame-rank.json");

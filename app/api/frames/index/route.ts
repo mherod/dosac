@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFrameIndex } from "@/lib/frames.server";
+import { apiRateLimit } from "@/lib/rate-limit";
 
 /**
  * API route handler for fetching all available frames
@@ -7,6 +8,7 @@ import { getFrameIndex } from "@/lib/frames.server";
  * Returns an array of frame objects containing metadata about each frame,
  * including episode information, timestamps, and captions.
  *
+ * @param request - The incoming HTTP request
  * @returns NextResponse containing an array of frame objects
  *
  * @example
@@ -24,7 +26,12 @@ import { getFrameIndex } from "@/lib/frames.server";
  * ])
  * ```
  */
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse | Response> {
+  const { limited } = apiRateLimit(request);
+  if (limited) {
+    return Response.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const frames = await getFrameIndex();
   return NextResponse.json(frames);
 }
