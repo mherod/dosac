@@ -28,6 +28,11 @@ Guidance for Claude Code (claude.ai/code) when working with this repository.
   - Production builds use webpack (`pnpm build` runs `next build --webpack`)
   - Dev server uses Turbopack (`pnpm dev` runs `next dev --turbo`)
   - Static page generation timeout: 300 seconds
+- **Custom ESLint**: `@mherod/eslint-plugin-custom` v1.4.0 — four plugin categories:
+  - `@mherod/react` (49 rules) — Server/client separation, Next.js patterns, re-render optimization
+  - `@mherod/typescript` (6 rules) — Type safety, Zod naming, empty function detection
+  - `@mherod/general` (15 rules) — Import order, lodash-es, ufo, date-fns preferences
+  - `@mherod/security` (12 rules) — Hardcoded secrets, unsafe eval/innerHTML, redirect validation
 - **Code Style**: 2-space indentation, 80 char line width, double quotes, trailing commas, semicolons always
 
 ## Application Architecture
@@ -92,7 +97,7 @@ Guidance for Claude Code (claude.ai/code) when working with this repository.
 - **Tailwind**: Use `cn()` utility from `lib/utils`, no dynamic classes
 - **Server/Client**: Strict separation enforced (no client hooks in server components)
 - **Imports**: Prefer destructured React imports, use Next.js navigation over router.push
-- **Event handlers**: Don't pass to client component props
+- **Event handlers**: Don't pass to client component props — enforced by `@mherod/react/no-event-handlers-to-client-props` (error). Any component that passes `onClick`, `onChange`, `onValueChange`, or similar to JSX elements must have `"use client"`, even if it has no hooks or browser APIs. DON'T remove `"use client"` from a component without checking for event handler props first.
 - **Components**: Use `React.ReactElement` return types
 - **Route params**: Async in handlers - type as `Promise<{ paramName: string }>`, await before use
 - **App Router**: Required (Pages Router not supported)
@@ -302,6 +307,13 @@ export default function Page({ searchParams }: Props) {
 - "use cache" is incompatible with `searchParams`/`params` access
 - API routes must use `await headers()` to force dynamic rendering
 
+**Client Boundary Rules**:
+
+- A file without `"use client"` that is imported directly by a client component gets **bundled into the client** — it does NOT get server-rendered as a separate RSC payload
+- To achieve true server rendering for a component, it must be imported/rendered by a server parent (page, layout, or another server component) — or passed as `children` from a server parent
+- Removing `"use client"` from a leaf component only imported by client parents is a code organization cleanup, not an SSR improvement
+- Pure rendering components (no hooks, no browser APIs, no event handlers) can have `"use client"` removed safely — they will be bundled into whichever context imports them
+
 ## Data Files Structure
 
 **Subtitle Files** (two VTT formats):
@@ -433,6 +445,7 @@ Frames extracted using ffmpeg at exact timestamps, 500px width, cached permanent
    - Exit code 0 = pass (warnings are non-blocking)
    - Warnings for missing return types (`@typescript-eslint/explicit-function-return-type`) are acceptable but should be addressed over time
    - Errors must be fixed before proceeding
+   - DON'T run `pnpm lint --fix` after adding new ESLint plugins or enabling many new rules. Autofixes from unfamiliar rules can produce broken code (recursive wrapping, incorrect function calls, variable renames that break references). Always run `pnpm lint` without `--fix` first to understand the error landscape, then apply `--fix` only to specific known-safe rules or individual files.
 
 2. **Build check** (includes TypeScript typecheck):
 
