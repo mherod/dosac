@@ -69,11 +69,11 @@
     "lodash-es": "^4.17.21",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.358.0",
-    "next": "16.1.1-canary.17",
+    "next": "16.2.1-canary.19",
     "next-themes": "^0.3.0",
     "p-limit": "^7.1.1",
-    "react": "19.3.0-canary-d6cae440-20260106",
-    "react-dom": "19.3.0-canary-d6cae440-20260106",
+    "react": "19.3.0-canary-1b45e243-20260402",
+    "react-dom": "19.3.0-canary-1b45e243-20260402",
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
@@ -129,9 +129,9 @@
   },
   "pnpm": {
     "overrides": {
-      "next": "16.1.1-canary.17",
-      "react": "19.3.0-canary-d6cae440-20260106",
-      "react-dom": "19.3.0-canary-d6cae440-20260106"
+      "next": "16.2.1-canary.19",
+      "react": "19.3.0-canary-1b45e243-20260402",
+      "react-dom": "19.3.0-canary-1b45e243-20260402"
     },
     "onlyBuiltDependencies": [
       "@biomejs/biome",

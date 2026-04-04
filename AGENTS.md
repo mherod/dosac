@@ -14,7 +14,7 @@ This file provides guidance to AI agents when working with code in this reposito
 ## Tech Stack
 
 - **Package manager**: pnpm (use pnpm, not npm/yarn)
-- **Runtime**: Next.js 16.1.1-canary.17 + React 19.3.0-canary-d6cae440-20260106 with experimental features (serverActions, optimisticClientCache, PPR incremental)
+- **Runtime**: Next.js 16.2.1-canary.19 + React 19.3.0-canary-1b45e243-20260402 with experimental features (serverActions, optimisticClientCache, PPR incremental)
 - **Styling**: TailwindCSS with tailwind-merge utility (cn function) from lib/utils
 - **UI Components**: Radix UI primitives
 - **ML/AI**: TensorFlow.js (@tensorflow/tfjs-node) with MediaPipe face mesh
