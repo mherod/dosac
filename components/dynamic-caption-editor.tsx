@@ -18,7 +18,9 @@ interface DynamicCaptionEditorProps {
 }
 
 /**
- * Inner component that uses useSearchParams
+ * Inner component that uses useSearchParams to read text/range
+ * and passes them as props to CaptionEditor (eliminating redundant
+ * useSearchParams call in CaptionEditor)
  */
 function DynamicCaptionEditorInner({
   frame,
@@ -26,30 +28,40 @@ function DynamicCaptionEditorInner({
 }: DynamicCaptionEditorProps): React.ReactElement {
   const searchParams = useSearchParams();
 
-  const combinedFrame = useMemo(() => {
+  const { combinedFrame, initialText } = useMemo(() => {
     const text = searchParams.get("text");
     const range = searchParams.get("range");
 
-    // If we have a text parameter, create an extended frame with the combined text
     if (typeof text === "string") {
       return {
-        ...frame,
-        speech: decodeURIComponent(text),
-        isMultiFrame: true,
-        rangeEndId: range,
-        originalSpeech: frame.speech, // Keep the original speech for comparison
+        combinedFrame: {
+          ...frame,
+          speech: decodeURIComponent(text),
+          isMultiFrame: true,
+          rangeEndId: range,
+          originalSpeech: frame.speech,
+        },
+        initialText: text,
       };
     }
 
-    return frame;
+    return { combinedFrame: frame, initialText: undefined };
   }, [frame, searchParams]);
 
-  return <CaptionEditor screenshot={combinedFrame} characters={characters} />;
+  return (
+    <CaptionEditor
+      screenshot={combinedFrame}
+      characters={characters}
+      initialText={initialText}
+    />
+  );
 }
 
 /**
  * Client component that handles dynamic text processing and caption creation
- * This moves URL parameter processing and text decoding out of the server component
+ * Reads URL parameters via useSearchParams (required because parent page uses
+ * "use cache" which is incompatible with searchParams access)
+ * Wraps inner component in Suspense for Next.js streaming
  */
 export function DynamicCaptionEditor({
   frame,

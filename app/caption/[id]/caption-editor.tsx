@@ -1,8 +1,7 @@
 "use client";
 
 import * as htmlToImage from "html-to-image";
-import { useSearchParams } from "next/navigation";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { CaptionFrameControls } from "@/components/caption-controls/caption-frame-controls";
 import { EditorControlsCard } from "@/components/caption-controls/editor-controls-card";
 import { CaptionedImage } from "@/components/captioned-image";
@@ -29,19 +28,20 @@ interface CharacterInFrame {
 interface CaptionEditorProps {
   screenshot: Screenshot;
   characters?: CharacterInFrame[] | null;
+  /** Optional text override extracted server-side from searchParams */
+  initialText?: string;
 }
 
 export function CaptionEditor({
   screenshot,
   characters,
+  initialText,
 }: CaptionEditorProps): React.ReactElement {
   const imageRef = useRef<HTMLDivElement>(null);
-  const searchParams = useSearchParams();
 
-  // Get the text from URL if it exists, otherwise use screenshot speech
-  const urlText = searchParams?.get("text");
-  const initialCaption = urlText
-    ? decodeURIComponent(urlText)
+  // Use server-provided initialText if available, otherwise use screenshot speech
+  const initialCaption = initialText
+    ? decodeURIComponent(initialText)
     : screenshot.speech;
   const [caption, setCaption] = useState<string>(initialCaption);
 
@@ -55,17 +55,6 @@ export function CaptionEditor({
     fontFamily,
     setFontFamily,
   } = useCaptionState();
-
-  // Update caption when URL text parameter changes
-  useLayoutEffect(() => {
-    const urlText = searchParams?.get("text");
-    if (urlText) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCaption(decodeURIComponent(urlText));
-    } else {
-      setCaption(screenshot.speech);
-    }
-  }, [searchParams, screenshot.speech]);
 
   const handleDownload = async (): Promise<void> => {
     if (!imageRef.current) return;
