@@ -191,3 +191,32 @@ export async function getFrameIndex(): Promise<Frame[]> {
   cachedFrameIndex = loadFrameIndexFromDisk();
   return cachedFrameIndex;
 }
+
+/**
+ * Retrieves a slice of frames surrounding a given frame ID
+ * Avoids loading the full 12K frame index across cache boundaries
+ * @param frameId - The center frame ID
+ * @param before - Number of frames before the center (default: 3)
+ * @param after - Number of frames after the center (default: 9)
+ * @returns Promise resolving to the nearby frames slice
+ */
+export async function getNearbyFrames(
+  frameId: string,
+  before: number = 3,
+  after: number = 9,
+): Promise<Frame[]> {
+  "use cache";
+  cacheLife("static");
+
+  const index = await getFrameIndex();
+  const currentIndex = index.findIndex((f: Frame) => f.id === frameId);
+
+  if (currentIndex === -1) {
+    return [];
+  }
+
+  const start = Math.max(0, currentIndex - before);
+  const end = Math.min(index.length, currentIndex + after + 1);
+
+  return index.slice(start, end);
+}

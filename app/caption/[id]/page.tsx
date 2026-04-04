@@ -11,7 +11,7 @@ import { DynamicCaptionEditor } from "@/components/dynamic-caption-editor";
 import { FrameStrip } from "@/components/frame-strip";
 import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { getCharactersForFrame } from "@/lib/frame-characters.server";
-import { getFrameById, getFrameIndex } from "@/lib/frames.server";
+import { getFrameById, getNearbyFrames } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
@@ -98,24 +98,18 @@ export async function generateMetadata({
 }
 
 /**
- * Optimized server component that delivers maximum prerenderable content
- * Uses efficient batched data fetching and React 18 concurrent features
- * @param props - The component props
- * @param props.params - Promise resolving to route parameters containing frame ID
- * @returns Fully server-rendered page with efficient data loading
- */
-/**
  * Server component that renders the caption page content
+ * Composes server-rendered layout with client interactive leaves
  */
-async function CaptionPageContent({
+function CaptionPageContent({
   frame,
   characters,
-  allFrames,
+  nearbyFrames,
 }: {
   frame: Screenshot;
   characters: Array<{ name: string; confidence: number }>;
-  allFrames: Screenshot[];
-}): Promise<React.ReactElement> {
+  nearbyFrames: Screenshot[];
+}): React.ReactElement {
   const structuredData = generateMemeStructuredData(frame, frame.speech);
 
   return (
@@ -128,7 +122,7 @@ async function CaptionPageContent({
         <AnimatedCaptionPage>
           <AnimatedFrameStripWrapper>
             <FrameStrip
-              screenshots={allFrames}
+              screenshots={nearbyFrames}
               centerScreenshot={frame}
               frameWidth={200}
             />
@@ -152,44 +146,20 @@ export default async function Page({
 
   let frame: Screenshot;
   let characters: Array<{ name: string; confidence: number }>;
-  let allFrames: Screenshot[];
+  let nearbyFrames: Screenshot[];
 
   try {
-    // Parallelize data fetching to avoid waterfall - all requests run simultaneously
-    const [frameData, charactersData, index] = await Promise.all([
+    // Parallelize data fetching — all three run simultaneously
+    // getNearbyFrames returns only ~13 frames instead of the full 12K index
+    const [frameData, charactersData, nearby] = await Promise.all([
       getFrameById(resolvedParams.id),
       getCharactersForFrame(resolvedParams.id),
-      getFrameIndex(),
+      getNearbyFrames(resolvedParams.id),
     ]);
 
     frame = frameData;
     characters = charactersData ?? [];
-
-    // Pre-calculate frame strip data server-side for maximum prerendering
-    const currentIndex = index.findIndex((f: Screenshot) => f.id === frame.id);
-
-    let previousFrames: Screenshot[] = [];
-    let nextFrames: Screenshot[] = [];
-
-    if (currentIndex !== -1) {
-      previousFrames =
-        currentIndex > 0
-          ? index.slice(Math.max(0, currentIndex - 3), currentIndex)
-          : [];
-      nextFrames =
-        currentIndex < index.length - 1
-          ? index.slice(currentIndex + 1, currentIndex + 10)
-          : [];
-    }
-
-    // Combine all frames for the strip
-    allFrames = [...previousFrames, frame, ...nextFrames].filter(
-      (f: Screenshot | null | undefined): f is Screenshot =>
-        f !== null &&
-        f !== undefined &&
-        typeof f.id === "string" &&
-        typeof f.speech === "string",
-    );
+    nearbyFrames = nearby;
   } catch {
     notFound();
   }
@@ -198,7 +168,7 @@ export default async function Page({
     <CaptionPageContent
       frame={frame}
       characters={characters}
-      allFrames={allFrames}
+      nearbyFrames={nearbyFrames}
     />
   );
 }
