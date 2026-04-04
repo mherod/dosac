@@ -1,5 +1,3 @@
-"use client";
-
 import { uniqBy } from "lodash-es";
 import Link from "next/link";
 import { Fragment } from "react";

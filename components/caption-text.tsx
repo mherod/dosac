@@ -1,5 +1,3 @@
-"use client";
-
 import { cn, generateTextShadow } from "@/lib/utils";
 
 /**

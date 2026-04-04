@@ -1,5 +1,3 @@
-"use client";
-
 import { CaptionedImage } from "@/components/captioned-image";
 import type { Frame } from "@/lib/frames";
 
