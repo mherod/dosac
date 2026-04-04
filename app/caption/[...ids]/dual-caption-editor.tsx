@@ -24,7 +24,7 @@ export function DualCaptionEditor({
 
   // State for frames and captions
   const [frames, setFrames] = useState(initialFrames);
-  const [selectedImages, setSelectedImages] = useState(
+  const [selectedImages, setSelectedImages] = useState(() =>
     initialFrames.map((frame: Screenshot) => frame.imageUrl),
   );
 

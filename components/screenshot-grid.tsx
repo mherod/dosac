@@ -62,7 +62,7 @@ function ScreenshotGridInner({
   multiselect = false,
 }: ScreenshotGridProps): React.ReactElement {
   const pathname = usePathname();
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartId, setDragStartId] = React.useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -212,7 +212,7 @@ function ScreenshotGridInner({
     };
 
     window.addEventListener("mouseup", handleMouseUp);
-    window.addEventListener("touchend", handleTouchEnd);
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
     return () => {
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("touchend", handleTouchEnd);

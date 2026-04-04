@@ -39,7 +39,7 @@ export function FrameStrip({
 }: FrameStripProps): React.ReactElement | null {
   // All Hooks must be called unconditionally first
   const router = useRouter();
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartId, setDragStartId] = useState<string | null>(null);

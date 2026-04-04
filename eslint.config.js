@@ -8,8 +8,10 @@ import promisePlugin from "eslint-plugin-promise";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
-// Standard ESM import now works with the fixed package v1.2.0
 import customReactPlugin from "@mherod/eslint-plugin-custom/react";
+import customTypescriptPlugin from "@mherod/eslint-plugin-custom/typescript";
+import customGeneralPlugin from "@mherod/eslint-plugin-custom/general";
+import customSecurityPlugin from "@mherod/eslint-plugin-custom/security";
 
 const config = [
   // Global ignores
@@ -79,6 +81,9 @@ const config = [
       "react-hooks": reactHooksPlugin,
       promise: promisePlugin,
       "@mherod/react": customReactPlugin,
+      "@mherod/typescript": customTypescriptPlugin,
+      "@mherod/general": customGeneralPlugin,
+      "@mherod/security": customSecurityPlugin,
     },
     rules: {
       // Next.js recommended rules
@@ -226,6 +231,7 @@ const config = [
       "jsdoc/no-undefined-types": "off",
 
       // Custom React rules from @mherod/eslint-plugin-custom
+      ...customReactPlugin.configs.recommended.rules,
       "@mherod/react/no-dynamic-tailwind-classes": "error",
       "@mherod/react/no-event-handlers-to-client-props": "error",
       "@mherod/react/no-unstable-math-random": "error",
@@ -236,6 +242,26 @@ const config = [
       "@mherod/react/prevent-environment-poisoning": "error",
       "@mherod/react/enforce-server-client-separation": "error",
       "@mherod/react/enforce-component-patterns": "off", // Too strict for this codebase
+      "@mherod/react/prefer-await-params-in-page": "off", // False positives: pages delegate Promise params to async inner components
+      "@mherod/react/prefer-async-page-component": "off", // Pages use Suspense + async inner component pattern instead
+      "@mherod/react/enforce-use-server-vs-server-only": "off", // False positive on route handlers (mherod/eslint-custom-rules#39)
+
+      // Custom TypeScript rules
+      ...customTypescriptPlugin.configs.recommended.rules,
+
+      // Custom General rules (import order, lodash-es, ufo patterns)
+      ...customGeneralPlugin.configs.recommended.rules,
+      "@mherod/general/enforce-file-naming": "off", // Existing naming is consistent
+      "@mherod/general/enforce-import-order": "off", // Handled by Biome
+      "@mherod/general/no-debug-comments": "off", // Allow TODOs in development
+
+      // Custom Security rules
+      ...customSecurityPlugin.configs.recommended.rules,
+      "@mherod/security/require-auth-validation": "off", // No auth in this app
+      "@mherod/security/require-rate-limiting": "off", // Not applicable
+      "@mherod/security/no-unsafe-redirect": "off", // All redirects are internal navigation (router.push, redirect())
+      "@mherod/security/no-unsafe-innerHTML": "warn", // Used for JSON-LD structured data only
+      "@mherod/security/enforce-security-patterns": "warn", // Demote to warn: rate limiting and innerHTML flagged for safe patterns
     },
     settings: {
       jsdoc: {

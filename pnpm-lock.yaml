@@ -171,8 +171,8 @@ importers:
         specifier: ^9.36.0
         version: 9.36.0
       '@mherod/eslint-plugin-custom':
-        specifier: ^1.2.1
-        version: 1.2.1(@typescript-eslint/parser@8.47.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
+        specifier: ^1.4.0
+        version: 1.4.0(@typescript-eslint/parser@8.47.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       '@next/bundle-analyzer':
         specifier: ^15.5.4
         version: 15.5.4
@@ -1272,8 +1272,8 @@ packages:
   '@mediapipe/face_mesh@0.4.1633559619':
     resolution: {integrity: sha512-Vc8cdjxS5+O2gnjWH9KncYpUCVXT0h714KlWAsyqJvJbIgUJBqpppbIx8yWcAzBDxm/5cYSuBI5p5ySIPxzcEg==}
 
-  '@mherod/eslint-plugin-custom@1.2.1':
-    resolution: {integrity: sha512-FJNyGMywauLtmMBmKWvnMz6ydBefRQg3KieWxS3NA/H7QqDxTgxjKJEkQIc60nVcKyDODLPERTQLlbKDy9Uuxg==}
+  '@mherod/eslint-plugin-custom@1.4.0':
+    resolution: {integrity: sha512-Ac1T22ZIMDJFvpl6/A5+vJR+mt84RwCVcGqlCp5mWy+l5K7+5mzTbq+cKTtYx9sLKI/UlmM8RSVPd93qX/sv8Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@typescript-eslint/parser': ^8.0.0
@@ -6423,7 +6423,7 @@ snapshots:
 
   '@mediapipe/face_mesh@0.4.1633559619': {}
 
-  '@mherod/eslint-plugin-custom@1.2.1(@typescript-eslint/parser@8.47.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)':
+  '@mherod/eslint-plugin-custom@1.4.0(@typescript-eslint/parser@8.47.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3))(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/parser': 8.47.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.4.2)
