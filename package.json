@@ -69,11 +69,11 @@
     "lodash-es": "^4.18.1",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.358.0",
-    "next": "16.2.1-canary.19",
+    "next": "16.2.2",
     "next-themes": "^0.3.0",
     "p-limit": "^7.1.1",
-    "react": "19.3.0-canary-1b45e243-20260402",
-    "react-dom": "19.3.0-canary-1b45e243-20260402",
+    "react": "19.3.0-canary-52684925-20251110",
+    "react-dom": "19.3.0-canary-52684925-20251110",
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
     "server-only": "^0.0.1",
@@ -98,7 +98,7 @@
     "@types/jest": "^30.0.0",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^25.0.3",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/sharp": "^0.32.0",
     "@typescript-eslint/eslint-plugin": "^8.47.0",
@@ -129,9 +129,9 @@
   },
   "pnpm": {
     "overrides": {
-      "next": "16.2.1-canary.19",
-      "react": "19.3.0-canary-1b45e243-20260402",
-      "react-dom": "19.3.0-canary-1b45e243-20260402"
+      "next": "16.2.2",
+      "react": "19.3.0-canary-52684925-20251110",
+      "react-dom": "19.3.0-canary-52684925-20251110"
     },
     "onlyBuiltDependencies": [
       "@biomejs/biome",
