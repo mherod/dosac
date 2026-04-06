@@ -51,7 +51,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-toast": "^1.2.15",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@tanstack/react-virtual": "^3.13.11",
+    "@tanstack/react-virtual": "^3.13.23",
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
     "@tensorflow/tfjs-node": "^4.22.0",
     "@unpic/placeholder": "^0.1.2",
