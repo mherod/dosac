@@ -227,77 +227,14 @@ export async function getFrameIndex(): Promise<Frame[]> {
 - `"stable"` - Rarely changing (2 hours default, 30 days stale-while-revalidate)
 - `"dynamic"` - Frequently changing (no caching)
 
-**Memory Optimization**:
+**Memory Optimization**: Frame index (~12K frames) uses a module-level singleton (`cachedFrameIndex` in `lib/frames.server.ts`) loaded once per worker process inside the `"use cache"` `getFrameIndex()` — prevents heap-limit errors during builds.
 
-Frame index (~12K frames) uses singleton pattern to prevent memory issues:
+**SSR & Suspense Patterns**: strategic Suspense boundaries maximize SSR:
 
-```typescript
-// lib/frames.server.ts
-let cachedFrameIndex: Frame[] | null = null;
+1. **Fully Static** (no Suspense): `/categories/[id]` (uses `generateStaticParams()`), `/profiles/[id]`, `/policies/[policy]`, `/series/[id]`.
+2. **PPR** (static shell + dynamic in Suspense): `/` (homepage), `/search`, `/caption/[...ids]`.
 
-function loadFrameIndexFromDisk(): Frame[] {
-  // Loads once per worker process
-  if (fs.existsSync(indexPath)) {
-    return JSON.parse(fs.readFileSync(indexPath, "utf-8"));
-  }
-  // ... fallback filesystem scan
-}
-
-export async function getFrameIndex(): Promise<Frame[]> {
-  "use cache";
-  unstable_cacheLife("stable");
-
-  if (cachedFrameIndex) {
-    return cachedFrameIndex; // Reuse cached version
-  }
-
-  cachedFrameIndex = loadFrameIndexFromDisk();
-  return cachedFrameIndex;
-}
-```
-
-Index loads once per worker process, prevents heap limit errors during builds.
-
-**SSR & Suspense Patterns**:
-
-App uses strategic Suspense boundaries to maximize server-side rendering:
-
-1. **Fully Static Routes** (no Suspense):
-   - `/categories/[id]` - Uses `generateStaticParams()`, prerendered
-   - `/profiles/[id]`, `/policies/[policy]`, `/series/[id]` - Static with params
-
-2. **Partial Prerendering** (static shell + dynamic content):
-   - `/` (homepage) - Static container/layout, dynamic content in Suspense
-   - `/search` - Static header/container, dynamic results in Suspense
-   - `/caption/[...ids]` - Static layout, dynamic editor in Suspense
-
-**Suspense Best Practices**:
-
-```typescript
-// ❌ Bad: Wraps entire page with static content
-export default function Page({ searchParams }: Props) {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <PageContent searchParams={searchParams} />
-    </Suspense>
-  );
-}
-
-// ✅ Good: Static shell rendered immediately, only dynamic content suspended
-export default function Page({ searchParams }: Props) {
-  return (
-    <div className="container">
-      {/* Static content renders immediately */}
-      <header>...</header>
-
-      {/* Only dynamic content in Suspense */}
-      <Suspense fallback={<SkeletonGrid />}>
-        <DynamicContent searchParams={searchParams} />
-      </Suspense>
-    </div>
-  );
-}
-```
+**Suspense Best Practice**: DON'T wrap the whole page in one Suspense. DO render static shell (container/header/nav) immediately and wrap only the dynamic, `searchParams`/`params`-dependent subtree in `<Suspense>` with a skeleton fallback.
 
 **Key Rules**:
 
@@ -385,99 +322,23 @@ Frames extracted using ffmpeg at exact timestamps, 500px width, cached permanent
 
 ### Upgrading Next.js and React Canary Versions
 
-**Critical**: Always upgrade Next.js and React together to ensure compatibility. Never upgrade them separately.
+DO upgrade Next.js and React together; never separately.
 
-**Process**:
-
-1. **Check latest canary versions**:
-
-   ```bash
-   pnpm view next@canary version
-   pnpm view react@canary version
-   ```
-
-2. **Upgrade packages together**:
-
-   ```bash
-   pnpm up next@canary react@canary react-dom@canary
-   ```
-
-3. **Update pnpm overrides** in `package.json`:
-   - Update `pnpm.overrides.next` to match new Next.js version
-   - Update `pnpm.overrides.react` and `pnpm.overrides["react-dom"]` to match new React version
-   - Example: After upgrading to `16.2.1-canary.19` and `19.3.0-canary-1b45e243-20260402`:
-
-     ```json
-     "pnpm": {
-       "overrides": {
-         "next": "16.2.1-canary.19",
-         "react": "19.3.0-canary-1b45e243-20260402",
-         "react-dom": "19.3.0-canary-1b45e243-20260402"
-       }
-     }
-     ```
-
-4. **Update all documentation files** that reference versions:
-   - `CLAUDE.md` (line 18: Runtime version)
-   - `AGENTS.md` (line 17: Runtime version)
-   - `.junie/guidelines.md` (line 38: Runtime version)
-
-5. **Run full quality checks** (see Quality Assurance section below)
-
-6. **Commit with conventional commit message**:
-
-   ```bash
-   git commit -m "chore: upgrade Next.js to <version> and React to <version>"
-   ```
-
-**Why pnpm overrides are needed**: Canary versions often have peer dependency mismatches. The overrides ensure all packages use the same React version, preventing "unmet peer dependency" warnings during install.
+1. Check: `pnpm view next@canary version` / `pnpm view react@canary version`.
+2. Upgrade: `pnpm up next@canary react@canary react-dom@canary`.
+3. Update `pnpm.overrides` in `package.json` (`next`, `react`, `react-dom`) to the exact new versions — required because canaries have peer-dependency mismatches; overrides pin one React version and silence "unmet peer dependency" warnings.
+4. Update the Runtime version line in `CLAUDE.md`, `AGENTS.md`, `.junie/guidelines.md`.
+5. Run QA checks below, then commit `chore: upgrade Next.js to <v> and React to <v>`.
 
 ### Quality Assurance Checks
 
-**Before pushing or merging to main**, run all quality checks in order:
+Before pushing/merging to main, run in order:
 
-1. **Lint check**:
+1. `pnpm lint` — exit 0 = pass (warnings non-blocking). Errors must be fixed. DON'T run `pnpm lint --fix` after adding new plugins/rules — autofixes from unfamiliar rules can corrupt code; run without `--fix` first, then apply `--fix` only to known-safe rules/files.
+2. `pnpm build` — runs `next build --webpack`; TypeScript typecheck runs as part of build (no separate `tsc`). Must exit 0.
+3. `pnpm test` — Jest suite (`__tests__/**/*.test.ts[x]`); all must pass.
 
-   ```bash
-   pnpm lint
-   ```
-
-   - Exit code 0 = pass (warnings are non-blocking)
-   - Warnings for missing return types (`@typescript-eslint/explicit-function-return-type`) are acceptable but should be addressed over time
-   - Errors must be fixed before proceeding
-   - DON'T run `pnpm lint --fix` after adding new ESLint plugins or enabling many new rules. Autofixes from unfamiliar rules can produce broken code (recursive wrapping, incorrect function calls, variable renames that break references). Always run `pnpm lint` without `--fix` first to understand the error landscape, then apply `--fix` only to specific known-safe rules or individual files.
-
-2. **Build check** (includes TypeScript typecheck):
-
-   ```bash
-   pnpm build
-   ```
-
-   - Runs `next build --webpack` in production mode
-   - TypeScript checking runs automatically as part of build
-   - Build must complete successfully with exit code 0
-   - No separate `tsc` command needed—Next.js build handles typechecking
-
-3. **Tests**:
-
-   ```bash
-   pnpm test
-   ```
-
-   - Runs Jest test suite
-   - All tests must pass (exit code 0)
-   - Test location: `__tests__/**/*.test.ts` or `.test.tsx`
-
-**Note**: The build process (`pnpm build`) automatically runs TypeScript checking, so a separate typecheck step is not required. The build will fail if there are TypeScript errors.
-
-**QA Checklist**:
-
-- [ ] `pnpm lint` passes (0 errors)
-- [ ] `pnpm build` completes successfully
-- [ ] `pnpm test` passes (all tests green)
-- [ ] No deprecation warnings related to upgrades
-
-**If checks fail**: Fix issues immediately. Do not skip failing checks, disable lint rules, or comment out broken tests. If a fix is too large, create an actionable TODO and document the issue.
+DON'T skip failing checks, disable lint rules, or comment out broken tests. If a fix is too large, document an actionable TODO.
 
 ## Important Notes
 
