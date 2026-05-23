@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Screenshot } from "@/lib/types";
+import { formatTimestamp } from "@/lib/utils";
 
 export interface ExtendedFrame extends Omit<Screenshot, "episode"> {
   text: string;
@@ -74,7 +75,7 @@ export function SearchResultCard({ frame, query }: SearchResultCardProps) {
             S{frame.season}E{frame.episode}
           </span>
           <span>•</span>
-          <span>{frame.timestamp}</span>
+          <span>{formatTimestamp(frame.timestamp)}</span>
         </div>
 
         <p className="text-sm leading-relaxed text-gray-700">

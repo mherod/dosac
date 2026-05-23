@@ -8,6 +8,7 @@ import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
 import { handleShare } from "@/lib/share";
+import { formatTimestamp } from "@/lib/utils";
 
 interface Screenshot {
   id: string;
@@ -136,7 +137,9 @@ export function CaptionEditor({
                 <p className="text-sm font-medium text-muted-foreground">
                   Timestamp
                 </p>
-                <p className="text-sm font-medium">{screenshot.timestamp}</p>
+                <p className="text-sm font-medium">
+                  {formatTimestamp(screenshot.timestamp)}
+                </p>
               </div>
             </div>
           </Card>
