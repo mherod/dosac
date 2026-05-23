@@ -37,7 +37,7 @@ export default function ShareErrorPage({
   searchParams,
 }: PageProps): React.ReactElement {
   return (
-    <div className="container flex min-h-[calc(100vh-8rem)] items-center justify-center">
+    <div className="container flex min-h-[calc(100dvh-8rem)] items-center justify-center">
       <Card className="w-full max-w-md space-y-4 p-6">
         <h1 className="text-center text-2xl font-bold text-destructive">
           Share Link Error

@@ -112,7 +112,7 @@ export default async function PolicyPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-dvh bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {/* GOV.UK style breadcrumb */}
         <nav className="mb-6" aria-label="Breadcrumb">

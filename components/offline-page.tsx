@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
  */
 export function OfflinePage(): React.ReactElement {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f3f2f1] px-4">
+    <div className="flex min-h-dvh items-center justify-center bg-[#f3f2f1] px-4">
       <div className="w-full max-w-md rounded-lg bg-white p-8 text-center shadow-lg">
         <div className="mb-6">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">

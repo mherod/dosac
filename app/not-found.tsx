@@ -14,7 +14,7 @@ export default function NotFound(): React.ReactElement {
   return (
     <>
       <meta httpEquiv="refresh" content="5;url=/" />
-      <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
+      <div className="flex min-h-dvh flex-col items-center justify-center p-4 text-center">
         <h1 className="mb-4 text-4xl font-bold">404 - Page Not Found</h1>
         <p className="mb-4 text-lg text-muted-foreground">
           The page you&apos;re looking for doesn&apos;t exist.

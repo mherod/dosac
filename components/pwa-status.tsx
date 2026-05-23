@@ -60,7 +60,7 @@ export function PWAStatus(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed right-4 top-4 z-40">
+    <div className="fixed right-4 top-[max(1rem,env(safe-area-inset-top))] z-40">
       <div className="flex flex-col space-y-2">
         {/* Online/Offline Status */}
         {!isOnline && (

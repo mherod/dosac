@@ -39,7 +39,7 @@ export function PWAUpdateNotification(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed left-4 right-4 top-4 z-50 md:left-auto md:right-4 md:max-w-sm">
+    <div className="fixed left-4 right-4 top-[max(1rem,env(safe-area-inset-top))] z-50 md:left-auto md:right-4 md:max-w-sm">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 shadow-lg">
         <div className="mb-3 flex items-start justify-between">
           <div className="flex items-center space-x-2">

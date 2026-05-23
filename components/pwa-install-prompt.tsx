@@ -113,7 +113,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-sm">
+    <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-sm">
       <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
         <div className="mb-3 flex items-start justify-between">
           <div className="flex items-center space-x-2">

@@ -30,8 +30,8 @@ export default function GlobalError({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <div className="min-h-screen bg-white">
-          <div className="container mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-6 md:px-6 md:py-8">
+        <div className="min-h-dvh bg-white">
+          <div className="container mx-auto flex min-h-dvh max-w-7xl items-center justify-center px-4 py-6 md:px-6 md:py-8">
             <div className="mx-auto max-w-2xl text-center">
               <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                 <AlertTriangle className="h-8 w-8 text-red-600" />
