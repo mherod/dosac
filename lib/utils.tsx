@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { getFrameData } from "./actions";
+import { formatTimestamp } from "./format-utils";
 import { type CharacterId, characters } from "./profiles";
 
 /**
@@ -37,38 +38,8 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
   return `S${Number.parseInt(match[1], 10)} E${Number.parseInt(match[2], 10)}`;
 }
 
-/**
- * Formats a frame timestamp slug into a human-readable clock time.
- *
- * Handles both stored slug formats:
- * - `mm-ss.ms` (e.g. "26-24.320") → "26:24"
- * - `hh-mm-ss.ms` (e.g. "00-27-58.240") → "27:58", or "1:27:58" when hours > 0
- *
- * Any string that doesn't match a known format is returned unchanged.
- * @param timestamp - The timestamp slug to format
- * @returns The formatted clock time (m:ss or h:mm:ss)
- */
-export function formatTimestamp(timestamp: string): string {
-  const pad = (n: number): string => n.toString().padStart(2, "0");
-
-  // hh-mm-ss.ms (S4 content, e.g. "00-27-58.240")
-  const withHours = timestamp.match(/^(\d{2})-(\d{2})-(\d{2})\.\d{3}$/);
-  if (withHours?.[1] && withHours[2] && withHours[3]) {
-    const hours = Number.parseInt(withHours[1], 10);
-    const minutes = Number.parseInt(withHours[2], 10);
-    const seconds = Number.parseInt(withHours[3], 10);
-    return hours > 0
-      ? `${hours}:${pad(minutes)}:${pad(seconds)}`
-      : `${minutes}:${pad(seconds)}`;
-  }
-
-  // mm-ss.ms (e.g. "26-24.320")
-  const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
-  if (!match || !match[1] || !match[2]) return timestamp;
-  const minutes = Number.parseInt(match[1], 10);
-  const seconds = Number.parseInt(match[2], 10);
-  return `${minutes}:${pad(seconds)}`;
-}
+// formatTimestamp re-exported from ./format-utils (single source of truth)
+export { formatTimestamp };
 
 /**
  * Processes text content with embedded links into React nodes
