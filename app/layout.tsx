@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import type React from "react";
 import { Suspense } from "react";
@@ -55,6 +55,11 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: "default",
+  },
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
@@ -97,10 +102,20 @@ export const metadata: Metadata = {
     "og:site_name": SITE_NAME,
     "og:logo": `${urlObject.origin}/logo.svg`,
     "format-detection": "telephone=no",
-    "theme-color": "#ffffff",
     "msapplication-TileColor": "#ffffff",
     "msapplication-config": "/browserconfig.xml",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // viewport-fit=cover unlocks env(safe-area-inset-*) on iOS (notch,
+  // Dynamic Island, home indicator). Without it every inset resolves to 0.
+  viewportFit: "cover",
+  // App is forced light theme; tint Safari chrome + PWA status bar to match.
+  themeColor: "#ffffff",
+  colorScheme: "light",
 };
 
 /**
@@ -139,7 +154,11 @@ export default function RootLayout({
           <Suspense>
             <MainNav />
           </Suspense>
-          <main id="main-content" className="min-h-dvh" tabIndex={-1}>
+          <main
+            id="main-content"
+            className="min-h-dvh pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+            tabIndex={-1}
+          >
             {children}
           </main>
           <Footer />
