@@ -89,11 +89,7 @@ export async function generateMetadata({
     // Custom text is handled client-side for better caching
     return generateSingleFrameMetadata(frame, frame.speech);
   } catch {
-    // Return basic metadata if frame fetch fails
-    return {
-      title: "Caption Editor",
-      description: "Create and edit captions for The Thick of It frames",
-    };
+    notFound();
   }
 }
 

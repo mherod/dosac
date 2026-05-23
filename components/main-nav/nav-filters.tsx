@@ -102,6 +102,13 @@ export function NavFilters({
       const result = FilterUpdatesSchema.safeParse(updates);
       if (!result.success) return;
 
+      if (
+        result.data.season === filters.season &&
+        result.data.episode === filters.episode
+      ) {
+        return;
+      }
+
       const trimmedQuery = filters.query.trim();
 
       // If we have a search query or we're on the search page, update search params
@@ -127,44 +134,43 @@ export function NavFilters({
     [router, filters, pathname],
   );
 
+  const getCurrentFilterQuery = useCallback(
+    (): Record<string, string | undefined> => ({
+      ...(filters.season && { season: filters.season.toString() }),
+      ...(filters.episode && { episode: filters.episode.toString() }),
+    }),
+    [filters.episode, filters.season],
+  );
+
   // Handle query changes - redirect to search page
   const handleQueryChange = useCallback(
     (query: string) => {
-      const trimmedQuery = z.string().trim().parse(query);
+      const trimmedQuery = query.trim();
 
       if (trimmedQuery) {
-        // Get current filter values from URL to avoid stale closures
-        const currentSeason = NumberParamSchema.safeParse(
-          searchParams.get("season"),
-        );
-        const currentEpisode = NumberParamSchema.safeParse(
-          searchParams.get("episode"),
-        );
-
         // Redirect to search page with query
         const queryParams: Record<string, string | undefined> = {
           q: trimmedQuery,
-          ...(currentSeason.success &&
-            currentSeason.data && {
-              season: currentSeason.data.toString(),
-            }),
-          ...(currentEpisode.success &&
-            currentEpisode.data && {
-              episode: currentEpisode.data.toString(),
-            }),
+          ...getCurrentFilterQuery(),
         };
         router.push(withQuery("/search", queryParams), { scroll: false });
       } else if (pathname === "/search") {
-        // If on search page and query is cleared, go back to home
-        router.push("/", { scroll: false });
+        const filterQuery = getCurrentFilterQuery();
+        const targetUrl =
+          filterQuery.season || filterQuery.episode
+            ? withQuery("/search", filterQuery)
+            : "/";
+        router.push(targetUrl, { scroll: false });
       }
     },
-    [router, searchParams, pathname],
+    [router, pathname, getCurrentFilterQuery],
   );
 
-  const [localQuery, setLocalQuery] = useState(filters.query);
+  const urlQuery = searchParams.get("q") ?? "";
+  const [localQuery, setLocalQuery] = useState(urlQuery);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const lastSyncedQueryRef = useRef<string>(filters.query);
+  const lastSyncedQueryRef = useRef<string>(urlQuery);
+  const hasMountedRef = useRef(false);
   const debouncedQuery = useDebounce(localQuery, 300);
 
   // Only consider it search mode if there's actual search text
@@ -172,8 +178,19 @@ export function NavFilters({
 
   // Update parent when debounced query changes (but not if we just submitted)
   useEffect(() => {
-    if (!isSubmitting && debouncedQuery.trim()) {
-      handleQueryChange(debouncedQuery);
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
+    const trimmedQuery = debouncedQuery.trim();
+
+    if (
+      !isSubmitting &&
+      trimmedQuery &&
+      trimmedQuery !== lastSyncedQueryRef.current.trim()
+    ) {
+      handleQueryChange(trimmedQuery);
     }
   }, [debouncedQuery, handleQueryChange, isSubmitting]);
 
@@ -206,29 +223,14 @@ export function NavFilters({
       // Update local state immediately
       setLocalQuery(trimmedQuery);
 
-      // Get current filter values from URL to avoid stale closures
-      const currentSeason = NumberParamSchema.safeParse(
-        searchParams.get("season"),
-      );
-      const currentEpisode = NumberParamSchema.safeParse(
-        searchParams.get("episode"),
-      );
-
       // Immediately navigate to search page
       const queryParams: Record<string, string | undefined> = {
         q: trimmedQuery,
-        ...(currentSeason.success &&
-          currentSeason.data && {
-            season: currentSeason.data.toString(),
-          }),
-        ...(currentEpisode.success &&
-          currentEpisode.data && {
-            episode: currentEpisode.data.toString(),
-          }),
+        ...getCurrentFilterQuery(),
       };
       router.push(withQuery("/search", queryParams), { scroll: false });
     },
-    [router, searchParams],
+    [router, getCurrentFilterQuery],
   );
 
   return (

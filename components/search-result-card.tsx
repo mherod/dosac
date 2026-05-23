@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Screenshot } from "@/lib/types";
 import { formatTimestamp } from "@/lib/utils";
 
@@ -24,17 +23,24 @@ function highlightText(text: string, query: string): React.ReactElement {
     return <>{text}</>;
   }
 
-  const parts = text.split(new RegExp(`(${query})`, "gi"));
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escapedQuery})`, "gi"));
+  let cursor = 0;
+  const segments = parts.map((part) => {
+    const key = `${cursor}-${part}`;
+    cursor += part.length;
+    return { key, part };
+  });
 
   return (
     <>
-      {parts.map((part, i) =>
+      {segments.map(({ key, part }) =>
         part.toLowerCase() === query.toLowerCase() ? (
-          <mark key={`${part}-${i}`} className="bg-yellow-200 font-semibold">
+          <mark key={key} className="bg-yellow-200 font-semibold">
             {part}
           </mark>
         ) : (
-          <span key={`${part}-${i}`}>{part}</span>
+          <span key={key}>{part}</span>
         ),
       )}
     </>
@@ -44,17 +50,18 @@ function highlightText(text: string, query: string): React.ReactElement {
 /**
  * Search result card component
  */
-export function SearchResultCard({ frame, query }: SearchResultCardProps) {
+export function SearchResultCard({
+  frame,
+  query,
+}: SearchResultCardProps): React.ReactElement {
   const text = frame.text || "";
   const truncatedText =
     text.length > 150 ? `${text.substring(0, 150)}...` : text;
 
   return (
-    <Link
+    <a
       href={`/caption/${frame.id}`}
       className="group block overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
-      prefetch={true}
-      scroll={false}
     >
       <div className="relative aspect-video overflow-hidden bg-gray-100">
         {frame.imageUrl && (
@@ -88,6 +95,6 @@ export function SearchResultCard({ frame, query }: SearchResultCardProps) {
           </p>
         )}
       </div>
-    </Link>
+    </a>
   );
 }

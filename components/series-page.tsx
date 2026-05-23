@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type React from "react";
 import { Suspense } from "react";
-import { groupBy, sortBy } from "lodash-es";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -40,71 +39,34 @@ async function SeriesPageContent({
   // Get all frames
   const allFrames = await getFrameIndex();
 
-  // Filter frames for this series and group by episode using lodash
+  // Filter frames for this series.
   const seriesFrames = allFrames.filter((frame: Screenshot) => {
     const { season } = parseEpisodeId(frame.episode);
     return season === series.number;
   });
 
-  const framesByEpisode = groupBy(seriesFrames, (frame) => frame.episode);
-
-  // Convert to array and sort by episode number using lodash sortBy
-  const episodes: Array<{ episodeNumber: number; frames: Screenshot[] }> =
-    sortBy(
-      Object.entries(framesByEpisode).map(
-        ([episodeId, frames]: [string, Screenshot[]]) => {
-          const { episode } = parseEpisodeId(episodeId);
-          return { episodeNumber: episode, frames };
-        },
-      ),
-      "episodeNumber",
-    );
-
   const breadcrumbs = getSeriesBreadcrumbs(series.number, true);
 
   const headerContent = (
-    <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
-            Series {series.number}
-          </h1>
-          <div className="mt-4 flex items-center gap-3">
-            <Badge variant="secondary">{series.episodeCount} Episodes</Badge>
-            <Link
-              href={`/series/${series.number}/episode`}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              View all episodes →
-            </Link>
-          </div>
-        </div>
-        <div className="prose prose-invert max-w-none">
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            {processTextWithLinks(series.longSummary)}
-          </p>
+    <div className="max-w-4xl space-y-6">
+      <div>
+        <h1 className="text-4xl font-bold tracking-tight lg:text-5xl">
+          Series {series.number}
+        </h1>
+        <div className="mt-4 flex items-center gap-3">
+          <Badge variant="secondary">{series.episodeCount} Episodes</Badge>
+          <Link
+            href={`/series/${series.number}/episode`}
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            View all episodes →
+          </Link>
         </div>
       </div>
-
-      {/* Featured frame could go here */}
-      <div className="hidden md:block">
-        {episodes[0]?.frames[0] && (
-          <div className="aspect-video rounded-lg">
-            <ScreenshotGrid
-              screenshots={[episodes[0].frames[0]]}
-              allScreenshots={episodes[0].frames}
-              filters={{ query: "", page: 1 }}
-              paginationData={{
-                currentPage: 1,
-                totalPages: 1,
-                totalItems: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-              }}
-              multiselect={false}
-            />
-          </div>
-        )}
+      <div className="prose prose-invert max-w-none">
+        <p className="text-lg leading-relaxed text-muted-foreground">
+          {processTextWithLinks(series.longSummary)}
+        </p>
       </div>
     </div>
   );
@@ -112,24 +74,19 @@ async function SeriesPageContent({
   return (
     <PageLayout breadcrumbs={breadcrumbs} headerContent={headerContent}>
       <div className="space-y-8">
-        {/* Featured frame */}
-        {episodes[0]?.frames[0] && (
-          <div className="aspect-video rounded-lg">
-            <ScreenshotGrid
-              screenshots={[episodes[0].frames[0]]}
-              allScreenshots={episodes[0].frames}
-              filters={{ query: "", page: 1 }}
-              paginationData={{
-                currentPage: 1,
-                totalPages: 1,
-                totalItems: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-              }}
-              multiselect={false}
-            />
-          </div>
-        )}
+        <ScreenshotGrid
+          screenshots={seriesFrames.slice(0, 6)}
+          allScreenshots={seriesFrames}
+          filters={{ query: "", page: 1 }}
+          paginationData={{
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: Math.min(seriesFrames.length, 6),
+            hasNextPage: false,
+            hasPrevPage: false,
+          }}
+          multiselect={true}
+        />
       </div>
     </PageLayout>
   );

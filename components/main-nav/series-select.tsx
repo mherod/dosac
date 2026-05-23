@@ -137,7 +137,14 @@ export function SeriesSelect({
         onValueChange={handleEpisodeChange}
         disabled={!season}
       >
-        <SelectTrigger className="w-[120px] truncate">
+        <SelectTrigger
+          className={cn(
+            "w-[120px] truncate",
+            "disabled:border-[#ffffff1a] disabled:bg-[#0b0c0c]/60",
+            "disabled:text-white/45 disabled:hover:bg-[#0b0c0c]",
+          )}
+          aria-label="Select episode"
+        >
           <SelectValue placeholder="All Episodes" />
         </SelectTrigger>
         <SelectContent>

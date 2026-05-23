@@ -3,8 +3,8 @@
  * Provides offline functionality and caching for better performance
  */
 
-const STATIC_CACHE_NAME = "dosac-static-v1.0.0";
-const DYNAMIC_CACHE_NAME = "dosac-dynamic-v1.0.0";
+const STATIC_CACHE_NAME = "dosac-static-v1.0.1";
+const DYNAMIC_CACHE_NAME = "dosac-dynamic-v1.0.1";
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [

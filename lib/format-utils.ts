@@ -11,16 +11,24 @@ export function formatEpisodeId(episodeId: string | null | undefined): string {
 }
 
 /**
- * Formats a timestamp from "00-03.120" format to "0:03" format
+ * Formats a URL-safe timestamp into readable media time.
  * @param timestamp - The timestamp to format
  * @returns The formatted timestamp string
  */
 export function formatTimestamp(timestamp: string): string {
-  const match = timestamp.match(/^(\d{2})-(\d{2})\.\d{3}$/);
-  if (!match || !match[1] || !match[2]) return timestamp;
-  const minutes = Number.parseInt(match[1], 10);
-  const seconds = Number.parseInt(match[2], 10);
-  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const match = timestamp.match(/^(\d{2})-(?:(\d{2})-)?(\d{2})\.\d{3}$/);
+  if (!match || !match[1] || !match[3]) return timestamp;
+
+  const hours = match[2] ? Number.parseInt(match[1], 10) : 0;
+  const minutes = Number.parseInt(match[2] ?? match[1], 10);
+  const seconds = Number.parseInt(match[3], 10);
+  const paddedSeconds = seconds.toString().padStart(2, "0");
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${paddedSeconds}`;
+  }
+
+  return `${minutes}:${paddedSeconds}`;
 }
 
 /**
@@ -96,9 +104,9 @@ export function parseFrameId(id: string): {
     );
   }
 
-  if (!/^\d{2}-\d{2}\.\d{3}$/.test(timestamp)) {
+  if (!/^\d{2}(?:-\d{2})?-\d{2}\.\d{3}$/.test(timestamp)) {
     throw new Error(
-      `Invalid timestamp format '${timestamp}' in URL. Expected format: MM-SS.mmm (e.g., 12-34.567)`,
+      `Invalid timestamp format '${timestamp}' in URL. Expected format: MM-SS.mmm or HH-MM-SS.mmm`,
     );
   }
 

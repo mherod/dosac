@@ -204,7 +204,7 @@ async function HomeContent({
  * Supports filtering by series, episode, and search query
  * @param props - The component props
  * @param props.searchParams - Promise resolving to search parameters for filtering content
- * @returns The home page with static shell and Suspense boundary for dynamic content
+ * @returns The home page with filtered and paginated content
  */
 export default function Home({ searchParams }: Props): React.ReactElement {
   const structuredData = generateWebsiteStructuredData();

@@ -28,7 +28,10 @@ export function validateFrameId(id: string): ParsedFrameId {
   const season = id.substring(0, dashIndex);
   const timestamp = id.substring(dashIndex + 1);
 
-  if (!season || !timestamp) {
+  if (
+    !/^s\d{2}e\d{2}$/.test(season) ||
+    !/^\d{2}(?:-\d{2})?-\d{2}\.\d{3}$/.test(timestamp)
+  ) {
     throw new InvalidFrameIdError(
       `Invalid frame ID format: ${id}. Expected format: s01e01-00-00-00.000`,
     );

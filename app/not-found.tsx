@@ -17,7 +17,7 @@ export default function NotFound(): React.ReactElement {
       <div className="flex min-h-dvh flex-col items-center justify-center p-4 text-center">
         <h1 className="mb-4 text-4xl font-bold">404 - Page Not Found</h1>
         <p className="mb-4 text-lg text-muted-foreground">
-          The page you&apos;re looking for doesn&apos;t exist.
+          We couldn&apos;t find that page.
         </p>
         <p className="mb-8 text-sm text-muted-foreground">
           Redirecting to home page in 5 seconds...

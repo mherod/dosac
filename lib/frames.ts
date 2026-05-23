@@ -105,9 +105,9 @@ export function validateFrameId(id: string): ParsedFrameId {
     );
   }
 
-  if (!/^\d{2}-\d{2}\.\d{3}$/.test(timestamp)) {
+  if (!/^\d{2}(?:-\d{2})?-\d{2}\.\d{3}$/.test(timestamp)) {
     throw new InvalidFrameIdError(
-      `Invalid timestamp format '${timestamp}' in URL. Expected format: MM-SS.mmm (e.g., 12-34.567)`,
+      `Invalid timestamp format '${timestamp}' in URL. Expected format: MM-SS.mmm or HH-MM-SS.mmm`,
     );
   }
 

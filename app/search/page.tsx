@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Suspense } from "react";
 import { compact } from "lodash-es";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { withQuery } from "ufo";
 import type { ExtendedFrame } from "@/components/search-result-card";
 import { SearchResultCard } from "@/components/search-result-card";
@@ -12,13 +13,20 @@ import { fuzzyMatch } from "@/lib/utils";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; season?: string; episode?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    season?: string;
+    episode?: string;
+    page?: string;
+  }>;
 }): Promise<Metadata> {
   const params = await searchParams;
   const query = params.q || "";
+  const page = parseRequestedPage(params.page);
+  const pageSuffix = page > 1 ? ` - Page ${page}` : "";
 
   return {
-    title: query ? `Search results for "${query}"` : "Search",
+    title: query ? `Search results for "${query}"${pageSuffix}` : "Search",
     description:
       "Search through ministerial communications and departmental records",
   };
@@ -33,10 +41,57 @@ interface SearchPageProps {
   }>;
 }
 
+const SEARCH_SKELETON_KEYS = [
+  "search-skeleton-1",
+  "search-skeleton-2",
+  "search-skeleton-3",
+  "search-skeleton-4",
+  "search-skeleton-5",
+  "search-skeleton-6",
+  "search-skeleton-7",
+  "search-skeleton-8",
+];
+
+/**
+ * Parses a positive page number from a query parameter.
+ * @param page - The raw page query parameter
+ * @returns A valid positive page number
+ */
+function parseRequestedPage(page: string | undefined): number {
+  const parsedPage = Number.parseInt(page || "1", 10);
+  return Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+}
+
+/**
+ * Builds a canonical search URL while omitting the page query for page one.
+ * @param params - Search filters and pagination state
+ * @returns A URL for the search route
+ */
+function getSearchUrl({
+  query,
+  season,
+  episode,
+  page,
+}: {
+  query: string;
+  season?: number;
+  episode?: number;
+  page: number;
+}): string {
+  return withQuery("/search", {
+    ...(query && { q: query }),
+    ...(season && { season: season.toString() }),
+    ...(episode && { episode: episode.toString() }),
+    ...(page > 1 && { page: page.toString() }),
+  });
+}
+
 /**
  * Inner component that handles search logic and dynamic data access
  */
-async function SearchPageContent({ searchParams }: SearchPageProps) {
+async function SearchPageContent({
+  searchParams,
+}: SearchPageProps): Promise<React.ReactElement> {
   const params = await searchParams;
   const query = (params.q || "").trim().toLowerCase();
   const seasonFilter = params.season
@@ -45,7 +100,7 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
   const episodeFilter = params.episode
     ? Number.parseInt(params.episode, 10)
     : undefined;
-  const page = Number.parseInt(params.page || "1", 10);
+  const requestedPage = parseRequestedPage(params.page);
   const resultsPerPage = 24;
 
   // Get all frames
@@ -147,7 +202,21 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
   // Pagination
   const totalResults = results.length;
   const totalPages = Math.ceil(totalResults / resultsPerPage);
-  const startIndex = (page - 1) * resultsPerPage;
+  const validPage = Math.min(requestedPage, Math.max(1, totalPages));
+  const canonicalPageParam = validPage > 1 ? validPage.toString() : undefined;
+
+  if (params.page !== canonicalPageParam) {
+    redirect(
+      getSearchUrl({
+        query,
+        season: seasonFilter,
+        episode: episodeFilter,
+        page: validPage,
+      }),
+    );
+  }
+
+  const startIndex = (validPage - 1) * resultsPerPage;
   const paginatedResults = results.slice(
     startIndex,
     startIndex + resultsPerPage,
@@ -210,47 +279,62 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center space-x-2 pt-6">
-              {page > 1 && (
-                <Link
-                  href={withQuery("/search", {
-                    ...(query && { q: query }),
-                    ...(seasonFilter && { season: seasonFilter.toString() }),
-                    ...(episodeFilter && {
-                      episode: episodeFilter.toString(),
-                    }),
-                    page: (page - 1).toString(),
+            <nav
+              aria-label="Pagination"
+              className="flex items-center justify-center gap-3 pt-6 md:gap-4"
+            >
+              {validPage > 1 ? (
+                <a
+                  href={getSearchUrl({
+                    query,
+                    season: seasonFilter,
+                    episode: episodeFilter,
+                    page: validPage - 1,
                   })}
-                  className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                  prefetch={true}
-                  scroll={false}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 text-sm transition-colors hover:bg-gray-50"
+                  aria-label={`Go to page ${validPage - 1}`}
                 >
-                  Previous
-                </Link>
+                  <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">Previous page</span>
+                </a>
+              ) : (
+                <span
+                  className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-md border border-gray-200 text-sm text-gray-300"
+                  aria-disabled="true"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">Previous page</span>
+                </span>
               )}
 
-              <span className="px-4 text-sm text-gray-600">
-                Page {page} of {totalPages}
+              <span className="text-sm text-gray-600 md:text-base">
+                Page {validPage} of {totalPages}
               </span>
 
-              {page < totalPages && (
-                <Link
-                  href={withQuery("/search", {
-                    ...(query && { q: query }),
-                    ...(seasonFilter && { season: seasonFilter.toString() }),
-                    ...(episodeFilter && {
-                      episode: episodeFilter.toString(),
-                    }),
-                    page: (page + 1).toString(),
+              {validPage < totalPages ? (
+                <a
+                  href={getSearchUrl({
+                    query,
+                    season: seasonFilter,
+                    episode: episodeFilter,
+                    page: validPage + 1,
                   })}
-                  className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
-                  prefetch={true}
-                  scroll={false}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 text-sm transition-colors hover:bg-gray-50"
+                  aria-label={`Go to page ${validPage + 1}`}
                 >
-                  Next
-                </Link>
+                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">Next page</span>
+                </a>
+              ) : (
+                <span
+                  className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-md border border-gray-200 text-sm text-gray-300"
+                  aria-disabled="true"
+                >
+                  <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">Next page</span>
+                </span>
               )}
-            </div>
+            </nav>
           )}
         </>
       ) : query || seasonFilter || episodeFilter ? (
@@ -267,7 +351,9 @@ async function SearchPageContent({ searchParams }: SearchPageProps) {
 /**
  * Search page component with static shell and dynamic results
  */
-export default function SearchPage({ searchParams }: SearchPageProps) {
+export default function SearchPage({
+  searchParams,
+}: SearchPageProps): React.ReactElement {
   return (
     <div className="container mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
       <div className="space-y-6">
@@ -276,17 +362,13 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
           <h1 className="text-2xl font-bold text-gray-900">Search Results</h1>
         </div>
 
-        {/* Dynamic search content */}
         <Suspense
           fallback={
-            <div className="space-y-4">
-              <div className="h-6 w-64 animate-pulse rounded bg-gray-200" />
+            <div className="animate-pulse space-y-4">
+              <div className="h-4 w-1/3 rounded bg-gray-200" />
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div
-                    key={`skeleton-${i}`}
-                    className="h-48 animate-pulse rounded bg-gray-200"
-                  />
+                {SEARCH_SKELETON_KEYS.map((key) => (
+                  <div key={key} className="h-64 rounded-lg bg-gray-200" />
                 ))}
               </div>
             </div>

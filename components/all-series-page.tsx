@@ -1,6 +1,6 @@
+import { groupBy } from "lodash-es";
 import Link from "next/link";
 import { Suspense } from "react";
-import { groupBy } from "lodash-es";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
@@ -40,50 +40,27 @@ async function SeriesContent(): Promise<React.ReactElement> {
         const frames = seriesFrames.get(series.number) || [];
         return (
           <div key={series.number} className="space-y-6">
-            <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-3xl font-bold tracking-tight">
-                    Series {series.number}
-                  </h2>
-                  <div className="mt-4 flex items-center gap-3">
-                    <Badge variant="secondary">
-                      {series.episodeCount} Episodes
-                    </Badge>
-                    <Link
-                      href={`/series/${series.number}`}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      View series →
-                    </Link>
-                  </div>
-                </div>
-                <div className="prose prose-invert max-w-none">
-                  <p className="text-lg leading-relaxed text-muted-foreground">
-                    {processTextWithLinks(series.shortSummary)}
-                  </p>
+            <div className="max-w-4xl space-y-6">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight">
+                  Series {series.number}
+                </h2>
+                <div className="mt-4 flex items-center gap-3">
+                  <Badge variant="secondary">
+                    {series.episodeCount} Episodes
+                  </Badge>
+                  <Link
+                    href={`/series/${series.number}`}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    View series →
+                  </Link>
                 </div>
               </div>
-
-              {/* Featured frames */}
-              <div className="hidden md:block">
-                {frames[0] && (
-                  <div className="aspect-video rounded-lg">
-                    <ScreenshotGrid
-                      screenshots={[frames[0]]}
-                      allScreenshots={frames}
-                      filters={{ query: "", page: 1 }}
-                      paginationData={{
-                        currentPage: 1,
-                        totalPages: 1,
-                        totalItems: 1,
-                        hasNextPage: false,
-                        hasPrevPage: false,
-                      }}
-                      multiselect={false}
-                    />
-                  </div>
-                )}
+              <div className="prose prose-invert max-w-none">
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  {processTextWithLinks(series.shortSummary)}
+                </p>
               </div>
             </div>
 

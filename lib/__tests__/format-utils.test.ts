@@ -30,6 +30,8 @@ describe("formatTimestamp", () => {
     expect(formatTimestamp("00-03.120")).toBe("0:03");
     expect(formatTimestamp("01-30.000")).toBe("1:30");
     expect(formatTimestamp("59-59.999")).toBe("59:59");
+    expect(formatTimestamp("00-27-58.240")).toBe("27:58");
+    expect(formatTimestamp("01-27-58.240")).toBe("1:27:58");
   });
 
   it("returns original string for invalid formats", () => {
@@ -88,6 +90,11 @@ describe("parseFrameId", () => {
       season: "s01e02",
       episode: "s01e02",
       timestamp: "03-45.678",
+    });
+    expect(parseFrameId("s04e01-00-27-58.240")).toEqual({
+      season: "s04e01",
+      episode: "s04e01",
+      timestamp: "00-27-58.240",
     });
   });
 
