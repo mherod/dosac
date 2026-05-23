@@ -53,6 +53,8 @@ export function SearchBar({
       <TextInput
         id="search-input"
         type="search"
+        inputMode="search"
+        enterKeyHint="search"
         placeholder="Search ministerial quotes..."
         value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -61,7 +63,7 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         aria-label="Search ministerial quotes"
         className={cn(
-          "px-3 py-1.5 text-sm",
+          "px-3 py-1.5 md:text-sm",
           "rounded border border-white/20 bg-transparent",
           "text-white placeholder:text-white/60",
           "focus:border-white/40 focus:ring-[#1d70b8]",

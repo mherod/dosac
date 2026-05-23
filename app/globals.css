@@ -11,11 +11,13 @@
 /* Disable rubber band effect */
 html {
   overscroll-behavior: none;
+  /* Prevent Safari from arbitrarily rescaling text after orientation change */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 @media (prefers-color-scheme: dark) {
