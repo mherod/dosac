@@ -132,13 +132,17 @@ function CaptionPageContent({
   );
 }
 
-export default async function Page({
-  params,
-}: Pick<PageProps, "params">): Promise<React.ReactElement> {
+/**
+ * Cached inner component for rendering the caption page
+ * Marked with "use cache" and accepts only serializable props
+ */
+async function CaptionPageCached({
+  id,
+}: {
+  id: string;
+}): Promise<React.ReactElement> {
   "use cache";
   cacheLife("static");
-
-  const resolvedParams = await params;
 
   let frame: Screenshot;
   let characters: Array<{ name: string; confidence: number }>;
@@ -148,9 +152,9 @@ export default async function Page({
     // Parallelize data fetching — all three run simultaneously
     // getNearbyFrames returns only ~13 frames instead of the full 12K index
     const [frameData, charactersData, nearby] = await Promise.all([
-      getFrameById(resolvedParams.id),
-      getCharactersForFrame(resolvedParams.id),
-      getNearbyFrames(resolvedParams.id),
+      getFrameById(id),
+      getCharactersForFrame(id),
+      getNearbyFrames(id),
     ]);
 
     frame = frameData;
@@ -167,4 +171,11 @@ export default async function Page({
       nearbyFrames={nearbyFrames}
     />
   );
+}
+
+export default async function Page({
+  params,
+}: Pick<PageProps, "params">): Promise<React.ReactElement> {
+  const resolvedParams = await params;
+  return <CaptionPageCached id={resolvedParams.id} />;
 }

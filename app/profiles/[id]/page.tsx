@@ -314,15 +314,18 @@ function CollapsibleSection({
  * @param props.params - Promise resolving to route parameters containing character ID
  * @returns The complete character profile page
  */
-export default async function CharacterProfile({
-  params,
+/**
+ * Cached inner component for rendering the character profile page
+ * Marked with "use cache" and accepts only serializable props
+ */
+async function CharacterProfileCached({
+  id,
 }: {
-  params: Promise<{ id: string }>;
+  id: string;
 }): Promise<React.ReactElement> {
   "use cache";
   cacheLife("static");
 
-  const { id } = await params;
   const character = characters[id];
 
   if (!character) {
@@ -478,4 +481,13 @@ export default async function CharacterProfile({
       </main>
     </>
   );
+}
+
+export default async function CharacterProfile({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<React.ReactElement> {
+  const { id } = await params;
+  return <CharacterProfileCached id={id} />;
 }

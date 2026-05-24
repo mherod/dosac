@@ -93,11 +93,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function PolicyPage({ params }: Props) {
+/**
+ * Cached inner component for rendering the policy page
+ * Marked with "use cache" and accepts only serializable props
+ */
+async function PolicyPageCached({
+  policyId,
+}: {
+  policyId: string;
+}): Promise<React.ReactElement> {
   "use cache";
   cacheLife("static");
 
-  const { policy: policyId } = await params;
   const policy = await getServerPolicy(policyId);
 
   if (!policy) {
@@ -517,4 +524,9 @@ export default async function PolicyPage({ params }: Props) {
       </div>
     </main>
   );
+}
+
+export default async function PolicyPage({ params }: Props) {
+  const { policy: policyId } = await params;
+  return <PolicyPageCached policyId={policyId} />;
 }
