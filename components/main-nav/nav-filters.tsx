@@ -2,17 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { withQuery } from "ufo";
 import { z } from "zod";
-import { useDebounce } from "@/hooks/use-debounce";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
 
@@ -38,7 +30,7 @@ type Filters = z.infer<typeof FiltersSchema>;
 
 /**
  * Client component that handles search parameters, routing, and filter state
- * Includes series selection and search bar with debounced input
+ * Includes series selection and explicit search submission
  * @param props - Component props
  * @param props.children - Server-rendered content (e.g., FeaturedCharacters)
  * @returns The navigation filters with interactive controls
@@ -142,75 +134,19 @@ export function NavFilters({
     [filters.episode, filters.season],
   );
 
-  // Handle query changes - redirect to search page
-  const handleQueryChange = useCallback(
-    (query: string) => {
-      const trimmedQuery = query.trim();
-
-      if (trimmedQuery) {
-        // Redirect to search page with query
-        const queryParams: Record<string, string | undefined> = {
-          q: trimmedQuery,
-          ...getCurrentFilterQuery(),
-        };
-        router.push(withQuery("/search", queryParams), { scroll: false });
-      } else if (pathname === "/search") {
-        const filterQuery = getCurrentFilterQuery();
-        const targetUrl =
-          filterQuery.season || filterQuery.episode
-            ? withQuery("/search", filterQuery)
-            : "/";
-        router.push(targetUrl, { scroll: false });
-      }
-    },
-    [router, pathname, getCurrentFilterQuery],
-  );
-
   const urlQuery = searchParams.get("q") ?? "";
   const [localQuery, setLocalQuery] = useState(urlQuery);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const lastSyncedQueryRef = useRef<string>(urlQuery);
-  const hasMountedRef = useRef(false);
-  const debouncedQuery = useDebounce(localQuery, 300);
 
   // Only consider it search mode if there's actual search text
   const isSearchMode = filters.query.trim() !== "";
 
-  // Update parent when debounced query changes (but not if we just submitted)
+  // Keep the controlled input aligned with browser back/forward and link nav.
   useEffect(() => {
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
-    }
-
-    const trimmedQuery = debouncedQuery.trim();
-
-    if (
-      !isSubmitting &&
-      trimmedQuery &&
-      trimmedQuery !== lastSyncedQueryRef.current.trim()
-    ) {
-      handleQueryChange(trimmedQuery);
-    }
-  }, [debouncedQuery, handleQueryChange, isSubmitting]);
-
-  // Sync URL searchParams to local input state when URL changes externally
-  // This is necessary for browser back/forward navigation and external URL changes
-  // Note: This pattern is acceptable for syncing URL params to controlled inputs in Next.js
-  useLayoutEffect(() => {
-    const query = searchParams.get("q") || "";
-    // Only update if URL changed externally (different from last synced value)
-    if (lastSyncedQueryRef.current !== query) {
-      lastSyncedQueryRef.current = query;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLocalQuery(query);
-    }
-    setIsSubmitting(false);
-  }, [searchParams]);
+    setLocalQuery(urlQuery);
+  }, [urlQuery]);
 
   const handleSearchChange = (value: string): void => {
     setLocalQuery(value);
-    setIsSubmitting(false);
   };
 
   const handleSearchSubmit = useCallback(
@@ -218,12 +154,8 @@ export function NavFilters({
       const trimmedQuery = query.trim();
       if (!trimmedQuery) return;
 
-      // Mark as submitting to prevent debounced effect from interfering
-      setIsSubmitting(true);
-      // Update local state immediately
       setLocalQuery(trimmedQuery);
 
-      // Immediately navigate to search page
       const queryParams: Record<string, string | undefined> = {
         q: trimmedQuery,
         ...getCurrentFilterQuery(),

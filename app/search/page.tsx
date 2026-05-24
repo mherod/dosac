@@ -1,6 +1,7 @@
 import { compact } from "lodash-es";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { withQuery } from "ufo";
@@ -284,7 +285,7 @@ async function SearchPageContent({
               className="flex items-center justify-center gap-3 pt-6 md:gap-4"
             >
               {validPage > 1 ? (
-                <a
+                <Link
                   href={getSearchUrl({
                     query,
                     season: seasonFilter,
@@ -296,7 +297,7 @@ async function SearchPageContent({
                 >
                   <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                   <span className="sr-only">Previous page</span>
-                </a>
+                </Link>
               ) : (
                 <span
                   className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-md border border-gray-200 text-sm text-gray-300"
@@ -312,7 +313,7 @@ async function SearchPageContent({
               </span>
 
               {validPage < totalPages ? (
-                <a
+                <Link
                   href={getSearchUrl({
                     query,
                     season: seasonFilter,
@@ -324,7 +325,7 @@ async function SearchPageContent({
                 >
                   <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   <span className="sr-only">Next page</span>
-                </a>
+                </Link>
               ) : (
                 <span
                   className="inline-flex h-9 w-9 cursor-not-allowed items-center justify-center rounded-md border border-gray-200 text-sm text-gray-300"
