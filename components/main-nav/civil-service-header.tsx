@@ -15,14 +15,17 @@ export function CivilServiceHeader(): React.ReactElement {
           <div className="h-10 w-0.5 select-none bg-white" draggable="false" />
           <Crown />
           <span
-            className="w-[225px] select-none whitespace-normal break-words"
+            className="w-[180px] select-none whitespace-normal break-words text-sm sm:w-[225px] sm:text-base"
             draggable="false"
           >
             Department for Social Affairs & Citizenship
           </span>
         </div>
         <div className="flex select-none items-center gap-2" draggable="false">
-          <div className="flex select-none flex-col" draggable="false">
+          <div
+            className="hidden select-none flex-col sm:flex"
+            draggable="false"
+          >
             <span
               className="tab-[4] box-border select-none break-words bg-no-repeat text-xs font-bold leading-[1.5] text-white"
               draggable="false"

@@ -23,12 +23,6 @@ interface FrameCardProps {
   onDragStart?: () => void;
   /** Callback when drag interaction moves */
   onDragMove?: () => void;
-  /** Callback when touch interaction starts */
-  onTouchStart?: () => void;
-  /** Callback when touch interaction moves */
-  onTouchMove?: () => void;
-  /** Callback when touch interaction ends */
-  onTouchEnd?: () => void;
 }
 
 /**
@@ -44,9 +38,6 @@ export function FrameCard({
   onSelect,
   onDragStart,
   onDragMove,
-  onTouchStart,
-  onTouchMove,
-  onTouchEnd,
 }: FrameCardProps): React.ReactElement {
   const handleClick = (e: React.MouseEvent): void => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
@@ -76,34 +67,6 @@ export function FrameCard({
     onDragMove?.();
   };
 
-  const handleTouchStart = (e: React.TouchEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    onTouchStart?.();
-  };
-
-  const handleTouchMove = (e: React.TouchEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const touch = e.touches[0];
-    if (!touch) return;
-
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!element) return;
-
-    const frameCard = element.closest("[data-frame-card]");
-    if (frameCard) {
-      onTouchMove?.();
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    onTouchEnd?.();
-  };
-
   const episodeLabel = formatEpisodeId(screenshot.episode);
   const timestampLabel = formatTimestamp(screenshot.timestamp);
   const cardLabel = `${screenshot.speech || "Frame"} from ${episodeLabel} at ${timestampLabel}`;
@@ -113,7 +76,7 @@ export function FrameCard({
       suppressHydrationWarning
       data-frame-card
       className={cn(
-        "group relative block transform touch-none select-none transition-transform duration-300 hover:scale-[1.02]",
+        "group relative block transform select-none transition-transform duration-300 hover:scale-[1.02]",
         isSelected && "z-10 rounded-lg ring-2 ring-primary ring-offset-2",
       )}
       onClick={handleClick}
@@ -127,9 +90,6 @@ export function FrameCard({
       }}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
       tabIndex={onSelect ? 0 : -1}
       aria-label={cardLabel}
       aria-selected={onSelect ? isSelected : undefined}
@@ -149,7 +109,7 @@ export function FrameCard({
             "absolute right-2 top-2 z-10 rounded-full p-1.5 transition-all",
             isSelected
               ? "bg-primary text-primary-foreground"
-              : "bg-background/80 opacity-0 backdrop-blur-sm group-hover:opacity-100",
+              : "bg-background/80 opacity-0 backdrop-blur-sm group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100",
           )}
         >
           <Check className="h-4 w-4" aria-hidden="true" />

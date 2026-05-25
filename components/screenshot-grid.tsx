@@ -238,13 +238,14 @@ function ScreenshotGridInner({
                     screenshot={screenshot}
                     priority={true}
                     isSelected={selectedIds.has(screenshot.id)}
-                    onSelect={(e) => {
-                      if (
-                        "ctrlKey" in e &&
-                        (e.ctrlKey || e.metaKey || e.shiftKey)
-                      ) {
-                        safeSetSelectedIds(new Set([screenshot.id]));
+                    onSelect={() => {
+                      const next = new Set(selectedIds);
+                      if (next.has(screenshot.id)) {
+                        next.delete(screenshot.id);
+                      } else {
+                        next.add(screenshot.id);
                       }
+                      safeSetSelectedIds(next);
                     }}
                     onDragStart={() => {
                       handleDragStart(screenshot.id);
@@ -252,13 +253,6 @@ function ScreenshotGridInner({
                     onDragMove={() => {
                       handleDragMove(screenshot.id);
                     }}
-                    onTouchStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onTouchMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                    onTouchEnd={handleDragEnd}
                   />
                 </Link>
               </div>
@@ -289,13 +283,14 @@ function ScreenshotGridInner({
                     screenshot={screenshot}
                     priority={index < 6}
                     isSelected={selectedIds.has(screenshot.id)}
-                    onSelect={(e) => {
-                      if (
-                        "ctrlKey" in e &&
-                        (e.ctrlKey || e.metaKey || e.shiftKey)
-                      ) {
-                        safeSetSelectedIds(new Set([screenshot.id]));
+                    onSelect={() => {
+                      const next = new Set(selectedIds);
+                      if (next.has(screenshot.id)) {
+                        next.delete(screenshot.id);
+                      } else {
+                        next.add(screenshot.id);
                       }
+                      safeSetSelectedIds(next);
                     }}
                     onDragStart={() => {
                       handleDragStart(screenshot.id);
@@ -303,13 +298,6 @@ function ScreenshotGridInner({
                     onDragMove={() => {
                       handleDragMove(screenshot.id);
                     }}
-                    onTouchStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onTouchMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                    onTouchEnd={handleDragEnd}
                   />
                 </Link>
               </div>
