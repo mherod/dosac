@@ -5,8 +5,16 @@ import type React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { withQuery } from "ufo";
 import { z } from "zod";
+import { useDebounce } from "@/hooks/use-debounce";
+import {
+  computeSearchRouteUpdate,
+  shouldAdoptUrlQuery,
+} from "@/lib/search-sync";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
+
+// Delay before a typing pause pushes the search route (ms).
+const SEARCH_ROUTE_DEBOUNCE_MS = 300;
 
 // Zod schemas for validation
 const NumberParamSchema = z
@@ -135,15 +143,40 @@ export function NavFilters({
   );
 
   const urlQuery = searchParams.get("q") ?? "";
+
+  // localQuery is the live, authoritative input state. Route updates are a
+  // debounced side effect of it; the URL never directly drives the input
+  // except for external navigation (handled below).
   const [localQuery, setLocalQuery] = useState(urlQuery);
+  const [syncedUrlQuery, setSyncedUrlQuery] = useState(urlQuery);
+  const debouncedQuery = useDebounce(localQuery, SEARCH_ROUTE_DEBOUNCE_MS);
 
   // Only consider it search mode if there's actual search text
   const isSearchMode = filters.query.trim() !== "";
 
-  // Keep the controlled input aligned with browser back/forward and link nav.
+  // Adopt the URL's query for external navigation (links, back/forward) only.
+  // Adjusting state during render is React's documented alternative to a
+  // setState-in-effect sync, and avoids the extra render pass. A URL change
+  // that matches our live or debounced value is our own push and is ignored,
+  // so a stale push can never revert characters typed after it fired.
+  if (urlQuery !== syncedUrlQuery) {
+    setSyncedUrlQuery(urlQuery);
+    if (shouldAdoptUrlQuery(urlQuery, { localQuery, debouncedQuery })) {
+      setLocalQuery(urlQuery);
+    }
+  }
+
+  // Debounced side effect: push the search route once typing settles.
   useEffect(() => {
-    setLocalQuery(urlQuery);
-  }, [urlQuery]);
+    const href = computeSearchRouteUpdate({
+      debouncedQuery,
+      urlQuery,
+      pathname,
+      filterQuery: getCurrentFilterQuery(),
+    });
+    if (!href) return;
+    router.push(href, { scroll: false });
+  }, [debouncedQuery, urlQuery, pathname, router, getCurrentFilterQuery]);
 
   const handleSearchChange = (value: string): void => {
     setLocalQuery(value);
