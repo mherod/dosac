@@ -25,9 +25,10 @@ export async function generateStaticParams(): Promise<Array<{ id: string }>> {
     const { getFrameIndex } = await import("@/lib/frames.server");
     const frames = await getFrameIndex();
 
-    // Limit to 600 most important frames for static generation
-    // Sort by episode order and take first 600 for better coverage
-    return frames.slice(0, 600).map((frame) => ({
+    // Prerender only the top frames at build time to keep build memory
+    // under the SSG worker's ~2GB ceiling; the remaining ~24K caption
+    // pages render on demand and cache (ISR via cacheComponents).
+    return frames.slice(0, 50).map((frame) => ({
       id: frame.id,
     }));
   } catch {

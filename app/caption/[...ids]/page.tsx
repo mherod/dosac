@@ -15,8 +15,9 @@ export async function generateStaticParams(): Promise<{ ids: string[] }[]> {
   const frames = await getFrameIndex();
   const params = [];
 
-  // Limit to 600 most important consecutive frame pairs
-  const maxPairs = Math.min(600, frames.length - 1);
+  // Prerender only the top pairs at build time to keep build memory under
+  // the SSG worker's ~2GB ceiling; other pairs render on demand and cache.
+  const maxPairs = Math.min(50, frames.length - 1);
 
   for (let i = 0; i < maxPairs; i++) {
     const frame1 = frames[i];
