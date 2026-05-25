@@ -219,6 +219,21 @@ function ScreenshotGridInner({
     };
   }, [handleDragEnd]);
 
+  // Escape clears an in-progress selection so a drag-select can be undone
+  // without navigating away.
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === "Escape" && selectedIds.size > 0) {
+        safeSetSelectedIds(new Set());
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedIds, safeSetSelectedIds]);
+
   return (
     <div className="space-y-4 md:space-y-6 lg:space-y-8">
       {rankedMoments && rankedMoments.length > 0 && (
