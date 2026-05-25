@@ -101,8 +101,8 @@ importers:
         specifier: ^11.1.0
         version: 11.1.0
       lucide-react:
-        specifier: ^0.358.0
-        version: 0.358.0(react@19.3.0-canary-1b45e243-20260402)
+        specifier: ^1.16.0
+        version: 1.16.0(react@19.3.0-canary-1b45e243-20260402)
       next:
         specifier: 16.2.1-canary.19
         version: 16.2.1-canary.19(@babel/core@7.28.5)(react-dom@19.3.0-canary-1b45e243-20260402(react@19.3.0-canary-1b45e243-20260402))(react@19.3.0-canary-1b45e243-20260402)
@@ -3848,8 +3848,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lucide-react@0.358.0:
-    resolution: {integrity: sha512-rBSptRjZTMBm24zsFhR6pK/NgbT18JegZGKcH4+1H3+UigMSRpeoWLtR/fAwMYwYnlJOZB+y8WpeHne9D6X6Kg==}
+  lucide-react@1.16.0:
+    resolution: {integrity: sha512-dYwyPzb4MEKpGUmNYk3WKWPnMrHs3FKM+q94kAnJrcDIqqn1hq2xY8scaS2ovsOCM5D51ey2gaRG3PBb1vgoYQ==}
     peerDependencies:
       react: 19.3.0-canary-1b45e243-20260402
 
@@ -9183,7 +9183,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lucide-react@0.358.0(react@19.3.0-canary-1b45e243-20260402):
+  lucide-react@1.16.0(react@19.3.0-canary-1b45e243-20260402):
     dependencies:
       react: 19.3.0-canary-1b45e243-20260402
 
