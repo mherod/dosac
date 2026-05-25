@@ -6,7 +6,7 @@
   "description": "Face detection and clustering for The Thick of It quotes and scenes",
   "scripts": {
     "dev": "NODE_ENV=development next dev --turbo",
-    "build": "NODE_ENV=production next build --webpack",
+    "build": "NODE_OPTIONS=--max-old-space-size=4096 NODE_ENV=production next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "lint:strict": "eslint .",
@@ -127,6 +127,7 @@
     "typescript": "^5.9.3",
     "xml2js": "^0.6.2"
   },
+  "packageManager": "pnpm@9.15.9",
   "pnpm": {
     "overrides": {
       "next": "16.2.1-canary.19",
