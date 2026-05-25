@@ -123,7 +123,10 @@ describe("shouldAdoptUrlQuery", () => {
   it("adopts the URL for external navigation (back/forward, links)", () => {
     // URL differs from both live and debounced values → external nav → adopt.
     expect(
-      shouldAdoptUrlQuery("hi", { localQuery: "hello", debouncedQuery: "hello" }),
+      shouldAdoptUrlQuery("hi", {
+        localQuery: "hello",
+        debouncedQuery: "hello",
+      }),
     ).toBe(true);
   });
 
