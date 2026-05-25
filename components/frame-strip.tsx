@@ -1,7 +1,6 @@
 "use client";
 
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -230,12 +229,9 @@ export function FrameStrip({
     >
       <div className="mx-auto max-w-7xl">
         {/* Yellow border frame */}
-        <motion.div
+        <div
           className="relative rounded-xl shadow-[inset_0_0_30px_rgba(0,0,0,0.2)]"
           style={{ height: `${frameHeight + margin}px` }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <div
             ref={stripRef}
@@ -256,74 +252,53 @@ export function FrameStrip({
                 className="flex scroll-px-[8px] gap-2"
                 style={{ height: `${frameHeight}px` }}
               >
-                <AnimatePresence>
-                  {screenshots.map((screenshot: Screenshot, index: number) => (
-                    <motion.button
-                      key={`frame-${screenshot.id}-${index}`}
-                      onClick={(e: React.MouseEvent) =>
-                        handleFrameClick(screenshot.id, e)
-                      }
-                      onMouseEnter={() => setHoverIndex(index)}
-                      onMouseLeave={() => setHoverIndex(null)}
-                      onMouseDown={() => handleDragStart(screenshot.id)}
-                      onMouseMove={() => handleDragMove(screenshot.id)}
-                      onMouseUp={handleDragEnd}
-                      className={cn(
-                        "group relative z-10 flex-shrink-0 snap-start focus:outline-none focus:ring-2 focus:ring-yellow-400",
-                        centerScreenshot?.id === screenshot.id &&
-                          "ring-2 ring-yellow-400/80",
-                        selectedIds.has(screenshot.id) &&
-                          "ring-4 ring-yellow-400/90",
-                      )}
-                      style={{
-                        width: `${frameWidth}px`,
-                        height: `${frameHeight}px`,
-                        transformOrigin: "center center",
-                      }}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{
-                        opacity: 1,
-                        scale: 1,
-                        y: hoverIndex === index ? -2 : 0,
-                      }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      whileHover={{
-                        scale: 1.01,
-                        y: -2,
-                        transition: { duration: 0.2 },
-                      }}
-                      whileTap={{ scale: 0.99 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                      }}
-                    >
-                      <CaptionedImage
-                        imageUrl={screenshot.imageUrl}
-                        image2Url={screenshot.image2Url}
-                        caption={screenshot.speech}
-                        fontSize={28}
-                        outlineWidth={1}
-                        maintainAspectRatio
-                        priority={index < visibleFrames}
-                      />
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
+                {screenshots.map((screenshot: Screenshot, index: number) => (
+                  <button
+                    key={`frame-${screenshot.id}-${index}`}
+                    onClick={(e: React.MouseEvent) =>
+                      handleFrameClick(screenshot.id, e)
+                    }
+                    onMouseEnter={() => setHoverIndex(index)}
+                    onMouseLeave={() => setHoverIndex(null)}
+                    onMouseDown={() => handleDragStart(screenshot.id)}
+                    onMouseMove={() => handleDragMove(screenshot.id)}
+                    onMouseUp={handleDragEnd}
+                    className={cn(
+                      "group relative z-10 flex-shrink-0 origin-center snap-start transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-yellow-400 active:scale-[0.99]",
+                      centerScreenshot?.id === screenshot.id &&
+                        "ring-2 ring-yellow-400/80",
+                      selectedIds.has(screenshot.id) &&
+                        "ring-4 ring-yellow-400/90",
+                      hoverIndex === index
+                        ? "-translate-y-0.5 scale-[1.01]"
+                        : "translate-y-0 scale-100",
+                    )}
+                    style={{
+                      width: `${frameWidth}px`,
+                      height: `${frameHeight}px`,
+                    }}
+                  >
+                    <CaptionedImage
+                      imageUrl={screenshot.imageUrl}
+                      image2Url={screenshot.image2Url}
+                      caption={screenshot.speech}
+                      fontSize={28}
+                      outlineWidth={1}
+                      maintainAspectRatio
+                      priority={index < visibleFrames}
+                    />
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Edge fades - now using sticky positioning with motion */}
-            <motion.div
+            {/* Edge fades - now using sticky positioning */}
+            <div
               className="pointer-events-none sticky bottom-0 left-0 top-0 h-full w-8 bg-gradient-to-r from-black to-transparent"
               style={{ position: "sticky" }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
             />
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

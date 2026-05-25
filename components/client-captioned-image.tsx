@@ -1,6 +1,5 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useImageBounds } from "@/hooks/useImageBounds";
@@ -119,31 +118,19 @@ export function ClientCaptionedImage({
         }
       }}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentImageUrl}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.3,
-            ease: "easeInOut",
-          }}
-          className="absolute inset-0"
-        >
-          <Image
-            src={currentImageUrl}
-            alt={caption ? `Screenshot: ${caption}` : "Screenshot"}
-            fill
-            className="pointer-events-none object-cover"
-            sizes="(max-width: 1200px) 100vw, 1200px"
-            priority={priority}
-            placeholder={blurDataURL ? "blur" : "empty"}
-            blurDataURL={blurDataURL}
-            unoptimized
-          />
-        </motion.div>
-      </AnimatePresence>
+      <div className="absolute inset-0">
+        <Image
+          src={currentImageUrl}
+          alt={caption ? `Screenshot: ${caption}` : "Screenshot"}
+          fill
+          className="pointer-events-none object-cover"
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          priority={priority}
+          placeholder={blurDataURL ? "blur" : "empty"}
+          blurDataURL={blurDataURL}
+          unoptimized
+        />
+      </div>
       {caption && (
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center"

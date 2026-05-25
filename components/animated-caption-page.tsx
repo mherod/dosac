@@ -1,68 +1,18 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
-import { useLayoutEffect, useState } from "react";
-
-// Accessibility-aware animation hook
-function useReducedMotion(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handleChange = (event: MediaQueryListEvent) => {
-      setPrefersReducedMotion(event.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  return prefersReducedMotion;
-}
 
 interface AnimatedCaptionPageProps {
   children: React.ReactNode;
 }
 
-export function AnimatedCaptionPage({ children }: AnimatedCaptionPageProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
-
-  useLayoutEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsVisible(true);
-  }, []);
-
-  // If user prefers reduced motion, skip animations
-  if (prefersReducedMotion) {
-    return <div className="space-y-8">{children}</div>;
-  }
-
+export function AnimatedCaptionPage({
+  children,
+}: AnimatedCaptionPageProps): React.ReactElement {
   return (
-    <AnimatePresence mode="wait">
-      {isVisible && (
-        <motion.main
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{
-            duration: 0.4,
-            ease: "easeOut",
-            staggerChildren: 0.1,
-          }}
-          className="space-y-8"
-          aria-label="Caption editing interface"
-        >
-          {children}
-        </motion.main>
-      )}
-    </AnimatePresence>
+    <main className="space-y-8" aria-label="Caption editing interface">
+      {children}
+    </main>
   );
 }
 
@@ -72,37 +22,14 @@ interface AnimatedFrameStripWrapperProps {
 
 export function AnimatedFrameStripWrapper({
   children,
-}: AnimatedFrameStripWrapperProps) {
-  const prefersReducedMotion = useReducedMotion();
-
-  if (prefersReducedMotion) {
-    return (
-      <section
-        className="flex items-center justify-center"
-        aria-label="Frame selection"
-      >
-        {children}
-      </section>
-    );
-  }
-
+}: AnimatedFrameStripWrapperProps): React.ReactElement {
   return (
-    <motion.section
-      initial={{ opacity: 0, scale: 0.95, x: -30 }}
-      animate={{ opacity: 1, scale: 1, x: 0 }}
-      exit={{ opacity: 0, scale: 0.95, x: 30 }}
-      transition={{
-        duration: 0.4,
-        delay: 0.1,
-        ease: "easeOut",
-        type: "spring",
-        stiffness: 100,
-      }}
+    <section
       className="flex items-center justify-center"
       aria-label="Frame selection"
     >
       {children}
-    </motion.section>
+    </section>
   );
 }
 
@@ -112,28 +39,6 @@ interface AnimatedCaptionEditorWrapperProps {
 
 export function AnimatedCaptionEditorWrapper({
   children,
-}: AnimatedCaptionEditorWrapperProps) {
-  const prefersReducedMotion = useReducedMotion();
-
-  if (prefersReducedMotion) {
-    return <section aria-label="Caption editor">{children}</section>;
-  }
-
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 50, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.98 }}
-      transition={{
-        duration: 0.5,
-        delay: 0.2,
-        ease: "easeOut",
-        type: "spring",
-        stiffness: 80,
-      }}
-      aria-label="Caption editor"
-    >
-      {children}
-    </motion.section>
-  );
+}: AnimatedCaptionEditorWrapperProps): React.ReactElement {
+  return <section aria-label="Caption editor">{children}</section>;
 }

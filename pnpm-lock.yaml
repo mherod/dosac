@@ -88,9 +88,6 @@ importers:
       fast-glob:
         specifier: ^3.3.3
         version: 3.3.3
-      framer-motion:
-        specifier: ^12.19.1
-        version: 12.19.1(react-dom@19.3.0-canary-1b45e243-20260402(react@19.3.0-canary-1b45e243-20260402))(react@19.3.0-canary-1b45e243-20260402)
       html-to-image:
         specifier: ^1.11.13
         version: 1.11.13
@@ -3133,20 +3130,6 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  framer-motion@12.19.1:
-    resolution: {integrity: sha512-nq9hwWAEKf4gzprbOZzKugLV5OVKF7zrNDY6UOVu+4D3ZgIkg8L9Jy6AMrpBM06fhbKJ6LEG6UY5+t7Eq6wNlg==}
-    peerDependencies:
-      '@emotion/is-prop-valid': '*'
-      react: 19.3.0-canary-1b45e243-20260402
-      react-dom: 19.3.0-canary-1b45e243-20260402
-    peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-
   fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
     engines: {node: '>= 8'}
@@ -3953,12 +3936,6 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
-
-  motion-dom@12.19.0:
-    resolution: {integrity: sha512-m96uqq8VbwxFLU0mtmlsIVe8NGGSdpBvBSHbnnOJQxniPaabvVdGgxSamhuDwBsRhwX7xPxdICgVJlOpzn/5bw==}
-
-  motion-utils@12.19.0:
-    resolution: {integrity: sha512-BuFTHINYmV07pdWs6lj6aI63vr2N4dg0vR+td0rtrdpWOhBzIkEklZyLcvKBoEtwSqx8Jg06vUB5RS0xDiUybw==}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -8316,15 +8293,6 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  framer-motion@12.19.1(react-dom@19.3.0-canary-1b45e243-20260402(react@19.3.0-canary-1b45e243-20260402))(react@19.3.0-canary-1b45e243-20260402):
-    dependencies:
-      motion-dom: 12.19.0
-      motion-utils: 12.19.0
-      tslib: 2.8.1
-    optionalDependencies:
-      react: 19.3.0-canary-1b45e243-20260402
-      react-dom: 19.3.0-canary-1b45e243-20260402(react@19.3.0-canary-1b45e243-20260402)
-
   fs-minipass@2.1.0:
     dependencies:
       minipass: 3.3.6
@@ -9282,12 +9250,6 @@ snapshots:
       yallist: 4.0.0
 
   mkdirp@1.0.4: {}
-
-  motion-dom@12.19.0:
-    dependencies:
-      motion-utils: 12.19.0
-
-  motion-utils@12.19.0: {}
 
   mrmime@2.0.1: {}
 

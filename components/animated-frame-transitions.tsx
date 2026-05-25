@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface AnimatedRouteTransitionProps {
@@ -13,23 +12,8 @@ interface AnimatedRouteTransitionProps {
 export function AnimatedRouteTransition({
   children,
   routeKey,
-}: AnimatedRouteTransitionProps) {
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={routeKey}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{
-          duration: 0.3,
-          ease: "easeInOut",
-        }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+}: AnimatedRouteTransitionProps): React.ReactElement {
+  return <div key={routeKey}>{children}</div>;
 }
 
 interface CrossfadeImageProps {
@@ -44,97 +28,31 @@ export function CrossfadeImage({
   alt,
   className = "",
   onLoad,
-}: CrossfadeImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [prevSrc, setPrevSrc] = useState(src);
-
-  useLayoutEffect(() => {
-    if (src !== prevSrc) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsLoaded(false);
-      setPrevSrc(src);
-    }
-  }, [src, prevSrc]);
-
-  const handleLoad = () => {
-    setIsLoaded(true);
-    onLoad?.();
-  };
-
+}: CrossfadeImageProps): React.ReactElement {
   return (
     <div className={cn("relative", className)}>
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={src}
-          src={src}
-          alt={alt}
-          className="h-full w-full object-cover"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isLoaded ? 1 : 0 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.2,
-            ease: "easeInOut",
-          }}
-          onLoad={handleLoad}
-        />
-      </AnimatePresence>
+      <img
+        src={src}
+        alt={alt}
+        className="h-full w-full object-cover"
+        onLoad={onLoad}
+      />
     </div>
   );
 }
 
 interface SlideTransitionProps {
   children: React.ReactNode;
-  direction: "left" | "right" | "up" | "down";
+  direction?: "left" | "right" | "up" | "down";
   duration?: number;
 }
 
 export function SlideTransition({
   children,
-  direction = "right",
-  duration = 0.3,
-}: SlideTransitionProps) {
-  const getInitialPosition = () => {
-    switch (direction) {
-      case "left":
-        return { x: -100, y: 0 };
-      case "right":
-        return { x: 100, y: 0 };
-      case "up":
-        return { x: 0, y: -100 };
-      case "down":
-        return { x: 0, y: 100 };
-    }
-  };
-
-  const getExitPosition = () => {
-    switch (direction) {
-      case "left":
-        return { x: 100, y: 0 };
-      case "right":
-        return { x: -100, y: 0 };
-      case "up":
-        return { x: 0, y: 100 };
-      case "down":
-        return { x: 0, y: -100 };
-    }
-  };
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={getInitialPosition()}
-        animate={{ x: 0, y: 0 }}
-        exit={getExitPosition()}
-        transition={{
-          duration,
-          ease: "easeInOut",
-        }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+  direction: _direction = "right",
+  duration: _duration = 0.3,
+}: SlideTransitionProps): React.ReactElement {
+  return <div>{children}</div>;
 }
 
 interface FramePreloaderProps {
@@ -145,7 +63,7 @@ interface FramePreloaderProps {
 export function FramePreloader({
   frameIds,
   onPreloadComplete,
-}: FramePreloaderProps) {
+}: FramePreloaderProps): React.ReactElement | null {
   const [_loadedIds, setLoadedIds] = useState<string[]>([]);
 
   useEffect(() => {
