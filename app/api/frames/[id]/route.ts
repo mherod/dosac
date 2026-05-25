@@ -1,4 +1,6 @@
+import { NextResponse } from "next/server";
 import { getFrameById } from "@/lib/frames.server";
+import { InvalidFrameIdError } from "@/lib/frames";
 import { apiRateLimit } from "@/lib/rate-limit";
 
 /**
@@ -13,40 +15,39 @@ import { apiRateLimit } from "@/lib/rate-limit";
  * @example
  * ```ts
  * // Success response
- * Response.json({
+ * NextResponse.json({
  *   id: "s01e01-12-34.567",
- *   caption: "Example caption",
+ *   timestamp: "12-34.567",
+ *   speech: "Example dialogue",
  *   ...frameData
  * })
  *
- * // Error response
- * Response.json({
- *   error: "Frame not found"
- * }, { status: 400 })
+ * // Error response (invalid ID / not found)
+ * NextResponse.json({ error: "Frame not found" }, { status: 404 })
  * ```
  */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
-): Promise<Response> {
+): Promise<NextResponse> {
   const { limited } = apiRateLimit(request);
   if (limited) {
-    return Response.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     const { id } = await params;
     const frame = await getFrameById(id);
-    return Response.json(frame);
+    return NextResponse.json(frame);
   } catch (error) {
-    return Response.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
-      },
-      { status: 400 },
+    // Invalid ID format or missing frame is a client-side 404,
+    // anything else is an unexpected server error.
+    if (error instanceof InvalidFrameIdError) {
+      return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
+      { status: 500 },
     );
   }
 }

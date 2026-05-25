@@ -17,19 +17,19 @@ import { apiRateLimit } from "@/lib/rate-limit";
  * NextResponse.json([
  *   {
  *     id: "s01e01-12-34.567",
- *     caption: "Example caption",
  *     episode: "s01e01",
- *     timestamp: "12:34.567",
+ *     timestamp: "12-34.567",
+ *     speech: "Example dialogue",
  *     ...frameData
  *   },
  *   // ... more frames
  * ])
  * ```
  */
-export async function GET(request: Request): Promise<NextResponse | Response> {
+export async function GET(request: Request): Promise<NextResponse> {
   const { limited } = apiRateLimit(request);
   if (limited) {
-    return Response.json({ error: "Too many requests" }, { status: 429 });
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const frames = await getFrameIndex();

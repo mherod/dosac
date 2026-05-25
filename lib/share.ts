@@ -7,8 +7,15 @@ import { toast } from "sonner";
  * @returns URL-safe base64 encoded string with padding removed
  */
 export function encodeShareUrl(url: string): string {
-  // Convert the URL to base64
-  const base64 = Buffer.from(url).toString("base64");
+  // Encode UTF-8 bytes then base64 via btoa so this works in client
+  // components (Buffer is not defined in the browser). Byte-compatible
+  // with the Buffer-based decode in /share/[base64].
+  const bytes = new TextEncoder().encode(url);
+  let binary = "";
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  const base64 = btoa(binary);
 
   // Make it URL safe by replacing + with - and / with _
   // and removing padding =

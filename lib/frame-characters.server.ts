@@ -70,9 +70,11 @@ export async function getCharactersForFrame(
     return null;
   }
 
+  // confidence is a parallel array to characters; tolerate a missing or
+  // shorter array rather than assuming the lengths always match.
   return frameData.characters.map((name, index) => ({
     name,
-    confidence: frameData.confidence[index] || 0,
+    confidence: frameData.confidence?.[index] ?? 0,
   }));
 }
 

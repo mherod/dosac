@@ -30,6 +30,9 @@ export function createRateLimit(
   config: RateLimitConfig,
 ): (request: Request) => { limited: boolean; remaining: number } {
   const { limit, windowMs } = config;
+  // Track the last sweep so we evict expired entries at most once per
+  // window — without this the map grows unbounded with one-off IPs.
+  let lastSweep = 0;
 
   return (request: Request) => {
     const ip =
@@ -38,6 +41,16 @@ export function createRateLimit(
       "unknown";
 
     const now = Date.now();
+
+    if (now - lastSweep >= windowMs) {
+      for (const [key, value] of ipRequestMap) {
+        if (now >= value.resetTime) {
+          ipRequestMap.delete(key);
+        }
+      }
+      lastSweep = now;
+    }
+
     const entry = ipRequestMap.get(ip);
 
     if (!entry || now >= entry.resetTime) {
