@@ -936,7 +936,6 @@ async function CharacterProfileCached({
                   <div className="-mx-4 px-4 sm:mx-0 sm:px-0">
                     <ScreenshotGrid
                       screenshots={screenshots}
-                      allScreenshots={screenshots}
                       filters={filters}
                       paginationData={paginationData}
                     />

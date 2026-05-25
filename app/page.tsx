@@ -191,7 +191,6 @@ async function HomeContent({
   return (
     <HomePage
       screenshots={pageScreenshots}
-      allScreenshots={allScreenshots}
       rankedMoments={rankedMoments}
       filters={filters}
       paginationData={paginationData}

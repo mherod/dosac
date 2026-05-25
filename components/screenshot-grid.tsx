@@ -23,8 +23,6 @@ import type { Screenshot } from "@/lib/types";
 interface ScreenshotGridProps {
   /** Array of screenshots to display in the grid (current page) */
   screenshots: Screenshot[];
-  /** All screenshots for client-side operations */
-  allScreenshots: Screenshot[];
   /** Optional array of ranked moments to display */
   rankedMoments?: Screenshot[];
   /** Current filters applied */

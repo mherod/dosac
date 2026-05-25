@@ -101,7 +101,6 @@ async function EpisodePageContent({
             <CardContent>
               <ScreenshotGrid
                 screenshots={episodeFrames}
-                allScreenshots={episodeFrames}
                 filters={{ query: "", page: 1 }}
                 paginationData={{
                   currentPage: 1,

@@ -81,7 +81,6 @@ export function EpisodeFramesCard({
       <div className="relative">
         <ScreenshotGrid
           screenshots={frames.slice(0, 6)}
-          allScreenshots={frames}
           filters={{ query: "", page: 1 }}
           paginationData={{
             currentPage: 1,

@@ -76,7 +76,6 @@ async function SeriesPageContent({
       <div className="space-y-8">
         <ScreenshotGrid
           screenshots={seriesFrames.slice(0, 6)}
-          allScreenshots={seriesFrames}
           filters={{ query: "", page: 1 }}
           paginationData={{
             currentPage: 1,

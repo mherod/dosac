@@ -39,8 +39,6 @@ interface Filters {
 interface HomePageProps {
   /** Array of screenshots to display on current page */
   screenshots: Frame[];
-  /** Complete array of all screenshots for filtering */
-  allScreenshots: Frame[];
   /** Array of ranked/featured moments to highlight */
   rankedMoments: Frame[];
   /** Current filter state */
@@ -54,7 +52,6 @@ interface HomePageProps {
  * Displays screenshot grid with pagination, stats, and frame strip
  * @param props - The component props
  * @param props.screenshots - Screenshots to display on current page
- * @param props.allScreenshots - All screenshots for client-side operations
  * @param props.rankedMoments - Featured moments to highlight (shown when no filters active)
  * @param props.filters - Active filter state
  * @param props.paginationData - Pagination metadata and controls
@@ -62,7 +59,6 @@ interface HomePageProps {
  */
 export function HomePage({
   screenshots,
-  allScreenshots,
   rankedMoments,
   filters,
   paginationData,
@@ -84,7 +80,6 @@ export function HomePage({
 
       <ScreenshotGrid
         screenshots={screenshots}
-        allScreenshots={allScreenshots}
         rankedMoments={
           !filters.season && !filters.episode && !filters.query
             ? rankedMoments
