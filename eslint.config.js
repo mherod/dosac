@@ -158,6 +158,21 @@ const config = [
       "promise/prefer-await-to-then": "warn",
       "promise/prefer-await-to-callbacks": "warn",
 
+      // Prevent iOS Safari focus-zoom: <16px font on a focusable form field
+      // makes mobile Safari auto-zoom on focus and never zoom back. Flags a
+      // bare text-xs/text-sm on input/textarea/select; breakpoint- or
+      // variant-prefixed forms (md:text-sm, file:text-sm) are >=16px-safe and
+      // are intentionally not matched by the whitespace-bounded pattern.
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "JSXOpeningElement[name.name=/^(input|textarea|select)$/] JSXAttribute[name.name='className'] Literal[value=/(^|\\s)text-(xs|sm)(\\s|$)/]",
+          message:
+            'Avoid text-xs/text-sm on form fields: <16px triggers iOS Safari focus-zoom. Use text-base (16px), e.g. "text-base md:text-sm".',
+        },
+      ],
+
       // Stricter unused declarations
       "no-unused-expressions": "error",
       "no-unused-labels": "error",
