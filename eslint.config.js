@@ -13,6 +13,107 @@ import customTypescriptPlugin from "@mherod/eslint-plugin-custom/typescript";
 import customGeneralPlugin from "@mherod/eslint-plugin-custom/general";
 import customSecurityPlugin from "@mherod/eslint-plugin-custom/security";
 
+/**
+ * Local plugin: flag <16px font (text-xs/text-sm) on focusable form fields.
+ * Sub-16px font makes iOS Safari auto-zoom on focus and never zoom back.
+ * Covers both string-literal classNames and cn()/clsx() arguments (including
+ * conditional, logical, array, and template forms). Breakpoint/variant-
+ * prefixed classes (md:text-sm, file:text-sm) are >=16px-safe: the
+ * whitespace-bounded pattern intentionally does not match them.
+ */
+const SMALL_FONT_PATTERN = /(^|\s)text-(xs|sm)(\s|$)/;
+const FORM_FIELD_TAGS = new Set(["input", "textarea", "select"]);
+
+/**
+ * Recursively test whether an expression node contains a string with a
+ * bare sub-16px font class.
+ * @param {object} node - An ESTree/JSX expression node, or null.
+ * @returns {boolean} True when a sub-16px font class string is present.
+ */
+function containsSmallFontClass(node) {
+  if (!node) return false;
+  switch (node.type) {
+    case "Literal":
+      return (
+        typeof node.value === "string" && SMALL_FONT_PATTERN.test(node.value)
+      );
+    case "TemplateLiteral":
+      return node.quasis.some((q) =>
+        SMALL_FONT_PATTERN.test(q.value.cooked ?? q.value.raw ?? ""),
+      );
+    case "ConditionalExpression":
+      return (
+        containsSmallFontClass(node.consequent) ||
+        containsSmallFontClass(node.alternate)
+      );
+    case "LogicalExpression":
+      return (
+        containsSmallFontClass(node.left) || containsSmallFontClass(node.right)
+      );
+    case "CallExpression":
+      return node.arguments.some((arg) => containsSmallFontClass(arg));
+    case "ArrayExpression":
+      return node.elements.some((el) => containsSmallFontClass(el));
+    case "ObjectExpression":
+      return node.properties.some(
+        (p) => p.type === "Property" && containsSmallFontClass(p.key),
+      );
+    default:
+      return false;
+  }
+}
+
+const localA11yPlugin = {
+  rules: {
+    "no-small-font-on-form-fields": {
+      meta: {
+        type: "problem",
+        docs: {
+          description:
+            "Disallow text-xs/text-sm on input/textarea/select; <16px triggers iOS Safari focus-zoom.",
+        },
+        schema: [],
+        messages: {
+          smallFont:
+            'Avoid text-xs/text-sm on form fields: <16px triggers iOS Safari focus-zoom. Use text-base (16px), e.g. "text-base md:text-sm".',
+        },
+      },
+      create(context) {
+        return {
+          JSXOpeningElement(node) {
+            if (
+              node.name.type !== "JSXIdentifier" ||
+              !FORM_FIELD_TAGS.has(node.name.name)
+            ) {
+              return;
+            }
+            for (const attr of node.attributes) {
+              if (
+                attr.type !== "JSXAttribute" ||
+                !attr.name ||
+                attr.name.name !== "className"
+              ) {
+                continue;
+              }
+              const value = attr.value;
+              if (!value) continue;
+              const expr =
+                value.type === "Literal"
+                  ? value
+                  : value.type === "JSXExpressionContainer"
+                    ? value.expression
+                    : null;
+              if (containsSmallFontClass(expr)) {
+                context.report({ node: attr, messageId: "smallFont" });
+              }
+            }
+          },
+        };
+      },
+    },
+  },
+};
+
 const config = [
   // Global ignores
   {
@@ -84,6 +185,7 @@ const config = [
       "@mherod/typescript": customTypescriptPlugin,
       "@mherod/general": customGeneralPlugin,
       "@mherod/security": customSecurityPlugin,
+      "local-a11y": localA11yPlugin,
     },
     rules: {
       // Next.js recommended rules
@@ -159,19 +261,10 @@ const config = [
       "promise/prefer-await-to-callbacks": "warn",
 
       // Prevent iOS Safari focus-zoom: <16px font on a focusable form field
-      // makes mobile Safari auto-zoom on focus and never zoom back. Flags a
-      // bare text-xs/text-sm on input/textarea/select; breakpoint- or
-      // variant-prefixed forms (md:text-sm, file:text-sm) are >=16px-safe and
-      // are intentionally not matched by the whitespace-bounded pattern.
-      "no-restricted-syntax": [
-        "error",
-        {
-          selector:
-            "JSXOpeningElement[name.name=/^(input|textarea|select)$/] JSXAttribute[name.name='className'] Literal[value=/(^|\\s)text-(xs|sm)(\\s|$)/]",
-          message:
-            'Avoid text-xs/text-sm on form fields: <16px triggers iOS Safari focus-zoom. Use text-base (16px), e.g. "text-base md:text-sm".',
-        },
-      ],
+      // makes mobile Safari auto-zoom on focus and never zoom back. The local
+      // rule covers both string-literal classNames and cn()/clsx() arguments;
+      // breakpoint/variant-prefixed forms (md:text-sm, file:text-sm) stay safe.
+      "local-a11y/no-small-font-on-form-fields": "error",
 
       // Stricter unused declarations
       "no-unused-expressions": "error",
