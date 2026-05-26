@@ -63,10 +63,11 @@ export function VerticalFrameStrip({
                     }
                   }}
                   className={cn(
-                    "group relative flex-shrink-0 cursor-pointer snap-start transition-all duration-200 hover:scale-105",
+                    "group relative flex-shrink-0 cursor-pointer touch-manipulation select-none snap-start transition-all duration-200 [-webkit-tap-highlight-color:transparent]",
+                    "active:scale-105 [@media(hover:hover)]:hover:scale-105",
                     selectedImage === imageUrl
                       ? "z-10 scale-105 ring-2 ring-yellow-400/80"
-                      : "ring-1 ring-white/10 hover:ring-white/30",
+                      : "ring-1 ring-white/10 active:ring-white/30 [@media(hover:hover)]:hover:ring-white/30",
                   )}
                   style={{
                     width: `${frameWidth}px`,

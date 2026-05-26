@@ -264,7 +264,7 @@ export function FrameStrip({
                     onMouseMove={() => handleDragMove(screenshot.id)}
                     onMouseUp={handleDragEnd}
                     className={cn(
-                      "group relative z-10 flex-shrink-0 origin-center snap-start transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-yellow-400 active:scale-[0.99]",
+                      "group relative z-10 flex-shrink-0 origin-center touch-manipulation select-none snap-start transition-all duration-200 ease-out [-webkit-tap-highlight-color:transparent] focus:outline-none focus:ring-2 focus:ring-yellow-400 active:scale-[0.99]",
                       centerScreenshot?.id === screenshot.id &&
                         "ring-2 ring-yellow-400/80",
                       selectedIds.has(screenshot.id) &&

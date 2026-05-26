@@ -65,7 +65,7 @@ export function CaptionFrameControls({
               onCaptionChange(e.target.value)
             }
             placeholder={`Enter caption for ${label.toLowerCase()}...`}
-            className="flex h-full min-h-[125px] resize-none items-center rounded-r-none p-4 text-sm transition-colors focus:border-primary"
+            className="flex h-full min-h-[125px] resize-none items-center rounded-r-none p-4 transition-colors focus:border-primary"
           />
         </div>
 
