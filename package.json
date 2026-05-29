@@ -92,7 +92,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.36.0",
     "@mherod/eslint-plugin-custom": "^1.4.0",
-    "@next/bundle-analyzer": "^16.2.2",
+    "@next/bundle-analyzer": "^16.2.6",
     "@next/eslint-plugin-next": "16.0.1-canary.2",
     "@types/jest": "^30.0.0",
     "@types/lodash-es": "^4.17.12",
