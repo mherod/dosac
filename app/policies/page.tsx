@@ -3,37 +3,16 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { PolicyCard } from "@/components/policy-card";
 import { getServerPolicies } from "@/lib/policies.server";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Policy Unit - Department of Social Affairs and Citizenship",
+export const metadata: Metadata = createPageMetadata({
+  title: "DoSAC Policy Unit",
   description:
-    "Official repository of departmental policy initiatives, strategic programmes, and legislative frameworks. Browse current government work, policy development, and historical records.",
-  keywords: [
-    "DoSAC",
-    "government policy",
-    "policy unit",
-    "legislation",
-    "strategic initiatives",
-    "departmental programmes",
-    "policy development",
-    "public consultation",
-  ],
-  openGraph: {
-    title: "Policy Unit - DoSAC",
-    description:
-      "Official repository of departmental policy initiatives and strategic programmes",
-    type: "website",
-    siteName: "Department of Social Affairs and Citizenship",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Policy Unit - DoSAC",
-    description:
-      "Official repository of departmental policy initiatives and strategic programmes",
-  },
-};
+    "Browse DoSAC policy initiatives, programme outcomes and the departmental record featured in The Thick of It.",
+  path: "/policies",
+});
 
-export default async function PoliciesPage() {
+export default async function PoliciesPage(): Promise<React.ReactElement> {
   "use cache";
   cacheLife("static");
 
@@ -81,25 +60,6 @@ export default async function PoliciesPage() {
             Official repository of departmental policy initiatives, strategic
             programmes, and legislative frameworks.
           </p>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
-            <span>
-              Published{" "}
-              {new Date().toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-            <span>•</span>
-            <span>
-              Last updated{" "}
-              {new Date().toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </div>
         </div>
 
         {/* Contents section */}

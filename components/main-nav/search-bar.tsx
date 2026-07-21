@@ -55,6 +55,10 @@ export function SearchBar({
         type="search"
         inputMode="search"
         enterKeyHint="search"
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         placeholder="Search ministerial quotes..."
         value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

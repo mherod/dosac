@@ -119,7 +119,10 @@ export function SeriesSelect({
         value={season?.toString() ?? "all"}
         onValueChange={handleSeriesChange}
       >
-        <SelectTrigger className="w-[100px] truncate">
+        <SelectTrigger
+          className="w-[100px] truncate"
+          aria-label="Select series"
+        >
           <SelectValue placeholder="All Series" />
         </SelectTrigger>
         <SelectContent>

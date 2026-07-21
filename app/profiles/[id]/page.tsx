@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { formatPageTitle } from "@/lib/constants";
+import { type EpisodeInfo, episodeInfo } from "@/lib/episode-info";
+import { getFrameById } from "@/lib/frames.server";
 import type { Policy } from "@/lib/policies";
 import { getServerPolicies } from "@/lib/policies.server";
-import { getFrameById } from "@/lib/frames.server";
 import {
   type Character,
   type CharacterId,
@@ -25,7 +26,12 @@ import {
   type Role,
   roleLabels,
 } from "@/lib/profiles";
-import { episodeInfo, type EpisodeInfo } from "@/lib/episode-info";
+import {
+  DEFAULT_OG_IMAGE_URL,
+  serializeStructuredData,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 import { generateCharacterStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
 
@@ -112,23 +118,25 @@ export async function generateMetadata({
   const primaryDepartment = character.department[0]
     ? departmentLabels[character.department[0] as Department]
     : "";
+  const description = truncateMetadataText(
+    `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It. View highlights and memorable quotes featuring ${character.name}.`,
+    155,
+  );
+  const socialTitle = truncatePageTitle(`${character.name} Character Profile`);
 
   return {
     title: formatPageTitle(character.name),
-    description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It. View highlights and create memes featuring ${character.name}.`,
+    description,
     openGraph: {
-      title: `${character.name} - The Thick of It Character Profile`,
-      description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It.`,
+      title: socialTitle,
+      description,
       url: pageUrl.toString(),
       type: "profile",
       siteName: "DOSAC.UK",
       locale: "en_GB",
       images: [
         {
-          url:
-            typeof character.image === "string"
-              ? character.image
-              : `${baseUrl}/og-character-${id}.jpg`,
+          url: DEFAULT_OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: `${character.name} - The Thick of It Character`,
@@ -137,13 +145,9 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${character.name} - The Thick of It Character Profile`,
-      description: `${character.description} ${primaryRole}${primaryDepartment ? ` in ${primaryDepartment}` : ""} from The Thick of It.`,
-      images: [
-        typeof character.image === "string"
-          ? character.image
-          : `${baseUrl}/og-character-${id}.jpg`,
-      ],
+      title: socialTitle,
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
       canonical: pageUrl.toString(),
@@ -868,7 +872,9 @@ async function CharacterProfileCached({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: serializeStructuredData(structuredData),
+        }}
       />
       <main className="container max-w-7xl px-4 py-5 md:px-6 md:py-7 lg:px-8 lg:py-10">
         <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-4 lg:gap-10 xl:gap-12">

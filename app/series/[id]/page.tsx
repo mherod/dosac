@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SeriesPage } from "@/components/series-page";
-import { formatPageTitle } from "@/lib/constants";
+import {
+  DEFAULT_OG_IMAGE_URL,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
 
 /**
@@ -38,27 +42,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
-  const title = `Series ${series.number} - The Thick of It`;
-  const description = series.shortSummary
+  const summary = series.shortSummary
     .map((part) => (typeof part === "string" ? part : part.text))
     .join("");
+  const title = truncatePageTitle(`Series ${series.number} - The Thick of It`);
+  const description = truncateMetadataText(
+    `${summary} Browse all episodes and create memes from Series ${series.number} of The Thick of It.`,
+    155,
+  );
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
   const pageUrl = new URL(`/series/${series.number}`, baseUrl);
 
   return {
-    title: formatPageTitle(`Series ${series.number}`),
-    description: `${description} Browse all episodes and create memes from Series ${series.number} of The Thick of It.`,
+    title,
+    description,
     openGraph: {
       title,
-      description: `${description} Create memes from Series ${series.number} episodes.`,
+      description,
       url: pageUrl.toString(),
       type: "website",
       siteName: "DOSAC.UK",
       locale: "en_GB",
       images: [
         {
-          url: `${baseUrl}/og-series-${series.number}.jpg`,
+          url: DEFAULT_OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: `Series ${series.number} - The Thick of It`,
@@ -68,8 +76,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title,
-      description: `${description} Create memes from Series ${series.number} episodes.`,
-      images: [`${baseUrl}/og-series-${series.number}.jpg`],
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
       canonical: pageUrl.toString(),

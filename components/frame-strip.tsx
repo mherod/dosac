@@ -39,7 +39,6 @@ export function FrameStrip({
   // All Hooks must be called unconditionally first
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartId, setDragStartId] = useState<string | null>(null);
   const [lastSelectedId, setLastSelectedId] = useState<string | null>(null);
@@ -235,8 +234,8 @@ export function FrameStrip({
         >
           <div
             ref={stripRef}
-            className="scrollbar-custom relative snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px] overflow-x-scroll whitespace-nowrap"
-            role="tablist"
+            className="scrollbar-custom relative touch-pan-x snap-x snap-mandatory scroll-pl-[8px] scroll-pr-[8px] overflow-x-scroll overscroll-x-contain whitespace-nowrap"
+            role="group"
             aria-label="Video frames"
           >
             {/* Frames */}
@@ -255,23 +254,25 @@ export function FrameStrip({
                 {screenshots.map((screenshot: Screenshot, index: number) => (
                   <button
                     key={`frame-${screenshot.id}-${index}`}
+                    aria-label={`Open caption: ${screenshot.speech || screenshot.subtitle || `Frame ${index + 1}`}`}
+                    aria-current={
+                      centerScreenshot?.id === screenshot.id
+                        ? "true"
+                        : undefined
+                    }
+                    aria-pressed={selectedIds.has(screenshot.id)}
                     onClick={(e: React.MouseEvent) =>
                       handleFrameClick(screenshot.id, e)
                     }
-                    onMouseEnter={() => setHoverIndex(index)}
-                    onMouseLeave={() => setHoverIndex(null)}
                     onMouseDown={() => handleDragStart(screenshot.id)}
                     onMouseMove={() => handleDragMove(screenshot.id)}
                     onMouseUp={handleDragEnd}
                     className={cn(
-                      "group relative z-10 flex-shrink-0 origin-center touch-manipulation select-none snap-start transition-all duration-200 ease-out [-webkit-tap-highlight-color:transparent] focus:outline-none focus:ring-2 focus:ring-yellow-400 active:scale-[0.99]",
+                      "group relative z-10 flex-shrink-0 origin-center touch-manipulation select-none snap-start transition-[transform,box-shadow] duration-150 ease-out [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 active:scale-[0.99] motion-reduce:transform-none motion-reduce:transition-none [@media(hover:hover)]:hover:-translate-y-0.5 [@media(hover:hover)]:hover:scale-[1.01]",
                       centerScreenshot?.id === screenshot.id &&
                         "ring-2 ring-yellow-400/80",
                       selectedIds.has(screenshot.id) &&
                         "ring-4 ring-yellow-400/90",
-                      hoverIndex === index
-                        ? "-translate-y-0.5 scale-[1.01]"
-                        : "translate-y-0 scale-100",
                     )}
                     style={{
                       width: `${frameWidth}px`,

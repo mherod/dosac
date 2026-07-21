@@ -4,8 +4,12 @@ import { Suspense } from "react";
 import { withQuery } from "ufo";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { CATEGORIES } from "@/lib/categories";
-import { formatPageTitle } from "@/lib/constants";
 import { getFrameIndex } from "@/lib/frames.server";
+import {
+  DEFAULT_OG_IMAGE_URL,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 
 /**
  * Interface for page component props
@@ -72,20 +76,25 @@ export async function generateMetadata({
     }),
     baseUrl,
   );
+  const title = truncatePageTitle(`${category.title}${pageSuffix}`);
+  const description = truncateMetadataText(
+    `${category.description} Browse and create memes from The Thick of It quotes in this category.`,
+    155,
+  );
 
   return {
-    title: formatPageTitle(`${category.title}${pageSuffix}`),
-    description: `${category.description} Browse and create memes from The Thick of It quotes in this category.`,
+    title,
+    description,
     openGraph: {
-      title: `${category.title} - The Thick of It Memes`,
-      description: `${category.description} Create memes from The Thick of It quotes in this category.`,
+      title,
+      description,
       url: pageUrl.toString(),
       type: "website",
       siteName: "DOSAC.UK",
       locale: "en_GB",
       images: [
         {
-          url: `${baseUrl}/og-category-${category.id}.jpg`,
+          url: DEFAULT_OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: `${category.title} - The Thick of It Memes`,
@@ -94,9 +103,9 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${category.title} - The Thick of It Memes`,
-      description: `${category.description} Create memes from The Thick of It quotes in this category.`,
-      images: [`${baseUrl}/og-category-${category.id}.jpg`],
+      title,
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
       canonical: pageUrl.toString(),

@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { CategoriesHeader } from "@/components/categories/categories-header";
 import { CategoryCard } from "@/components/categories/category-card";
 import { CATEGORIES } from "@/lib/categories";
-import { formatPageTitle } from "@/lib/constants";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: formatPageTitle("Categories"),
-  description: "Browse the ministerial archive by category",
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "Quote Categories",
+  description:
+    "Browse The Thick of It quotes and meme frames by press office, policy and incident categories.",
+  path: "/categories",
+});
 
 /**
  * Page component for displaying all available categories

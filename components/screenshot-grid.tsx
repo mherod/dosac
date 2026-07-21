@@ -42,6 +42,8 @@ interface ScreenshotGridProps {
   };
   /** Whether multiple screenshots can be selected (defaults to false) */
   multiselect?: boolean;
+  /** Heading level for the screenshots section (defaults to 2). */
+  headingLevel?: 2 | 3;
 }
 
 /**
@@ -58,6 +60,7 @@ function ScreenshotGridInner({
   filters,
   paginationData,
   multiselect = false,
+  headingLevel = 2,
 }: ScreenshotGridProps): React.ReactElement {
   const pathname = usePathname();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
@@ -68,6 +71,7 @@ function ScreenshotGridInner({
   // Use server-prepared data directly
   const currentScreenshots = screenshots;
   const { currentPage, totalPages } = paginationData;
+  const ScreenshotsHeading = headingLevel === 3 ? "h3" : "h2";
 
   const getScreenshotUrl = useCallback(
     (id: string) => {
@@ -237,37 +241,38 @@ function ScreenshotGridInner({
       {rankedMoments && rankedMoments.length > 0 && (
         <section aria-label="Featured moments">
           <h2 className="sr-only">Featured moments</h2>
-          <div className="grid grid-cols-1 gap-3 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 md:gap-5 lg:grid-cols-3 lg:gap-6">
+          <div
+            className="grid grid-cols-1 gap-3 px-2 sm:grid-cols-2 sm:gap-4 sm:px-0 md:gap-5 lg:grid-cols-3 lg:gap-6"
+            role="list"
+            aria-label="Featured moments"
+          >
             {rankedMoments.map((screenshot: Screenshot, index: number) => (
-              <div key={screenshot.id} className="relative">
-                <Link
-                  key={`ranked-moment-${screenshot.id}-${index}`}
+              <div
+                key={`ranked-moment-${screenshot.id}-${index}`}
+                className="relative"
+                role="listitem"
+              >
+                <FrameCard
                   href={getScreenshotUrl(screenshot.id)}
-                  prefetch={true}
-                  scroll={false}
-                  suppressHydrationWarning
-                >
-                  <FrameCard
-                    screenshot={screenshot}
-                    priority={true}
-                    isSelected={selectedIds.has(screenshot.id)}
-                    onSelect={() => {
-                      const next = new Set(selectedIds);
-                      if (next.has(screenshot.id)) {
-                        next.delete(screenshot.id);
-                      } else {
-                        next.add(screenshot.id);
-                      }
-                      safeSetSelectedIds(next);
-                    }}
-                    onDragStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onDragMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                  />
-                </Link>
+                  screenshot={screenshot}
+                  priority={true}
+                  isSelected={selectedIds.has(screenshot.id)}
+                  onSelect={() => {
+                    const next = new Set(selectedIds);
+                    if (next.has(screenshot.id)) {
+                      next.delete(screenshot.id);
+                    } else {
+                      next.add(screenshot.id);
+                    }
+                    safeSetSelectedIds(next);
+                  }}
+                  onDragStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onDragMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                />
               </div>
             ))}
           </div>
@@ -275,7 +280,7 @@ function ScreenshotGridInner({
       )}
 
       <section aria-label="Screenshots">
-        <h2 className="sr-only">Screenshots</h2>
+        <ScreenshotsHeading className="sr-only">Screenshots</ScreenshotsHeading>
         <div className="space-y-3 md:space-y-4">
           <div
             ref={gridRef}
@@ -284,35 +289,28 @@ function ScreenshotGridInner({
             aria-label="Screenshot grid"
           >
             {currentScreenshots.map((screenshot: Screenshot, index: number) => (
-              <div key={screenshot.id}>
-                <Link
-                  key={`screenshot-${screenshot.id}-${index}`}
+              <div key={`screenshot-${screenshot.id}-${index}`} role="listitem">
+                <FrameCard
                   href={getScreenshotUrl(screenshot.id)}
-                  prefetch={true}
-                  scroll={false}
-                  suppressHydrationWarning
-                >
-                  <FrameCard
-                    screenshot={screenshot}
-                    priority={index < 6}
-                    isSelected={selectedIds.has(screenshot.id)}
-                    onSelect={() => {
-                      const next = new Set(selectedIds);
-                      if (next.has(screenshot.id)) {
-                        next.delete(screenshot.id);
-                      } else {
-                        next.add(screenshot.id);
-                      }
-                      safeSetSelectedIds(next);
-                    }}
-                    onDragStart={() => {
-                      handleDragStart(screenshot.id);
-                    }}
-                    onDragMove={() => {
-                      handleDragMove(screenshot.id);
-                    }}
-                  />
-                </Link>
+                  screenshot={screenshot}
+                  priority={index < 6}
+                  isSelected={selectedIds.has(screenshot.id)}
+                  onSelect={() => {
+                    const next = new Set(selectedIds);
+                    if (next.has(screenshot.id)) {
+                      next.delete(screenshot.id);
+                    } else {
+                      next.add(screenshot.id);
+                    }
+                    safeSetSelectedIds(next);
+                  }}
+                  onDragStart={() => {
+                    handleDragStart(screenshot.id);
+                  }}
+                  onDragMove={() => {
+                    handleDragMove(screenshot.id);
+                  }}
+                />
               </div>
             ))}
           </div>

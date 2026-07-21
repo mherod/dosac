@@ -179,20 +179,24 @@ export function DualCaptionEditor({
           onDownload={handleDownload}
           onShare={onShare}
         >
-          {frames.map((frame: Screenshot, index: number) => (
-            <CaptionFrameControls
-              key={`${frame.id}-${index}`}
-              imageUrls={[frame.imageUrl, frame.image2Url]}
-              selectedImage={selectedImages[index]}
-              onSelect={(url: string) => handleFrameSelect(index, url)}
-              singleSelection={true}
-              caption={frame.speech}
-              onCaptionChange={(value: string) =>
-                handleCaptionChange(index, value)
-              }
-              label={`Frame ${index + 1}`}
-            />
-          ))}
+          {frames.map((frame: Screenshot, index: number) => {
+            const sourceFrame = initialFrames[index] ?? frame;
+
+            return (
+              <CaptionFrameControls
+                key={`${frame.id}-${index}`}
+                imageUrls={[sourceFrame.imageUrl, sourceFrame.image2Url]}
+                selectedImage={selectedImages[index]}
+                onSelect={(url: string) => handleFrameSelect(index, url)}
+                singleSelection={true}
+                caption={frame.speech}
+                onCaptionChange={(value: string) =>
+                  handleCaptionChange(index, value)
+                }
+                label={`Frame ${index + 1}`}
+              />
+            );
+          })}
         </EditorControlsCard>
       </div>
     </div>

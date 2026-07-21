@@ -13,7 +13,7 @@ export function PWAUpdateNotification(): React.ReactElement | null {
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    const handleUpdateAvailable = () => {
+    const handleUpdateAvailable = (): void => {
       setShowUpdate(true);
     };
 
@@ -25,12 +25,12 @@ export function PWAUpdateNotification(): React.ReactElement | null {
     };
   }, []);
 
-  const handleUpdate = () => {
+  const handleUpdate = (): void => {
     setIsUpdating(true);
     window.location.reload();
   };
 
-  const handleDismiss = () => {
+  const handleDismiss = (): void => {
     setShowUpdate(false);
   };
 
@@ -39,7 +39,7 @@ export function PWAUpdateNotification(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed left-4 right-4 top-[max(1rem,env(safe-area-inset-top))] z-50 md:left-auto md:right-4 md:max-w-sm">
+    <div className="fixed left-[max(1rem,env(safe-area-inset-left))] right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-50 md:left-auto md:max-w-sm">
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 shadow-lg">
         <div className="mb-3 flex items-start justify-between">
           <div className="flex items-center space-x-2">
@@ -58,7 +58,7 @@ export function PWAUpdateNotification(): React.ReactElement | null {
           <button
             type="button"
             onClick={handleDismiss}
-            className="text-blue-400 transition-colors hover:text-blue-600"
+            className="flex min-h-11 min-w-11 touch-manipulation select-none items-center justify-center rounded-md text-blue-400 transition-[color,background-color,transform] duration-150 [-webkit-tap-highlight-color:transparent] hover:bg-blue-100 hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none"
             aria-label="Dismiss update notification"
           >
             <X className="h-4 w-4" />

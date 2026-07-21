@@ -1,9 +1,16 @@
 import { Home } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import type React from "react";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Share Link Error",
+  description: "The requested DOSAC.UK share link could not be opened.",
+  robots: { index: false, follow: false },
+};
 
 /**
  * Interface for page component props

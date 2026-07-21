@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import type { Screenshot } from "@/lib/types";
 import { formatTimestamp } from "@/lib/utils";
 
@@ -60,7 +59,7 @@ export function SearchResultCard({
     text.length > 150 ? `${text.substring(0, 150)}...` : text;
 
   return (
-    <Link
+    <a
       href={`/caption/${frame.id}`}
       className="group block touch-manipulation overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
     >
@@ -96,6 +95,6 @@ export function SearchResultCard({
           </p>
         )}
       </div>
-    </Link>
+    </a>
   );
 }

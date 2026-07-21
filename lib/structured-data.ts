@@ -1,5 +1,8 @@
+import { formatISO } from "date-fns";
+import { getEpisodeInfo } from "./episode-info";
 import { characters } from "./profiles";
-import { getSeriesInfo } from "./series-info";
+import { absoluteUrl, BASE_URL, DEFAULT_OG_IMAGE_URL } from "./seo";
+import { getAllSeries, getSeriesInfo } from "./series-info";
 import type { Screenshot } from "./types";
 
 /**
@@ -13,36 +16,43 @@ export function generateEpisodeStructuredData(
   episodeNumber: number,
 ): object {
   const series = getSeriesInfo(seriesNumber);
+  const episode = getEpisodeInfo(seriesNumber, episodeNumber);
 
   if (!series) return {};
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
-  const episodeUrl = `${baseUrl}/series/${seriesNumber}/episode/${episodeNumber}`;
+  const episodeUrl = absoluteUrl(
+    `/series/${seriesNumber}/episode/${episodeNumber}`,
+  );
+  const description = (episode?.shortSummary ?? series.shortSummary)
+    .map((part) => (typeof part === "string" ? part : part.text))
+    .join("");
 
   return {
     "@context": "https://schema.org",
     "@type": "TVEpisode",
     "@id": episodeUrl,
-    name: `Episode ${episodeNumber}`,
-    description: series.shortSummary
-      .map((part) => (typeof part === "string" ? part : part.text))
-      .join(""),
+    name: episode?.title || `Episode ${episodeNumber}`,
+    description,
     episodeNumber: episodeNumber,
     partOfSeries: {
       "@type": "TVSeries",
-      "@id": `${baseUrl}/series/${seriesNumber}`,
+      "@id": absoluteUrl(`/series/${seriesNumber}`),
       name: `The Thick of It - Series ${seriesNumber}`,
       description: series.shortSummary
         .map((part) => (typeof part === "string" ? part : part.text))
         .join(""),
-      numberOfSeasons: 4,
+      numberOfSeasons: getAllSeries().length,
       genre: ["Comedy", "Political Satire"],
       inLanguage: "en-GB",
       countryOfOrigin: "GB",
     },
     url: episodeUrl,
-    image: `${baseUrl}/og-episode-s${seriesNumber}e${episodeNumber}.jpg`,
-    datePublished: "2005-05-19", // Approximate start date
+    image: DEFAULT_OG_IMAGE_URL,
+    ...(episode?.parsedDate && {
+      datePublished: formatISO(episode.parsedDate, {
+        representation: "date",
+      }),
+    }),
     inLanguage: "en-GB",
     genre: ["Comedy", "Political Satire"],
   };
@@ -58,8 +68,11 @@ export function generateCharacterStructuredData(characterId: string): object {
 
   if (!character) return {};
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
-  const profileUrl = `${baseUrl}/profiles/${characterId}`;
+  const profileUrl = absoluteUrl(`/profiles/${characterId}`);
+  const imagePath =
+    typeof character.image === "string"
+      ? character.image
+      : character.image?.src;
 
   return {
     "@context": "https://schema.org",
@@ -68,14 +81,8 @@ export function generateCharacterStructuredData(characterId: string): object {
     name: character.name,
     description: character.description,
     url: profileUrl,
-    image: character.image || `${baseUrl}/og-character-${characterId}.jpg`,
+    image: imagePath ? absoluteUrl(imagePath) : DEFAULT_OG_IMAGE_URL,
     jobTitle: character.role.map((role) => role).join(", "),
-    worksFor: {
-      "@type": "Organization",
-      name: "UK Government",
-    },
-    knowsAbout: ["Politics", "Government", "Public Relations"],
-    nationality: "British",
   };
 }
 
@@ -89,8 +96,7 @@ export function generateMemeStructuredData(
   frame: Screenshot,
   caption: string,
 ): object {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
-  const memeUrl = `${baseUrl}/caption/${frame.id}`;
+  const memeUrl = absoluteUrl(`/caption/${frame.id}`);
 
   return {
     "@context": "https://schema.org",
@@ -99,11 +105,11 @@ export function generateMemeStructuredData(
     name: `Meme: ${caption}`,
     description: `A meme created from The Thick of It featuring the quote: "${caption}"`,
     url: memeUrl,
-    image: frame.imageUrl,
+    image: absoluteUrl(frame.imageUrl),
     creator: {
       "@type": "Organization",
       name: "DOSAC.UK",
-      url: baseUrl,
+      url: BASE_URL,
     },
     about: {
       "@type": "TVSeries",
@@ -121,28 +127,26 @@ export function generateMemeStructuredData(
  * @returns JSON-LD structured data for the website
  */
 export function generateWebsiteStructuredData(): object {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
-
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": baseUrl,
+    "@id": BASE_URL,
     name: "DOSAC.UK - The Thick of It Memes",
     description:
       "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
-    url: baseUrl,
+    url: BASE_URL,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+        urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
     publisher: {
       "@type": "Organization",
       name: "DOSAC.UK",
-      url: baseUrl,
+      url: BASE_URL,
     },
     about: {
       "@type": "TVSeries",

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { BASE_URL } from "@/lib/seo";
 
 /**
  * Generates robots.txt configuration for the application
@@ -6,7 +7,7 @@ import type { MetadataRoute } from "next";
  * @returns The robots.txt configuration
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const baseUrl = BASE_URL.replace(/\/+$/, "");
 
   return {
     rules: {

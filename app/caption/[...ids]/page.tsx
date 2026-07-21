@@ -89,6 +89,7 @@ export async function generateMetadata({
     return {
       title: "Invalid Meme Format",
       description: "Please provide at least two frame IDs to create a meme",
+      robots: { index: false, follow: false },
     };
   }
 
@@ -99,6 +100,7 @@ export async function generateMetadata({
     return {
       title: "Invalid Frame IDs",
       description: "All frame IDs must be strings",
+      robots: { index: false, follow: false },
     };
   }
 
@@ -114,6 +116,7 @@ export async function generateMetadata({
     return {
       title: "Frames Not Found",
       description: "Could not find the requested frames",
+      robots: { index: false, follow: false },
     };
   }
 

@@ -9,7 +9,7 @@ import { EpisodeMetadataBadge } from "@/components/episode-metadata-badge";
 import { PageLayout } from "@/components/layout/page-layout";
 import { ScreenshotGrid } from "@/components/screenshot-grid";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   type CastMember,
@@ -91,9 +91,9 @@ async function EpisodePageContent({
           {/* Captions Grid */}
           <Card className="border border-slate-200 shadow-sm">
             <CardHeader className="space-y-1 border-b border-slate-200 bg-slate-50">
-              <CardTitle className="text-2xl text-slate-900">
+              <h2 className="text-2xl font-semibold leading-none tracking-tight text-slate-900">
                 Episode Captions
-              </CardTitle>
+              </h2>
               <p className="text-sm text-slate-600">
                 Select captions to compare or share
               </p>
@@ -110,6 +110,7 @@ async function EpisodePageContent({
                   hasPrevPage: false,
                 }}
                 multiselect={true}
+                headingLevel={3}
               />
             </CardContent>
           </Card>
@@ -122,7 +123,9 @@ async function EpisodePageContent({
             <Card className="border border-slate-200 shadow-sm">
               <CardHeader className="flex flex-row items-center gap-2 border-b border-slate-200 bg-slate-50 pb-3">
                 <UsersIcon className="h-4 w-4 text-blue-600" />
-                <CardTitle className="text-slate-900">Featured Cast</CardTitle>
+                <h2 className="text-2xl font-semibold leading-none tracking-tight text-slate-900">
+                  Featured Cast
+                </h2>
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-4">
@@ -195,16 +198,18 @@ async function EpisodePageContent({
           <Card className="border border-slate-200 shadow-sm">
             <CardHeader className="flex flex-row items-center gap-2 border-b border-slate-200 bg-slate-50 pb-3">
               <PenToolIcon className="h-4 w-4 text-blue-600" />
-              <CardTitle className="text-slate-900">Credits</CardTitle>
+              <h2 className="text-2xl font-semibold leading-none tracking-tight text-slate-900">
+                Credits
+              </h2>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="space-y-6">
                 {/* Directors */}
                 {episode?.directors && episode.directors.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="text-sm font-medium text-blue-600">
+                    <h3 className="text-sm font-medium text-blue-600">
                       Direction
-                    </h4>
+                    </h3>
                     <div className="space-y-2">
                       {episode.directors.map((director: string) => (
                         <div key={director} className="text-sm text-slate-600">
@@ -218,9 +223,9 @@ async function EpisodePageContent({
                 {/* Writers */}
                 {episode?.writers && episode.writers.length > 0 && (
                   <div className="space-y-3">
-                    <h4 className="text-sm font-medium text-blue-600">
+                    <h3 className="text-sm font-medium text-blue-600">
                       Writing
-                    </h4>
+                    </h3>
                     <div className="space-y-2">
                       {episode.writers.map((writer: WriterCredit) => (
                         <div

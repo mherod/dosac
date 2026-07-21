@@ -10,17 +10,26 @@ import { cacheLife } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getFrameById } from "@/lib/frames.server";
 import { getPolicyStatusColour } from "@/lib/policies";
 import { getServerPolicies, getServerPolicy } from "@/lib/policies.server";
+import {
+  absoluteUrl,
+  DEFAULT_OG_IMAGE_URL,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 
 type Props = {
   params: Promise<{ policy: string }>;
 };
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<
+  Array<{ policy: string }>
+> {
   const policies = await getServerPolicies();
   return policies.map((policy) => ({
     policy: policy.id,
@@ -35,6 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Policy Not Found - DoSAC",
       description: "The requested policy documentation could not be found.",
+      robots: { index: false, follow: false },
     };
   }
 
@@ -66,29 +76,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords.push(policy.outcome.actualPolicy);
   }
 
+  const title = truncatePageTitle(`${policy.name} Policy`);
+  const description = truncateMetadataText(
+    `${policy.description} ${statusText} under ${policy.minister}. ${policy.outcome ? `Implemented as ${policy.outcome.actualPolicy} in ${policy.outcome.year}.` : ""}`.trim(),
+    155,
+  );
+  const canonical = absoluteUrl(`/policies/${policyId}`);
+
   return {
-    title: `${policy.name} - Department of Social Affairs and Citizenship`,
-    description:
-      `${policy.description} ${statusText} under ${policy.minister}. ${policy.outcome ? `Implemented as ${policy.outcome.actualPolicy} in ${policy.outcome.year}.` : ""}`.trim(),
+    title,
+    description,
     keywords: keywords.filter(Boolean),
     openGraph: {
-      title: `${policy.name} - DoSAC Policy Unit`,
-      description: policy.description,
-      type: "article",
+      title,
+      description,
+      url: canonical,
+      type: "website",
       siteName: "Department of Social Affairs and Citizenship",
-      publishedTime: policy.outcome?.year
-        ? `${policy.outcome.year}-01-01`
-        : undefined,
-      authors: [policy.minister],
-      tags: [policy.type, ...policy.nicknames],
+      images: [
+        {
+          url: DEFAULT_OG_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: `${policy.name} policy record`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${policy.name} - DoSAC`,
-      description: `${statusText}: ${policy.description.slice(0, 150)}${policy.description.length > 150 ? "..." : ""}`,
+      title,
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
-      canonical: `/policies/${policyId}`,
+      canonical,
     },
   };
 }
@@ -151,16 +172,6 @@ async function PolicyPageCached({
           <p className="mb-4 text-xl leading-relaxed text-gray-600">
             {policy.description}
           </p>
-          <div className="mb-6 flex flex-wrap gap-4 text-sm text-gray-600">
-            <span>
-              Published{" "}
-              {new Date().toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </div>
           <div className="mb-6 border-l-4 border-[#1d70b8] bg-blue-50 p-4">
             <p className="text-sm">
               <strong>Applies to:</strong> England and Wales
@@ -526,7 +537,9 @@ async function PolicyPageCached({
   );
 }
 
-export default async function PolicyPage({ params }: Props) {
+export default async function PolicyPage({
+  params,
+}: Props): Promise<React.ReactElement> {
   const { policy: policyId } = await params;
   return <PolicyPageCached policyId={policyId} />;
 }

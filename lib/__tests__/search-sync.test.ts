@@ -31,6 +31,7 @@ function simulateTyping(
   const debouncedQuery = localQuery;
   const href = computeSearchRouteUpdate({
     debouncedQuery,
+    pendingQuery: debouncedQuery,
     urlQuery,
     pathname: opts.pathname,
     filterQuery: {},
@@ -67,6 +68,7 @@ describe("computeSearchRouteUpdate", () => {
     expect(
       computeSearchRouteUpdate({
         debouncedQuery: "malcolm",
+        pendingQuery: "malcolm",
         urlQuery: "malcolm",
         pathname: "/search",
         filterQuery: {},
@@ -78,6 +80,7 @@ describe("computeSearchRouteUpdate", () => {
     expect(
       computeSearchRouteUpdate({
         debouncedQuery: "  malcolm  ",
+        pendingQuery: "  malcolm  ",
         urlQuery: "malcolm",
         pathname: "/search",
         filterQuery: {},
@@ -89,6 +92,7 @@ describe("computeSearchRouteUpdate", () => {
     expect(
       computeSearchRouteUpdate({
         debouncedQuery: "",
+        pendingQuery: "",
         urlQuery: "malcolm",
         pathname: "/search",
         filterQuery: {},
@@ -100,6 +104,7 @@ describe("computeSearchRouteUpdate", () => {
     expect(
       computeSearchRouteUpdate({
         debouncedQuery: "",
+        pendingQuery: "",
         urlQuery: "",
         pathname: "/",
         filterQuery: {},
@@ -111,11 +116,36 @@ describe("computeSearchRouteUpdate", () => {
     expect(
       computeSearchRouteUpdate({
         debouncedQuery: "omnishambles",
+        pendingQuery: "omnishambles",
         urlQuery: "",
         pathname: "/search",
         filterQuery: { season: "3", episode: "1" },
       }),
     ).toBe("/search?q=omnishambles&season=3&episode=1");
+  });
+
+  it("does not revive a stale search after a result link navigation", () => {
+    expect(
+      computeSearchRouteUpdate({
+        debouncedQuery: "malcolm",
+        pendingQuery: null,
+        urlQuery: "",
+        pathname: "/caption/frame-2",
+        filterQuery: {},
+      }),
+    ).toBeNull();
+  });
+
+  it("waits for the latest user edit to settle before navigating", () => {
+    expect(
+      computeSearchRouteUpdate({
+        debouncedQuery: "malcolm",
+        pendingQuery: "malcolm tucker",
+        urlQuery: "malcolm",
+        pathname: "/search",
+        filterQuery: {},
+      }),
+    ).toBeNull();
   });
 });
 

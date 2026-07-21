@@ -12,14 +12,19 @@ import { PWAUpdateNotification } from "@/components/pwa-update-notification";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { SITE_NAME } from "@/lib/constants";
+import {
+  BASE_URL,
+  DEFAULT_OG_IMAGE_URL,
+  serializeStructuredData,
+} from "@/lib/seo";
+import { generateWebsiteStructuredData } from "@/lib/structured-data";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });
 
-const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-const urlObject = new URL(url);
+const urlObject = new URL(BASE_URL);
 
 export const metadata: Metadata = {
   title: {
@@ -69,7 +74,7 @@ export const metadata: Metadata = {
       "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
     images: [
       {
-        url: `${urlObject.origin}/og-homepage.jpg`,
+        url: DEFAULT_OG_IMAGE_URL,
         width: 1200,
         height: 630,
         alt: "The Thick of It Memes - Create and share memes from the iconic TV show",
@@ -81,7 +86,7 @@ export const metadata: Metadata = {
     title: "The Thick of It Memes & Quotes",
     description:
       "Create and share memes from The Thick of It TV show. Browse thousands of iconic moments and create your own captions.",
-    images: [`${urlObject.origin}/og-homepage.jpg`],
+    images: [DEFAULT_OG_IMAGE_URL],
   },
   robots: {
     index: true,
@@ -129,6 +134,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }): React.ReactElement {
+  const structuredData = generateWebsiteStructuredData();
+
   return (
     <html
       lang="en"
@@ -139,6 +146,12 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased max-md:overflow-x-hidden`}
         suppressHydrationWarning
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: serializeStructuredData(structuredData),
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

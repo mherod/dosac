@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { VerticalFrameStrip } from "@/components/vertical-frame-strip";
 
@@ -44,28 +45,31 @@ export function CaptionFrameControls({
   label = "Frame",
   singleSelection = true,
 }: CaptionFrameControlsProps): React.ReactElement | null {
+  const captionFieldId = useId();
   const [firstFrameImageUrl, secondFrameImageUrl] = imageUrls.filter(Boolean);
   if (!firstFrameImageUrl || !secondFrameImageUrl) {
     return null;
   }
 
   return (
-    <div className="flex flex-col gap-2 space-y-4">
-      <div className="absolute z-10 mb-2 flex h-fit flex-row items-baseline justify-between gap-3 p-0">
-        <span className="text-sm font-medium leading-6 text-foreground">
-          {label}
-        </span>
-      </div>
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor={captionFieldId}
+        className="text-sm font-semibold leading-6 text-foreground"
+      >
+        {label}
+      </label>
 
-      <div className="flex h-fit p-2">
+      <div className="flex h-fit items-stretch gap-2 rounded-lg border border-border/70 bg-muted/20 p-2 shadow-sm">
         <div className="h-full flex-1">
           <Textarea
+            id={captionFieldId}
             value={caption}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               onCaptionChange(e.target.value)
             }
             placeholder={`Enter caption for ${label.toLowerCase()}...`}
-            className="flex h-full min-h-[125px] resize-none items-center rounded-r-none p-4 transition-colors focus:border-primary"
+            className="flex h-full min-h-[125px] resize-none items-center p-4 transition-colors focus:border-primary motion-reduce:transition-none"
           />
         </div>
 

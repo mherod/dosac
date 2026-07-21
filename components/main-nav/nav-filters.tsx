@@ -148,20 +148,32 @@ export function NavFilters({
   // debounced side effect of it; the URL never directly drives the input
   // except for external navigation (handled below).
   const [localQuery, setLocalQuery] = useState(urlQuery);
-  const [syncedUrlQuery, setSyncedUrlQuery] = useState(urlQuery);
+  const [pendingQuery, setPendingQuery] = useState<string | null>(null);
+  const [syncedLocation, setSyncedLocation] = useState({
+    pathname,
+    urlQuery,
+  });
   const debouncedQuery = useDebounce(localQuery, SEARCH_ROUTE_DEBOUNCE_MS);
 
   // Only consider it search mode if there's actual search text
   const isSearchMode = filters.query.trim() !== "";
 
-  // Adopt the URL's query for external navigation (links, back/forward) only.
+  // Adopt the URL's query for external navigation (links, back/forward) only,
+  // and cancel any edit that has not settled yet. An echoed search push is the
+  // sole route change allowed to preserve a newer pending edit.
   // Adjusting state during render is React's documented alternative to a
-  // setState-in-effect sync, and avoids the extra render pass. A URL change
-  // that matches our live or debounced value is our own push and is ignored,
-  // so a stale push can never revert characters typed after it fired.
-  if (urlQuery !== syncedUrlQuery) {
-    setSyncedUrlQuery(urlQuery);
-    if (shouldAdoptUrlQuery(urlQuery, { localQuery, debouncedQuery })) {
+  // setState-in-effect sync, and avoids the extra render pass.
+  if (
+    pathname !== syncedLocation.pathname ||
+    urlQuery !== syncedLocation.urlQuery
+  ) {
+    setSyncedLocation({ pathname, urlQuery });
+    const isSearchPushEcho =
+      pathname === "/search" &&
+      !shouldAdoptUrlQuery(urlQuery, { localQuery, debouncedQuery });
+
+    if (!isSearchPushEcho) {
+      setPendingQuery(null);
       setLocalQuery(urlQuery);
     }
   }
@@ -170,15 +182,24 @@ export function NavFilters({
   useEffect(() => {
     const href = computeSearchRouteUpdate({
       debouncedQuery,
+      pendingQuery,
       urlQuery,
       pathname,
       filterQuery: getCurrentFilterQuery(),
     });
     if (!href) return;
     router.push(href, { scroll: false });
-  }, [debouncedQuery, urlQuery, pathname, router, getCurrentFilterQuery]);
+  }, [
+    debouncedQuery,
+    pendingQuery,
+    urlQuery,
+    pathname,
+    router,
+    getCurrentFilterQuery,
+  ]);
 
   const handleSearchChange = (value: string): void => {
+    setPendingQuery(value);
     setLocalQuery(value);
   };
 
@@ -187,6 +208,7 @@ export function NavFilters({
       const trimmedQuery = query.trim();
       if (!trimmedQuery) return;
 
+      setPendingQuery(null);
       setLocalQuery(trimmedQuery);
 
       const queryParams: Record<string, string | undefined> = {
@@ -201,8 +223,8 @@ export function NavFilters({
   return (
     <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
       <div className="mx-auto max-w-7xl px-4 sm:px-5 md:px-6 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center sm:gap-5 md:gap-6 md:py-5">
-          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-4 md:gap-5">
+        <div className="flex flex-col items-stretch justify-between gap-3 py-4 md:gap-4 md:py-5 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-4 md:gap-5 lg:w-auto">
             <div className="min-w-0 flex-shrink-0">
               <SeriesSelect
                 season={filters.season}
@@ -220,7 +242,11 @@ export function NavFilters({
               />
             </div>
           </div>
-          {children}
+          {children ? (
+            <div className="w-full min-w-0 sm:flex sm:justify-end lg:w-auto lg:justify-start">
+              {children}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

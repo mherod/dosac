@@ -14,12 +14,12 @@ export function PWAStatus(): React.ReactElement | null {
 
   useEffect(() => {
     // Check online status
-    const updateOnlineStatus = () => {
+    const updateOnlineStatus = (): void => {
       setIsOnline(navigator.onLine);
     };
 
     // Check if app is installed/standalone
-    const checkInstallStatus = () => {
+    const checkInstallStatus = (): void => {
       const standalone = window.matchMedia(
         "(display-mode: standalone)",
       ).matches;
@@ -42,7 +42,7 @@ export function PWAStatus(): React.ReactElement | null {
 
     // Listen for display mode changes
     const mediaQuery = window.matchMedia("(display-mode: standalone)");
-    const handleDisplayModeChange = () => {
+    const handleDisplayModeChange = (): void => {
       checkInstallStatus();
     };
     mediaQuery.addEventListener("change", handleDisplayModeChange);
@@ -60,7 +60,7 @@ export function PWAStatus(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed right-4 top-[max(1rem,env(safe-area-inset-top))] z-40">
+    <div className="fixed right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-40">
       <div className="flex flex-col space-y-2">
         {/* Online/Offline Status */}
         {!isOnline && (

@@ -30,7 +30,11 @@ export function VerticalFrameStrip({
   const frameHeight = Math.round(frameWidth * (9 / 16));
 
   return (
-    <div className="group relative mx-auto max-h-fit">
+    <div
+      className="group relative mx-auto max-h-fit"
+      role="group"
+      aria-label="Frame image choices"
+    >
       <div
         style={{
           width: `${frameWidth + margin * 2}px`,
@@ -49,52 +53,61 @@ export function VerticalFrameStrip({
               className="flex scroll-py-[8px] flex-col gap-2"
               style={{ width: `${frameWidth}px` }}
             >
-              {imageUrls.filter(Boolean).map((imageUrl: string) => (
-                <button
-                  type="button"
-                  key={imageUrl}
-                  onClick={() => {
-                    if (singleSelection) {
-                      onFrameSelect?.(imageUrl);
-                    } else {
-                      onFrameSelect?.(
-                        selectedImage === imageUrl ? "" : imageUrl,
-                      );
+              {imageUrls
+                .filter(Boolean)
+                .map((imageUrl: string, index: number) => (
+                  <button
+                    type="button"
+                    key={imageUrl}
+                    aria-label={
+                      index === 0
+                        ? "Use first source frame"
+                        : "Use alternate source frame"
                     }
-                  }}
-                  className={cn(
-                    "group relative flex-shrink-0 cursor-pointer touch-manipulation select-none snap-start transition-all duration-200 [-webkit-tap-highlight-color:transparent]",
-                    "active:scale-105 [@media(hover:hover)]:hover:scale-105",
-                    selectedImage === imageUrl
-                      ? "z-10 scale-105 ring-2 ring-yellow-400/80"
-                      : "ring-1 ring-white/10 active:ring-white/30 [@media(hover:hover)]:hover:ring-white/30",
-                  )}
-                  style={{
-                    width: `${frameWidth}px`,
-                    height: `${frameHeight}px`,
-                  }}
-                >
-                  {!loadedImages[imageUrl] && (
-                    <div className="absolute inset-0 animate-pulse bg-gray-800" />
-                  )}
-                  <Image
-                    src={imageUrl}
-                    alt="Frame"
-                    width={frameWidth}
-                    height={frameHeight}
+                    aria-pressed={selectedImage === imageUrl}
+                    onClick={() => {
+                      if (singleSelection) {
+                        onFrameSelect?.(imageUrl);
+                      } else {
+                        onFrameSelect?.(
+                          selectedImage === imageUrl ? "" : imageUrl,
+                        );
+                      }
+                    }}
                     className={cn(
-                      "object-cover transition-opacity duration-300",
-                      !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
+                      "group relative flex-shrink-0 cursor-pointer touch-manipulation select-none snap-start transition-[transform,box-shadow] duration-150 [-webkit-tap-highlight-color:transparent] motion-reduce:transform-none motion-reduce:transition-none",
+                      "active:scale-[1.02] [@media(hover:hover)]:hover:scale-[1.02]",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 focus-visible:ring-offset-2",
+                      selectedImage === imageUrl
+                        ? "z-10 scale-[1.02] ring-2 ring-yellow-400/80"
+                        : "ring-1 ring-white/10 active:ring-white/30 [@media(hover:hover)]:hover:ring-white/30",
                     )}
-                    onLoad={(): void =>
-                      setLoadedImages((prev: Record<string, boolean>) => ({
-                        ...prev,
-                        [imageUrl]: true,
-                      }))
-                    }
-                  />
-                </button>
-              ))}
+                    style={{
+                      width: `${frameWidth}px`,
+                      height: `${frameHeight}px`,
+                    }}
+                  >
+                    {!loadedImages[imageUrl] && (
+                      <div className="absolute inset-0 animate-pulse bg-gray-800" />
+                    )}
+                    <Image
+                      src={imageUrl}
+                      alt=""
+                      width={frameWidth}
+                      height={frameHeight}
+                      className={cn(
+                        "object-cover transition-opacity duration-300",
+                        !loadedImages[imageUrl] ? "opacity-0" : "opacity-100",
+                      )}
+                      onLoad={(): void =>
+                        setLoadedImages((prev: Record<string, boolean>) => ({
+                          ...prev,
+                          [imageUrl]: true,
+                        }))
+                      }
+                    />
+                  </button>
+                ))}
             </div>
           </div>
         </div>

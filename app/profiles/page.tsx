@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
@@ -23,6 +24,14 @@ import {
   type Role,
   roleLabels,
 } from "@/lib/profiles";
+import { createPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "The Thick of It Characters",
+  description:
+    "Explore The Thick of It character profiles, roles, departments, episode appearances and memorable quotes.",
+  path: "/profiles",
+});
 
 /**
  * Props for the CharacterCard component

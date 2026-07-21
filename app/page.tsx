@@ -6,7 +6,12 @@ import { HomePage } from "@/components/home-page";
 import { HomePageSkeleton } from "@/components/home-page-skeleton";
 import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
-import { generateWebsiteStructuredData } from "@/lib/structured-data";
+import {
+  BASE_URL,
+  DEFAULT_OG_IMAGE_URL,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 import type { Screenshot } from "@/lib/types";
 
 /**
@@ -48,7 +53,7 @@ export async function generateMetadata({
     description = `Browse page ${page} of The Thick of It memes and quotes. Create your own captions from iconic moments.`;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
+  const baseUrl = BASE_URL;
   const basePath = "/";
 
   // Build query parameters using withQuery
@@ -60,20 +65,23 @@ export async function generateMetadata({
   };
 
   const currentUrl = new URL(withQuery(basePath, queryParams), baseUrl);
+  const hasFilters = Object.keys(queryParams).length > 0;
+  const safeTitle = truncatePageTitle(title);
+  const safeDescription = truncateMetadataText(description, 155);
 
   return {
-    title,
-    description,
+    title: safeTitle,
+    description: safeDescription,
     openGraph: {
-      title,
-      description,
+      title: safeTitle,
+      description: safeDescription,
       url: currentUrl.toString(),
       type: "website",
       siteName: "DOSAC.UK",
       locale: "en_GB",
       images: [
         {
-          url: `${baseUrl}/og-homepage.jpg`,
+          url: DEFAULT_OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: "The Thick of It Memes - Create and share memes from the iconic TV show",
@@ -82,13 +90,14 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
-      images: [`${baseUrl}/og-homepage.jpg`],
+      title: safeTitle,
+      description: safeDescription,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
-      canonical: currentUrl.toString(),
+      canonical: baseUrl,
     },
+    robots: hasFilters ? { index: false, follow: true } : undefined,
     other: {
       "og:image:width": "1200",
       "og:image:height": "630",
@@ -206,19 +215,11 @@ async function HomeContent({
  * @returns The home page with filtered and paginated content
  */
 export default function Home({ searchParams }: Props): React.ReactElement {
-  const structuredData = generateWebsiteStructuredData();
-
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
-        <Suspense fallback={<HomePageSkeleton />}>
-          <HomeContent searchParams={searchParams} />
-        </Suspense>
-      </div>
-    </>
+    <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
+      <Suspense fallback={<HomePageSkeleton />}>
+        <HomeContent searchParams={searchParams} />
+      </Suspense>
+    </div>
   );
 }

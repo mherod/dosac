@@ -10,6 +10,7 @@
 
 /* Disable rubber band effect */
 html {
+  background-color: #0b0c0c;
   overscroll-behavior: none;
   /* Prevent Safari from arbitrarily rescaling text after orientation change */
   -webkit-text-size-adjust: 100%;
@@ -117,6 +118,13 @@ body {
 
 .animate-gentle-scan {
   animation: gentle-scan 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scanline,
+  .animate-gentle-scan {
+    animation: none;
+  }
 }
 
 @layer utilities {

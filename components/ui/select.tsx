@@ -17,7 +17,7 @@ const SelectTrigger = forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-9 w-full items-center justify-between rounded-md border border-[#ffffff33] bg-[#0b0c0c] px-3 py-1.5 text-sm text-white ring-offset-[#0b0c0c] hover:bg-[#1d1d1d] focus:outline-none focus:ring-2 focus:ring-[#1d70b8] disabled:cursor-not-allowed disabled:opacity-50",
+      "flex h-11 w-full touch-manipulation select-none items-center justify-between rounded-md border border-[#ffffff33] bg-[#0b0c0c] px-3 py-1.5 text-base text-white ring-offset-[#0b0c0c] transition-[background-color,border-color,box-shadow,transform] duration-150 [-webkit-tap-highlight-color:transparent] hover:bg-[#1d1d1d] focus:outline-none focus:ring-2 focus:ring-[#1d70b8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none md:h-9 md:text-sm",
       className,
     )}
     {...props}
@@ -38,7 +38,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-[#ffffff33] bg-[#0b0c0c] text-white shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "relative z-50 min-w-[8rem] overflow-hidden overscroll-contain rounded-md border border-[#ffffff33] bg-[#0b0c0c] text-white shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 motion-reduce:data-[state=closed]:animate-none motion-reduce:data-[state=open]:animate-none",
         className,
       )}
       position={position}
@@ -87,7 +87,7 @@ const SelectItem = React.forwardRef<
     <SelectPrimitive.Item
       ref={ref}
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-white outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-[#1d1d1d] focus:bg-[#1d1d1d] focus:text-white",
+        "relative flex min-h-11 w-full touch-manipulation select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-base text-white outline-none [-webkit-tap-highlight-color:transparent] data-[disabled]:pointer-events-none data-[disabled]:opacity-50 hover:bg-[#1d1d1d] focus:bg-[#1d1d1d] focus:text-white active:bg-[#262626] md:min-h-9 md:text-sm",
         className,
       )}
       {...props}

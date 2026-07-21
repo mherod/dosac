@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { EpisodePage } from "@/components/episode-page";
-import { formatPageTitle } from "@/lib/constants";
 import { getEpisodeInfo } from "@/lib/episode-info";
+import {
+  DEFAULT_OG_IMAGE_URL,
+  serializeStructuredData,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "@/lib/seo";
 import {
   getAllSeries,
   getSeriesEpisodes,
@@ -51,15 +56,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!series) return {};
 
   const episodeTitle = episode?.title || `Episode ${resolvedParams.episodeId}`;
-  const fullTitle = `${episodeTitle} | Series ${series.number}`;
+  const fullTitle = truncatePageTitle(
+    `${episodeTitle} | Series ${series.number}`,
+  );
 
-  const description = episode?.shortSummary
+  const summary = episode?.shortSummary
     ? episode.shortSummary
         .map((part) => (typeof part === "string" ? part : part.text))
         .join("")
     : series.shortSummary
         .map((part) => (typeof part === "string" ? part : part.text))
         .join("");
+  const description = truncateMetadataText(
+    `${summary} Browse memes and quotes from ${episodeTitle} of The Thick of It. Create your own captions from iconic moments.`,
+    155,
+  );
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://dosac.uk";
   const pageUrl = new URL(
@@ -68,18 +79,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
 
   return {
-    title: formatPageTitle(fullTitle),
-    description: `${description} Browse memes and quotes from ${episodeTitle} of The Thick of It. Create your own captions from iconic moments.`,
+    title: fullTitle,
+    description,
     openGraph: {
       title: fullTitle,
-      description: `${description} Create memes from ${episodeTitle} of The Thick of It.`,
+      description,
       url: pageUrl.toString(),
       type: "website",
       siteName: "DOSAC.UK",
       locale: "en_GB",
       images: [
         {
-          url: `${baseUrl}/og-episode-s${series.number}e${resolvedParams.episodeId}.jpg`,
+          url: DEFAULT_OG_IMAGE_URL,
           width: 1200,
           height: 630,
           alt: `${episodeTitle} - Series ${series.number} - The Thick of It`,
@@ -89,10 +100,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
-      description: `${description} Create memes from ${episodeTitle} of The Thick of It.`,
-      images: [
-        `${baseUrl}/og-episode-s${series.number}e${resolvedParams.episodeId}.jpg`,
-      ],
+      description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
     alternates: {
       canonical: pageUrl.toString(),
@@ -119,7 +128,7 @@ export default async function Page(props: Props): Promise<React.ReactElement> {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: serializeStructuredData(
             generateEpisodeStructuredData(
               Number.parseInt(resolvedParams.id, 10),
               Number.parseInt(resolvedParams.episodeId, 10),

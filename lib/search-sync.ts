@@ -6,6 +6,8 @@ import { withQuery } from "ufo";
 export interface SearchRouteInput {
   /** The debounced value of the live search input. */
   debouncedQuery: string;
+  /** The latest query entered by the user, or `null` without a local edit. */
+  pendingQuery: string | null;
   /** The current `q` search param from the URL. */
   urlQuery: string;
   /** The current pathname (e.g. `/search`, `/`). */
@@ -26,10 +28,15 @@ export interface SearchRouteInput {
  */
 export function computeSearchRouteUpdate({
   debouncedQuery,
+  pendingQuery,
   urlQuery,
   pathname,
   filterQuery,
 }: SearchRouteInput): string | null {
+  // Route changes must never turn a stale debounce into a search navigation.
+  // Only the latest explicit input edit owns the right to update the route.
+  if (pendingQuery === null || pendingQuery !== debouncedQuery) return null;
+
   const trimmed = debouncedQuery.trim();
 
   // Already reflected in the URL — nothing to push.

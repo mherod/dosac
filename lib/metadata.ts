@@ -1,7 +1,12 @@
 import { SITE_NAME } from "./constants";
+import { formatEpisodeId, formatTimestamp } from "./format-utils";
+import {
+  absoluteUrl,
+  BASE_URL,
+  truncateMetadataText,
+  truncatePageTitle,
+} from "./seo";
 import type { Screenshot } from "./types";
-
-const BASE_URL = "https://dosac.uk";
 
 interface OpenGraphMetadata {
   title: string;
@@ -27,6 +32,9 @@ interface OpenGraphMetadata {
     title: string;
     description: string;
     images: string[];
+  };
+  alternates: {
+    canonical: string;
   };
   other?: {
     "og:logo"?: string;
@@ -54,13 +62,13 @@ export function constructOgImageUrl(params: {
   outlineWidth?: string;
   fontFamily?: string;
 }): URL {
-  const ogImageUrl = new URL("api/og", BASE_URL);
+  const ogImageUrl = new URL("/api/og", BASE_URL);
   ogImageUrl.searchParams.set("caption", params.caption);
   ogImageUrl.searchParams.set("episode", params.episode);
   ogImageUrl.searchParams.set("timestamp", params.timestamp);
 
   // Ensure the image URL is absolute and publicly accessible
-  const imageUrl = new URL(params.imageUrl, BASE_URL).toString();
+  const imageUrl = absoluteUrl(params.imageUrl);
   ogImageUrl.searchParams.set("imageUrl", imageUrl);
 
   if (params.fontSize) ogImageUrl.searchParams.set("fontSize", params.fontSize);
@@ -93,14 +101,23 @@ export function generateSingleFrameMetadata(
   });
 
   const imageUrlString = ogImageUrl.toString();
-  const pageUrl = new URL(`caption/${frame.id}`, BASE_URL).toString();
+  const pageUrl = absoluteUrl(`/caption/${frame.id}`);
+  const title = truncatePageTitle(`Caption: ${caption}`);
+  const episodeLabel = formatEpisodeId(frame.episode);
+  const timestampLabel = formatTimestamp(frame.timestamp);
+  const socialTitle = `${episodeLabel} – ${timestampLabel}`;
+  const description = truncateMetadataText(
+    `${episodeLabel} at ${timestampLabel}: ${caption}`,
+    155,
+  );
+  const socialDescription = truncateMetadataText(caption, 155);
 
   return {
-    title: `Caption - ${caption}`,
-    description: `${frame.episode} - ${frame.timestamp} - ${caption}`,
+    title,
+    description,
     openGraph: {
-      title: `${frame.episode} - ${frame.timestamp}`,
-      description: caption,
+      title: socialTitle,
+      description: socialDescription,
       url: pageUrl,
       type: "website",
       siteName: SITE_NAME,
@@ -117,9 +134,12 @@ export function generateSingleFrameMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: `${frame.episode} - ${frame.timestamp}`,
-      description: caption,
+      title: socialTitle,
+      description: socialDescription,
       images: [imageUrlString],
+    },
+    alternates: {
+      canonical: pageUrl,
     },
   };
 }
@@ -151,6 +171,9 @@ export function generateMultiFrameMetadata(
         description: "Create a meme from multiple frames",
         images: [],
       },
+      alternates: {
+        canonical: BASE_URL,
+      },
     };
   }
 
@@ -167,10 +190,9 @@ export function generateMultiFrameMetadata(
   });
 
   const imageUrlString = ogImageUrl.toString();
-  const pageUrl = new URL(
-    `caption/${frames.map((f: Screenshot) => f.id).join("/")}`,
-    BASE_URL,
-  ).toString();
+  const pageUrl = absoluteUrl(
+    `/caption/${frames.map((f: Screenshot) => f.id).join("/")}`,
+  );
 
   return {
     title,
@@ -197,6 +219,9 @@ export function generateMultiFrameMetadata(
       title,
       description,
       images: [imageUrlString],
+    },
+    alternates: {
+      canonical: pageUrl,
     },
   };
 }

@@ -7,11 +7,7 @@ interface AnimatedCaptionPageProps {
 export function AnimatedCaptionPage({
   children,
 }: AnimatedCaptionPageProps): React.ReactElement {
-  return (
-    <main className="space-y-8" aria-label="Caption editing interface">
-      {children}
-    </main>
-  );
+  return <div className="space-y-8">{children}</div>;
 }
 
 interface AnimatedFrameStripWrapperProps {

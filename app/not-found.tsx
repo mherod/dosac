@@ -2,6 +2,8 @@ import Link from "next/link";
 
 export const metadata = {
   title: "404 - Page Not Found",
+  description: "The requested page could not be found on DOSAC.UK.",
+  robots: { index: false, follow: false },
 };
 
 /**

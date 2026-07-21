@@ -19,8 +19,8 @@ export function CategoryNav({
       )}
     >
       <div className={cn("mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", className)}>
-        <div className="flex flex-col items-start justify-between gap-2 py-2 sm:flex-row sm:items-center">
-          <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-6">
+        <div className="flex flex-col items-stretch justify-between gap-3 py-3 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-6">
             <Link
               href="/"
               className="text-sm font-bold text-white hover:underline hover:underline-offset-4"
@@ -28,7 +28,7 @@ export function CategoryNav({
             >
               Ministerial Database
             </Link>
-            <div className="flex flex-wrap gap-4" role="list">
+            <div className="flex min-w-0 flex-wrap gap-x-4 gap-y-2" role="list">
               {CATEGORIES.map((category: { id: string; title: string }) => (
                 <Link
                   key={category.id}
@@ -45,8 +45,11 @@ export function CategoryNav({
               ))}
             </div>
           </div>
-          <div className="flex items-center">
-            <div className="text-xs text-white/60" aria-live="polite">
+          <div className="flex min-w-0 items-center sm:self-end lg:shrink-0 lg:self-auto">
+            <div
+              className="text-right text-xs leading-relaxed text-white/60"
+              aria-live="polite"
+            >
               Last updated: 11/10/2025 | System ID: DQARS-2024
             </div>
           </div>

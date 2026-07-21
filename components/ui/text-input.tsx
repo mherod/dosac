@@ -52,6 +52,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 ? `${inputId}-description`
                 : undefined
           }
+          aria-invalid={error ? true : undefined}
           {...props}
           ref={ref}
         />
@@ -59,6 +60,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           <p
             className="text-sm font-medium text-destructive"
             id={`${inputId}-error`}
+            role="alert"
           >
             {error}
           </p>

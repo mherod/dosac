@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 interface FrameCardProps {
   /** Screenshot data to display in the card */
   screenshot: Screenshot;
+  /** Destination for opening the caption editor. */
+  href: string;
   /** Whether to prioritize loading this frame's image */
   priority?: boolean;
   /** Whether this frame is currently selected */
@@ -33,6 +35,7 @@ interface FrameCardProps {
  */
 export function FrameCard({
   screenshot,
+  href,
   priority = false,
   isSelected = false,
   onSelect,
@@ -76,25 +79,20 @@ export function FrameCard({
       suppressHydrationWarning
       data-frame-card
       className={cn(
-        "group relative block transform select-none transition-transform duration-300 hover:scale-[1.02]",
+        "group relative block transform select-none transition-[transform,box-shadow] duration-150 motion-reduce:transform-none motion-reduce:transition-none [@media(hover:hover)]:hover:scale-[1.015]",
         isSelected && "z-10 rounded-lg ring-2 ring-primary ring-offset-2",
       )}
-      onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          if (onSelect) {
-            onSelect(e);
-          }
-        }
-      }}
       onMouseDown={handleMouseDown}
       onMouseEnter={handleMouseEnter}
-      tabIndex={onSelect ? 0 : -1}
-      aria-label={cardLabel}
-      aria-selected={onSelect ? isSelected : undefined}
     >
-      <FrameCardContent screenshot={screenshot} priority={priority} />
+      <a
+        href={href}
+        onClick={handleClick}
+        aria-label={cardLabel}
+        className="block touch-manipulation rounded-lg [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:opacity-90"
+      >
+        <FrameCardContent screenshot={screenshot} priority={priority} />
+      </a>
 
       {/* Selection button */}
       {onSelect && (
@@ -106,10 +104,10 @@ export function FrameCard({
           }
           aria-pressed={isSelected}
           className={cn(
-            "absolute right-2 top-2 z-10 rounded-full p-1.5 transition-all",
+            "absolute right-1 top-1 z-10 flex min-h-11 min-w-11 touch-manipulation select-none items-center justify-center rounded-full transition-[color,background-color,opacity,box-shadow,transform] duration-150 [-webkit-tap-highlight-color:transparent] focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none sm:right-2 sm:top-2",
             isSelected
               ? "bg-primary text-primary-foreground"
-              : "bg-background/80 opacity-0 backdrop-blur-sm group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100",
+              : "bg-background/85 opacity-0 shadow-sm backdrop-blur-sm group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100",
           )}
         >
           <Check className="h-4 w-4" aria-hidden="true" />

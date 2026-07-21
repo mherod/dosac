@@ -8,6 +8,7 @@ import { withQuery } from "ufo";
 import type { ExtendedFrame } from "@/components/search-result-card";
 import { SearchResultCard } from "@/components/search-result-card";
 import { getFrameIndex } from "@/lib/frames.server";
+import { createPageMetadata } from "@/lib/seo";
 import type { Screenshot } from "@/lib/types";
 import { fuzzyMatch } from "@/lib/utils";
 
@@ -25,12 +26,17 @@ export async function generateMetadata({
   const query = params.q || "";
   const page = parseRequestedPage(params.page);
   const pageSuffix = page > 1 ? ` - Page ${page}` : "";
+  const hasSearchParams = Object.values(params).some(
+    (value) => value !== undefined,
+  );
 
-  return {
+  return createPageMetadata({
     title: query ? `Search results for "${query}"${pageSuffix}` : "Search",
     description:
-      "Search through ministerial communications and departmental records",
-  };
+      "Search The Thick of It quotes, scenes and ministerial records by phrase, series or episode.",
+    path: "/search",
+    robots: hasSearchParams ? { index: false, follow: true } : undefined,
+  });
 }
 
 interface SearchPageProps {

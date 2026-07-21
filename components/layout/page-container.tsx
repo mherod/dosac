@@ -14,20 +14,20 @@ interface PageContainerProps {
  * @param props - Component props
  * @param props.children - The content to render inside the container
  * @param props.className - Optional additional className
- * @returns A main element containing the page content with consistent padding and width
+ * @returns A container for page content with consistent padding and width
  */
 export function PageContainer({
   children,
   className,
 }: PageContainerProps): React.ReactElement {
   return (
-    <main
+    <div
       className={cn(
         "container mx-auto max-w-7xl px-4 py-5 md:px-6 md:py-7 lg:px-8 lg:py-8",
         className,
       )}
     >
       {children}
-    </main>
+    </div>
   );
 }

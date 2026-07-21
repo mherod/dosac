@@ -25,7 +25,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
 
   useEffect(() => {
     // Check if app is already installed
-    const checkInstalled = () => {
+    const checkInstalled = (): void => {
       const isStandalone = window.matchMedia(
         "(display-mode: standalone)",
       ).matches;
@@ -40,7 +40,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
     checkInstalled();
 
     // Listen for beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
+    const handleBeforeInstallPrompt = (e: Event): void => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
 
@@ -51,7 +51,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
     };
 
     // Listen for app installed event
-    const handleAppInstalled = () => {
+    const handleAppInstalled = (): void => {
       setIsInstalled(true);
       setShowInstallPrompt(false);
       setDeferredPrompt(null);
@@ -82,7 +82,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
     };
   }, []);
 
-  const handleInstallClick = async () => {
+  const handleInstallClick = async (): Promise<void> => {
     if (!deferredPrompt) return;
 
     try {
@@ -102,7 +102,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
     }
   };
 
-  const handleDismiss = () => {
+  const handleDismiss = (): void => {
     setShowInstallPrompt(false);
     localStorage.setItem("pwa-install-dismissed", Date.now().toString());
   };
@@ -113,7 +113,7 @@ export function PWAInstallPrompt(): React.ReactElement | null {
   }
 
   return (
-    <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-sm">
+    <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] right-[max(1rem,env(safe-area-inset-right))] z-50 md:left-auto md:max-w-sm">
       <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-lg">
         <div className="mb-3 flex items-start justify-between">
           <div className="flex items-center space-x-2">
@@ -130,8 +130,9 @@ export function PWAInstallPrompt(): React.ReactElement | null {
             </div>
           </div>
           <button
+            type="button"
             onClick={handleDismiss}
-            className="text-slate-400 transition-colors hover:text-slate-600"
+            className="flex min-h-11 min-w-11 touch-manipulation select-none items-center justify-center rounded-md text-slate-400 transition-[color,background-color,transform] duration-150 [-webkit-tap-highlight-color:transparent] hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none"
             aria-label="Dismiss install prompt"
           >
             <X className="h-4 w-4" />

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { EpisodesPage } from "@/components/episodes-page";
 import { formatPageTitle } from "@/lib/constants";
+import { createPageMetadata } from "@/lib/seo";
 import { getAllSeries, getSeriesInfo } from "@/lib/series-info";
 
 /**
@@ -34,14 +35,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const series = getSeriesInfo(Number.parseInt(resolvedParams.id, 10));
   if (!series) notFound();
 
-  return {
+  return createPageMetadata({
     title: formatPageTitle(`Series ${series.number} Episodes`),
     description: series.shortSummary
       .map((part: unknown) =>
         typeof part === "string" ? part : (part as { text: string }).text,
       )
       .join(""),
-  };
+    path: `/series/${series.number}/episode`,
+  });
 }
 
 /**

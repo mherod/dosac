@@ -13,6 +13,7 @@ import { CaptionPageLayout } from "@/components/layout/caption-page-layout";
 import { getCharactersForFrame } from "@/lib/frame-characters.server";
 import { getFrameById, getNearbyFrames } from "@/lib/frames.server";
 import { generateSingleFrameMetadata } from "@/lib/metadata";
+import { serializeStructuredData } from "@/lib/seo";
 import { generateMemeStructuredData } from "@/lib/structured-data";
 import type { Screenshot } from "@/lib/types";
 
@@ -113,9 +114,12 @@ function CaptionPageContent({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: serializeStructuredData(structuredData),
+        }}
       />
       <CaptionPageLayout episodeId={frame.episode} pageTitle="Caption">
+        <h1 className="sr-only">Caption: {frame.speech}</h1>
         <AnimatedCaptionPage>
           <AnimatedFrameStripWrapper>
             <FrameStrip

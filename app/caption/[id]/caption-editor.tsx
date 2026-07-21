@@ -80,13 +80,17 @@ export function CaptionEditor({
 
   const handleFrameSelect = (selectedImage: string): void => {
     if (selectedImage === primaryImage) {
-      // If selecting the primary image, swap primary and secondary
+      return;
+    }
+
+    if (selectedImage === secondaryImage) {
+      // Keep both source frames distinct while promoting the selected frame.
       setPrimaryImage(secondaryImage);
       setSecondaryImage(primaryImage);
-    } else {
-      // If selecting the secondary image or a new image, make it primary
-      setPrimaryImage(selectedImage);
+      return;
     }
+
+    setPrimaryImage(selectedImage);
   };
 
   const onShare = async (): Promise<void> => {
