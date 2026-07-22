@@ -1,20 +1,13 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { withQuery } from "ufo";
+import { useCallback, useEffect, useMemo } from "react";
 import { z } from "zod";
-import { useDebounce } from "@/hooks/use-debounce";
-import {
-  computeSearchRouteUpdate,
-  shouldAdoptUrlQuery,
-} from "@/lib/search-sync";
+import { useSearchNavigation } from "@/components/search-navigation-provider";
+import { buildSearchUrl } from "@/lib/search-sync";
 import { SearchBar } from "./search-bar";
 import { SeriesSelect } from "./series-select";
-
-// Delay before a typing pause pushes the search route (ms).
-const SEARCH_ROUTE_DEBOUNCE_MS = 300;
 
 // Zod schemas for validation
 const NumberParamSchema = z
@@ -49,8 +42,9 @@ export function NavFilters({
   children?: React.ReactNode;
 }): React.ReactElement {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
+  const { state, observeLocation, setSearchDraft, navigateSearch } =
+    useSearchNavigation();
 
   // Read filters from URL and path
   const filters = useMemo((): Filters => {
@@ -96,6 +90,27 @@ export function NavFilters({
     return result.success ? result.data : { query: "" };
   }, [searchParams, pathname]);
 
+  const urlQuery = searchParams.get("q") ?? "";
+  const searchString = searchParams.toString();
+  const inputQuery =
+    state.status === "initializing" ? urlQuery : state.draftQuery;
+
+  useEffect(() => {
+    observeLocation({
+      pathname,
+      search: searchString,
+      query: urlQuery,
+    });
+  }, [observeLocation, pathname, searchString, urlQuery]);
+
+  const getCurrentFilterQuery = useCallback(
+    (): { season?: number; episode?: number } => ({
+      ...(filters.season && { season: filters.season }),
+      ...(filters.episode && { episode: filters.episode }),
+    }),
+    [filters.episode, filters.season],
+  );
+
   // Handle filter changes
   const handleFilterChange = useCallback(
     (updates: { season?: number; episode?: number }) => {
@@ -109,98 +124,30 @@ export function NavFilters({
         return;
       }
 
-      const trimmedQuery = filters.query.trim();
+      const trimmedQuery = inputQuery.trim();
 
       // If we have a search query or we're on the search page, update search params
       if (trimmedQuery || pathname === "/search") {
         const targetPath =
           trimmedQuery || pathname === "/search" ? "/search" : "/";
 
-        const query: Record<string, string | undefined> = {
-          ...(trimmedQuery && { q: trimmedQuery }),
-          ...(result.data.season?.toString() && {
-            season: result.data.season.toString(),
-          }),
-          ...(result.data.episode?.toString() && {
-            episode: result.data.episode.toString(),
-          }),
-        };
-
-        router.push(withQuery(targetPath, query), {
-          scroll: false,
+        const href = buildSearchUrl({
+          query: trimmedQuery,
+          season: result.data.season,
+          episode: result.data.episode,
         });
+
+        navigateSearch(targetPath === "/search" ? href : targetPath, "push");
       }
     },
-    [router, filters, pathname],
+    [filters, inputQuery, navigateSearch, pathname],
   );
-
-  const getCurrentFilterQuery = useCallback(
-    (): Record<string, string | undefined> => ({
-      ...(filters.season && { season: filters.season.toString() }),
-      ...(filters.episode && { episode: filters.episode.toString() }),
-    }),
-    [filters.episode, filters.season],
-  );
-
-  const urlQuery = searchParams.get("q") ?? "";
-
-  // localQuery is the live, authoritative input state. Route updates are a
-  // debounced side effect of it; the URL never directly drives the input
-  // except for external navigation (handled below).
-  const [localQuery, setLocalQuery] = useState(urlQuery);
-  const [pendingQuery, setPendingQuery] = useState<string | null>(null);
-  const [syncedLocation, setSyncedLocation] = useState({
-    pathname,
-    urlQuery,
-  });
-  const debouncedQuery = useDebounce(localQuery, SEARCH_ROUTE_DEBOUNCE_MS);
 
   // Only consider it search mode if there's actual search text
-  const isSearchMode = filters.query.trim() !== "";
-
-  // Adopt the URL's query for external navigation (links, back/forward) only,
-  // and cancel any edit that has not settled yet. An echoed search push is the
-  // sole route change allowed to preserve a newer pending edit.
-  // Adjusting state during render is React's documented alternative to a
-  // setState-in-effect sync, and avoids the extra render pass.
-  if (
-    pathname !== syncedLocation.pathname ||
-    urlQuery !== syncedLocation.urlQuery
-  ) {
-    setSyncedLocation({ pathname, urlQuery });
-    const isSearchPushEcho =
-      pathname === "/search" &&
-      !shouldAdoptUrlQuery(urlQuery, { localQuery, debouncedQuery });
-
-    if (!isSearchPushEcho) {
-      setPendingQuery(null);
-      setLocalQuery(urlQuery);
-    }
-  }
-
-  // Debounced side effect: push the search route once typing settles.
-  useEffect(() => {
-    const href = computeSearchRouteUpdate({
-      debouncedQuery,
-      pendingQuery,
-      urlQuery,
-      pathname,
-      filterQuery: getCurrentFilterQuery(),
-    });
-    if (!href) return;
-    router.push(href, { scroll: false });
-  }, [
-    debouncedQuery,
-    pendingQuery,
-    urlQuery,
-    pathname,
-    router,
-    getCurrentFilterQuery,
-  ]);
+  const isSearchMode = inputQuery.trim() !== "";
 
   const handleSearchChange = (value: string): void => {
-    setPendingQuery(value);
-    setLocalQuery(value);
+    setSearchDraft(value, getCurrentFilterQuery());
   };
 
   const handleSearchSubmit = useCallback(
@@ -208,16 +155,15 @@ export function NavFilters({
       const trimmedQuery = query.trim();
       if (!trimmedQuery) return;
 
-      setPendingQuery(null);
-      setLocalQuery(trimmedQuery);
-
-      const queryParams: Record<string, string | undefined> = {
-        q: trimmedQuery,
-        ...getCurrentFilterQuery(),
-      };
-      router.push(withQuery("/search", queryParams), { scroll: false });
+      navigateSearch(
+        buildSearchUrl({
+          query: trimmedQuery,
+          ...getCurrentFilterQuery(),
+        }),
+        "push",
+      );
     },
-    [router, getCurrentFilterQuery],
+    [getCurrentFilterQuery, navigateSearch],
   );
 
   return (
@@ -235,7 +181,7 @@ export function NavFilters({
             </div>
             <div className="min-w-0 flex-1 sm:flex-none">
               <SearchBar
-                value={localQuery}
+                value={inputQuery}
                 onChange={handleSearchChange}
                 onSubmit={handleSearchSubmit}
                 className="sm:w-64 md:w-72"

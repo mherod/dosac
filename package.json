@@ -26,6 +26,7 @@
     "tag-frames": "tsx scripts/tag-frames-with-characters.ts",
     "tag-all-frames": "tsx scripts/tag-all-frames.ts",
     "test": "jest",
+    "test:browser:search": "node scripts/search-navigation-browser-test.mjs",
     "test:watch": "jest --watch"
   },
   "lint-staged": {

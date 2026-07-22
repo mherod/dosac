@@ -3,8 +3,8 @@
  * Provides offline functionality and caching for better performance
  */
 
-const STATIC_CACHE_NAME = "dosac-static-v1.0.1";
-const DYNAMIC_CACHE_NAME = "dosac-dynamic-v1.0.1";
+const STATIC_CACHE_NAME = "dosac-static-v1.0.2";
+const DYNAMIC_CACHE_NAME = "dosac-dynamic-v1.0.2";
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
@@ -100,6 +100,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Next's RSC/router requests are part of a single navigation transaction.
+  // Let the framework own them end-to-end so a service-worker response cannot
+  // outlive or reorder the client transition that requested it.
+  if (isNextRouterRequest(request)) {
+    return;
+  }
+
   // Handle different types of requests
   if (isStaticAsset(request)) {
     event.respondWith(handleStaticAsset(request));
@@ -113,6 +120,19 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(handleOtherRequest(request));
   }
 });
+
+/**
+ * Check if a request belongs to the Next.js client router.
+ */
+function isNextRouterRequest(request) {
+  const url = new URL(request.url);
+  return (
+    url.searchParams.has("_rsc") ||
+    request.headers.get("RSC") === "1" ||
+    request.headers.has("Next-Router-State-Tree") ||
+    request.headers.has("Next-Router-Prefetch")
+  );
+}
 
 /**
  * Check if request is for a static asset

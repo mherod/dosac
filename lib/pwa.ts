@@ -11,6 +11,13 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
     return null;
   }
 
+  // Development RSC responses must never be mediated by a worker left behind
+  // by an earlier run. Unregister it and keep local routing network-native.
+  if (process.env.NODE_ENV !== "production") {
+    await unregisterServiceWorker();
+    return null;
+  }
+
   try {
     const registration = await navigator.serviceWorker.register("/sw.js", {
       scope: "/",

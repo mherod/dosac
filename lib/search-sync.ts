@@ -1,86 +1,173 @@
-import { withQuery } from "ufo";
+import { parseQuery, withQuery } from "ufo";
+
+/** Search navigation lifecycle states shared by the nav and result list. */
+export type SearchNavigationStatusType =
+  | "initializing"
+  | "idle"
+  | "pending"
+  | "navigating";
+
+/** State for the search navigation state machine. */
+export interface SearchNavigationState {
+  /** The value currently displayed in the search input. */
+  draftQuery: string;
+  /** The query represented by the currently rendered server results. */
+  committedQuery: string;
+  /** The newest user navigation generation. */
+  activeGeneration: number;
+  /** The generation represented by the rendered server results. */
+  committedGeneration: number;
+  /** The current navigation lifecycle state. */
+  status: SearchNavigationStatusType;
+}
+
+/** Events accepted by the search navigation state machine. */
+export type SearchNavigationActionType =
+  | {
+      type: "draft-changed";
+      query: string;
+      generation: number;
+    }
+  | {
+      type: "search-navigation-started";
+      query: string;
+      generation: number;
+    }
+  | {
+      type: "search-location-committed";
+      query: string;
+      generation: number;
+    }
+  | {
+      type: "external-location-committed";
+      query: string;
+      generation: number;
+    }
+  | {
+      type: "result-navigation-started";
+      generation: number;
+    };
+
+/** Input used to build a canonical search URL. */
+export interface SearchUrlInput {
+  query?: string;
+  season?: number | string;
+  episode?: number | string;
+  page?: number;
+}
+
+/** Initial state used until the navigation observes the browser location. */
+export const INITIAL_SEARCH_NAVIGATION_STATE: SearchNavigationState = {
+  draftQuery: "",
+  committedQuery: "",
+  activeGeneration: 0,
+  committedGeneration: 0,
+  status: "initializing",
+};
 
 /**
- * Inputs for {@link computeSearchRouteUpdate}.
+ * Normalize a query for comparisons while retaining the input's display value.
+ * @param query - Search query to normalize.
+ * @returns The trimmed query.
  */
-export interface SearchRouteInput {
-  /** The debounced value of the live search input. */
-  debouncedQuery: string;
-  /** The latest query entered by the user, or `null` without a local edit. */
-  pendingQuery: string | null;
-  /** The current `q` search param from the URL. */
-  urlQuery: string;
-  /** The current pathname (e.g. `/search`, `/`). */
-  pathname: string;
-  /** Extra filter params (season/episode) to preserve on the pushed route. */
-  filterQuery: Record<string, string | undefined>;
+export function normalizeSearchQuery(query: string): string {
+  return query.trim();
 }
 
 /**
- * Decide whether a debounced typing change should push a new search route.
+ * Build a canonical search URL in a stable parameter order.
+ * @param input - Search text, filters, and optional pagination.
+ * @returns A canonical `/search` URL.
+ */
+export function buildSearchUrl(input: SearchUrlInput): string {
+  const query = normalizeSearchQuery(input.query ?? "");
+  const season = input.season?.toString();
+  const episode = input.episode?.toString();
+
+  return withQuery("/search", {
+    ...(query && { q: query }),
+    ...(season && { season }),
+    ...(episode && { episode }),
+    ...(input.page && input.page > 1 && { page: input.page.toString() }),
+  });
+}
+
+/**
+ * Produce a stable key for an observed or issued browser location.
+ * @param pathname - Browser pathname.
+ * @param search - Browser search string, with or without a leading question.
+ * @returns A canonical pathname and sorted query string.
+ */
+export function createSearchLocationKey(
+  pathname: string,
+  search: string,
+): string {
+  const params = parseQuery(search);
+  const sortedParams = Object.fromEntries(
+    Object.entries(params).sort(([left], [right]) => left.localeCompare(right)),
+  );
+  return withQuery(pathname, sortedParams);
+}
+
+/**
+ * Advance the search navigation state machine.
  *
- * Returns the href to push, or `null` when no navigation is needed: the URL
- * already reflects the query, or the box was cleared on a non-search route
- * (a no-op). Route updates are a debounced side effect of typing — the live
- * input stays locally controlled, so this never feeds back into input state.
- * @param input - The current debounced query, URL query, pathname, and filters.
- * @returns The `/search` href to push, or `null` to push nothing.
+ * A route commit only settles the active navigation when its explicit
+ * generation matches. Older route responses may update the committed result
+ * identity, but they cannot unlock those results for a newer draft.
+ * @param state - Current search navigation state.
+ * @param action - Navigation event to apply.
+ * @returns The next immutable state.
  */
-export function computeSearchRouteUpdate({
-  debouncedQuery,
-  pendingQuery,
-  urlQuery,
-  pathname,
-  filterQuery,
-}: SearchRouteInput): string | null {
-  // Route changes must never turn a stale debounce into a search navigation.
-  // Only the latest explicit input edit owns the right to update the route.
-  if (pendingQuery === null || pendingQuery !== debouncedQuery) return null;
+export function reduceSearchNavigation(
+  state: SearchNavigationState,
+  action: SearchNavigationActionType,
+): SearchNavigationState {
+  switch (action.type) {
+    case "draft-changed":
+    case "search-navigation-started":
+      return {
+        ...state,
+        draftQuery: action.query,
+        activeGeneration: action.generation,
+        status: "pending",
+      };
+    case "search-location-committed": {
+      const isActiveGeneration = action.generation === state.activeGeneration;
 
-  const trimmed = debouncedQuery.trim();
-
-  // Already reflected in the URL — nothing to push.
-  if (trimmed === urlQuery.trim()) return null;
-
-  // Clearing the box on a non-search route should not spawn a /search nav.
-  if (pathname !== "/search" && trimmed === "") return null;
-
-  const query: Record<string, string | undefined> = {
-    ...(trimmed ? { q: trimmed } : {}),
-    ...filterQuery,
-  };
-
-  return withQuery("/search", query);
+      return {
+        ...state,
+        committedQuery: action.query,
+        committedGeneration: action.generation,
+        status: isActiveGeneration ? "idle" : state.status,
+      };
+    }
+    case "external-location-committed":
+      return {
+        draftQuery: action.query,
+        committedQuery: action.query,
+        activeGeneration: action.generation,
+        committedGeneration: action.generation,
+        status: "idle",
+      };
+    case "result-navigation-started":
+      return {
+        ...state,
+        activeGeneration: action.generation,
+        status: "navigating",
+      };
+  }
 }
 
 /**
- * The component's live query state, used to classify a URL change.
+ * Check whether rendered results are safe to activate.
+ * @param state - Current search navigation state.
+ * @returns Whether the server results are stale or navigation is in flight.
  */
-export interface LiveQueryState {
-  /** The live, authoritative input value. */
-  localQuery: string;
-  /** The debounced input value (what is/was being pushed to the URL). */
-  debouncedQuery: string;
-}
-
-/**
- * Decide whether the live input should adopt the URL's `q` value.
- *
- * Only external navigations (links, back/forward) should overwrite the input.
- * A URL change is treated as our own typing loop — and ignored — when it equals
- * either the live input or the debounced value; adopting it would revert
- * characters typed after a stale debounced push fired (the #75 race). Reading
- * only state values keeps this callable during render without touching a ref.
- * @param urlQuery - The current `q` search param from the URL.
- * @param live - The current local and debounced query values.
- * @returns `true` when the input should be set from the URL, else `false`.
- */
-export function shouldAdoptUrlQuery(
-  urlQuery: string,
-  live: LiveQueryState,
-): boolean {
+export function areSearchResultsStale(state: SearchNavigationState): boolean {
   return (
-    urlQuery !== live.localQuery.trim() &&
-    urlQuery !== live.debouncedQuery.trim()
+    state.status !== "idle" ||
+    normalizeSearchQuery(state.draftQuery) !==
+      normalizeSearchQuery(state.committedQuery)
   );
 }

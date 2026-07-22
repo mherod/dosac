@@ -9,6 +9,7 @@ import { MainNav } from "@/components/main-nav";
 import { PWAInit } from "@/components/pwa-init";
 import { PWAStatus } from "@/components/pwa-status";
 import { PWAUpdateNotification } from "@/components/pwa-update-notification";
+import { SearchNavigationProvider } from "@/components/search-navigation-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { SITE_NAME } from "@/lib/constants";
@@ -164,16 +165,18 @@ export default function RootLayout({
           >
             Skip to main content
           </a>
-          <Suspense>
-            <MainNav />
-          </Suspense>
-          <main
-            id="main-content"
-            className="min-h-dvh pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
-            tabIndex={-1}
-          >
-            {children}
-          </main>
+          <SearchNavigationProvider>
+            <Suspense>
+              <MainNav />
+            </Suspense>
+            <main
+              id="main-content"
+              className="min-h-dvh pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+              tabIndex={-1}
+            >
+              {children}
+            </main>
+          </SearchNavigationProvider>
           <Footer />
           <Toaster />
           <PWAStatus />

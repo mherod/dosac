@@ -4,10 +4,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { withQuery } from "ufo";
 import type { ExtendedFrame } from "@/components/search-result-card";
 import { SearchResultCard } from "@/components/search-result-card";
+import { SearchResultsBoundary } from "@/components/search-results-boundary";
 import { getFrameIndex } from "@/lib/frames.server";
+import { buildSearchUrl } from "@/lib/search-sync";
 import { createPageMetadata } from "@/lib/seo";
 import type { Screenshot } from "@/lib/types";
 import { fuzzyMatch } from "@/lib/utils";
@@ -85,12 +86,7 @@ function getSearchUrl({
   episode?: number;
   page: number;
 }): string {
-  return withQuery("/search", {
-    ...(query && { q: query }),
-    ...(season && { season: season.toString() }),
-    ...(episode && { episode: episode.toString() }),
-    ...(page > 1 && { page: page.toString() }),
-  });
+  return buildSearchUrl({ query, season, episode, page });
 }
 
 /**
@@ -369,20 +365,22 @@ export default function SearchPage({
           <h1 className="text-2xl font-bold text-gray-900">Search Results</h1>
         </div>
 
-        <Suspense
-          fallback={
-            <div className="animate-pulse space-y-4">
-              <div className="h-4 w-1/3 rounded bg-gray-200" />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {SEARCH_SKELETON_KEYS.map((key) => (
-                  <div key={key} className="h-64 rounded-lg bg-gray-200" />
-                ))}
+        <SearchResultsBoundary>
+          <Suspense
+            fallback={
+              <div className="animate-pulse space-y-4">
+                <div className="h-4 w-1/3 rounded bg-gray-200" />
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {SEARCH_SKELETON_KEYS.map((key) => (
+                    <div key={key} className="h-64 rounded-lg bg-gray-200" />
+                  ))}
+                </div>
               </div>
-            </div>
-          }
-        >
-          <SearchPageContent searchParams={searchParams} />
-        </Suspense>
+            }
+          >
+            <SearchPageContent searchParams={searchParams} />
+          </Suspense>
+        </SearchResultsBoundary>
       </div>
     </div>
   );
