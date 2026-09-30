@@ -136,13 +136,9 @@ export default function RootLayout({
   const structuredData = generateWebsiteStructuredData();
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className="max-md:overflow-x-hidden"
-    >
+    <html lang="en" suppressHydrationWarning className="max-md:overflow-x-clip">
       <body
-        className={`${inter.variable} font-sans antialiased max-md:overflow-x-hidden`}
+        className={`${inter.variable} flex min-h-dvh flex-col font-sans antialiased max-md:overflow-x-clip`}
         suppressHydrationWarning
       >
         <script
@@ -169,7 +165,7 @@ export default function RootLayout({
             </Suspense>
             <main
               id="main-content"
-              className="min-h-dvh pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+              className="flex-1 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
               tabIndex={-1}
             >
               {children}
