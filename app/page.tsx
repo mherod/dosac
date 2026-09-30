@@ -65,7 +65,9 @@ export async function generateMetadata({
   };
 
   const currentUrl = new URL(withQuery(basePath, queryParams), baseUrl);
-  const hasFilters = Object.keys(queryParams).length > 0;
+  const hasFilters = Object.values(resolvedParams).some(
+    (value) => value !== undefined,
+  );
   const safeTitle = truncatePageTitle(title);
   const safeDescription = truncateMetadataText(description, 155);
 
