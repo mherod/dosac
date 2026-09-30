@@ -67,8 +67,8 @@ export function SearchBar({
         onKeyDown={handleKeyDown}
         aria-label="Search ministerial quotes"
         className={cn(
-          "px-3 py-1.5 md:text-sm",
-          "rounded border border-white/20 bg-transparent",
+          "h-11 px-3 py-2 md:h-11 md:text-sm",
+          "rounded-md border border-white/25 bg-white/5",
           "text-white placeholder:text-white/60",
           "focus:border-white/40 focus:ring-[#1d70b8]",
           className,

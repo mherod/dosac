@@ -13,38 +13,38 @@ export function NavFiltersSkeleton(): React.ReactElement {
       aria-label="Loading navigation filters"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-stretch justify-between gap-3 py-4 md:gap-4 md:py-5 lg:flex-row lg:items-center lg:gap-6">
-          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-4 md:gap-5 lg:w-auto">
+        <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
             {/* Series select skeleton */}
             <div className="min-w-0 flex-shrink-0">
               <div className="flex items-center gap-3">
                 {/* Season dropdown skeleton */}
                 <div
-                  className="h-9 w-[100px] animate-pulse rounded-md bg-white/10"
+                  className="h-11 w-[100px] animate-pulse rounded-md bg-white/10 motion-reduce:animate-none"
                   aria-hidden="true"
                 />
                 {/* Episode dropdown skeleton */}
                 <div
-                  className="h-9 w-[120px] animate-pulse rounded-md bg-white/10"
+                  className="h-11 w-[120px] animate-pulse rounded-md bg-white/10 motion-reduce:animate-none"
                   aria-hidden="true"
                 />
               </div>
             </div>
             {/* Search bar skeleton */}
-            <div className="min-w-0 flex-1 sm:flex-none">
+            <div className="min-w-0 flex-1">
               <div
-                className="h-9 w-full animate-pulse rounded-md bg-white/10 sm:w-64"
+                className="h-11 w-full animate-pulse rounded-md bg-white/10 motion-reduce:animate-none"
                 aria-hidden="true"
               />
             </div>
           </div>
           {/* Character badges skeleton */}
-          <div className="flex w-full min-w-0 items-center sm:justify-end lg:w-auto lg:justify-start">
-            <div className="flex -space-x-2" aria-hidden="true">
+          <div className="min-w-0 shrink-0">
+            <div className="flex flex-wrap gap-1 sm:gap-2" aria-hidden="true">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-12 w-12 animate-pulse rounded-full border-2 border-[#1d70b8] bg-white/10"
+                  className="h-11 w-11 animate-pulse rounded-full border border-white/30 bg-white/10 motion-reduce:animate-none"
                   style={{
                     animationDelay: `${i * 100}ms`,
                   }}

@@ -120,7 +120,7 @@ export function SeriesSelect({
         onValueChange={handleSeriesChange}
       >
         <SelectTrigger
-          className="w-[100px] truncate"
+          className="h-11 w-[100px] truncate border-white/25 bg-white/5 md:h-11"
           aria-label="Select series"
         >
           <SelectValue placeholder="All Series" />
@@ -142,7 +142,7 @@ export function SeriesSelect({
       >
         <SelectTrigger
           className={cn(
-            "w-[120px] truncate",
+            "h-11 w-[120px] truncate border-white/25 bg-white/5 md:h-11",
             "disabled:border-[#ffffff1a] disabled:bg-[#0b0c0c]/60",
             "disabled:text-white/45 disabled:hover:bg-[#0b0c0c]",
           )}
