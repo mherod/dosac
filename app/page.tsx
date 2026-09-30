@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { withQuery } from "ufo";
 import { HomePage } from "@/components/home-page";
+import { HomePageShell } from "@/components/home-page-shell";
 import { HomePageSkeleton } from "@/components/home-page-skeleton";
 import { parseEpisodeId } from "@/lib/frames";
 import { getFrameIndex } from "@/lib/frames.server";
@@ -126,8 +127,10 @@ type Props = {
 async function HomeContent({
   searchParams,
 }: Pick<Props, "searchParams">): Promise<React.ReactElement> {
-  const allScreenshots = await getFrameIndex();
-  const resolvedParams = await searchParams;
+  const [allScreenshots, resolvedParams] = await Promise.all([
+    getFrameIndex(),
+    searchParams,
+  ]);
 
   // Parse search parameters
   const currentPage = Number(resolvedParams.page) || 1;
@@ -218,10 +221,10 @@ async function HomeContent({
  */
 export default function Home({ searchParams }: Props): React.ReactElement {
   return (
-    <div className="container mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
+    <HomePageShell>
       <Suspense fallback={<HomePageSkeleton />}>
         <HomeContent searchParams={searchParams} />
       </Suspense>
-    </div>
+    </HomePageShell>
   );
 }

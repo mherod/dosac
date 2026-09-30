@@ -2,21 +2,18 @@
 
 import { Check } from "lucide-react";
 import type React from "react";
-import { FrameCardContent } from "@/components/frame-card-content";
-import { formatEpisodeId, formatTimestamp } from "@/lib/utils";
-import type { Screenshot } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /**
  * Props for the FrameCard component
  */
 interface FrameCardProps {
-  /** Screenshot data to display in the card */
-  screenshot: Screenshot;
+  /** Accessible description prepared by the server. */
+  cardLabel: string;
+  /** Server-rendered visual content, independent of local selection. */
+  children: React.ReactNode;
   /** Destination for opening the caption editor. */
   href: string;
-  /** Whether to prioritize loading this frame's image */
-  priority?: boolean;
   /** Whether this frame is currently selected */
   isSelected?: boolean;
   /** Callback when the frame is selected with modifier keys */
@@ -34,9 +31,9 @@ interface FrameCardProps {
  * @returns An interactive card component displaying the frame and its metadata
  */
 export function FrameCard({
-  screenshot,
+  cardLabel,
+  children,
   href,
-  priority = false,
   isSelected = false,
   onSelect,
   onDragStart,
@@ -70,10 +67,6 @@ export function FrameCard({
     onDragMove?.();
   };
 
-  const episodeLabel = formatEpisodeId(screenshot.episode);
-  const timestampLabel = formatTimestamp(screenshot.timestamp);
-  const cardLabel = `${screenshot.speech || "Frame"} from ${episodeLabel} at ${timestampLabel}`;
-
   return (
     <article
       suppressHydrationWarning
@@ -91,7 +84,7 @@ export function FrameCard({
         aria-label={cardLabel}
         className="block touch-manipulation rounded-lg [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:opacity-90"
       >
-        <FrameCardContent screenshot={screenshot} priority={priority} />
+        {children}
       </a>
 
       {/* Selection button */}

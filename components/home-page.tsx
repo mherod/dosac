@@ -64,11 +64,8 @@ export function HomePage({
   paginationData,
 }: HomePageProps): React.ReactElement {
   return (
-    <div className="container mx-auto px-4 py-5 md:px-6 md:py-7 lg:px-8 lg:py-8">
+    <>
       <div className="mb-6 md:mb-8">
-        <h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          The Thick of It memes and quotes
-        </h1>
         <div className="text-sm text-muted-foreground">
           Showing {screenshots.length} of {paginationData.totalItems}{" "}
           screenshots
@@ -95,6 +92,6 @@ export function HomePage({
       <div className="mt-6 md:mt-8 lg:mt-10">
         <FrameStrip screenshots={screenshots.slice(0, 50)} frameWidth={192} />
       </div>
-    </div>
+    </>
   );
 }
