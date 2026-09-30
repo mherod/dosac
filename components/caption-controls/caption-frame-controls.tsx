@@ -60,8 +60,8 @@ export function CaptionFrameControls({
         {label}
       </label>
 
-      <div className="flex h-fit items-stretch gap-2 rounded-lg border border-border/70 bg-muted/20 p-2 shadow-sm">
-        <div className="h-full flex-1">
+      <div className="flex items-start gap-3">
+        <div className="min-w-0 flex-1">
           <Textarea
             id={captionFieldId}
             value={caption}
@@ -69,7 +69,7 @@ export function CaptionFrameControls({
               onCaptionChange(e.target.value)
             }
             placeholder={`Enter caption for ${label.toLowerCase()}...`}
-            className="flex h-full min-h-[125px] resize-none items-center p-4 transition-colors focus:border-primary motion-reduce:transition-none"
+            className="min-h-32 resize-y px-3 pb-7 pt-3 transition-colors focus:border-primary motion-reduce:transition-none"
           />
         </div>
 
