@@ -8,17 +8,12 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/* Disable rubber band effect */
+/* The document owns page scrolling; do not trap gestures on the body. */
 html {
   background-color: #0b0c0c;
-  overscroll-behavior: none;
   /* Prevent Safari from arbitrarily rescaling text after orientation change */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-}
-
-body {
-  overscroll-behavior-y: none;
 }
 
 @media (prefers-color-scheme: dark) {

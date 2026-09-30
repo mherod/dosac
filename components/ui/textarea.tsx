@@ -27,8 +27,8 @@ const Textarea = forwardRef<
     <div className="relative">
       <textarea
         className={cn(
-          // text-base (16px) on mobile prevents iOS Safari focus-zoom; text-sm on md+.
-          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          // Keep 16px in landscape and on iPad too, to avoid Safari focus zoom.
+          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
         onChange={handleChange}

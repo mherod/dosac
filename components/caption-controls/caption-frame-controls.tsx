@@ -64,6 +64,8 @@ export function CaptionFrameControls({
         <div className="min-w-0 flex-1">
           <Textarea
             id={captionFieldId}
+            inputMode="text"
+            enterKeyHint="enter"
             value={caption}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               onCaptionChange(e.target.value)
