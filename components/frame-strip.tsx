@@ -21,6 +21,8 @@ interface FrameStripProps {
   centerScreenshot?: Screenshot;
   /** Width of each frame in pixels (defaults to 256) */
   frameWidth?: number;
+  /** Optional styling for the strip surface */
+  className?: string;
 }
 
 /**
@@ -35,6 +37,7 @@ export function FrameStrip({
   screenshots,
   centerScreenshot,
   frameWidth = 256, // Default to 256px width (original size)
+  className,
 }: FrameStripProps): React.ReactElement | null {
   // All Hooks must be called unconditionally first
   const router = useRouter();
@@ -223,7 +226,10 @@ export function FrameStrip({
 
   return (
     <div
-      className="max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg"
+      className={cn(
+        "max-w-screen relative overflow-x-hidden rounded-2xl bg-black/95 p-2 shadow-[0_0_15px_rgba(0,0,0,0.3)] backdrop-blur-lg",
+        className,
+      )}
       aria-label="Frame selection strip"
     >
       <div className="mx-auto max-w-7xl">

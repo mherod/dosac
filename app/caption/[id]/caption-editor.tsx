@@ -8,7 +8,7 @@ import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
 import { useCaptionState } from "@/lib/hooks/use-caption-state";
 import { handleShare } from "@/lib/share";
-import { formatTimestamp } from "@/lib/utils";
+import { formatEpisodeId, formatTimestamp } from "@/lib/utils";
 
 interface Screenshot {
   id: string;
@@ -99,10 +99,16 @@ export function CaptionEditor({
   };
 
   return (
-    <div className="pt-8">
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-6">
-          <Card className="overflow-hidden shadow-lg transition-shadow hover:shadow-xl">
+    <div>
+      <div className="grid items-start gap-6 md:grid-cols-2">
+        <div>
+          <Card className="overflow-hidden shadow-sm">
+            <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
+              <h2 className="text-sm font-semibold">Preview</h2>
+              <span className="text-xs text-muted-foreground">
+                Current caption
+              </span>
+            </div>
             <div className="relative">
               <div ref={imageRef}>
                 <CaptionedImage
@@ -117,35 +123,22 @@ export function CaptionEditor({
                 />
               </div>
             </div>
-          </Card>
-
-          <Card className="p-4 shadow-md">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Episode
-                </p>
-                <p className="text-sm font-medium">{screenshot.episode}</p>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Character
-                </p>
-                <p className="text-sm font-medium">
-                  {characters && characters.length > 0
-                    ? characters.map((c) => c.name).join(", ")
-                    : screenshot.character || "Unknown"}
-                </p>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Timestamp
-                </p>
-                <p className="text-sm font-medium">
-                  {formatTimestamp(screenshot.timestamp)}
-                </p>
-              </div>
-            </div>
+            <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 border-t p-4 text-sm">
+              <dt className="text-muted-foreground">Episode</dt>
+              <dd className="text-right font-medium">
+                {formatEpisodeId(screenshot.episode)}
+              </dd>
+              <dt className="text-muted-foreground">Character</dt>
+              <dd className="break-words text-right font-medium">
+                {characters && characters.length > 0
+                  ? characters.map((c) => c.name).join(", ")
+                  : screenshot.character || "Unknown"}
+              </dd>
+              <dt className="text-muted-foreground">Timestamp</dt>
+              <dd className="text-right font-medium tabular-nums">
+                {formatTimestamp(screenshot.timestamp)}
+              </dd>
+            </dl>
           </Card>
         </div>
 
