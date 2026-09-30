@@ -19,7 +19,7 @@ export function Footer({ className }: FooterProps): React.ReactElement {
       role="contentinfo"
       className={cn(
         "mt-auto flex shrink-0 flex-col items-center justify-center border-t p-4 md:p-5 lg:p-6",
-        "pb-[max(env(safe-area-inset-bottom),1rem)]",
+        "pb-[max(env(safe-area-inset-bottom),1rem)] pl-[max(env(safe-area-inset-left),1rem)] pr-[max(env(safe-area-inset-right),1rem)] md:pb-[max(env(safe-area-inset-bottom),1.25rem)] md:pl-[max(env(safe-area-inset-left),1.25rem)] md:pr-[max(env(safe-area-inset-right),1.25rem)] lg:pb-[max(env(safe-area-inset-bottom),1.5rem)] lg:pl-[max(env(safe-area-inset-left),1.5rem)] lg:pr-[max(env(safe-area-inset-right),1.5rem)]",
         className,
       )}
     >
