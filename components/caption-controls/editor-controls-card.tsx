@@ -62,31 +62,29 @@ export function EditorControlsCard({
   children,
 }: EditorControlsCardProps): React.ReactElement {
   return (
-    <Card
-      className="w-full max-w-[400px] p-4 shadow-md"
-      style={{ height: "max-content" }}
-    >
-      <div className="space-y-4">
+    <Card className="h-fit w-full p-4 shadow-sm sm:p-5">
+      <div className="space-y-5">
         {children}
 
-        <div className="space-y-6 border-t pt-6">
-          <div className="h-6">
-            <span className="text-sm font-medium leading-6 text-foreground">
-              Font Settings
-            </span>
+        <div className="space-y-4 border-t pt-5">
+          <div className="space-y-1">
+            <h2 className="text-sm font-semibold text-foreground">
+              Caption style
+            </h2>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Changes appear in the preview as you edit.
+            </p>
           </div>
-          <div className="rounded-lg bg-muted/50 p-4">
-            <FontControls
-              fontSize={fontSize}
-              setFontSize={setFontSize}
-              outlineWidth={outlineWidth}
-              setOutlineWidth={setOutlineWidth}
-              shadowSize={shadowSize}
-              setShadowSize={setShadowSize}
-              fontFamily={fontFamily}
-              setFontFamily={setFontFamily}
-            />
-          </div>
+          <FontControls
+            fontSize={fontSize}
+            setFontSize={setFontSize}
+            outlineWidth={outlineWidth}
+            setOutlineWidth={setOutlineWidth}
+            shadowSize={shadowSize}
+            setShadowSize={setShadowSize}
+            fontFamily={fontFamily}
+            setFontFamily={setFontFamily}
+          />
         </div>
 
         <div className="border-t pt-4">

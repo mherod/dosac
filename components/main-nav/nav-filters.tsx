@@ -168,9 +168,9 @@ export function NavFilters({
 
   return (
     <div className="border-t border-[#ffffff1f] bg-[#0b0c0c]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-5 md:px-6 lg:px-8">
-        <div className="flex flex-col items-stretch justify-between gap-3 py-4 md:gap-4 md:py-5 lg:flex-row lg:items-center lg:gap-6">
-          <div className="flex w-full min-w-0 flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:gap-4 md:gap-5 lg:w-auto">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:gap-6">
+          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center">
             <div className="min-w-0 flex-shrink-0">
               <SeriesSelect
                 season={filters.season}
@@ -179,20 +179,15 @@ export function NavFilters({
                 isSearchMode={isSearchMode}
               />
             </div>
-            <div className="min-w-0 flex-1 sm:flex-none">
+            <div className="min-w-0 flex-1">
               <SearchBar
                 value={inputQuery}
                 onChange={handleSearchChange}
                 onSubmit={handleSearchSubmit}
-                className="sm:w-64 md:w-72"
               />
             </div>
           </div>
-          {children ? (
-            <div className="w-full min-w-0 sm:flex sm:justify-end lg:w-auto lg:justify-start">
-              {children}
-            </div>
-          ) : null}
+          {children ? <div className="min-w-0 shrink-0">{children}</div> : null}
         </div>
       </div>
     </div>

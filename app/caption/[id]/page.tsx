@@ -125,7 +125,8 @@ function CaptionPageContent({
             <FrameStrip
               screenshots={nearbyFrames}
               centerScreenshot={frame}
-              frameWidth={200}
+              frameWidth={176}
+              className="rounded-lg shadow-none backdrop-blur-none"
             />
           </AnimatedFrameStripWrapper>
           <AnimatedCaptionEditorWrapper>

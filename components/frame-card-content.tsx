@@ -1,3 +1,5 @@
+import "server-only";
+
 import { Clapperboard, Clock } from "lucide-react";
 import { CaptionedImage } from "@/components/captioned-image";
 import { Card } from "@/components/ui/card";
